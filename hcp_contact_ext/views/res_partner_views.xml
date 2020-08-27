@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="partner_description_form_view_id" model="ir.ui.view">
+            <field name="name">res.partner.carrier.property.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="delivery.view_partner_property_form" />
+            <field name="arch" type="xml">
+
+                  <xpath expr="//field[@name='property_delivery_carrier_id']" position="after">
+                      <field name="hcp_ship_via_description"/>
+                      <field name="hcp_credit_limit"/>
+                  </xpath>
+            </field>
+    </record>
+
+
+    <record id="view_partner_property_form_id" model="ir.ui.view">
+            <field name="name">res.partner.property.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+
+                  <xpath expr="//group[@name='fiscal_information']" position="replace">
+                    <group string="Fiscal Information" name="fiscal_information" priority="5" groups="           account.group_account_invoice">
+                      <field name="hcp_federal_tax"/>
+
+                        <field name="property_account_position_id" options="{'no_create': True, 'no_open': True}" invisible="1"/>
+                    </group>
+
+                  </xpath>
+
+            </field>
+    </record>
+
+
+
+  <record id="view_hcp_partner_form_id_2" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">                    
+            <xpath expr="//field[@name='type']" position="after">
+               <field name="hcp_customer_id" readonly="1"/>
+               <field name="hcp_vendor_no" string="Vendor ID"/>
+               <field name="hcp_old_customer_id" invisible="1"/>
+               <field name="hcp_first_name" attrs="{'invisible': ['|',('company_type','=','company'),('type','in',('invoice','delivery','other','private'))]}" />
+                <field name="hcp_last_name" attrs="{'invisible': ['|',('company_type','=','company'),('type','in',('invoice','delivery','other','private'))]}"/>
+            </xpath>
+
+           <!-- <xpath expr="//page[@name='internal_notes']" position='before'>
+                <page string='Other Info' name="other_info">
+                    <group colspan="4">
+                        <group>
+                            <field name="hcp_type_subcategory"/>
+                            <field name="hcp_location_type"/>
+                            
+                        </group>
+                        <group>
+                            <field name="hcp_group_code"/>
+                            <field name="hcp_price_level"/>
+                            <field name="hcp_inv_price_level"/>
+                            <field name="hcp_account_program"/>
+                        </group>
+                         <group>
+                            <field name="hcp_display_healthcraft" widget="many2many_tags"/>
+                            <field name="hcp_display_invisia" widget="many2many_tags"/>
+                        </group>
+                         <group>
+                            <field name="hcp_website_mapping"/>
+                            <field name="hcp_inv_website_mapping"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>-->
+            
+            <xpath expr="//field[@name='vat']" position="after">
+                 <field name="hcp_type"/>
+                 <field name="hcp_designation" widget="many2many_tags"/>
+                 <field name="hcp_role_in_decision_making" widget="many2many_tags"/>
+                 <field name="hcp_type_subcategory"/>
+                 <field name="hcp_location_type"/>
+                 <field name="hcp_group_code"/>
+                 <field name="hcp_price_level"/>
+                 <field name="hcp_website_mapping"/>
+                 <field name="hcp_inv_website_mapping"/>
+            </xpath>
+
+            <xpath expr="//field[@name='function']" position="before">
+                 <field name="hcp_status"/>
+                 <field name="hcp_source"/>
+                 <field name="hcp_training_completed" widget="many2many_tags"/>
+                 <field name="hcp_sdr_start_date"/>
+            </xpath>
+
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="hcp_fax_no"/>
+                <field name="hcp_inv_price_level"/>
+                <field name="hcp_account_program"/>
+                <field name="hcp_display_healthcraft" widget="many2many_tags"/>
+                <field name="hcp_display_invisia" widget="many2many_tags"/>
+            </xpath>
+
+            <xpath expr="//field[@name='website']" position="before">
+                
+                  <field name="hcp_secondary_email" attrs="{'invisible': [('type','in',('contact','delivery','other','private'))]}"/>
+                
+            </xpath>
+
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="hcp_taxes_id" widget="many2many_tags"/>
+            </xpath>
+
+            <!--<xpath expr="//field[@name='vat']" position="before">
+                <field name="hcp_group_code"/>
+            </xpath>-->
+
+            <xpath expr="//field[@name='child_ids']" position="replace">
+                 <field name="child_ids" mode="kanban" context="{'default_parent_id': active_id, 'default_hcp_customer_id': hcp_customer_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_lang': lang, 'default_user_id': user_id, 'default_type': 'other'}">
+                                <kanban>
+                                    <field name="id"/>
+                                    <field name="color"/>
+                                    <field name="name"/>
+                                    <field name="title"/>
+                                    <field name="type"/>
+                                    <field name="email"/>
+                                    
+                                    <field name="parent_id"/>
+                                    <field name="is_company"/>
+                                    <field name="function"/>
+                                    <field name="phone"/>
+                                    <field name="street"/>
+                                    <field name="street2"/>
+                                    <field name="zip"/>
+                                    <field name="city"/>
+                                    <field name="country_id"/>
+                                    <field name="mobile"/>
+                                    <field name="state_id"/>
+                                    <field name="image_128"/>
+                                    <field name="lang"/>
+                                    <!-- fields in form x2many view to diminish requests -->
+                                    <field name="comment"/>
+                                    <field name="display_name"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <t t-set="color" t-value="kanban_color(record.color.raw_value)"/>
+                                            <div t-att-class="color + (record.title.raw_value == 1 ? ' oe_kanban_color_alert' : '') + ' oe_kanban_global_click'">
+                                                <div class="o_kanban_image">
+                                                    <img alt="" t-if="record.image_128.raw_value" t-att-src="kanban_image('res.partner', 'image_128', record.id.raw_value)"/>
+                                                    <t t-if="!record.image_128.raw_value">
+                                                        <img alt="Delivery" t-if="record.type.raw_value === 'delivery'" t-att-src='_s + "/base/static/img/truck.png"'/>
+                                                        <img alt="Invoice" t-if="record.type.raw_value === 'invoice'" t-att-src='_s + "/base/static/img/money.png"'/>
+                                                        <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery'">
+                                                            <img alt="Logo" t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/img/company_image.png"'/>
+                                                            <img alt="Avatar" t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/img/avatar_grey.png"'/>
+                                                        </t>
+                                                    </t>
+                                                </div>
+                                                <div class="oe_kanban_details">
+                                                    <field name="name"/>
+                                                    <div t-if="record.function.raw_value"><field name="function"/></div>
+                                                    <div t-if="record.email.raw_value"><field name="email" widget="email"/></div>
+                                                    <div t-if="record.type.raw_value != 'contact'">
+                                                        <div>
+                                                            <field name="zip"/>
+                                                            <field name="city"/>
+                                                        </div>
+                                                        <field t-if="record.state_id.raw_value" name="state_id"/>
+                                                        <field name="country_id"/>
+                                                    </div>
+                                                    <div t-if="record.phone.raw_value">Phone: <field name="phone" widget="phone"/></div>
+                                                    <div t-if="record.mobile.raw_value">Mobile: <field name="mobile" widget="phone"/></div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <form string="Contact / Address">
+                                    <sheet>
+                                        <!-- parent_id and type fields needed in attrs in base_address_city module which overwrites
+                                        _fields_view_get() of partner. It would be better to put those fields there but the web client
+                                        dosen't support when a field is displayed several times in the same view.-->
+                                        <field name="type" required="1" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="parent_id" invisible="1"/>
+                                        <hr/>
+                                        <group col="12">
+                                            <group colspan="5">
+                                                <field name="name" string="Contact Name" attrs="{'required' : [('type', '=', 'contact')]}"/>
+                                                <field name="title" placeholder="e.g. Mr."
+                                                    attrs="{'invisible': [('type','!=', 'contact')]}"/>
+                                                <field name="function" placeholder="e.g. Sales Director"
+                                                    attrs="{'invisible': [('type','!=', 'contact')]}"/>
+                                                <label for="street" string="Address" attrs="{'invisible': [('type','=', 'contact')]}"/>
+                                                <div attrs="{'invisible': [('type','=', 'contact')]}">
+                                                    <div class="o_address_format" name="div_address">
+                                                        <field name="street" placeholder="Street..." class="o_address_street"/>
+                                                        <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                                        <field name="city" placeholder="City" class="o_address_city"/>
+                                                        <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}' context="{'country_id': country_id, 'zip': zip}"/>
+                                                        <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                                        <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                                    </div>
+                                                </div>
+                                                <field name="comment" placeholder="Internal notes..."/>
+                                            </group>
+                                            <group colspan="5">
+                                                <field name="email" widget="email"/>
+                                                <field name="hcp_secondary_email" attrs="{'invisible': [('type','in',('contact','delivery','other','private'))]}"/>
+                                                <field name="phone" widget="phone"/>
+                                                <field name="mobile" widget="phone"/>
+                                                <field name="company_id" invisible="1"/>
+                                                <!-- Asana Ticket - Make customer ID field read only  across all form where ever it refers - GAP ID: 2804 Dif -->
+                                                <field name="hcp_customer_id" string="Customer ID" readonly="1"/>
+                                            </group>
+                                            <group colspan="1">
+                                                <field name="image_1920" widget="image" class="oe_avatar" nolabel="1" options="{'image_preview': 'image_128'}"/>
+                                            </group>
+                                        </group>
+                                        <field name="lang" invisible="True"/>
+                                        <field name="user_id" invisible="True"/>
+                                    </sheet>
+                                </form>
+                            </field>
+                       
+                     </xpath>
+
+
+
+      
+        </field>
+  </record>
+
+  <record id="view_hcp_res_partner_filter" model="ir.ui.view">
+        <field name="name">res.partner.select</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                 <field name="hcp_customer_id" string="Customer ID" filter_domain="[('hcp_customer_id', 'ilike', self)]"/>
+            </xpath>
+        </field>
+  </record>
+
+
+
+    <record id="displays_healthcraft_tree_view_id" model="ir.ui.view">
+            <field name="name">displays.healthcraft.tree</field>
+            <field name="model">displays.healthcraft</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+    </record>
+
+
+    <record id="displays_healthcraft_form_id" model="ir.ui.view">
+            <field name="name">displays.healthcraft.form</field>
+            <field name="model">displays.healthcraft</field>
+            <field name="arch" type="xml">
+                <form string="Displays Healthcraft">
+                    <sheet>
+                        <group>
+                          <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+        
+    
+
+    <record id="displays_healthcraft_action_id" model="ir.actions.act_window">
+            <field name="name">Displays Healthcraft</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">displays.healthcraft</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <menuitem 
+        id="menu_crm_displays_healthcraft_id" 
+        name="Displays Healthcraft" 
+        action="displays_healthcraft_action_id"
+        parent="crm.menu_crm_config_lead"
+        sequence="2"
+    />
+
+
+    <record id="displays_invisia_tree_view_id" model="ir.ui.view">
+            <field name="name">displays.invisia.tree</field>
+            <field name="model">displays.invisia</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+    </record>
+
+
+    <record id="displays_invisia_form_id" model="ir.ui.view">
+            <field name="name">displays.invisia.form</field>
+            <field name="model">displays.invisia</field>
+            <field name="arch" type="xml">
+                <form string="Displays Invisia">
+                    <sheet>
+                        <group>
+                          <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+        
+    
+
+    <record id="displays_invisia_action_id" model="ir.actions.act_window">
+            <field name="name">Displays Invisia</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">displays.invisia</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <menuitem 
+        id="displays_invisia_menu_item_id" 
+        name="Displays Invisia" 
+        action="displays_invisia_action_id"
+        parent="crm.menu_crm_config_lead"
+        sequence="3"
+    />
+
+
+    <record id="hcp_federal_tax_tree_view_id" model="ir.ui.view">
+            <field name="name">hcp.federal.tax.tree</field>
+            <field name="model">hcp.federal.tax</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="federal_tax_name"/>
+                </tree>
+            </field>
+    </record>
+
+
+    <record id="hcp_federal_tax_form_id" model="ir.ui.view">
+            <field name="name">hcp.federal.tax.form</field>
+            <field name="model">hcp.federal.tax</field>
+            <field name="arch" type="xml">
+                <form string="Federal Tax">
+                    <sheet>
+                        <group>
+                          <field name="federal_tax_name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+        
+    
+
+    <record id="federal_tax_action_id" model="ir.actions.act_window">
+            <field name="name">Federal Tax</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hcp.federal.tax</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <menuitem 
+        id="federal_tax_menu_item_id" 
+        name="Federal Tax" 
+        action="federal_tax_action_id"
+        parent="crm.menu_crm_config_lead"
+        sequence="4"
+    />
+
+
+    <record id="contact_training_tree_view_id" model="ir.ui.view">
+            <field name="name">contact.training.tree</field>
+            <field name="model">contact.training</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="contact_training_name"/>
+                </tree>
+            </field>
+    </record>
+
+
+    <record id="contact_training_form_view_id" model="ir.ui.view">
+            <field name="name">contact.training.form</field>
+            <field name="model">contact.training</field>
+            <field name="arch" type="xml">
+                <form string="Contact Training">
+                    <sheet>
+                        <group>
+                          <field name="contact_training_name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+        
+    
+
+    <record id="contact_training_action_view_id" model="ir.actions.act_window">
+            <field name="name">Contact Training</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">contact.training</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <menuitem 
+        id="contact_training_menu_item_id" 
+        name="Contact Training" 
+        action="contact_training_action_view_id"
+        parent="crm.menu_crm_config_lead"
+        sequence="5"
+    />
+
+
+    <record id="contacts_designation_tree_view_id_1" model="ir.ui.view">
+            <field name="name">contacts.designation.tree</field>
+            <field name="model">contacts.designation</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="contact_designation_name"/>
+                </tree>
+            </field>
+    </record>
+
+
+    <record id="contacts_designation_form_view_id_2" model="ir.ui.view">
+            <field name="name">contacts.designation.form</field>
+            <field name="model">contacts.designation</field>
+            <field name="arch" type="xml">
+                <form string="Contacts Designation">
+                    <sheet>
+                        <group>
+                          <field name="contact_designation_name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+        
+    
+
+    <record id="action_contacts_designation_id" model="ir.actions.act_window">
+            <field name="name">Contacts Designation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">contacts.designation</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <menuitem 
+        id="menu_action_contacts_designation_id" 
+        name="Contacts Designation" 
+        action="action_contacts_designation_id"
+        parent="crm.menu_crm_config_lead"
+        sequence="6"
+    />
+
+
+    <record id="hcp_contacts_role_tree_id" model="ir.ui.view">
+            <field name="name">contact.role.tree</field>
+            <field name="model">contact.role</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="contact_role_name"/>
+                </tree>
+            </field>
+    </record>
+
+
+    <record id="hcp_contacts_role_form_view_id_3" model="ir.ui.view">
+            <field name="name">contact.role.form</field>
+            <field name="model">contact.role</field>
+            <field name="arch" type="xml">
+                <form string="Contacts Role">
+                    <sheet>
+                        <group>
+                          <field name="contact_role_name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+        
+    
+
+    <record id="contact_role_actions_id_1" model="ir.actions.act_window">
+            <field name="name">Contacts Role</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">contact.role</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <menuitem 
+        id="contacts_role_menu_item_id" 
+        name="Contacts Role" 
+        action="contact_role_actions_id_1"
+        parent="crm.menu_crm_config_lead"
+        sequence="7"
+    />
+
+
+
+  <record id="crm_group_code_form" model="ir.ui.view">
+            <field name="name">hcp.group.code.form</field>
+            <field name="model">hcp.group.code</field>
+            <field name="arch" type="xml">
+                <form string="Group Code">
+                    <sheet>
+                        <div class="oe_title">
+                            <div class="oe_edit_only">
+                                <label for="name"/>
+                            </div>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+  <record id="crm_group_code_tree" model="ir.ui.view">
+            <field name="name">hcp.group.code.tree</field>
+            <field name="model">hcp.group.code</field>
+            <field name="arch" type="xml">
+                <tree string="Group Code" editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+  <record id="crm_group_code_action" model="ir.actions.act_window">
+            <field name="name">Group Code</field>
+            <field name="res_model">hcp.group.code</field>
+            <field name="view_id" ref="crm_group_code_tree"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create new Group Code for your partners
+              </p>
+            </field>
+        </record>
+  
+  <menuitem 
+    id="menu_crm_group_code" 
+    name="Group Code" 
+    action="crm_group_code_action"
+    parent="crm.menu_crm_config_lead"
+    sequence="1"
+  />
+
+
+
+
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_pricelists,partner.pricelists,hcp_partner_pricelist.model_partner_pricelists,sales_team.group_sale_salesman,1,1,1,1
+access_partners_pricelist_products,partners.pricelist.products,hcp_partner_pricelist.model_partners_pricelist_products,sales_team.group_sale_salesman,1,1,1,1
+

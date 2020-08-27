@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hcp_displays_healthcraft_user,displays.healthcraft,model_displays_healthcraft,base.group_user,1,1,1,1
+access_displays_invisia_user,displays.invisia,model_displays_invisia,base.group_user,1,1,1,1
+access_hcp_federal_tax_user,hcp.federal.tax,model_hcp_federal_tax,base.group_user,1,1,1,1
+access_contact_training_user,contact.training,model_contact_training,base.group_user,1,1,1,1
+access_contacts_designation_user_id,contacts.designation,model_contacts_designation,base.group_user,1,1,1,1
+access_contact_role_user,contact.role,model_contact_role,base.group_user,1,1,1,1
+access_hcp_group_code,hcp.group.code,model_hcp_group_code,base.group_user,1,1,1,1
+
