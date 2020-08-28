@@ -1,0 +1,48 @@
+<odoo>
+  
+
+
+<record id="product_cycle_tree_view" model="ir.ui.view">
+            <field name="name">product.cycle.tree</field>
+            <field name="model">product.cycle</field>
+            <field name="arch" type="xml">
+                <tree>
+                    
+                    <field name="name" string="Name"/>
+                    
+                </tree>
+            </field>
+</record>
+
+
+
+<record id="product_cycle_form_view_id" model="ir.ui.view">
+            <field name="name">product.cycle.form.view</field>
+            <field name="model">product.cycle</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                    <field name="name" string="Name"/>
+                    </group>
+                </form>
+            </field>
+</record>
+
+
+<record id="action_products_cycle" model="ir.actions.act_window">
+            <field name="name">Product Cycle</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.cycle</field>
+            <field name="view_mode">tree,form</field>
+</record>
+
+
+<menuitem id="product_cycle_menu_config_id"
+            name="Product Cycle"
+            parent="sale.menu_sale_config"
+            action="action_products_cycle"
+            sequence="100"/>
+
+
+
+</odoo>

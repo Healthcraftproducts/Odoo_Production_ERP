@@ -1,0 +1,143 @@
+<odoo>
+    
+<template id="mrp_production_order_report_template_id">
+
+<t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <div class="col-7">
+                            <h2><span t-field="o.name"/></h2>
+                        </div>
+                        <div class="col-5">
+                            <span class="text-right">
+                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:350px;height:60px"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row mt32 mb32">
+                        <div class="col-3" t-if="o.origin">
+                            <strong>Source Document:</strong><br/>
+                            <span t-field="o.origin"/>
+                        </div>
+                        <div class="col-3">
+                            <strong>Responsible:</strong><br/>
+                            <span t-field="o.user_id"/>
+                        </div>
+                    </div>
+
+            <br>
+                <table class="table table-sm" style="height: 25px;" width="900" rules="none">
+                    <tbody>
+                        <tr>
+                            <td style="width: 43.2955px; text-align: left;"><strong>Finished Products</strong></td>
+                            <td style="width: 43.2955px; text-align: left;"><strong>Qunatity</strong></td>
+                            <td style="width: 44.2045px; text-align: left;"><strong>UOM</strong></td>
+                            <td style="width: 44.2045px;"><strong>Release Date</strong></td>
+                            <td style="width: 44.2045px; text-align: left;"><strong>Start Date</strong></td>
+                            <td style="width: 44.2045px; text-align: left;"><strong>Due Date</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 43.2955px; text-align: left;"><span t-field="o.product_id"/></td>
+                            <td style="width: 43.2955px; text-align: left;"><span t-field="o.product_qty"/></td>
+                            <td style="width: 44.2045px; text-align: left;"><span t-field="o.product_uom_id.name"/></td>
+                            <td style="width: 44.2045px; text-align: left;"><span t-field="o.release_date"/></td>
+                            <td style="width: 44.2045px; text-align: left;"><span t-field="o.date_planned_start"/></td>
+                            <td style="width: 44.2045px; text-align: left;"><span t-field="o.date_planned_finished"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </br>
+
+
+
+                    <div t-if="o.workorder_ids">
+                        <h3>
+                            <t t-if="o.state == 'done'">Operations Done</t>
+                            <t t-else="">Operations Planned</t>
+                        </h3>
+                        <table class="table table-sm" width="900">
+                            <tr>
+                                <th style="width: 200px; text-align: left;"><strong>Operation</strong></th>
+                                <th style="width: 200px; text-align: left;"><strong>WorkCenter</strong></th>
+                                <th style="width: 200px; text-align: left;"><strong>Setup Time</strong></th>
+                             <!--   <th style="width: 100px; text-align: left;"><strong>Done By</strong></th>-->
+                                <th style="width: 100px; text-align: left;"><strong>Cycle Time</strong></th>
+                               <!-- <th style="width: 100px; text-align: left;"><strong>Operator</strong></th>-->
+
+                            </tr>
+                            <tr t-foreach="o.routing_id.operation_ids" t-as="oper_line_id">
+                                <td style="width: 200px; text-align: left;"><span t-field="oper_line_id.name"/></td>
+                                <td style="width: 200px; text-align: left;"><span t-field="oper_line_id.workcenter_id.name"/></td>
+                                <td style="width: 200px; text-align: left;"><span t-field="oper_line_id.setup_time"/></td>
+                               <!-- <td style="width: 100px; text-align: left;"><span t-field="oper_line_id.done_by"/></td>-->
+                                <td style="width: 100px; text-align: left;"><span t-field="oper_line_id.cycle_time"/></td>
+                                <!--<td style="width: 100px; text-align: left;"><span t-field="oper_line_id.operator"/></td>-->
+                                
+                            </tr>
+                        </table>
+                    </div>
+
+                    <h3 t-if="o.move_raw_ids">
+                        <t t-if="o.state == 'done'">
+                            Consumed Products
+                        </t>
+                        <t t-else="">
+                            Products to Consume
+                        </t>
+                    </h3>
+
+
+            <table class="table table-sm" style="width: 900px;" t-if="o.move_raw_ids">
+
+                <thead>
+                            <tr>
+                                <th style="width: 300px; text-align: left;"><strong>Product</strong></th>
+                                <th style="width: 200px; text-align: left;"><strong>Operations</strong></th>
+                                <th style="width: 150px; text-align: center;"><strong>Source</strong></th>
+                                <th style="width: 150px; text-align: right;"><strong>Quantity</strong></th>
+                                <th style="width: 100px; text-align: left;"><strong>UOM</strong></th>
+                                <!-- <th t-if="has_product_barcode" width="15%" class="text-center">Barcode</th> -->
+                            </tr>
+                        </thead>
+
+                            <tbody>
+                                <tr t-foreach="o.bom_id.bom_line_ids" t-as="bom_line">
+                                    <td style="width: 300px; text-align: left;">
+                                        <span t-field="bom_line.product_id"/>
+                                    </td>
+
+                                    <td style="width: 200px; text-align: left;">
+                                        <span t-field="bom_line.operation_id"/>
+                                    </td >
+
+
+                                    <td style="width: 150px; text-align: center;">
+                                        <span t-field="o.origin"/>
+                                    </td>
+
+                                    <td style="width: 150px; text-align: right;">
+                                        <span t-field="bom_line.product_qty"/>
+                                    </td>
+
+                                    <td style="width: 100px; text-align: left;">
+                                        <span t-field="bom_line.product_uom_id"/>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </t>
+    </t>
+
+
+</template>
+
+ 
+</odoo>
