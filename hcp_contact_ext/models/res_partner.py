@@ -140,7 +140,7 @@ class ResPartner(models.Model):
 								('mql_cold_list','MQL Cold List'),
 								('inbound_website','Inbound Website'),
 								('email_marketing_campaign','Email Marketing Campaign'),
-								('customer_referal','Customer Referal'),
+								('customer_referal','Customer Referral'),
 								('invacare_transition','Invacare Transition'),
 								('google','Google'),
 								('alfa','ALFA - Assisted Living Federation of America'),
