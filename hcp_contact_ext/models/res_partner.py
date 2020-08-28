@@ -57,12 +57,12 @@ class ResPartner(models.Model):
 	_inherit = 'res.partner'
 
 
-	def name_get(self):
-		# name get function for the model executes automatically
-		res = []
-		for rec in self:
-			res.append((rec.id, '%s' % (rec.name)))
-		return res
+	#def name_get(self):
+		## name get function for the model executes automatically
+		#res = []
+		#for rec in self:
+			#res.append((rec.id, '%s' % (rec.name)))
+		#return res
 
 	@api.depends('is_company')
 	def _compute_company_type(self):
