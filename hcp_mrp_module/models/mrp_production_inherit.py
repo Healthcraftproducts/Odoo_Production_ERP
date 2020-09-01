@@ -17,6 +17,13 @@ class MrpProduction(models.Model):
 
 
 
+class MrpWorkcenter(models.Model):
+    _inherit = 'mrp.workcenter'
+
+    cycle_time = fields.Float(string='Cycle Time')
+    shiftid = fields.Selection([('production','Production'),('outside_pro','Outside Pro'),('inventory','Inventory')],string='ShiftId')
+    
+
 class MrpRoutingWorkcenter(models.Model):
     _inherit = 'mrp.routing.workcenter'
 
