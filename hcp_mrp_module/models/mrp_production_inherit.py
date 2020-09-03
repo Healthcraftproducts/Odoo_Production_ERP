@@ -22,7 +22,28 @@ class MrpWorkcenter(models.Model):
 
     cycle_time = fields.Float(string='Cycle Time')
     shiftid = fields.Selection([('production','Production'),('outside_pro','Outside Pro'),('inventory','Inventory')],string='ShiftId')
+
+    def name_get(self):
+        res = []
+        for category in self:
+            names = []
+            name=category.name
+            code = category.code
+            if code:
+                name = '[%s] %s' % (code,name)
+            temp = (category.id, name)
+            res.append(temp)
+        return res
     
+    @api.model
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        args = args or []
+        if name:
+            # Be sure name_search is symetric to name_get
+            name = name.split(' / ')[-1]
+            args = [('name', operator, name)] + args
+        partner_category_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+        return self.browse(partner_category_ids).name_get()    
 
 class MrpRoutingWorkcenter(models.Model):
     _inherit = 'mrp.routing.workcenter'
