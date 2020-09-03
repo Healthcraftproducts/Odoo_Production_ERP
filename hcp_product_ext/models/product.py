@@ -11,7 +11,7 @@ class ProductTemplate(models.Model):
 	# sales = fields.Char(string="Sales(Connect Sage300)")
 	cust_fld2 = fields.Char(string="HTS Code")
 	cust_fld3 = fields.Many2one('res.country',string="Origin Of Country")
-	status = fields.Selection([('1','Active'),('0','Inactive'),('2','R&D')],string="Status",default='1')
+	status = fields.Selection([('0','Active'),('1','Inactive'),('2','R&D')],string="Status",default='1')
 	cycle = fields.Many2one('product.cycle',string='Cycle')
 	binding_rule = fields.Char(string ="Binding Ruling #")
 	duty_rate = fields.Float(string="Duty Rate in %")
@@ -40,7 +40,7 @@ class ProductTemplate(models.Model):
 
 	def active_stage(self):
 		self.write({
-		'status': '1',
+		'status': '0',
 		'active': True,
 			})
 
@@ -49,7 +49,7 @@ class ProductTemplate(models.Model):
 	
 	def inactive_stage(self):
 		self.write({
-		'status': '0',
+		'status': '1',
 		'active': False,
 			})
 
@@ -71,7 +71,7 @@ class ProductMaster(models.Model):
 	# sales = fields.Char(string="Sales(Connect Sage300)")
 	cust_fld2 = fields.Char(string="HTS Code")
 	cust_fld3 = fields.Many2one('res.country',string="Origin Of Country")
-	status = fields.Selection([('1','Active'),('0','Inactive'),('2','R&D')],string="Status",default='1')
+	status = fields.Selection([('0','Active'),('1','Inactive'),('2','R&D')],string="Status",default='1')
 	cycle = fields.Many2one('product.cycle',string='Cycle')
 	binding_rule = fields.Char(string ="Binding Ruling #")
 	duty_rate = fields.Float(string="Duty Rate in %")
@@ -82,14 +82,14 @@ class ProductMaster(models.Model):
 
 	def active_stage(self):
 		self.write({
-		'status': '1',
+		'status': '0',
 		'active': True,
 			})
 
 
 	def inactive_stage(self):
 		self.write({
-		'status': '0',
+		'status': '1',
 		'active': False,
 			})
 

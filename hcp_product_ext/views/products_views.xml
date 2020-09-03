@@ -127,10 +127,10 @@
 
                 <xpath expr="//form/header" position='inside'>
 
-                    <button name ="active_stage" string="Active" type="object" attrs="{'invisible': [('status','in',('1','2'))]}"/>
-                    <button name ="inactive_stage" string="In Active" type="object" attrs="{'invisible': [('status','=','0')]}"/>
+                    <button name ="active_stage" string="Active" type="object" attrs="{'invisible': [('status','in',('0'))]}"/>
+                    <button name ="inactive_stage" string="In Active" type="object" attrs="{'invisible': [('status','=','1')]}"/>
                     <button name="rd_stage" string="R&amp;D" type="object" attrs="{'invisible': [('status','=','2')]}"/>
-                    <field name="status" widget="statusbar" statusbar_visible="1,0,2"/>
+                    <field name="status" widget="statusbar" statusbar_visible="0,1,2"/>
                 </xpath>
 
                 <xpath expr="//form/sheet/notebook/page[@name='general_information']/group/group[@name='group_general']/field[@name='categ_id']" position='attributes'>
