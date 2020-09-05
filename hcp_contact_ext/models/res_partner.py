@@ -158,6 +158,7 @@ class ResPartner(models.Model):
 		selection=[('person', 'Individual'), ('company', 'Company')],
 		compute='_compute_company_type', inverse='_write_company_type',
 		default='company')	
+    federal_tax_id = fields.Char('Federal Tax ID')
 
 
 
