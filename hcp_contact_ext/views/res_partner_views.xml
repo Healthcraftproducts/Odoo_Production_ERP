@@ -84,6 +84,7 @@
                  <field name="hcp_price_level"/>
                  <field name="hcp_website_mapping"/>
                  <field name="hcp_inv_website_mapping"/>
+                 <field name="federal_tax_id"/>
             </xpath>
 
             <xpath expr="//field[@name='function']" position="before">
