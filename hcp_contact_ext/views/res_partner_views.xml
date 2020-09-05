@@ -23,9 +23,9 @@
 
                   <xpath expr="//group[@name='fiscal_information']" position="replace">
                     <group string="Fiscal Information" name="fiscal_information" priority="5" groups="           account.group_account_invoice">
-                      <field name="hcp_federal_tax"/>
+                      <field name="hcp_federal_tax" invisible="1"/>
 
-                        <field name="property_account_position_id" options="{'no_create': True, 'no_open': True}" invisible="1"/>
+                        <field name="property_account_position_id" options="{'no_create': True, 'no_open': True}"/>
                     </group>
 
                   </xpath>
