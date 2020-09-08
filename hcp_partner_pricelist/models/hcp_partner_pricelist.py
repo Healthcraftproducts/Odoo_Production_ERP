@@ -384,6 +384,12 @@ class SaleOrder(models.Model):
             # set delivery detail in the customer language
             carrier = carrier.with_context(lang=self.partner_id.lang)
 
+        # Apply fiscal position
+        taxes = carrier.product_id.taxes_id.filtered(lambda t: t.company_id.id == self.company_id.id)
+        taxes_ids = taxes.ids
+        if self.partner_id and self.fiscal_position_id:
+            taxes_ids = self.fiscal_position_id.map_tax(taxes, carrier.product_id, self.partner_id).ids
+            
         # Create the sales order line
         carrier_with_partner_lang = carrier.with_context(lang=self.partner_id.lang)
         if carrier_with_partner_lang.product_id.description_sale:
@@ -391,7 +397,6 @@ class SaleOrder(models.Model):
                                         carrier_with_partner_lang.product_id.description_sale)
         else:
             so_description = carrier_with_partner_lang.name
-        taxes_ids = self.partner_id.taxes_id.ids
         values = {
             'order_id': self.id,
             'name': so_description,
@@ -448,8 +453,8 @@ class SaleOrderLine(models.Model):
         )
 
         vals.update(name=self.get_sale_order_line_multiline_description_sale(product))
-        self.tax_id = self.order_id.partner_id.taxes_id # Added to get tax from Customer 
-#         self._compute_tax_id() # commented to not to derive tax from product
+        #self.tax_id = self.order_id.partner_id.taxes_id # Added to get tax from Customer 
+        self._compute_tax_id() # commented to not to derive tax from product
 
         if self.order_id.pricelist_id and self.order_id.partner_id:
             vals['price_unit'] = self.env['account.tax']._fix_tax_included_price_company(self._get_display_price(product), product.taxes_id, self.tax_id, self.company_id)

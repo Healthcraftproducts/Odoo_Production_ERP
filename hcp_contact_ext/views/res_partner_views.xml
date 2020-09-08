@@ -109,7 +109,7 @@
             </xpath>
 
             <xpath expr="//field[@name='vat']" position="after">
-                <field name="hcp_taxes_id" widget="many2many_tags"/>
+                <field name="hcp_taxes_id" widget="many2many_tags" invisible="1"/>
             </xpath>
 
             <!--<xpath expr="//field[@name='vat']" position="before">
