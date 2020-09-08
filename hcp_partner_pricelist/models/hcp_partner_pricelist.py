@@ -454,8 +454,8 @@ class SaleOrderLine(models.Model):
         )
 
         vals.update(name=self.get_sale_order_line_multiline_description_sale(product))
-        self.tax_id = self.order_id.partner_id.taxes_id # Added to get tax from Customer 
-#         self._compute_tax_id() # commented to not to derive tax from product
+        #self.tax_id = self.order_id.partner_id.taxes_id # Added to get tax from Customer 
+        self._compute_tax_id() # commented to not to derive tax from product
 
         if self.order_id.pricelist_id and self.order_id.partner_id:
             vals['price_unit'] = self.env['account.tax']._fix_tax_included_price_company(self._get_display_price(product), product.taxes_id, self.tax_id, self.company_id)
