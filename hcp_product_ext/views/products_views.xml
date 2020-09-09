@@ -82,6 +82,7 @@
                 <xpath expr="//field[@name='type']" position="after">
                     <field name="product_categ_id"/>
                     <field name="pick"/>
+                    <field name="fda_listing"/>
                 </xpath>
 
                 <xpath expr="//field[@name='default_code']" position="replace">
@@ -216,6 +217,7 @@
                 <xpath expr="//field[@name='type']" position="after">
                     <field name="product_categ_id"/>
                     <field name="pick"/>
+                    <field name="fda_listing"/>
                 </xpath>
 
                 <xpath expr="//field[@name='default_code']" position="replace">

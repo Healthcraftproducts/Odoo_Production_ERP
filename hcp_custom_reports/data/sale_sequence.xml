@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<data noupdate="1">
+ <record id="sequence_quotation_no_id" model="ir.sequence">
+   <field name="name">Quotation Sequence</field>
+   <field name="code">quotation.id</field>
+   <field name="active">TRUE</field>
+   <field name="prefix">Q</field>
+   <field name="padding">5</field>
+   <!-- <field name="number_next">1</field> -->
+   <!-- <field name="number_increment">1</field> -->
+<field name="company_id" eval="False"/>
+
+</record>
+
+
+<record id="order_num_seq_id" model="ir.sequence">
+            <field name="name">Sales Order</field>
+            <field name="code">order.id</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">OR</field>
+            <field name="padding">5</field>
+            <!-- <field name="number_next">1</field> -->
+            <!-- <field name="number_increment">1</field> -->
+            <field name="company_id" eval="False"/>
+</record>
+</data>
+
+</odoo>

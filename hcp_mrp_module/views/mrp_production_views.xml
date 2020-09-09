@@ -44,6 +44,7 @@
             <field name="arch" type="xml">
         
             <xpath expr="//field[@name='time_cycle']" position="before">
+                <field name="batch_size"/>
                 <field name="setup_time" widget="float_time" string="Setup Time(minutes)" sum="Total Setup Time"/>
             </xpath>
 
