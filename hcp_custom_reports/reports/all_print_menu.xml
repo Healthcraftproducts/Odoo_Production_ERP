@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+---------------------------------account-------------------------------------------------------------
+<report
+            id="account.account_invoices"
+            model="account.move"
+            string="Invoices"
+            report_type="qweb-pdf"
+            name="account.report_invoice_with_payments"
+            file="account.report_invoice_with_payments"
+            attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
+            print_report_name="(object._get_report_base_filename())"
+            menu="False"
+            groups="account.group_account_invoice"
+        />
+
+<report
+            id="account.account_invoices_without_payment"
+            model="account.move"
+            string="Invoices without Payment"
+            report_type="qweb-pdf"
+            name="account.report_invoice"
+            file="account.report_invoice"
+            attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"          menu="False"
+            print_report_name="(object._get_report_base_filename())"
+        />
+
+
+
+
+<report
+            id="account_invoices_pdf_template"
+            model="account.move"
+            string="Invoices"
+            report_type="qweb-pdf"
+            name="hcp_custom_reports.account_invoice_pdf_report_template"
+            file="hcp_custom_reports.account_invoice_pdf_report_template"
+            attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
+            print_report_name="(object._get_report_base_filename())"
+            groups="account.group_account_invoice"
+        />
+  
+
+----------------------------------------Quotation/Order------------------------------------------------------
+
+<report 
+            id="sale.action_report_saleorder"
+            string="Quotation / Order"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="sale.report_saleorder" 
+            name="sale.report_saleorder"
+            menu="False"
+            print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)"
+        />
+
+        <report
+            id="sale.action_report_pro_forma_invoice"
+            string="PRO-FORMA Invoice"
+            model="sale.order"
+            report_type="qweb-pdf"
+            groups="sale.group_proforma_sales"
+            menu="False"
+            file="sale.report_saleorder_pro_forma"
+            name="sale.report_saleorder_pro_forma"
+            print_report_name="'PRO-FORMA - %s' % (object.name)"
+        />
+
+
+
+  <report 
+            id="quotation_sale_order_report_id"
+            string="Quotation / Order"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="hcp_custom_reports.sale_report_inherit_template_id" 
+            name="hcp_custom_reports.sale_report_inherit_template_id"
+            print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.quotation_id)) or 'Order - %s' % (object.name)"
+        />
+
+        <report
+            id="action_report_pro_forma_invoice"
+            string="PRO-FORMA Invoice"
+            model="sale.order"
+            report_type="qweb-pdf"
+            groups="sale.group_proforma_sales"
+            file="hcp_custom_reports.report_pro_forma_invoice" 
+            name="hcp_custom_reports.report_pro_forma_invoice" 
+            print_report_name="'PRO-FORMA - %s' % (object.name)"
+        />
+
+
+-----------------------------------------Purchase Report-----------------------------------------------------
+
+ <report 
+            string="Request for Quotation" 
+            id="purchase.report_purchase_quotation" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="purchase.report_purchasequotation" 
+            file="purchase.report_purchasequotation"
+            menu="False"
+            print_report_name="'Request for Quotation - %s' % (object.name)"
+        />
+
+
+        <report 
+            string="Purchase Order" 
+            id="purchase.action_report_purchase_order" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="purchase.report_purchaseorder" 
+            file="purchase.report_purchaseorder"
+            menu="False"
+            print_report_name="
+                (object.state in ('draft', 'sent') and 'Request for Quotation - %s' % (object.name) or
+                'Purchase Order - %s' % (object.name))"
+        />
+
+
+
+ <report 
+            string="Request for Quotation" 
+            id="report_purchase_quotation_template_id" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="hcp_custom_reports.purchase_quotation_report_new_template_id" 
+            file="hcp_custom_reports.purchase_quotation_report_new_template_id"
+            print_report_name="'Request for Quotation - %s' % (object.name)"
+        />
+
+
+<report 
+            string="Purchase Order" 
+            id="report_purchase_order_template_id" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="hcp_custom_reports.purchase_order_new_report_template_id" 
+            file="hcp_custom_reports.purchase_order_new_report_template_id"
+            print_report_name="
+                (object.state in ('draft', 'sent') and 'Request for Quotation - %s' % (object.name) or
+                'Purchase Order - %s' % (object.name))"
+        />
+</odoo>

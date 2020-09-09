@@ -19,6 +19,7 @@ class ProductTemplate(models.Model):
 	product_categ_id = fields.Many2one('product.category.master',string="Product Category")
 	name = fields.Char('Product Description', index=True, required=True, translate=True)
 	default_code = fields.Char('Item Code', compute='_compute_default_code',inverse='_set_default_code', store=True)
+	fda_listing = fields.Char(string="FDA Listing#")
 
 
 
@@ -79,6 +80,7 @@ class ProductMaster(models.Model):
 	product_categ_id = fields.Many2one('product.category.master',string="Product Category")
 	default_code = fields.Char('Item Code', index=True)
 	product_description = fields.Char(string="Product Description")
+	fda_listing = fields.Char(string="FDA Listing#")
 
 	def active_stage(self):
 		self.write({

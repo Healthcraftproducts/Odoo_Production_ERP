@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        
+
+        <record id="default_email_confirmation_template" model="ir.config_parameter">
+            <field name="key">hcp_custom_reports.default_email_confirmation_template</field>
+            <field name="value" ref="hcp_custom_reports.order_confirmation_email_template"/>
+        </record>
+    </data>
+</odoo>

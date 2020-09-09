@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+
+
+<record id="view_order_form_id" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/div[@class='oe_title']/h1/field[@name='name']" position="attributes">
+
+                    <attribute name="attrs">{'invisible': [('state', 'in', ['draft','sent'])]}</attribute>
+
+
+
+                </xpath>
+
+        <xpath expr="//form/sheet/div[@class='oe_title']/h1" position="inside">
+
+            <field name ="quotation_id" attrs="{'invisible': [('state', 'in',['sale', 'done', 'cancel'])]}"/>
+        </xpath>
+
+        <xpath expr="//field[@name='partner_id']" position="after">
+            <field name ="contact_name"/>
+            <field name ="person_name"/>
+            <field name ="email"/>
+            <field name ="phone"/>
+            <field name ="total_amount" invisible="1"/>
+
+
+            
+        </xpath>
+
+        <xpath expr="//form/sheet/group" position="after">
+
+          <group>
+                                <group name="sales_person" string="Sales">
+                                    <field name="user_id"/>
+                                    <field name="team_id" kanban_view_ref="%(sales_team.crm_team_view_kanban)s" options="{'no_create': True}"/>
+                                    <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                                    <field name="require_signature"/>
+                                    <field name="require_payment"/>
+                                    <field name="reference" readonly="1" attrs="{'invisible': [('reference', '=', False)]}"/>
+                                    <field name="client_order_ref"/>
+                                </group>
+                                <group name="sale_info" string="Invoicing">
+                                    <field name="fiscal_position_id" options="{'no_create': True}"/>
+                                    <field name="analytic_account_id" context="{'default_partner_id':partner_invoice_id, 'default_name':name}" attrs="{'readonly': [('invoice_count','!=',0),('state','=','sale')]}" groups="analytic.group_analytic_accounting" force_save="1"/>
+                                    <field name="invoice_status" states="sale,done" groups="base.group_no_one"/>
+                                </group>
+          </group>
+
+          <group>
+                                <group name="sale_shipping">
+                                    <label for="commitment_date" string="Delivery Date"/>
+                                    <div class="o_row">
+                                        <field name="commitment_date"/> <span class="text-muted">Expected: 
+                                        <field name="expected_date" widget="date"/></span>
+                                    </div>
+                                </group>
+                                <group string="Reporting" name="sale_reporting" groups="base.group_no_one">
+                                    <group name="technical" colspan="2" class="mb-0">
+                                        <field name="origin"/>
+                                    </group>
+                                    <group name="utm_link" colspan="2" class="mt-0">
+                                        <field name="campaign_id"/>
+                                        <field name="medium_id"/>
+                                        <field name="source_id"/>
+                                    </group>
+                                </group>
+                            </group>
+
+        </xpath>
+
+
+
+
+        <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="attributes">
+
+                      <attribute name="invisible">1</attribute>
+
+        </xpath>
+
+<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='name']" position="after">
+            <field name="product_ship_method" invisible="1"/>
+        </xpath>
+
+
+
+
+            </field>
+
+</record>
+
+
+
+
+</odoo>

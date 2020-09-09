@@ -49,6 +49,7 @@ class MrpRoutingWorkcenter(models.Model):
     _inherit = 'mrp.routing.workcenter'
 
     setup_time = fields.Float(string='Setup Time')
+    batch_size = fields.Integer(string="Batch Size")
     done_by = fields.Char(string= 'Done By')
     cycle_time = fields.Float(string='Cycle Time')
     operator = fields.Char(string='Operator')
