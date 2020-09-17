@@ -68,18 +68,20 @@ class ImportBomData(models.TransientModel):
 						    sheet2_itemcode = line2[0]
 						    if itemcode == line2[0]:
 						        main_product = itemcode
-						        prod = self.env['product.template'].search([('default_code','=',str(main_product))])
-						        bom = self.env['mrp.bom'].search([('product_tmpl_id','=',prod.id)])
-						        variant = self.env['product.product'].search([('default_code','=',str(line2[5]))])
-						        if not variant:
+						        prod = self.env['product.product'].search([('default_code','=',str(main_product))])
+						        bom = self.env['mrp.bom'].search([('product_id','=',prod.id)])
+						        if bom:
+						          variant = self.env['product.product'].search([('default_code','=',str(line2[5]))])
+						          if not variant:
 						            raise ValidationError(_('Product (%s).') % str(line2[5]))
-						        #print(bom.id,variant.id,line2[2],'TRUE #######################')
-						        vals={'product_id' : variant.id,
+						         #print(bom.id,variant.id,line2[2],'TRUE #######################')
+						          vals={'product_id' : variant.id,
 						                'product_qty' : line2[6],
 						                'sequence' : int(float(line2[3])),
 						                'bom_id': bom.id,
 						                }
-						        self.env['mrp.bom.line'].create(vals)
+						          self.env['mrp.bom.line'].create(vals)
+						          _logger.debug(vals,'*************BOM*****************')
 						    else:
 						         print('AAAAAAAAAAAAAAAAAAAAAAAAAA')	
 # ------------------------------------------------------------						
