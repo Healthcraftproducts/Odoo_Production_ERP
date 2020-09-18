@@ -18,5 +18,6 @@
     'data': [
         #'security/ir.model.access.csv',
 		'wizard/view_import_bom.xml',
+		'wizard/view_import_routing.xml',
     ],
 }
