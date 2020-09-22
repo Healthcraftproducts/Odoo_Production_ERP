@@ -63,8 +63,7 @@
                 <field name="cycle_time" widget="float_time" string="Cycle Time(minutes)" />
                 <field name="done_by" string="Done By" label="Done By"/>
                 <field name="operator" string="Operator" label="Operator" />
- 
-
+                <field name="batch_size"/>
             </xpath>
 
 
