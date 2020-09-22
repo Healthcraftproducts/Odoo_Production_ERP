@@ -145,3 +145,55 @@ class ImportBomData(models.TransientModel):
 			raise Warning(_("Please select any one from xls or csv formate!"))
 
 		return res
+
+	def operation_mapping(self):
+# -----------------------------
+		res = {}
+# ---------------------------------------
+		if self.import_option == 'xls':
+			try:
+				fp = tempfile.NamedTemporaryFile(delete= False,suffix=".xlsx")
+				fp.write(binascii.a2b_base64(self.File_slect))
+				fp.seek(0)
+				values = {}
+				workbook = xlrd.open_workbook(fp.name)
+				sheet = workbook.sheet_by_index(0)
+			except:
+				raise Warning(_("Invalid file!"))
+
+			for row_no in range(sheet.nrows):
+				val = {}
+				if row_no <= 0:
+					fields = map(lambda row:row.value.encode('utf-8'), sheet.row(row_no))
+				else:
+					line = list(map(lambda row:isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value), sheet.row(row_no)))
+					itemcode = line[0]
+					sheet2 = workbook.sheet_by_index(2)
+					for row_no in range(sheet2.nrows):
+						if row_no <= 0:
+						    fields = map(lambda row:row.value.encode('utf-8'), sheet2.row(row_no)) 
+						else:
+						    line2 = list(map(lambda row:isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value), sheet2.row(row_no)))  
+						    sheet2_itemcode = line2[0]
+						    if itemcode == line2[0]:
+						        main_product = itemcode
+						        prod = self.env['product.template'].search([('default_code','=',str(main_product))])
+						        bom = self.env['mrp.bom'].search([('product_tmpl_id','=',prod.id)])
+						       # print(bom,'BOM###########################')
+						        if bom:
+						            variant = self.env['product.product'].search([('default_code','=',str(line2[5]))])
+						            if not variant:
+						                  raise ValidationError(_('Product (%s).BOM (%s)') % (str(line2[5]),bom.id,))
+						            bom_line = self.env['mrp.bom.line'].search([('product_id','=',variant.id),('bom_id','=',bom.id)])
+						           # print(bom_line,'BOM LINE #######################')
+						            operation_id =self.env['mrp.routing.workcenter'].search([('name','=',str(line2[9])),('routing_id','=',bom.routing_id.id)])
+						           # print(operation_id,'HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
+						            vals={'operation_id' : operation_id.id,}
+						            bom_line.write(vals)
+						    #else:
+						         #print('AAAAAAAAAAAAAAAAAAAAAAAAAA')	
+# ------------------------------------------------------------						
+		else:
+			raise Warning(_("Please select any one from xls or csv formate!"))
+
+		return res
