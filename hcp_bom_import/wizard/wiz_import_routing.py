@@ -177,8 +177,8 @@ class ImportBomData(models.TransientModel):
 						    sheet2_itemcode = line2[0]
 						    if itemcode == line2[0]:
 						        main_product = itemcode
-						        prod = self.env['product.template'].search([('default_code','=',str(main_product))])
-						        bom = self.env['mrp.bom'].search([('product_tmpl_id','=',prod.id)])
+						        prod = self.env['product.product'].search([('default_code','=',str(main_product))])
+						        bom = self.env['mrp.bom'].search([('product_id','=',prod.id)])
 						       # print(bom,'BOM###########################')
 						        if bom:
 						            variant = self.env['product.product'].search([('default_code','=',str(line2[5]))])
