@@ -20,9 +20,10 @@ class MrpProduction(models.Model):
 class MrpWorkcenter(models.Model):
     _inherit = 'mrp.workcenter'
 
-    cycle_time = fields.Float(string='Cycle Time')
+    cycle_time = fields.Float(string='Cycle Time Old')
     shiftid = fields.Selection([('production','Production'),('outside_pro','Outside Pro'),('inventory','Inventory')],string='ShiftId')
-
+    time_stop = fields.Float('Cycle Time', help="Time in minutes for the cleaning.")
+    
     def name_get(self):
         res = []
         for category in self:
@@ -51,10 +52,8 @@ class MrpRoutingWorkcenter(models.Model):
     setup_time = fields.Float(string='Setup Time')
     batch_size = fields.Integer(string="Batch Size")
     done_by = fields.Char(string= 'Done By')
-    cycle_time = fields.Float(string='Cycle Time')
+    cycle_time = fields.Float(string='Cycle Time Old')
     operator = fields.Char(string='Operator')
-
-
 
 
 class ProductTemplate(models.Model):
