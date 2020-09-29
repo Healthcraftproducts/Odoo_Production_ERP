@@ -33,7 +33,7 @@
                     <tbody>
                         <tr>
                             <td style="width: 43.2955px; text-align: left;"><strong>Finished Products</strong></td>
-                            <td style="width: 43.2955px; text-align: left;"><strong>Qunatity</strong></td>
+                            <td style="width: 43.2955px; text-align: left;"><strong>Qty</strong></td>
                             <td style="width: 44.2045px; text-align: left;"><strong>UOM</strong></td>
                             <td style="width: 44.2045px;"><strong>Release Date</strong></td>
                             <td style="width: 44.2045px; text-align: left;"><strong>Start Date</strong></td>
@@ -97,9 +97,9 @@
                                 <th style="width: 300px; text-align: left;"><strong>Product</strong></th>
                                 <th style="width: 200px; text-align: left;"><strong>Operations</strong></th>
                                 <th style="width: 150px; text-align: center;"><strong>Source</strong></th>
-                                <th style="width: 150px; text-align: right;"><strong>Quantity</strong></th>
+                                <th style="width: 150px; text-align: right;"><strong>Qty</strong></th>
                                 <th style="width: 100px; text-align: left;"><strong>UOM</strong></th>
-                                <!-- <th t-if="has_product_barcode" width="15%" class="text-center">Barcode</th> -->
+                                <th style="width: 100px; text-align: left;"><strong>Total Qty</strong></th>
                             </tr>
                         </thead>
 
@@ -125,7 +125,9 @@
                                     <td style="width: 100px; text-align: left;">
                                         <span t-field="bom_line.product_uom_id"/>
                                     </td>
-
+                                    <td style="width: 150px; text-align: right;">
+                                        <span t-esc="bom_line.product_qty * o.product_qty"/>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
