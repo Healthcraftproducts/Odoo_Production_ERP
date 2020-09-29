@@ -125,7 +125,7 @@
                                     <td style="width: 100px; text-align: left;">
                                         <span t-field="bom_line.product_uom_id"/>
                                     </td>
-                                     <td style="width: 150px; text-align: right;">
+                                     <td style="width: 150px; text-align: left;">
                                         <span t-esc="bom_line.product_qty * o.product_qty"/>
                                     </td>
                                 </tr>
