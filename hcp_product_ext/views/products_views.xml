@@ -52,13 +52,15 @@
 
             </xpath>
             <xpath expr="//search" position="inside">
-                <field name="product_categ_id" string="Product Category" filter_domain="[('product_categ_id', 'child_of', raw_value)]"/>
+                <field name="product_categ_id" string="Product Category" filter_domain="[('product_categ_id', 'ilike', self)]"/>
+                <field name="product_sub_categ_id" string="Sub Product Category" filter_domain="[('product_sub_categ_id', 'ilike', self)]"/>
                 <field name="default_code" string="Item Code" filter_domain="[('default_code', 'ilike', self)]"/>
 
             </xpath>
 
             <xpath expr="//search/group" position="inside">
                 <filter string="Product Category" name="product_categ_id" context="{'group_by':'product_categ_id'}"/>
+                <filter string="Product Sub Category" name="product_sub_categ_id" context="{'group_by':'product_sub_categ_id'}"/>
                 <filter string="Status" name="status" context="{'group_by':'status'}"/>
             </xpath>
 
@@ -81,6 +83,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='type']" position="after">
                     <field name="product_categ_id"/>
+                    <field name="product_sub_categ_id"/>
                     <field name="pick"/>
                     <field name="fda_listing"/>
                 </xpath>
@@ -178,6 +181,7 @@
                     <field name="duty_rate"/>
                     <field name="pick"/>
                     <field name="product_categ_id"/>
+                    <field name="product_sub_categ_id"/>
                 </group>
             </xpath>
             </field>
@@ -216,6 +220,7 @@
 
                 <xpath expr="//field[@name='type']" position="after">
                     <field name="product_categ_id"/>
+                    <field name="product_sub_categ_id"/>
                     <field name="pick"/>
                     <field name="fda_listing"/>
                 </xpath>
@@ -262,7 +267,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name" string="Category Name"/>
-                <field name="parent_id" string="Parent Category"/>        
+<!--                 <field name="parent_id" string="Parent Category"/>         -->
             </tree>
         </field>
     </record>
@@ -277,7 +282,7 @@
                     <sheet>
                         <group>
                             <field name="name" string="Category Name"/>
-                            <field name="parent_id" string="Parent Category"/>
+<!--                             <field name="parent_id" string="Parent Category"/> -->
                         </group>
                     </sheet>
                 </form>
@@ -321,4 +326,41 @@
         parent="stock.menu_product_in_config_stock" sequence="2" name="Account Categories"
     />
 
+<!--     SUB CATEGORY -->
+    <record id="product_sub_category_tree_view" model="ir.ui.view">
+        <field name="name">product.sub.category.tree</field>
+        <field name="model">product.sub.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" string="Sub Category Name"/>      
+            </tree>
+        </field>
+    </record>
+
+
+
+    <record id="product_sub_category_form_view_id" model="ir.ui.view">
+            <field name="name">product.sub.category.form.view</field>
+            <field name="model">product.sub.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" string="Sub Category Name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+    
+    <record id="action_product_sub_category_master" model="ir.actions.act_window">
+            <field name="name">Product Sub Category</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.sub.category</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem 
+        id="product_sub_category_master_menu" name="Sub Product Category" parent="stock.menu_product_in_config_stock" sequence="101" action = "action_product_sub_category_master"
+    />
 </odoo>

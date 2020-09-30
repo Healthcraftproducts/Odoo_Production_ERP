@@ -20,8 +20,7 @@ class ProductTemplate(models.Model):
 	name = fields.Char('Product Description', index=True, required=True, translate=True)
 	default_code = fields.Char('Item Code', compute='_compute_default_code',inverse='_set_default_code', store=True)
 	fda_listing = fields.Char(string="FDA Listing#")
-
-
+	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 
 	@api.depends('product_variant_ids', 'product_variant_ids.default_code')
 	def _compute_default_code(self):
@@ -81,6 +80,7 @@ class ProductMaster(models.Model):
 	default_code = fields.Char('Item Code', index=True)
 	product_description = fields.Char(string="Product Description")
 	fda_listing = fields.Char(string="FDA Listing#")
+	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 
 	def active_stage(self):
 		self.write({
@@ -132,3 +132,9 @@ class ProductCategoryMaster(models.Model):
 				category.complete_name = '%s / %s' % (category.parent_id.complete_name, category.name)
 			else:
 				category.complete_name = category.name
+
+class ProductSubCategory(models.Model):
+	_name = 'product.sub.category'
+	_description = "Product Sub Category"
+
+	name = fields.Char(string="Sub Category Name")
