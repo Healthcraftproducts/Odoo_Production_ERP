@@ -14,6 +14,14 @@
 
             </xpath>
 
+            <xpath expr='//div[@class="oe_kanban_details"]/ul' position="replace">
+
+                <ul>
+                    <li>Cost Price: <field name="standard_price" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"></field></li>
+                </ul>
+
+            </xpath>
+
         </field>
     </record>
 
@@ -34,6 +42,15 @@
                     </strong>
 
                 </xpath>
+
+                <xpath expr='//div[@class="oe_kanban_details"]/ul' position="replace">
+
+                    <ul>
+                        <li><strong>Cost Price: <field name="standard_price"></field></strong></li>
+                    </ul>
+
+                </xpath>
+            
             </field>
     </record>
 
