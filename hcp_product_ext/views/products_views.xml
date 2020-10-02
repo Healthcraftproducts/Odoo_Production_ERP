@@ -103,6 +103,7 @@
                     <field name="product_sub_categ_id"/>
                     <field name="pick"/>
                     <field name="fda_listing"/>
+                    <field name="obsolute_product"/>
                 </xpath>
 
                 <xpath expr="//field[@name='default_code']" position="replace">
@@ -240,6 +241,7 @@
                     <field name="product_sub_categ_id"/>
                     <field name="pick"/>
                     <field name="fda_listing"/>
+                    <field name="obsolute_product"/>
                 </xpath>
 
                 <xpath expr="//field[@name='default_code']" position="replace">
