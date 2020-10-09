@@ -114,7 +114,8 @@ class MrpBom(models.Model):
 
 	def update_main_bom(self):
 		if self.product_uom_id:
-				self.product_uom_id=self.product_tmpl_id.uom_id
+			for line in self.product_uom_id:
+				line.product_uom_id=line.product_tmpl_id.uom_id
 				
 	def update_bom(self):
 		if self.bom_line_ids:
