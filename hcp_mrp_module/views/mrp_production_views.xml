@@ -133,7 +133,21 @@
     </field>
         </record>
  
-
+     <record id="mrp_bom_form_view_inherited2" model="ir.ui.view">
+            <field name="name">mrp.bom.form.inherited</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form//sheet" position="before">
+                    <header>
+                        <button type="object"
+                            name="update_bom"
+                        string="Update UOM"
+                        groups="base.group_user"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
 
   
 </odoo>
