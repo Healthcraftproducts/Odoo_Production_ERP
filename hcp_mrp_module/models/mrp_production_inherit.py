@@ -107,7 +107,16 @@ class ProductTemplate(models.Model):
 					}
 
 
+class MrpBom(models.Model):
+	_inherit = 'mrp.bom'
 
-
-
+	def update_main_bom(self):
+		if self.product_uom_id:
+			for line in self:
+				line.product_uom_id=line.product_tmpl_id.uom_id
+				
+	def update_bom(self):
+		if self.bom_line_ids:
+			for line in self.bom_line_ids:
+				line.product_uom_id=line.product_id.uom_id
    
