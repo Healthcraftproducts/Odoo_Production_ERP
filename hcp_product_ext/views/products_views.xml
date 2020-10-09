@@ -20,6 +20,10 @@
                     <li>Cost Price: <field name="standard_price" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"></field></li>
                 </ul>
 
+                <ul>
+                    <li><strong>Quantity On Hand: <field name="qty_available"></field></strong></li>
+                </ul>
+
             </xpath>
 
         </field>
@@ -47,6 +51,10 @@
 
                     <ul>
                         <li><strong>Cost Price: <field name="standard_price"></field></strong></li>
+                    </ul>
+
+                     <ul>
+                        <li><strong>Quantity On Hand: <field name="qty_available"></field></strong></li>
                     </ul>
 
                 </xpath>
