@@ -144,6 +144,10 @@
                             name="update_bom"
                         string="Update UOM"
                         groups="base.group_user"/>
+                        <button type="object"
+                            name="update_main_bom"
+                        string="Update Main UOM"
+                        groups="base.group_user"/>
                     </header>
                 </xpath>
             </field>
