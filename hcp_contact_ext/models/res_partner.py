@@ -52,6 +52,7 @@ class HcpGroupCode(models.Model):
 
 class DeliveryCarrier(models.Model):
 	_inherit = 'delivery.carrier'
+
 	website_description = fields.Char(string="Website Description")
 
 class ResPartner(models.Model):
