@@ -50,6 +50,9 @@ class HcpGroupCode(models.Model):
 
 	name = fields.Char(string='Name', required=True)
 
+class DeliveryCarrier(models.Model):
+	_inherit = 'delivery.carrier'
+	website_description = fields.Char(string="Website Description")
 
 class ResPartner(models.Model):
 	_inherit = 'res.partner'
