@@ -1,5 +1,35 @@
 <odoo>
 
+    <record id="product_template_tree_view_id" model="ir.ui.view">
+        <field name="name">product.template.product.tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr='//field[@name="categ_id"]' position="replace">
+                <field name="categ_id" string="Accounting Category" optional="hide"/>
+            </xpath>
+        
+        </field>
+    
+    </record>
+
+    <record id="product_product_tree_view_id" model="ir.ui.view">
+            <field name="name">product.product.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                
+                <xpath expr='//field[@name="categ_id"]' position="replace">
+                    <field name="categ_id" string="Accounting Category" optional="hide"/>
+                </xpath>
+
+            </field>
+    </record>
+
+
+
+
     <record id="product_template_kanban_view_id" model="ir.ui.view">
         <field name="name">Product.template.product.kanban</field>
         <field name="model">product.template</field>
@@ -390,4 +420,8 @@
     <menuitem 
         id="product_sub_category_master_menu" name="Sub Product Category" parent="stock.menu_product_in_config_stock" sequence="101" action = "action_product_sub_category_master"
     />
+
+    <menuitem id="account_accountant.menu_product_product_categories"
+        action="product.product_category_action_form" name="Accounting Categories"
+        parent="account.account_account_menu" sequence="3"/>
 </odoo>
