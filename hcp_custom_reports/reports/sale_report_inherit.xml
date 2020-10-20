@@ -366,7 +366,7 @@ html *
 </td>
 <td style="width: 20%;" rowspan="2">
 <strong>Tax Summary</strong>
-<br><span t-field="doc.partner_id.taxes_id"/></br>
+<br><span t-field="doc.partner_id.property_account_position_id"/></br>
 <p>&amp;nbsp;</p>
 <p>&amp;nbsp;</p>
 <p>&amp;nbsp;</p>
