@@ -83,7 +83,7 @@ class Lead(models.Model):
                 'city': partner.city,
                 'state_id': partner.state_id.id,
                 'country_id': partner.country_id.id,
-                'group_code_hcp': partner.group_code_hcp.id or False,
+                'group_code_hcp': partner.hcp_group_code.id or False,
                 'email_from': partner.email,
                 'phone': partner.phone,
                 'mobile': partner.mobile,
