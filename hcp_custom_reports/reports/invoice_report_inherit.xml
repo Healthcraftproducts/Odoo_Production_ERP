@@ -235,7 +235,7 @@ html *
 </tr>
 <tr>
 <td style="width: 10%; text-align: center; border-top:none;"><span style="text-align:center;" t-field="o.partner_id.hcp_customer_id"/></td>
-<td style="width: 15%; text-align: center; border-top:none;"><span style="text-align:center;" t-field="o.partner_id.taxes_id"/></td>
+<td style="width: 15%; text-align: center; border-top:none;"><span style="text-align:center;" t-field="o.partner_id.property_account_position_id"/></td>
 <t t-if="o.type == 'out_invoice' or o.type == 'out_refund'">
 <t t-foreach="request.env['sale.order'].search([('name', '=', o.invoice_origin)])" t-as="obj">
 <td style="width: 10%; text-align: center; border-top:none;"><span style="text-align:center;" t-field="obj.po_number"/></td>
