@@ -112,6 +112,16 @@ class StockLotMaster(models.Model):
 
 
 	lot_size = fields.Float(string="Lot Size")
+	ref = fields.Char('Source Reference', help="Source reference number in case it differs from the manufacturer's lot/serial number")
+
+class Picking(models.Model):
+	_inherit = "stock.picking"
+
+	total_weight_for_shipping = fields.Float(string="Total Weight For Shipping")
+	length = fields.Float(string="Length")
+	width = fields.Float(string="Width")
+	height = fields.Float(string="Height")
+	pallet_shipment = fields.Boolean(string="Pallet Shipment")
 
 
 class ProductCategoryMaster(models.Model):
@@ -140,3 +150,19 @@ class ProductSubCategory(models.Model):
 	_description = "Product Sub Category"
 
 	name = fields.Char(string="Sub Category Name")
+
+
+class StockQuant(models.Model):
+	_inherit = 'stock.quant'
+
+	min_reorder_quantity = fields.Float(string="Minimum Quantity",compute='get_reordering_min_quantity')
+
+
+	def get_reordering_min_quantity(self):
+		for rec in self:
+			if rec.product_id:
+				minimum = self.env['stock.warehouse.orderpoint'].search([('product_id','=',rec.product_id.id),('location_id','=',rec.location_id.id)])
+				if minimum:
+					rec.min_reorder_quantity = minimum.product_min_qty
+				else:
+					rec.min_reorder_quantity = 0.0
