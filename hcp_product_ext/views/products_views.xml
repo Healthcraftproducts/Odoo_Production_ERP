@@ -424,4 +424,83 @@
     <menuitem id="account_accountant.menu_product_product_categories"
         action="product.product_category_action_form" name="Accounting Categories"
         parent="account.account_account_menu" sequence="3"/>
+
+
+        <record id="product.product_category_action_form" model="ir.actions.act_window">
+            <field name="name">Accounting Categories</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.category</field>
+            <field name="search_view_id" ref="product.product_category_search_view"/>
+            <field name="view_id" ref="product.product_category_list_view"/>
+        </record>
+
+<template id ="sale_portal_content_inherit_id" inherit_id="sale.sale_order_portal_content" name ="Sale Portal content inherit">
+    <xpath expr="//div[@class='row']" position="replace">
+
+                <div class="row" id="so_date">
+                    <div class="mb-3 col-6">
+                      <t t-if="sale_order.state == 'draft'">
+                        <strong>Quotation Date:</strong> 
+                      </t>
+                      <t t-if="sale_order.state in ['sale', 'done', 'cancel']">
+                        <strong>Order Date:</strong> 
+                      </t>
+                      <span t-field="sale_order.date_order" t-options='{"widget": "date"}'/>
+                    </div>
+                    <div class="mb-3 col-6" t-if="sale_order.validity_date and sale_order.state in ['draft', 'sent']">
+                            <strong>Expiration Date:</strong> <span t-field="sale_order.validity_date" t-options='{"widget": "date"}'/>
+                    </div>
+                </div>
+
+    </xpath>
+
+</template>
+
+<record id="view_picking_withcarrier_out_form_id" model="ir.ui.view">
+            <field name="name">delivery.stock.picking_withcarrier.form.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+            <field name="arch" type="xml">
+
+            <xpath expr="//group[@name='carrier_data']/div[3]" position="after">
+                <field name="total_weight_for_shipping"/>
+                <field name="length"/>
+                <field name="width"/>
+                <field name="height"/>
+                <field name="pallet_shipment"/>
+
+            </xpath>
+
+
+        </field>
+
+</record>
+
+
+    <record model="ir.ui.view" id="view_stock_quant_tree_editable_id">
+        <field name="name">stock.quant.tree.editable</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='quantity']" position="before">
+                <field name="min_reorder_quantity"/>
+            </xpath>
+        </field>
+    </record>
+
+
+<!--     <record model="ir.ui.view" id="view_stock_quant_tree_id">
+        <field name="name">stock.quant.tree</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='quantity']" position="before">
+                <field name="min_reorder_quantity" sum="Total Min Quantity"/>
+            </xpath>
+        </field>
+    </record>
+ -->
+
+
+
 </odoo>
