@@ -112,6 +112,7 @@
                 <field name="hcp_account_program"/>
                 <field name="hcp_display_healthcraft" widget="many2many_tags"/>
                 <field name="hcp_display_invisia" widget="many2many_tags"/>
+                <field name="hcp_fea_registration"/>
             </xpath>
 
             <xpath expr="//field[@name='website']" position="before">
