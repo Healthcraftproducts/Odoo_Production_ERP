@@ -153,6 +153,7 @@ class ResPartner(models.Model):
 	hcp_taxes_id = fields.Many2many('account.tax', 'tax_id', string='Tax Groups',domain=[('type_tax_use', '=', 'sale')])
 	hcp_group_code = fields.Many2one('hcp.group.code', string='Group Code - New')
 	federal_tax_id = fields.Char('Federal Tax ID')
+	hcp_fea_registration = fields.Char(string="FEA Registration #")
 	company_type = fields.Selection(string='Company Type',
 		selection=[('person', 'Individual'), ('company', 'Company')],
 		compute='_compute_company_type', inverse='_write_company_type',
