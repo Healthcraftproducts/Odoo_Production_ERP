@@ -52,7 +52,10 @@
           </group>
 
           <group>
-                                <group name="sale_shipping">
+                                <group name="sale_shipping" string="Delivery">
+                                    <field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_warehouses" force_save="1"/>
+                                    <field name="incoterm" widget="selection" groups="sale_stock.group_display_incoterm"/>
+                                    <field name="picking_policy" required="True"/>
                                     <label for="commitment_date" string="Delivery Date"/>
                                     <div class="o_row">
                                         <field name="commitment_date"/> <span class="text-muted">Expected: 
