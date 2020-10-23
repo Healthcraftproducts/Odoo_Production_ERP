@@ -1,5 +1,19 @@
 <odoo>
 
+    <record id="product_pricelist_view_id" model="ir.ui.view">
+            <field name="name">product.pricelist.form</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                    <xpath expr="//form/sheet" position="before">
+                    <header>
+                        <button name="unlink_pricelist_items" string="Delete" class="oe_highlight" type="object"/>
+                    </header>
+
+                    </xpath>
+            </field>
+    </record>
+
     <record id="product_template_tree_view_id" model="ir.ui.view">
         <field name="name">product.template.product.tree</field>
         <field name="model">product.template</field>

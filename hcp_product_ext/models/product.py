@@ -166,3 +166,13 @@ class StockQuant(models.Model):
 					rec.min_reorder_quantity = minimum.product_min_qty
 				else:
 					rec.min_reorder_quantity = 0.0
+
+
+class Pricelist(models.Model):
+	_inherit = "product.pricelist"
+
+
+	def unlink_pricelist_items(self):
+		if self.item_ids:
+			for line in self.item_ids:
+				line.unlink()
