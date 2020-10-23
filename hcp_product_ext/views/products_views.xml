@@ -463,12 +463,30 @@
             <field name="arch" type="xml">
 
             <xpath expr="//group[@name='carrier_data']/div[3]" position="after">
-                <field name="total_weight_for_shipping"/>
+                <!-- <field name="total_weight_for_shipping"/> -->
+                <label for="total_weight_for_shipping" string="Total Weight for shipping"/>
+                        <div>
+                            <field name="total_weight_for_shipping" class="oe_inline"/>
+                            <field name="weight_uom_name" nolabel="1" class="oe_inline" style="margin-left:5px"/>
+                        </div>
                 <field name="length"/>
                 <field name="width"/>
                 <field name="height"/>
                 <field name="pallet_shipment"/>
 
+            </xpath>
+
+            <xpath expr="//label[@for='shipping_weight']" position="replace">
+                <label for="shipping_weight" string="Weight for shipping" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//div/field[@name='shipping_weight']" position="replace">
+                
+                    <field name="shipping_weight" class="oe_inline" invisible="1"/>
+                    
+            </xpath>
+            <xpath expr="//div[3]/field[@name='weight_uom_name']" position="replace">
+                <field name="weight_uom_name" nolabel="1" class="oe_inline" style="margin-left:5px" invisible="1"/>
             </xpath>
 
 
