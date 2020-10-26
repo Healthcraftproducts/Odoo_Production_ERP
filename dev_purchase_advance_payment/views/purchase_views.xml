@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle
+ -->
+<odoo>
+    <!--Advance Payment Form-->
+    <record id="form_dev_purchase_advance_payment" model="ir.ui.view">
+        <field name="name">form.dev.purchase.advance.payment</field>
+        <field name="model">account.payment</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Advance Payment">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="1" string="Vendor"/>
+                            <label for="amount"/>
+                            <div name="amount_div" class="o_row">
+                                <field name="amount"/>
+                                <field name="currency_id" options="{'no_create': True, 'no_open': True}"/>
+                            </div>
+                            <field name="state" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="journal_id" widget="selection"/>
+                        </group>
+                        <group>
+                            <field name="payment_date"/>
+                            <field name="communication"/>
+                            <field name="purchase_id" invisible="1"/>
+                            <field name="partner_type" invisible="1"/>
+                            <field name="payment_method_id" invisible="1"/>
+                            <field name="payment_type" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string='Make Payment' name="post" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--advnce payment button-->
+    <record id="purchase_form_dev_purchase_advance_payment_inherited" model="ir.ui.view">
+        <field name="name">purchase.for.dev.purchase.advance.payment.inherited</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header//button[@name='button_cancel']" position="after">
+                <button name="make_purchase_advance_payment"
+                        string="Make Advance Payment"
+                        type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('state', 'not in', ['purchase','done'])]}"/>
+            </xpath>
+            <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <button class="oe_stat_button"
+                        name="view_purchase_advance_payments"
+                        type="object"
+                        icon="fa-usd"
+                        attrs="{'invisible': [('state', 'not in', ['purchase','done'])]}">
+                    <field string="Adv. Payment" name="advance_payment_amount" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
