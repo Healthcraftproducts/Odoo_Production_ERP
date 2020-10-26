@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                     <xpath expr="//form/sheet" position="before">
                     <header>
-                        <button name="unlink_pricelist_items" string="Delete" class="oe_highlight" type="object"/>
+                        <button name="unlink_pricelist_items" string="Delete" class="oe_highlight" type="object" invisible="1"/>
                     </header>
 
                     </xpath>
