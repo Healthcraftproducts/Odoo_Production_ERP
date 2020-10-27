@@ -97,6 +97,35 @@ class SaleOrder(models.Model):
 	email = fields.Char(string="Email")
 	phone = fields.Char(string="Phone")
 	total_amount = fields.Float(string='Total Amount',compute='compute_amount_all',store=True)
+	expected_date = fields.Datetime( help="Delivery date you can promise to the customer, computed from the minimum lead time of "
+											"the order lines in case of Service products. In case of shipping, the shipping policy of "
+											"the order will be taken into account to either use the minimum or maximum lead time of "
+											"the order lines.",inverse='_inverse_expected_date')
+
+	@api.depends('picking_policy')
+	def _compute_expected_date(self):
+		super(SaleOrder, self)._compute_expected_date()
+		for order in self:
+			dates_list = []
+			for line in order.order_line.filtered(lambda x: x.state != 'cancel' and not x._is_delivery()):
+				dt = line._expected_date()
+				dates_list.append(dt)
+			if dates_list:
+				expected_date = min(dates_list) if order.picking_policy == 'direct' else max(dates_list)
+				order.expected_date = fields.Datetime.to_string(expected_date)
+
+	# @api.depends('picking_policy')
+	def _inverse_expected_date(self):
+		super(SaleOrder, self)._compute_expected_date()
+		for order in self:
+			dates_list = []
+			for line in order.order_line.filtered(lambda x: x.state != 'cancel' and not x._is_delivery()):
+				dt = line._expected_date()
+				dates_list.append(dt)
+			if dates_list:
+				expected_date = min(dates_list) if order.picking_policy == 'direct' else max(dates_list)
+				order.expected_date = fields.Datetime.to_string(expected_date)
+
 
 
 

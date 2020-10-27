@@ -58,9 +58,9 @@
                                     <field name="picking_policy" required="True"/>
                                     <label for="commitment_date" string="Delivery Date"/>
                                     <div class="o_row">
-                                        <field name="commitment_date"/> <span class="text-muted">Expected: 
-                                        <field name="expected_date" widget="date"/></span>
+                                        <field name="commitment_date"/>
                                     </div>
+                                    <field name="expected_date" widget="date" string="Expected Date"/>
                                 </group>
                                 <group string="Reporting" name="sale_reporting" groups="base.group_no_one">
                                     <group name="technical" colspan="2" class="mb-0">
