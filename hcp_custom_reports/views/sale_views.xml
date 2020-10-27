@@ -97,6 +97,53 @@
 </record>
 
 
+<menuitem id="sale.menu_sale_order"
+            name="Confirmed SO"
+            action="sale.action_orders"
+            parent="sale.sale_order_menu"
+            sequence="2" groups="sales_team.group_sale_salesman"/>
+
+
+        <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="name">Confirmed SO</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{}</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new quotation, the first step of a new sale!
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                </p>
+            </field>
+        </record>
+
+
+<menuitem id="sale.menu_sale_quotations"
+        name="Draft SO"
+        action="sale.action_quotations_with_onboarding"
+        parent="sale.sale_order_menu"
+        sequence="1" groups="sales_team.group_sale_salesman"/>
+
+        <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+            <field name="name">Draft SO</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'search_default_my_quotation': 1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+              </p><p>
+                Once the quotation is confirmed by the customer, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+              </p>
+            </field>
+        </record>
 
 
 </odoo>
