@@ -33,8 +33,14 @@
                 <xpath expr="//field[@name='date_deadline']" position="before">
                     <field name="release_date"/>
                 </xpath>
+
+                <xpath expr="//form/header" position='inside'>
+
+                    <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
+
+                </xpath>
             
-    </field>
+        </field>
     </record>
     
 <record id="mrp_routing_workcenter_tree_view_id" model="ir.ui.view">
@@ -98,33 +104,33 @@
 
 
 
-        <record id="view_product_form_inherit" model="ir.ui.view">
+    <record id="view_product_form_inherit" model="ir.ui.view">
             <field name="name">product.template.common.form.inherit</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-        <xpath expr="//page[@name='inventory']" position='after'>
-            <page string='Documents'>
+                <xpath expr="//page[@name='inventory']" position='after'>
+                    <page string='Documents'>
 
-                <field name="attachments_id" widget="many2many_binary" string="Attach a file" label="Attachments"/>
-                
-            </page>
-        </xpath>   
+                        <field name="attachments_id" widget="many2many_binary" string="Attach a file" label="Attachments"/>
+                        
+                    </page>
+                </xpath>   
 
-           <xpath expr="//form/sheet/notebook/page/group[2]" position='replace'>
+               <xpath expr="//form/sheet/notebook/page/group[2]" position='replace'>
 
-               <group string="Description For Sales">
-                                <field name="description" nolabel="1" placeholder="This note is only for Sales purposes."/>
-                            </group>
-            </xpath>
+                   <group string="Description For Sales">
+                                    <field name="description" nolabel="1" placeholder="This note is only for Sales purposes."/>
+                                </group>
+                </xpath>
 
 
-                    <xpath expr="//form/header" position='inside'>
+<!--                 <xpath expr="//form/header" position='inside'>
 
-                        <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
+                    <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
 
-                    </xpath>
-
+                </xpath>
+ -->
 
 
 
