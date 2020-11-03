@@ -101,13 +101,13 @@ class SaleOrder(models.Model):
 											"the order lines in case of Service products. In case of shipping, the shipping policy of "
 											"the order will be taken into account to either use the minimum or maximum lead time of "
 											"the order lines.",inverse='_inverse_expected_date')
-	state = fields.Selection([
-				('draft', 'Draft SO'),
-				('sent', 'Draft SO Sent'),
-				('sale', 'Confirmed SO'),
-				('done', 'Locked'),
-				('cancel', 'Cancelled'),
-				], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+	# state = fields.Selection([
+	# 			('draft', 'Draft SO'),
+	# 			('sent', 'Draft SO Sent'),
+	# 			('sale', 'Confirmed SO'),
+	# 			('done', 'Locked'),
+	# 			('cancel', 'Cancelled'),
+	# 			], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
 
 
 	@api.depends('picking_policy')
