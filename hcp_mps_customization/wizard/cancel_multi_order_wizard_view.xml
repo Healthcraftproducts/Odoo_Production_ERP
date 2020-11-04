@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_cancel_multiple_mps_orders" model="ir.ui.view">
+            <field name="name">Cancel Orders</field>
+            <field name="model">cancel.multi.mps.order.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Cancel Orders">
+                    <p>
+                        Are sure you want cancel selected orders?
+                    </p>
+                    <footer>
+                        <button name="cancel_multiple_orders" string="Yes" type="object"
+                            context="{'open_invoices': True}" class="btn-primary"/>
+                        <button string="No" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_cancel_multiple_mps_orders" model="ir.actions.act_window">
+            <field name="name">Cancel Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cancel.multi.mps.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+<!--             <field name="groups_id" eval="[(4,ref('sales_team.group_sale_salesman'))]"/> -->
+            <!-- TODO: check if we need this -->
+            <field name="binding_model_id" ref="mrp.model_mrp_production" />
+        </record>
+
+</odoo>
