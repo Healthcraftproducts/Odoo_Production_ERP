@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_stock_menu">
+            <t t-call="web.basic_layout">
+                <t t-set="product_dic" t-value="low_stock"/>
+                <div class="page" style="font-size:12px;">
+                    <style>
+                        .table_border{width:100%; border-collapse: collapse;}
+                        .table_border tr th{border-bottom:1px solid black; padding: 3px;}
+                        .table_border tr td{padding: 3px;border-bottom:1px solid black;}
+                        .text_center{text-align: center;}
+                        .big_font{font-size:30px;}
+                        .margin_header{margin-bottom:15px;}
+                    </style>
+                    <div class="text_center">
+                        <span style="font-size: 24px;"><strong>Low Stock Products</strong></span>
+                    </div><br/><br/>
+                    <table class="table_border" style="font-size:12px;">
+                        <div>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Location</th>
+                                <th class="text_center">On Hand Qty</th>
+                                <th class="text_center">Minimum Stock</th>
+                                <th class="text_center" groups="product.group_uom">Unit of Measure</th>
+                            </tr>
+                        </div>
+                        <tbody>
+                            <t t-if="product_dic.get('type') != 'reorder'">
+                                <t t-foreach="product_dic.get('quant_ids')" t-as="quant_id">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="quant_id.product_id.display_name"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="quant_id.location_id.display_name"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id.quantity"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <t t-if="product_dic.get('type') == 'individual'">
+                                                <span t-esc="quant_id.product_id.minimum_qty"/>
+                                            </t>
+                                            <t t-if="product_dic.get('type') == 'global'">
+                                                <span t-esc="product_dic.get('min_qty')"/>
+                                            </t>
+                                        </td>
+                                        <td groups="product.group_uom" class="text_center">
+                                            <span t-esc="quant_id.product_uom_id.name"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="product_dic.get('type') == 'reorder'">
+                                <t t-foreach="product_dic.get('quant_ids')" t-as="quant_id">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="quant_id[0]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="quant_id[1]"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[2]"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[3]"/>
+                                        </td>
+                                        <td groups="product.group_uom" class="text_center">
+                                            <span t-esc="quant_id[4]"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
