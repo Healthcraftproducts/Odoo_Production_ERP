@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.cron" id="ir_cron_stock_notification">
+            <field name="name">Low Stock Notification Scheduler</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model_id" ref="model_ir_cron"/>
+            <field name="state">code</field>
+            <field name="code">model.product_low_stock_notification_send_email()</field>
+            <field name="active" eval="True" />
+        </record>
+        <record id="email_template_low_stock_notification" model="mail.template">
+            <field name="name">Product Stock - Send By Email</field>
+            <field name="email_from">${ctx['email_from']}</field>
+            <field name="subject">Product Low Stock Notification</field>
+            <field name="lang">${object.lang}</field>
+            <field name="email_to">${ctx['email_to']}</field>
+            <field name="model_id" ref="model_ir_cron"/>
+            <field name="report_template" ref="action_report_product_stock"/>
+            <field name="report_name">Product low stock</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[
+                <p>Hello Dear,</p>
+                <p>Please find attached report for the list of products whose quantity is lower then the minimum quantity.</p>
+                <p>Thnak You.</p>
+            ]]>
+            </field>
+       </record>
+    </data>
+</odoo>

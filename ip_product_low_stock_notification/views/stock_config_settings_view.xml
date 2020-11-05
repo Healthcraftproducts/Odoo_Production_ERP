@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_ip" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.stock</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="1"/>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='production_lot_info']" position="after">
+                <h2 style="padding-left: 30px;background-color: #e9ecef;">Product Low Stock Notification</h2>
+                <div class="row mt16 o_settings_container" style="padding-left:50px">
+                    <group>
+                        <group class="o_setting_right_pane">
+                            <field name="stock_notification" widget="radio" options="{'horizontal': true}"/>
+                            <field name="minimum_qty" attrs="{'invisible' : [('stock_notification', '!=', 'global')]}"/>
+                            <field name="company_ids" widget="many2many_tags" groups="base.group_multi_company" options="{'no_create_edit': True}"/>
+                            <field name="location_ids" widget="many2many_tags" options="{'no_create_edit': True}"/>
+                            <field name="notification_user_ids" widget="many2many_tags" options="{'no_create_edit': True}"/>
+                        </group>
+                    </group>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
