@@ -218,6 +218,36 @@ class StockRule(models.Model):
             if field in values:
                 move_values[field] = values.get(field)
         return move_values    
+
+    @api.model
+    def run(self, procurements):
+        """ If 'run' is called on a kit, this override is made in order to call
+        the original 'run' method with the values of the components of that kit.
+        """
+        procurements_without_kit = []
+        for procurement in procurements:
+            bom_kit = self.env['mrp.bom']._bom_find(
+                product=procurement.product_id,
+                company_id=procurement.company_id.id,
+                bom_type='phantom',
+            )
+            if bom_kit:
+                order_qty = procurement.product_uom._compute_quantity(procurement.product_qty, bom_kit.product_uom_id, round=False)
+                qty_to_produce = (order_qty / bom_kit.product_qty)
+                boms, bom_sub_lines = bom_kit.explode(procurement.product_id, qty_to_produce)
+                for bom_line, bom_line_data in bom_sub_lines:
+                    bom_line_uom = bom_line.product_uom_id
+                    quant_uom = bom_line.product_id.uom_id
+                    # recreate dict of values since each child has its own bom_line_id
+                    values = dict(procurement.values, bom_line_id=bom_line.id)
+                    component_qty, procurement_uom = bom_line_uom._adjust_uom_quantities(bom_line_data['qty'], quant_uom)
+                    procurements_without_kit.append(self.env['procurement.group'].Procurement(
+                        bom_line.product_id, component_qty, procurement_uom,
+                        procurement.location_id, procurement.name,
+                        procurement.origin, procurement.company_id, values,procurement.mo_reference))
+            else:
+                procurements_without_kit.append(procurement)
+        return super(ProcurementGroup, self).run(procurements_without_kit)
     
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
