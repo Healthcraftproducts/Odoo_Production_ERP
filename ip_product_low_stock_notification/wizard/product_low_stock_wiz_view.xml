@@ -10,7 +10,7 @@
                         <field name="stock_notification" widget="radio" options="{'horizontal': true}"/>
                         <field name="minimum_qty" attrs="{'invisible' : [('stock_notification', '!=', 'global')]}"/>
                         <field name="company_ids" groups="base.group_multi_company" widget="many2many_tags"  options="{'no_create_edit': True}"/>
-                        <field name="location_ids" widget="many2many_tags" options="{'no_create_edit': True}"/>
+                        <field name="stock_lctn_id" options="{'no_create_edit': True}"/>
                     </group>
                 </group>
                 <footer>
