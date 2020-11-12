@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="vpicktree_inherit_deringer" model="ir.ui.view">
+            <field name="name">stock.picking.tree.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='state']" position="before">
+                <field name="invoiced" invisible="1" force_save="1"/>
+            </xpath>
+            </field>
+        </record>
+
+
+        <record id="res_partner_hcp_custom_view" model="ir.ui.view">
+            <field name="name">res.partner.view.custom</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                     <xpath expr="//field[@name='vat']" position="after">
+                         <field name="irs_no"/>
+                         <field name="mid"/>
+                         <field name="type_hcp"/>
+                         <field name="pnc_email"/>
+                     </xpath>
+            </field>
+        </record>
+
+
+
+
+
+</odoo>

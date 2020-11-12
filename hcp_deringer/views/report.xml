@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <report id="deringer_xml_report"
+           string="Deringer XML"
+           model="deringer.form"
+           report_type="qweb-xml"
+           file="hcp_deringer.report_deringer_xml"
+           name="hcp_deringer.report_deringer_xml"/>
+</odoo>

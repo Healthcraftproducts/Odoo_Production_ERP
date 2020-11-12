@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="email_template_deringer" model="mail.template">
+            <field name="name">Deringer: Send by email</field>
+            <field name="model_id" ref="hcp_deringer.model_deringer_form"/>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="subject">Ref ${object.name or 'n/a' }/Deringer XML File ${object.date}</field>
+            <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear Deringer Team,
+                    <br /><br />
+                    Find attachment for XML file dated on ${object.date}.
+                    <br /><br />
+                    Thanks and Regards,<br />
+                    HealthCraft,
+                    <br /><br />
+                    TF: 613-868-8019  | PH: 613-822-1885 x 257 | FX: 613-822-1886<br />
+                    Address: 2790 Fenton Road, Ottawa, Ontario, K1T 3T7<br />
+                    Web: www.healthcraftproducts.com | Twitter: @hcp_healthcraft
+                </p>
+            </div>
+            </field>
+            <field name="report_template" ref="deringer_xml_report"/>
+            <field name="report_name">${(object.name or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

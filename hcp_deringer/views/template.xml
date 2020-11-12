@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<odoo>
+    
+   <template id="report_deringer_xml">
+    <!-- <span t-esc="data.get('name_user')"/> -->
+    <t t-esc="docs.name"/>
+      <Consolidated>
+            <Invoice>
+                <Importer>HEAPRO0002</Importer>
+                <Invoice_No>IN332697</Invoice_No>
+                <Invoice_Type>PI</Invoice_Type>
+                <STCode/>
+                <Supplier>
+                    <Name>HEALTHCRAFT PRODUCTS INC</Name>
+                    <Street1>2790 FENTON RD</Street1>
+                    <Street2/>
+                    <City>OTTOWA</City>
+                    <State>ON</State>
+                    <PostCode>KIT 3T7</PostCode>
+                    <Country>CA</Country>
+                    <Phone/>
+                    <IRS_No/>
+                    <MID>XOHEAPRO2790OTT</MID>
+                    <Type/>
+                    <PNCEmail/>
+                </Supplier>
+                <Exporter>
+                    <Name>HEALTHCRAFT PRODUCTS INC</Name>
+                    <Street1>2790 FENTON RD</Street1>
+                    <Street2/>
+                    <City>OTTOWA</City>
+                    <State>ON</State>
+                    <PostCode>KIT 3T7</PostCode>
+                    <Country>CA</Country>
+                    <Phone/>
+                    <IRS_No/>
+                    <MID>XOHEAPRO2790OTT</MID>
+                    <Type/>
+                    <PNCEmail/>
+                </Exporter>
+                <UCons>
+                    <Name>RE-BATH</Name>
+                    <Street1>C/O OCSD REDLAND 3737-1970 29191 NW WEST UNION RD</Street1>
+                    <Street2/>
+                    <City>2420 W AVENUE M</City>
+                    <State>TX</State>
+                    <PostCode>76504</PostCode>
+                    <Country>US</Country>
+                    <Phone/>
+                    <IRS_No>32-059735129</IRS_No>
+                    <MID/>
+                    <Type/>
+                    <PNCEmail/>
+                </UCons>
+                <Buyer>
+                    <Name>RE-BATH</Name>
+                    <Street1>C/O OCSD REDLAND 3737-1970 29191 NW WEST UNION RD</Street1>
+                    <Street2/>
+                    <City>2420 W AVENUE M</City>
+                    <State>TX</State>
+                    <PostCode>76504</PostCode>
+                    <Country>US</Country>
+                    <Phone/>
+                    <IRS_No>32-059735129</IRS_No>
+                    <MID/>
+                    <Type/>
+                    <PNCEmail/>
+                </Buyer>
+                <ReleasePort>0701</ReleasePort>
+                <Invoice_Date>2020-07-28</Invoice_Date>
+                <Currency>USD</Currency>
+                <Entry_No/>
+                <TransType>PAPS-BCS</TransType>
+                <RefNum>IN332697</RefNum>
+                <PaymentTerms/>
+                <TotalAmount>45840</TotalAmount>
+                <GrossWeight>16.00</GrossWeight>
+                <BillLading>12345</BillLading>
+                <FeePercent>92</FeePercent>
+                <DiscountValue>0</DiscountValue>
+                <Freight>0</Freight>
+                <AdjustmentAmount/>
+                <ArrivalDate>2020-07-28</ArrivalDate>
+                <SCACCode>DANQ</SCACCode>
+                <TotalUnitsShipped>1</TotalUnitsShipped>
+                <DeliveryTerms/>
+                <BrokerProductDesc/>
+                <AdjustmentInfo>
+                    <AdjustmentCode>BROKERAGE</AdjustmentCode>
+                    <CurrencyCode>US</CurrencyCode>
+                </AdjustmentInfo>
+                <AdjustmentInfo>
+                    <AdjustmentCode>DUTYFREESTAXES</AdjustmentCode>
+                    <CurrencyCode>US</CurrencyCode>
+                </AdjustmentInfo>
+                <TotalDue>45840</TotalDue>
+                <UOM>BX</UOM>
+                <RelatedParty>N</RelatedParty>
+                <CountryOfExport>CA</CountryOfExport>
+                <ExportDate>2020-07-28</ExportDate>
+                <Charges>24.00</Charges>
+                <RelatedDoc>
+                    <Id/>
+                    <Number/>
+                </RelatedDoc>
+                <VesselName/>
+                <VesselNo/>
+                <PortLading>NONE</PortLading>
+                <ContainerNum/>
+                <LocationQualifier/>
+                <LocationIndicator/>
+                <LocationCode/>
+                <USCLocation>NONE</USCLocation>
+                <MarksNumbers/>
+                <PaymentBy/>
+                <Insured>N</Insured>
+                <IT>
+                    <Date/>
+                    <Number/>
+                </IT>
+                <DateSubmitted>2020-07-28</DateSubmitted>
+                <DateCreated>2020-07-28</DateCreated>
+                <UserName>Someone at Healthcraft</UserName>
+                <PNCImage/>
+                <Template/>
+                <LineItem>
+                    <Description>INVISIA SernaSeat 18IN/46CM, WalnutStain, BrushNic</Description>
+                    <LineNumber>1</LineNumber>
+                    <TotalLineItemValue>458.40</TotalLineItemValue>
+                    <RulingNo/>
+                    <UnitPrice>458.40</UnitPrice>
+                    <BasisOfUnitPrice>PE</BasisOfUnitPrice>
+                    <CountryOfOrigin>XO</CountryOfOrigin>
+                    <UConsignee>
+                        <Name/>
+                        <Street1/>
+                        <Street2/>
+                        <City/>
+                        <State/>
+                        <PostCode/>
+                        <Country/>
+                        <Phone/>
+                        <IRS_No/>
+                        <MID/>
+                        <Type/>
+                        <PNCEmail/>
+                    </UConsignee>
+                    <SI>S</SI>
+                    <Softwood/>
+                    <AddNonReimbDeclareId/>
+                    <CvdNonReimbDeclareId/>
+                    <SWPermit/>
+                    <InvoiceQty>1.0</InvoiceQty>
+                    <InvoiceUOM>EA</InvoiceUOM>
+                    <DeliveryTerms/>
+                    <PaymentTerms/>
+                    <ExportDate>2020-07-28</ExportDate>
+                    <Discount/>
+                    <Manufacturer>
+                        <Name>HEALTHCRAFT PRODUCTS</Name>
+                        <Street1>2790 FENTON ROAD  </Street1>
+                        <Street2/>
+                        <City>OTTOWA</City>
+                        <State>ON</State>
+                        <PostCode>K1T 3T7</PostCode>
+                        <Country>CA</Country>
+                        <Phone/>
+                        <IRS_No/>
+                        <MID>XOHEAPRO2790OTT</MID>
+                        <Type/>
+                        <PNCEmail/>
+                    </Manufacturer>
+                    <Tariff>
+                        <PartNumber>INV-WS18-WNT-BN</PartNumber>
+                        <Description>INVISIA SernaSeat 18IN/46CM, WalnutStain, BrushNic</Description>
+                        <Country>XO</Country>
+                        <BindingRulingNo/>
+                        <UnitPrice/>
+                        <ProductCode/>
+                        <FDADescription/>
+                        <LicensePermitNo/>
+                        <Manufacturer>
+                            <Name>HEALTHCRAFT PRODUCTS</Name>
+                            <Street1>2790 FENTON ROAD  </Street1>
+                            <Street2/>
+                            <City>OTTOWA</City>
+                            <State>ON</State>
+                            <PostCode>K1T 3T7</PostCode>
+                            <Country>CA</Country>
+                            <Phone/>
+                            <IRS_No/>
+                            <MID>XOHEAPRO2790OTT</MID>
+                            <Type/>
+                            <PNCEmail/>
+                        </Manufacturer>
+                        <ProductTariff>
+                            <Tariff>9401790050</Tariff>
+                            <InvoiceQty>1</InvoiceQty>
+                            <InvoiceUOM>EA</InvoiceUOM>
+                            <NumUnitsShipped>1</NumUnitsShipped>
+                            <UnitsShippedUOM>NO</UnitsShippedUOM>
+                            <NumUnitsShipped2/>
+                            <UnitsShippedUOM2/>
+                            <SI>S</SI>
+                            <SI2/>
+                            <Manufacturer>
+                                <Name>HEALTHCRAFT PRODUCTS</Name>
+                                <Street1>2790 FENTON ROAD  </Street1>
+                                <Street2/>
+                                <City>OTTOWA</City>
+                                <State>ON</State>
+                                <PostCode>K1T 3T7</PostCode>
+                                <Country>CA</Country>
+                                <Phone/>
+                                <IRS_No/>
+                                <MID>XOHEAPRO2790OTT</MID>
+                                <Type/>
+                                <PNCEmail/>
+                            </Manufacturer>
+                            <ItemValue>458.40</ItemValue>
+                            <PG>
+                                <PGCode>EP7</PGCode>
+                                <Desc1Ci>INVISIA SernaSeat 18IN/46CM, WalnutStain, BrushNic</Desc1Ci>
+                                <PGAgencyCode>EPA</PGAgencyCode>
+                                <PGProgramCode>TS1</PGProgramCode>
+                                <AgencyProcessingCode/>
+                                <ElectronicImageSubmitted/>
+                                <Confidential/>
+                                <GlobalProductIdQualifier/>
+                                <GlobalProductId/>
+                                <IntendedUseBaseCode/>
+                                <IntendedUseSubCode/>
+                                <IntendedUseAddCode/>
+                                <IntendedUseDesc/>
+                                <Disclaimer>N</Disclaimer>
+                                <DisclaimerTypeCode/>
+                                <USCSPGSeqNo/>
+                                <DispositionActionDate>07282020</DispositionActionDate>
+                                <DispositionActionTime>1137</DispositionActionTime>
+                                <DispositionActionCode/>
+                                <NarrativeMessage/>
+                                <DocumentTypeCode/>
+                                <PG_EPA>
+                                    <ProductCodeQualifier/>
+                                    <ProductCode/>
+                                    <NetWeightUOM/>
+                                    <NetWeight/>
+                                    <DocumentCode/>
+                                    <EntityRoleCode>CI</EntityRoleCode>
+                                    <DeclarationCd>EP4</DeclarationCd>
+                                    <DeclarationCert>N</DeclarationCert>
+                                    <ImportCode/>
+                                    <IsExemptFromBond/>
+                                    <IndustryCd/>
+                                    <OtherExemptionRegulation/>
+                                    <TradeBrandName/>
+                                    <EpaRegistrationNo/>
+                                    <ForeignProducerEstNo/>
+                                    <DomesticProducerEstNo/>
+                                    <CertifyIndividualRoleCd/>
+                                    <NotifyPartyRoleCd/>
+                                    <ActiveIngredient/>
+                                    <IngredientName/>
+                                    <IngredientPercent/>
+                                    <PackagingQuantity1/>
+                                    <PackagingUomCd1/>
+                                    <PackagingIdentifier1/>
+                                    <PackagingQuantity2/>
+                                    <PackagingUomCd2/>
+                                    <PackagingIdentifier2/>
+                                    <PackagingQuantity3/>
+                                    <PackagingUomCd3/>
+                                    <PackagingIdentifier3/>
+                                    <PackagingQuantity4/>
+                                    <PackagingUomCd4/>
+                                    <PackagingIdentifier4/>
+                                    <PackagingQuantity5/>
+                                    <PackagingUomCd5/>
+                                    <PackagingIdentifier5/>
+                                    <PackagingQuantity6/>
+                                    <PackagingUomCd6/>
+                                    <PackagingIdentifier6/>
+                                    <Model/>
+                                    <ModelYear/>
+                                    <ManufacturerMonthYear/>
+                                    <ManufacturerDateLocationCd/>
+                                    <OtherLocationDesc/>
+                                    <EnginePowerRatingType/>
+                                    <BodyTypeUnder1Ton/>
+                                    <BodyTypeOver1Ton/>
+                                    <MilitaryEquipment/>
+                                    <DriveSide/>
+                                    <TestGroupNameNo/>
+                                    <BondPolicyNo/>
+                                    <BondPolicyNoDuration/>
+                                    <VneExceptionNo/>
+                                    <ItemIdentityQual/>
+                                    <ItemIdentityNbr/>
+                                    <SendPgProgramCd/>
+                                    <DateSignature/>
+                                    <EPA_PARTIES>
+                                        <PartyRole>CI</PartyRole>
+                                        <PartyCustNo/>
+                                        <PartyAddressNo/>
+                                        <PartyContactNo/>
+                                        <PartyCarrierCd/>
+                                        <PartyFirmsCd/>
+                                        <PartyMidCd/>
+                                        <PartyNumber/>
+                                        <PartyName/>
+                                        <PartyAddressLine1/>
+                                        <PartyAddressLine2/>
+                                        <PartyCity/>
+                                        <PartyStateProvince/>
+                                        <PartyCountry/>
+                                        <PartyPostalCd/>
+                                        <PartyIndividualName>AHMED KHALID</PartyIndividualName>
+                                        <PartyPhoneNo>6138221909</PartyPhoneNo>
+                                        <PartyFaxNo/>
+                                        <PartyEmailAddress>AHMED.KHALID@HEALTHCRAFTPRODUCTS.COM</PartyEmailAddress>
+                                    </EPA_PARTIES>
+                                </PG_EPA>
+                            </PG>
+                        </ProductTariff>
+                    </Tariff>
+                </LineItem>
+            </Invoice>
+            <Invoice>
+                <Importer>HEAPRO0002</Importer>
+                <Invoice_No>IN332702</Invoice_No>
+                <Invoice_Type>PI</Invoice_Type>
+                <STCode/>
+                <Supplier>
+                    <Name>HEALTHCRAFT PRODUCTS INC</Name>
+                    <Street1>2790 FENTON RD</Street1>
+                    <Street2/>
+                    <City>OTTOWA</City>
+                    <State>ON</State>
+                    <PostCode>KIT 3T7</PostCode>
+                    <Country>CA</Country>
+                    <Phone/>
+                    <IRS_No/>
+                    <MID>XOHEAPRO2790OTT</MID>
+                    <Type/>
+                    <PNCEmail/>
+                </Supplier>
+                <Exporter>
+                    <Name>HEALTHCRAFT PRODUCTS INC</Name>
+                    <Street1>2790 FENTON RD</Street1>
+                    <Street2/>
+                    <City>OTTOWA</City>
+                    <State>ON</State>
+                    <PostCode>KIT 3T7</PostCode>
+                    <Country>CA</Country>
+                    <Phone/>
+                    <IRS_No/>
+                    <MID>XOHEAPRO2790OTT</MID>
+                    <Type/>
+                    <PNCEmail/>
+                </Exporter>
+                <UCons>
+                    <Name>MEDLINE INDUSTRIES INC</Name>
+                    <Street1>SAUGET - B37</Street1>
+                    <Street2>1659 SAUGET BUSINESS BOULEVARD</Street2>
+                    <City>SAUGET</City>
+                    <State>IL</State>
+                    <PostCode>62206</PostCode>
+                    <Country>US</Country>
+                    <Phone/>
+                    <IRS_No>00-0000000</IRS_No>
+                    <MID/>
+                    <Type/>
+                    <PNCEmail/>
+                </UCons>
+                <Buyer>
+                    <Name>MEDLINE INDUSTRIES INC</Name>
+                    <Street1>THREE LAKES DRIVE</Street1>
+                    <Street2/>
+                    <City>NORTHFIELD</City>
+                    <State>IL</State>
+                    <PostCode>60093</PostCode>
+                    <Country>US</Country>
+                    <Phone/>
+                    <IRS_No>36-2596612</IRS_No>
+                    <MID/>
+                    <Type/>
+                    <PNCEmail/>
+                </Buyer>
+                <ReleasePort>0701</ReleasePort>
+                <Invoice_Date>2020-07-28</Invoice_Date>
+                <Currency>CAD</Currency>
+                <Entry_No/>
+                <TransType>PAPS-BCS</TransType>
+                <RefNum>IN332702</RefNum>
+                <PaymentTerms/>
+                <TotalAmount>27400</TotalAmount>
+                <GrossWeight>5</GrossWeight>
+                <BillLading>12346</BillLading>
+                <FeePercent>92</FeePercent>
+                <DiscountValue>0</DiscountValue>
+                <Freight>0</Freight>
+                <AdjustmentAmount/>
+                <ArrivalDate>2020-07-28</ArrivalDate>
+                <SCACCode>DANQ</SCACCode>
+                <TotalUnitsShipped>1</TotalUnitsShipped>
+                <DeliveryTerms/>
+                <BrokerProductDesc/>
+                <AdjustmentInfo>
+                    <AdjustmentCode>BROKERAGE</AdjustmentCode>
+                    <CurrencyCode>US</CurrencyCode>
+                </AdjustmentInfo>
+                <AdjustmentInfo>
+                    <AdjustmentCode>DUTYFREESTAXES</AdjustmentCode>
+                    <CurrencyCode>US</CurrencyCode>
+                </AdjustmentInfo>
+                <TotalDue>27400</TotalDue>
+                <UOM>BX</UOM>
+                <RelatedParty>N</RelatedParty>
+                <CountryOfExport>CA</CountryOfExport>
+                <ExportDate>2020-07-28</ExportDate>
+                <Charges>10.00</Charges>
+                <RelatedDoc>
+                    <Id/>
+                    <Number/>
+                </RelatedDoc>
+                <VesselName/>
+                <VesselNo/>
+                <PortLading>NONE</PortLading>
+                <ContainerNum/>
+                <LocationQualifier/>
+                <LocationIndicator/>
+                <LocationCode/>
+                <USCLocation>NONE</USCLocation>
+                <MarksNumbers/>
+                <PaymentBy/>
+                <Insured>N</Insured>
+                <IT>
+                    <Date/>
+                    <Number/>
+                </IT>
+                <DateSubmitted>2020-07-28</DateSubmitted>
+                <DateCreated>2020-07-28</DateCreated>
+                <UserName>Someone at Healthcraft</UserName>
+                <PNCImage/>
+                <Template/>
+                <LineItem>
+                    <Description>SLING, REPLACEMENT BARIATRIC FOR NGSTST</Description>
+                    <LineNumber>1</LineNumber>
+                    <TotalLineItemValue>165.00</TotalLineItemValue>
+                    <RulingNo/>
+                    <UnitPrice>165.00</UnitPrice>
+                    <BasisOfUnitPrice>PE</BasisOfUnitPrice>
+                    <CountryOfOrigin>XO</CountryOfOrigin>
+                    <UConsignee>
+                        <Name/>
+                        <Street1/>
+                        <Street2/>
+                        <City/>
+                        <State/>
+                        <PostCode/>
+                        <Country/>
+                        <Phone/>
+                        <IRS_No/>
+                        <MID/>
+                        <Type/>
+                        <PNCEmail/>
+                    </UConsignee>
+                    <SI>S</SI>
+                    <Softwood/>
+                    <AddNonReimbDeclareId/>
+                    <CvdNonReimbDeclareId/>
+                    <SWPermit/>
+                    <InvoiceQty>1.0</InvoiceQty>
+                    <InvoiceUOM>EA</InvoiceUOM>
+                    <DeliveryTerms/>
+                    <PaymentTerms/>
+                    <ExportDate>2020-07-28</ExportDate>
+                    <Discount/>
+                    <Manufacturer>
+                        <Name>HEALTHCRAFT PRODUCTS</Name>
+                        <Street1>2790 FENTON ROAD  </Street1>
+                        <Street2/>
+                        <City>OTTOWA</City>
+                        <State>ON</State>
+                        <PostCode>K1T 3T7</PostCode>
+                        <Country>CA</Country>
+                        <Phone/>
+                        <IRS_No/>
+                        <MID>XOHEAPRO2790OTT</MID>
+                        <Type/>
+                        <PNCEmail/>
+                    </Manufacturer>
+                    <Tariff>
+                        <PartNumber>NGSTSBSLING</PartNumber>
+                        <Description>SLING, REPLACEMENT BARIATRIC FOR NGSTST</Description>
+                        <Country>XO</Country>
+                        <BindingRulingNo/>
+                        <UnitPrice/>
+                        <ProductCode/>
+                        <FDADescription/>
+                        <LicensePermitNo/>
+                        <Manufacturer>
+                            <Name>HEALTHCRAFT PRODUCTS</Name>
+                            <Street1>2790 FENTON ROAD  </Street1>
+                            <Street2/>
+                            <City>OTTOWA</City>
+                            <State>ON</State>
+                            <PostCode>K1T 3T7</PostCode>
+                            <Country>CA</Country>
+                            <Phone/>
+                            <IRS_No/>
+                            <MID>XOHEAPRO2790OTT</MID>
+                            <Type/>
+                            <PNCEmail/>
+                        </Manufacturer>
+                        <ProductTariff>
+                            <Tariff>6307909891</Tariff>
+                            <InvoiceQty>1</InvoiceQty>
+                            <InvoiceUOM>EA</InvoiceUOM>
+                            <NumUnitsShipped>1</NumUnitsShipped>
+                            <UnitsShippedUOM>NO</UnitsShippedUOM>
+                            <NumUnitsShipped2>1</NumUnitsShipped2>
+                            <UnitsShippedUOM2>KG</UnitsShippedUOM2>
+                            <SI>S</SI>
+                            <SI2/>
+                            <Manufacturer>
+                                <Name>HEALTHCRAFT PRODUCTS</Name>
+                                <Street1>2790 FENTON ROAD  </Street1>
+                                <Street2/>
+                                <City>OTTOWA</City>
+                                <State>ON</State>
+                                <PostCode>K1T 3T7</PostCode>
+                                <Country>CA</Country>
+                                <Phone/>
+                                <IRS_No/>
+                                <MID>XOHEAPRO2790OTT</MID>
+                                <Type/>
+                                <PNCEmail/>
+                            </Manufacturer>
+                            <ItemValue>165.00</ItemValue>
+                            <PG>
+                                <PGCode/>
+                                <Desc1Ci>SLING, REPLACEMENT BARIATRIC FOR NGSTST</Desc1Ci>
+                                <PGAgencyCode>FDA</PGAgencyCode>
+                                <PGProgramCode>FDA</PGProgramCode>
+                                <AgencyProcessingCode>FDA</AgencyProcessingCode>
+                                <ElectronicImageSubmitted/>
+                                <Confidential>N</Confidential>
+                                <GlobalProductIdQualifier/>
+                                <GlobalProductId/>
+                                <IntendedUseBaseCode/>
+                                <IntendedUseSubCode/>
+                                <IntendedUseAddCode/>
+                                <IntendedUseDesc/>
+                                <Disclaimer>Y</Disclaimer>
+                                <DisclaimerTypeCode>A</DisclaimerTypeCode>
+                                <USCSPGSeqNo/>
+                                <DispositionActionDate/>
+                                <DispositionActionTime/>
+                                <DispositionActionCode/>
+                                <NarrativeMessage/>
+                                <DocumentTypeCode/>
+                                <PG_FDA>
+                                    <ProductCodeQualifier>FDP</ProductCodeQualifier>
+                                    <TemperatureQualifier/>
+                                    <DegreeTypeCd/>
+                                    <IsNegativeTemp/>
+                                    <LotNumberQualifierCd/>
+                                    <LotProductionStartDate/>
+                                    <LotProductionEndDate/>
+                                    <PGALineValueUs/>
+                                    <Currency/>
+                                    <AnticipatedArrivalPortCd/>
+                                    <AnticipatedArrivalLoc/>
+                                </PG_FDA>
+                            </PG>
+                        </ProductTariff>
+                    </Tariff>
+                </LineItem>
+            </Invoice>
+        </Consolidated>
+
+   </template>
+   
+</odoo>
+
+
