@@ -16,7 +16,6 @@ from psycopg2 import OperationalError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare, float_is_zero, float_round
 
 
-
 from werkzeug.urls import url_encode
 
 class MrpBOM(models.Model):
@@ -324,6 +323,7 @@ class StockRule(models.Model):
         # isolate the products we would need to read the forecasted quantity,
         # in order to to batch the read. We also make a sanitary check on the
         # `location_src_id` field.
+        #print(procurements,'**###########################################')
         for procurement, rule in procurements:
             if not rule.location_src_id:
                 msg = _('No source location defined on stock rule: %s!') % (rule.name, )
@@ -340,6 +340,7 @@ class StockRule(models.Model):
 
         # Prepare the move values, adapt the `procure_method` if needed.
         for procurement, rule in procurements:
+            #print(procurement,rule,'VVVVVVVVVVVVVVVVVVVVVVVVVVV')
             procure_method = rule.procure_method
             if rule.procure_method == 'mts_else_mto':
                 qty_needed = procurement.product_uom._compute_quantity(procurement.product_qty, procurement.product_id.uom_id)
@@ -349,6 +350,7 @@ class StockRule(models.Model):
                     forecasted_qties_by_loc[rule.location_src_id][procurement.product_id.id] -= qty_needed
                 else:
                     procure_method = 'make_to_order'
+            #print(procurement,'PROCUREMENTS##################')
             move_values = rule._get_stock_move_values(*procurement)
             move_values['procure_method'] = procure_method
             moves_values_by_company[procurement.company_id.id].append(move_values)
@@ -408,8 +410,8 @@ class StockRule(models.Model):
         for field in self._get_custom_move_fields():
             if field in values:
                 move_values[field] = values.get(field)
-        return move_values    
-
+        return move_values  
+  
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
     
@@ -472,7 +474,6 @@ class StockMove(models.Model):
         if merge:
             return self._merge_moves(merge_into=merge_into)
         return self
-
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
