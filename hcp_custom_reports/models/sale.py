@@ -97,6 +97,7 @@ class SaleOrder(models.Model):
 	email = fields.Char(string="Email")
 	phone = fields.Char(string="Phone")
 	total_amount = fields.Float(string='Total Amount',compute='compute_amount_all',store=True)
+	shipping_method = fields.Many2one('delivery.carrier',string="Delivery Method")
 	expected_date = fields.Datetime( help="Delivery date you can promise to the customer, computed from the minimum lead time of "
 											"the order lines in case of Service products. In case of shipping, the shipping policy of "
 											"the order will be taken into account to either use the minimum or maximum lead time of "
@@ -207,51 +208,51 @@ class SaleOrder(models.Model):
 
 
 
-	def _find_mail_template(self, force_confirmation_template=False):
-		template_id = False
+	# def _find_mail_template(self, force_confirmation_template=False):
+	# 	template_id = False
 
-		if force_confirmation_template or (self.state == 'sale' and not self.env.context.get('proforma', False)):
-			template_id = int(self.env['ir.config_parameter'].sudo().get_param('hcp_custom_reports.default_email_confirmation_template'))
-			template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
-			if not template_id:
-				template_id = self.env['ir.model.data'].xmlid_to_res_id('hcp_custom_reports.order_confirmation_email_template', raise_if_not_found=False)
-		if not template_id:
-			template_id = self.env['ir.model.data'].xmlid_to_res_id('hcp_custom_reports.quotation_email_template_send', raise_if_not_found=False)
+	# 	if force_confirmation_template or (self.state == 'sale' and not self.env.context.get('proforma', False)):
+	# 		template_id = int(self.env['ir.config_parameter'].sudo().get_param('hcp_custom_reports.default_email_confirmation_template'))
+	# 		template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
+	# 		if not template_id:
+	# 			template_id = self.env['ir.model.data'].xmlid_to_res_id('hcp_custom_reports.order_confirmation_email_template', raise_if_not_found=False)
+	# 	if not template_id:
+	# 		template_id = self.env['ir.model.data'].xmlid_to_res_id('hcp_custom_reports.quotation_email_template_send', raise_if_not_found=False)
 
-		return template_id
+	# 	return template_id
 
-	def action_quotation_send(self):
-		''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
-		self.ensure_one()
-		template_id = self._find_mail_template()
-		lang = self.env.context.get('lang')
-		template = self.env['mail.template'].browse(template_id)
-		if template.lang:
-			lang = template._render_template(template.lang, 'sale.order', self.ids[0])
-		ctx = {
-			'default_model': 'sale.order',
-			'default_res_id': self.ids[0],
-			'default_use_template': bool(template_id),
-			'default_template_id': template_id,
-			'default_composition_mode': 'comment',
-			'mark_so_as_sent': True,
-			'custom_layout': "mail.mail_notification_paynow",
-			'proforma': self.env.context.get('proforma', False),
-			'force_email': True,
-			'model_description': self.with_context(lang=lang).type_name,
-		}
-		if ctx['mark_so_as_sent'] == True and self.state in ['sale', 'done']:
-			self.write({'so_email_status': 'so_email_sent'})
+	# def action_quotation_send(self):
+	# 	''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
+	# 	self.ensure_one()
+	# 	template_id = self._find_mail_template()
+	# 	lang = self.env.context.get('lang')
+	# 	template = self.env['mail.template'].browse(template_id)
+	# 	if template.lang:
+	# 		lang = template._render_template(template.lang, 'sale.order', self.ids[0])
+	# 	ctx = {
+	# 		'default_model': 'sale.order',
+	# 		'default_res_id': self.ids[0],
+	# 		'default_use_template': bool(template_id),
+	# 		'default_template_id': template_id,
+	# 		'default_composition_mode': 'comment',
+	# 		'mark_so_as_sent': True,
+	# 		'custom_layout': "mail.mail_notification_paynow",
+	# 		'proforma': self.env.context.get('proforma', False),
+	# 		'force_email': True,
+	# 		'model_description': self.with_context(lang=lang).type_name,
+	# 	}
+	# 	if ctx['mark_so_as_sent'] == True and self.state in ['sale', 'done']:
+	# 		self.write({'so_email_status': 'so_email_sent'})
 
-		return {
-			'type': 'ir.actions.act_window',
-			'view_mode': 'form',
-			'res_model': 'mail.compose.message',
-			'views': [(False, 'form')],
-			'view_id': False,
-			'target': 'new',
-			'context': ctx,
-		}
+	# 	return {
+	# 		'type': 'ir.actions.act_window',
+	# 		'view_mode': 'form',
+	# 		'res_model': 'mail.compose.message',
+	# 		'views': [(False, 'form')],
+	# 		'view_id': False,
+	# 		'target': 'new',
+	# 		'context': ctx,
+	# 	}
 
 
 
@@ -263,3 +264,10 @@ class SaleOrderLine(models.Model):
 
 
 	product_ship_method = fields.Boolean(string='Product Ship',default=False)
+	line_amount = fields.Float(string="Line Amount",compute='_compute_line_level_amount',store=True)
+
+
+	@api.depends('product_uom_qty','price_unit')
+	def _compute_line_level_amount(self):
+		for line in self:
+			line.line_amount = line.product_uom_qty * line.price_unit

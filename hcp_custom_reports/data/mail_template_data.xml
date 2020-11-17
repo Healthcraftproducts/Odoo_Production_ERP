@@ -6,7 +6,7 @@
 <data noupdate="0">
 
 
-        <record id="quotation_email_template_send" model="mail.template">
+<!--         <record id="quotation_email_template_send" model="mail.template">
             <field name="name">Sales Order: Send by email</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="subject">${object.company_id.name} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.quotation_id or 'n/a' })</field>
@@ -228,7 +228,7 @@
             <field name="auto_delete" eval="True"/>
 
 
-</record>
+</record> -->
 
 --------------------------------------Invoice Email-------------------------------------------------
 
