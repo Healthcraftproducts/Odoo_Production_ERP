@@ -43,7 +43,7 @@
 
 ----------------------------------------Quotation/Order------------------------------------------------------
 
-<report 
+<!-- <report 
             id="sale.action_report_saleorder"
             string="Quotation / Order"
             model="sale.order" 
@@ -88,7 +88,7 @@
             name="hcp_custom_reports.report_pro_forma_invoice" 
             print_report_name="'PRO-FORMA - %s' % (object.name)"
         />
-
+ -->
 
 -----------------------------------------Purchase Report-----------------------------------------------------
 

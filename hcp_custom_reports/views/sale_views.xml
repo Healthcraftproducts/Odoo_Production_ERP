@@ -43,6 +43,7 @@
                                     <field name="require_payment"/>
                                     <field name="reference" readonly="1" attrs="{'invisible': [('reference', '=', False)]}"/>
                                     <field name="client_order_ref"/>
+                                    <field name="shipping_method"/>
                                 </group>
                                 <group name="sale_info" string="Invoicing">
                                     <field name="fiscal_position_id" options="{'no_create': True}"/>
@@ -85,8 +86,14 @@
 
         </xpath>
 
-<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='name']" position="after">
+        <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='name']" position="after">
             <field name="product_ship_method" invisible="1"/>
+        </xpath>
+
+        <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+
+                <field name="line_amount"/>            
+
         </xpath>
 
 
