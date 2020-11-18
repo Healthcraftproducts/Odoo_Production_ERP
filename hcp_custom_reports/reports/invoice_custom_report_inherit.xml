@@ -1,85 +1,85 @@
 <odoo>
 <template id="invoice_custom_report_inherit_template_id" inherit_id="account.report_invoice_document">
 
-	<xpath expr="//t[@t-set='address']/address" position="replace">
+    <xpath expr="//t[@t-set='address']/address" position="replace">
 
-		<address/>
+        <address/>
 
-	</xpath>
+    </xpath>
 
-	<xpath expr="//div[@class='page']" position="before">
-		    <br/><br/>
-			<table width="100%">
-					<tbody>
+    <xpath expr="//div[@class='page']" position="before">
+            <br/><br/>
+            <table width="100%">
+                    <tbody>
 
-					<tr>
-						<td style="width: 50%; text-align: left;"><strong><u>BILL TO:</u></strong></td>
-						<td style="width: 50%; text-align: left;"><strong><u>SHIP TO:</u></strong></td>
-						</tr>
-						<tr>
-						<td style="width: 50%; text-align: left;">
-						<span t-field="o.partner_id.name"/>
-						    <t t-if="o.partner_id.street!=False or o.partner_id.street2!=False">
-						    <br><span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/></br>
-						    </t>
-						    <t t-if ="o.partner_id.city!=False">
-						    <br><span t-field="o.partner_id.city"/></br>
-						</t>
-						    <t t-if ="o.partner_id.state_id!=False or o.partner_id.country_id!=False">
+                    <tr>
+                        <td style="width: 50%; text-align: left;"><strong><u>BILL TO:</u></strong></td>
+                        <td style="width: 50%; text-align: left;"><strong><u>SHIP TO:</u></strong></td>
+                        </tr>
+                        <tr>
+                        <td style="width: 50%; text-align: left;">
+                        <span t-field="o.partner_id.name"/>
+                            <t t-if="o.partner_id.street!=False or o.partner_id.street2!=False">
+                            <br><span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/></br>
+                            </t>
+                            <t t-if ="o.partner_id.city!=False">
+                            <br><span t-field="o.partner_id.city"/></br>
+                        </t>
+                            <t t-if ="o.partner_id.state_id!=False or o.partner_id.country_id!=False">
 
-						        <br><span t-field="o.partner_id.state_id"/><span t-field="o.partner_id.country_id"/></br>
-						    </t>
-						    <t t-if ="o.partner_id.zip!=False">
-						      <br><span t-field="o.partner_id.zip"/></br> 
-					      	</t>
-					      	<t t-if ="o.partner_id.phone!=False">
-						      <br><span t-field="o.partner_id.phone"/></br> 
-					      	</t>
-					      	<t t-if ="o.partner_id.email!=False">
-						      <br><span t-field="o.partner_id.email"/></br> 
-					      	</t>
-					      	<t t-if ="o.partner_id.bank_ids">
-					      		<t t-foreach="o.partner_id.bank_ids" t-as="ba">
-						      		<br><span t-field="ba.acc_number"/></br> 
-						      	</t>
-					      	</t>
-					      	<t t-if ="o.partner_id.email!=False">
-						      <br><span t-field="o.partner_id.vat"/></br> 
-					      	</t>
-						</td>
-						<td style="width: 50%; text-align: left;">
-						<span t-field="o.partner_shipping_id.name"/>
-						    <t t-if="o.partner_shipping_id.street!=False or o.partner_shipping_id.street2!=False">
-						    <br><span t-field="o.partner_shipping_id.street"/><span t-field="o.partner_shipping_id.street2"/></br>
-						    </t>
-						    <t t-if ="o.partner_shipping_id.city!=False">
-						    <br><span t-field="o.partner_shipping_id.city"/></br>
-						    </t>
-						<t t-if ="o.partner_shipping_id.state_id!=False or o.partner_shipping_id.country_id!=False">
-						        <br><span t-field="o.partner_shipping_id.state_id"/><span t-field="o.partner_shipping_id.country_id"/></br>
-						    </t>
-						    <t t-if ="o.partner_shipping_id.zip!=False">
-						      <br><span t-field="o.partner_shipping_id.zip"/></br> 
-						    </t>
-						    <t t-if ="o.partner_shipping_id.phone!=False">
-						      <br><span t-field="o.partner_shipping_id.phone"/></br> 
-						    </t>
-						    <t t-if ="o.partner_shipping_id.email!=False">
-						      <br><span t-field="o.partner_shipping_id.email"/></br> 
-						    </t>
-						  </td>
-					</tr>
-				</tbody>
-			</table>
- 	</xpath>
+                                <br><span t-field="o.partner_id.state_id"/><span t-field="o.partner_id.country_id"/></br>
+                            </t>
+                            <t t-if ="o.partner_id.zip!=False">
+                              <br><span t-field="o.partner_id.zip"/></br> 
+                            </t>
+                            <t t-if ="o.partner_id.phone!=False">
+                              <br><span t-field="o.partner_id.phone"/></br> 
+                            </t>
+                            <t t-if ="o.partner_id.email!=False">
+                              <br><span t-field="o.partner_id.email"/></br> 
+                            </t>
+                            <t t-if ="o.partner_id.bank_ids">
+                                <t t-foreach="o.partner_id.bank_ids" t-as="ba">
+                                    <br><span t-field="ba.acc_number"/></br> 
+                                </t>
+                            </t>
+                            <t t-if ="o.partner_id.email!=False">
+                              <br><span t-field="o.partner_id.vat"/></br> 
+                            </t>
+                        </td>
+                        <td style="width: 50%; text-align: left;">
+                        <span t-field="o.partner_shipping_id.name"/>
+                            <t t-if="o.partner_shipping_id.street!=False or o.partner_shipping_id.street2!=False">
+                            <br><span t-field="o.partner_shipping_id.street"/><span t-field="o.partner_shipping_id.street2"/></br>
+                            </t>
+                            <t t-if ="o.partner_shipping_id.city!=False">
+                            <br><span t-field="o.partner_shipping_id.city"/></br>
+                            </t>
+                        <t t-if ="o.partner_shipping_id.state_id!=False or o.partner_shipping_id.country_id!=False">
+                                <br><span t-field="o.partner_shipping_id.state_id"/><span t-field="o.partner_shipping_id.country_id"/></br>
+                            </t>
+                            <t t-if ="o.partner_shipping_id.zip!=False">
+                              <br><span t-field="o.partner_shipping_id.zip"/></br> 
+                            </t>
+                            <t t-if ="o.partner_shipping_id.phone!=False">
+                              <br><span t-field="o.partner_shipping_id.phone"/></br> 
+                            </t>
+                            <t t-if ="o.partner_shipping_id.email!=False">
+                              <br><span t-field="o.partner_shipping_id.email"/></br> 
+                            </t>
+                          </td>
+                    </tr>
+                </tbody>
+            </table>
+    </xpath>
 
- 	<xpath expr="//div[@id='informations']" position="replace">
+    <xpath expr="//div[@id='informations']" position="replace">
 
- 	</xpath>
+    </xpath>
 
- 	<xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
+    <xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
 
- 		<t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>
+        <t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>
 
             <table class="table table-sm o_main_table" width="100%">
                 <thead>
@@ -107,7 +107,7 @@
                         <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
                         <t t-if="not line.display_type">
                                 <td name="td_name" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.default_code"/></td>
-                                <td name="td_name" class="text-center" sstyle="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.name"/></td>
+                                <td name="td_name" class="text-center" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.name"/></td>
                                 <td name="td_quantity" class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.quantity"/>
                                     <span t-field="line.product_uom_id"/>
@@ -155,7 +155,7 @@
                 </tbody>
             </table>
     
- 	</xpath>
+    </xpath>
 
     <xpath expr="//div[@id='total']/div/table/tr[@class='border-black o_subtotal']" position="replace">
 
@@ -174,8 +174,8 @@
         <table class="table-sm o_main_table" width="100%">
             <tbody>
                 <tr>
-                    <td style="width: 60%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 20%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
                     <span><strong>Total (before Discount)</strong></span>
                     </td>
                     <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
@@ -184,8 +184,8 @@
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 60%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 20%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
                         <span><strong>Additional Product Discount</strong></span>
                     </td>
                     <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
@@ -194,8 +194,8 @@
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 60%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 20%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
                         <span><strong>Additional Shipping Discount</strong></span>
                     </td>
                     <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
@@ -204,30 +204,30 @@
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 60%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 20%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span><strong>Subtotal</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span style="text-align: right;"><span t-field="o.amount_untaxed"/></span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 60%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 20%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span><strong>Tax Rate</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span style="text-align: right;"><span t-field="o.amount_tax"/></span>
                     </td>
 
                     </tr>
                     <tr>
-                    <td style="width: 60%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 20%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span><strong>Total</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span style="text-align: right;"><span t-field="o.amount_total"/></span>
                     </td>
                 </tr>
