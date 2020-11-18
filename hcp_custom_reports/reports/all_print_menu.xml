@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 ---------------------------------account-------------------------------------------------------------
-<report
+<!-- <report
             id="account.account_invoices"
             model="account.move"
             string="Invoices"
@@ -38,7 +38,7 @@
             attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
             print_report_name="(object._get_report_base_filename())"
             groups="account.group_account_invoice"
-        />
+        /> -->
   
 
 ----------------------------------------Quotation/Order------------------------------------------------------
