@@ -28,7 +28,7 @@
         # 'reports/sale_custom_header.xml',
         'reports/all_print_menu.xml',
         'reports/sale_custom_report_inherit.xml',
-        'reports/invoice_report_inherit.xml',
+        'reports/invoice_custom_report_inherit.xml',
         'reports/purchase_quotation_inherit.xml',
         'reports/purchase_report_inherit.xml',
         'views/sale_views.xml',

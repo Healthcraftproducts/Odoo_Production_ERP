@@ -15,17 +15,20 @@
                 <field name="total_amount" invisible="1"/>
             
             </xpath>
- <xpath expr = "//field[@ name = 'invoice_line_ids']/tree/field[@name = 'quantity']" position = "before" > 
-                    <field name = "invoice_ship_method" /> 
-                </xpath> 
-<xpath expr = "//field[@name = 'line_ids']/tree/field[@name = 'account_id']" position = "before"> 
-        <field name = "invoice_ship_method" invisible="1" /> 
-</xpath> 
+            
+            <xpath expr = "//field[@name = 'invoice_line_ids']/tree/field[@name = 'quantity']" position = "before" > 
+                <field name = "invoice_ship_method" /> 
+            </xpath> 
 
+            <xpath expr = "//field[@name = 'line_ids']/tree/field[@name = 'account_id']" position = "before"> 
+                <field name = "invoice_ship_method" invisible="1" /> 
+            </xpath>
 
+            <xpath expr = "//field[@name = 'invoice_line_ids']/tree/field[@name = 'price_subtotal']" position = "after" > 
+                <field name = "inv_line_amount" /> 
+            </xpath>  
 
-
-            </field>
+    </field>
 
 </record>
 
