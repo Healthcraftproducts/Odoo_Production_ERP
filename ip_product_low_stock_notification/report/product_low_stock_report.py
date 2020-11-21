@@ -27,18 +27,18 @@ class ProductLowStockReport(models.AbstractModel):
 
         if company_ids and company_ids:
             domain += [('company_id', 'in', company_ids)]
-        if location_ids and location_ids:
+        if location_ids:
             loc = location_ids[0]
-            domain += ['|', ('location_id', '=', 'loc'), ('location_id', 'parent_of', 'loc')]
-        if stock_notification_type == 'global':
-            product_ids = self.env['product.product'].search([('type', 'not in', ['service'])])
-            for product_id in product_ids:
-                product_domain = [('product_id', '=', product_id.id)]
-                quant_ids = StockQuantObj.search(domain + product_domain)
-                for quant_id in quant_ids:
-                    if quant_id.quantity < min_qty:
-                        product_list.append(quant_id)
-                return_list['quant_ids'] = product_list
+            domain += ['|', ('location_id', '=', loc), ('location_id', 'child_of', loc)]
+        # if stock_notification_type == 'global':
+        #     product_ids = self.env['product.product'].search([('type', 'not in', ['service'])])
+        #     for product_id in product_ids:
+        #         product_domain = [('product_id', '=', product_id.id)]
+        #         quant_ids = StockQuantObj.search(domain + product_domain)
+        #         for quant_id in quant_ids:
+        #             if quant_id.quantity < min_qty:
+        #                 product_list.append(quant_id)
+        #         return_list['quant_ids'] = product_list
         if stock_notification_type == 'individual':
             product_ids = self.env['product.product'].search([('type', 'not in', ['service'])])
             for product_id in product_ids:
@@ -123,15 +123,15 @@ class ProductLowStockReport(models.AbstractModel):
             domain += [('company_id', 'in', company_ids)]
         if location_ids and location_ids:
             domain += ['|', ('location_id', 'in', location_ids), ('location_id', 'child_of', location_ids)]
-        if stock_notification_type == 'global':
-            product_ids = self.env['product.product'].search([('type', 'not in', ['service'])])
-            for product_id in product_ids:
-                product_domain = [('product_id', '=', product_id.id)]
-                quant_ids = StockQuantObj.search(domain + product_domain)
-                for quant_id in quant_ids:
-                    if quant_id.quantity < min_qty:
-                        product_list.append(quant_id)
-                return_list['quant_ids'] = product_list
+        # if stock_notification_type == 'global':
+        #     product_ids = self.env['product.product'].search([('type', 'not in', ['service'])])
+        #     for product_id in product_ids:
+        #         product_domain = [('product_id', '=', product_id.id)]
+        #         quant_ids = StockQuantObj.search(domain + product_domain)
+        #         for quant_id in quant_ids:
+        #             if quant_id.quantity < min_qty:
+        #                 product_list.append(quant_id)
+        #         return_list['quant_ids'] = product_list
         if stock_notification_type == 'individual':
             product_ids = self.env['product.product'].search([('type', 'not in', ['service'])])
             for product_id in product_ids:
