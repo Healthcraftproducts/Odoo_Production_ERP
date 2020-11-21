@@ -12,7 +12,7 @@
                 <tbody>
                     <tr>
 
-                        <td style="width: 10%; text-align: left;" border="None"><br><img t-if="company.logo" width="120" height="120" t-att-src="image_data_uri(company.logo)" alt="Logo"/></br></td>
+                        <td style="width: 10%; text-align: left;" border="None"><br><img t-if="company.logo" width="140" height="140" t-att-src="image_data_uri(company.logo)" alt="Logo"/></br></td>
                         <td style="width: 90%; text-align: left;" border="None">
                            <p>&amp;nbsp;</p> 
                             <strong><span style="font-size:32px;" t-field= "company.partner_id.name"/></strong>
