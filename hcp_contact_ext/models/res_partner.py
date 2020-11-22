@@ -146,7 +146,8 @@ class ResPartner(models.Model):
 								('invacare_transition','Invacare Transition'),
 								('google','Google'),
 								('alfa','ALFA - Assisted Living Federation of America'),
-								('tradeshow','Tradeshow')],string="Source")
+								('tradeshow','Tradeshow'),
+								('live_chat','Live Chat')],string="Source")
 	hcp_display_healthcraft = fields.Many2many('displays.healthcraft',string="Display HealthCraft")
 	hcp_display_invisia = fields.Many2many('displays.invisia',string="Display Invisia")
 	hcp_ship_via_description = fields.Char(string="Ship Via Description")
