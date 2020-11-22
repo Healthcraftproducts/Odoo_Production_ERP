@@ -146,7 +146,8 @@ class ResPartner(models.Model):
 								('invacare_transition','Invacare Transition'),
 								('google','Google'),
 								('alfa','ALFA - Assisted Living Federation of America'),
-								('tradeshow','Tradeshow')],string="Source")
+								('tradeshow','Tradeshow'),
+								('live_chat','Live Chat')],string="Source")
 	hcp_display_healthcraft = fields.Many2many('displays.healthcraft',string="Display HealthCraft")
 	hcp_display_invisia = fields.Many2many('displays.invisia',string="Display Invisia")
 	hcp_ship_via_description = fields.Char(string="Ship Via Description")
@@ -157,12 +158,15 @@ class ResPartner(models.Model):
 	hcp_taxes_id = fields.Many2many('account.tax', 'tax_id', string='Tax Groups',domain=[('type_tax_use', '=', 'sale')])
 	hcp_group_code = fields.Many2one('hcp.group.code', string='Group Code - New')
 	federal_tax_id = fields.Char('Federal Tax ID')
-	#hcp_fea_registration = fields.Char(string="FEA Registration #")
+	hcp_fea_registration = fields.Char(string="FEA Registration #")
 	company_type = fields.Selection(string='Company Type',
 		selection=[('person', 'Individual'), ('company', 'Company')],
 		compute='_compute_company_type', inverse='_write_company_type',
 		default='company')	
-    
+	hcp_is_customer = fields.Boolean(string="Is Customer?")
+	hcp_customer_currency = fields.Many2one("res.currency",string="Customer Currency")
+	hcp_is_vendor = fields.Boolean(string="Is Vendor?")
+
 	@api.model
 	def create(self, vals_list):
 		res = super(ResPartner, self).create(vals_list)
