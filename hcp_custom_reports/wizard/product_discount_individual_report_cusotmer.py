@@ -15,12 +15,12 @@ class ProductReportOut(models.Model):
 	_description = 'Discount order report'
 
 	product_data = fields.Char('Name', size=256)
-	file_name = fields.Binary('Product Discount Excel Report', readonly=True)
+	file_name = fields.Binary('Discounts given - Detailed Report', readonly=True)
 
 
 class ProductDiscountWizard(models.TransientModel):
 	_name = "product.discount.individual.customer.wizard"
-	_description = "product discount xls customer report wizard"
+	_description = "Discounts given - Detailed Report"
 
 	date_from = fields.Date(string="Date From",required=True)
 	date_to = fields.Date(string="Date To",required=True)
@@ -87,8 +87,9 @@ class ProductDiscountWizard(models.TransientModel):
 
 	def print_xlsx_report(self):
 		workbook = xlwt.Workbook()
-		sheet = workbook.add_sheet("Product Discount XLS Report")
-		format2 = xlwt.easyxf('font: bold 1') 
+		sheet = workbook.add_sheet("Discounts given - Detailed Report")
+		format2 = xlwt.easyxf('font: bold 1')
+		style1 = xlwt.easyxf(num_format_str='#,##0.00')
 		sheet.write(0,0,'SO#',format2)
 		sheet.write(0,1,'CUST#',format2)
 		sheet.write(0,2,'Customer Name',format2)
@@ -106,15 +107,15 @@ class ProductDiscountWizard(models.TransientModel):
 			sheet.write(row_number,2,value[2])
 			sheet.write(row_number,3,value[3])
 			sheet.write(row_number,4,value[4])
-			sheet.write(row_number,5,value[5])
-			sheet.write(row_number,6,value[6])
+			sheet.write(row_number,5,value[5],style1)
+			sheet.write(row_number,6,value[6],style1)
 			row_number+=1	
 
 		output = StringIO()
 		if platform.system() == 'Linux':
-			filename = ('/tmp/Product Discount Report' +'.xls')
+			filename = ('/tmp/Discounts given - Detailed Report' +'.xls')
 		else:
-			filename = ('Product Discount Report' +'.xls')
+			filename = ('Discounts given - Detailed Report' +'.xls')
 
 		workbook.save(filename)
 		fp = open(filename, "rb")
@@ -123,7 +124,7 @@ class ProductDiscountWizard(models.TransientModel):
 
 		# Files actions
 		attach_vals = {
-				'product_data': 'Product Discount Report Customer Wise'+ '.xls',
+				'product_data': 'Discounts given - Detailed Report'+ '.xls',
 				'file_name': out,
 				# 'purchase_work':'Purchase'+ '.csv',
 				# 'file_names':data,

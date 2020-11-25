@@ -4,7 +4,7 @@
         <field name="name">product.discount.consolidated.form</field>
         <field name="model">product.discount.consolidated.wizard</field>
         <field name="arch" type="xml">
-            <form string="Product Discount  Consolidated">
+            <form string="Discounts given - Summary Report">
                 <group>
                     <group>
                         
@@ -25,7 +25,7 @@
         <field name="name">discount.report.out</field>
         <field name="model">discount.report.out</field>
         <field name="arch" type="xml">
-            <form string="Export Discount Consolidated XLS">
+            <form string="Discounts given - Summary Report">
                 <group>
                     <field name="file_name" filename="discount_data" />
                     <field name="discount_data" invisible="1" />
@@ -47,5 +47,5 @@
         <field name="view_id" ref="product_discount_consolidated_wizard_id"/>
     </record> 
 
-    <menuitem id="menu_product_discount_consolidated_id" name="Product Discount Consolidated XLS Reprot" action="action_product_discount_view_id" parent="sale.menu_sale_report" sequence="4"/>
+    <menuitem id="menu_product_discount_consolidated_id" name="Discounts given - Summary Report(Product Wise)" action="action_product_discount_view_id" parent="sale.menu_sale_report" sequence="4"/>
 </odoo>

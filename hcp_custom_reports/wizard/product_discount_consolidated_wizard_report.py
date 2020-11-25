@@ -17,12 +17,12 @@ class DiscountReportout(models.Model):
 	_description = 'Discount Consolidated report'
 
 	discount_data = fields.Char('Name', size=256)
-	file_name = fields.Binary('Product Discount Excel Report', readonly=True)
+	file_name = fields.Binary('Discounts given - Summary Report', readonly=True)
 
 
 class ProductDiscountWizard(models.TransientModel):
 	_name = "product.discount.consolidated.wizard"
-	_description = "product discount xls report wizard"
+	_description = "Discounts given - Summary Report"
 
 	date_from = fields.Date(string="Date From",required=True)
 	date_to = fields.Date(string="Date To",required=True)
@@ -54,7 +54,7 @@ class ProductDiscountWizard(models.TransientModel):
 		# if sql_data:
 		# 	raise UserError(len(sql_data))
 		workbook = xlwt.Workbook()
-		sheet = workbook.add_sheet("Product Discount Consolidated XLS Report")
+		sheet = workbook.add_sheet("Discounts given - Summary Report")
 		format2 = xlwt.easyxf('font: bold 1') 
 		# sheet.write(0,0,'product id',format2)
 		sheet.write(0,0,'Product Name',format2)
@@ -66,9 +66,9 @@ class ProductDiscountWizard(models.TransientModel):
 		
 		output = StringIO()
 		if platform.system() == 'Linux':
-			filename = ('/tmp/Product Discount Consolidated Report' +'.xls')
+			filename = ('/tmp/Discounts given - Summary Report' +'.xls')
 		else:
-			filename = ('Product Discount Consolidated Report' +'.xls')
+			filename = ('Discounts given - Summary Report' +'.xls')
 
 		workbook.save(filename)
 		fp = open(filename, "rb")
@@ -77,7 +77,7 @@ class ProductDiscountWizard(models.TransientModel):
 
 		# Files actions
 		attach_vals = {
-				'discount_data': 'Product Discount Consolidated Report'+ '.xls',
+				'discount_data': 'Discounts given - Summary Report'+ '.xls',
 				'file_name': out,
 				# 'purchase_work':'Purchase'+ '.csv',
 				# 'file_names':data,
