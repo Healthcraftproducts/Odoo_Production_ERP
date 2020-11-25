@@ -14,7 +14,8 @@
                     </group>
                 </group>
                 <footer>
-                    <button string='Print' name="print_xlsx_report" type="object" default_focus="1" class="oe_highlight"/>
+                    <button name="print_discount_summary_report_pdf" type="object" string="Print PDF" class="oe_highlight"/>
+                    <button string='Print XLS' name="print_xlsx_report" type="object" default_focus="1" class="oe_highlight"/>
                     <button string="Cancel" class="btn-default" special="cancel"/>
                 </footer>   
             </form>
@@ -40,12 +41,12 @@
     </record>
 
     <record id="action_product_discount_view_id" model="ir.actions.act_window">
-        <field name="name">Product Discount Consolidated</field>
+        <field name="name">Discounts given - Summary Report</field>
         <field name="res_model">product.discount.consolidated.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="view_id" ref="product_discount_consolidated_wizard_id"/>
     </record> 
 
-    <menuitem id="menu_product_discount_consolidated_id" name="Discounts given - Summary Report(Product Wise)" action="action_product_discount_view_id" parent="sale.menu_sale_report" sequence="4"/>
+    <menuitem id="menu_product_discount_consolidated_id" name="Discounts Given - Summary Report(Product Wise)" action="action_product_discount_view_id" parent="sale.menu_sale_report" sequence="4"/>
 </odoo>

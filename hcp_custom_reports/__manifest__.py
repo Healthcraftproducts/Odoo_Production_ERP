@@ -31,6 +31,8 @@
         'reports/invoice_custom_report_inherit.xml',
         'reports/purchase_quotation_inherit.xml',
         'reports/purchase_report_inherit.xml',
+        'reports/report_action_view.xml',
+        'reports/report_product_discount_detailed.xml',
         'views/sale_views.xml',
         'views/invoice_views.xml',
         'wizard/product_discount_consolidated_wizard_views.xml',

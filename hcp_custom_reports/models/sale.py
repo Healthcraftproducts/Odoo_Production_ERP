@@ -8,8 +8,6 @@ from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 
-
-
 from werkzeug.urls import url_encode
 
 

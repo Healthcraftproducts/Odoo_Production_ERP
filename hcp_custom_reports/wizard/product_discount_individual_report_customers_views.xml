@@ -15,7 +15,8 @@
                     </group>
                 </group>
                 <footer>
-                    <button string='Print' name="print_xlsx_report" type="object" default_focus="1" class="oe_highlight"/>
+                    <button name="print_discount_details_report_pdf" type="object" string="Print PDF" class="oe_highlight"/>
+                    <button string='Print XLS' name="print_xlsx_report" type="object" default_focus="1" class="oe_highlight"/>
                     <button string="Cancel" class="btn-default" special="cancel"/>
                 </footer>   
             </form>
@@ -42,7 +43,7 @@
 
 
     <record id="product_action_wizard_customer_wise_id" model="ir.actions.act_window">
-        <field name="name">Product Discount Customer individual reprot</field>
+        <field name="name">Discounts given - Detailed Report</field>
         <field name="res_model">product.discount.individual.customer.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

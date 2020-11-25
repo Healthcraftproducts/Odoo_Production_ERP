@@ -26,6 +26,16 @@ class ProductDiscountWizard(models.TransientModel):
 	date_to = fields.Date(string="Date To",required=True)
 	partner_id = fields.Many2one('res.partner', string="Customer")
 
+	def print_discount_details_report_pdf(self):
+		# data = {}
+		# data['form'] = (self.read(['date_from', 'date_to', 'partner_id'])[0])
+		data = {
+			'model': 'product.discount.individual.customer.wizard',
+			'form': self.read()[0]
+				}
+		return self.env.ref('hcp_custom_reports.action_report_discount_details').report_action(self, data=data)
+
+
 	def get_data(self):
 		discount_list=[]
 		return_list ={}
@@ -38,10 +48,11 @@ class ProductDiscountWizard(models.TransientModel):
 					date = datetime.strptime(str(dt), "%Y-%m-%d %H:%M:%S").date()
 					if date>=self.date_from and date<=self.date_to:
 						for line in sale.order_line:
-							a = sale.id
-							b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100]
-							discount_details ={'id':a,'values':b}
-							discount_list.append(discount_details)
+							if not line.display_type:
+								a = sale.id
+								b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100]
+								discount_details ={'id':a,'values':b}
+								discount_list.append(discount_details)
 				list_product=discount_list
 				for data in list_product:
 					prdt_details =[]
@@ -64,10 +75,11 @@ class ProductDiscountWizard(models.TransientModel):
 				date = datetime.strptime(str(dt), "%Y-%m-%d %H:%M:%S").date()
 				if date>=self.date_from and date<=self.date_to:
 					for line in sale.order_line:
-						a = sale.id
-						b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100]
-						discount_details ={'id':a,'values':b}
-						discount_list.append(discount_details)
+						if not line.display_type:
+							a = sale.id
+							b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100]
+							discount_details ={'id':a,'values':b}
+							discount_list.append(discount_details)
 			list_product=discount_list
 			for data in list_product:
 				prdt_details =[]
@@ -87,21 +99,38 @@ class ProductDiscountWizard(models.TransientModel):
 
 	def print_xlsx_report(self):
 		workbook = xlwt.Workbook()
-		sheet = workbook.add_sheet("Discounts given - Detailed Report")
+		sheet = workbook.add_sheet("Discounts Given - Detailed Report")
 		format2 = xlwt.easyxf('font: bold 1')
+		format3 = xlwt.easyxf('font: bold 1; align: horiz right',)
+		first_col = sheet.col(0)
+		two_col = sheet.col(1)
+		three_col = sheet.col(2)
+		fourth_col = sheet.col(3)
+		fifth_col = sheet.col(4)
+		sixth_col = sheet.col(5)
+		seventh_col = sheet.col(6)
+		first_col.width = 150*20
+		two_col.width = 150*20
+		three_col.width = 500*20
+		fourth_col.width = 150*20
+		fifth_col.width = 500 * 20
+		sixth_col.width = 200 * 20
+		seventh_col.width = 250 * 20
+
 		style1 = xlwt.easyxf(num_format_str='#,##0.00')
 		sheet.write(0,0,'SO#',format2)
 		sheet.write(0,1,'CUST#',format2)
 		sheet.write(0,2,'Customer Name',format2)
 		sheet.write(0,3,'Product#',format2)
 		sheet.write(0,4,'Product Name',format2)
-		sheet.write(0,5,'Discount%',format2)
-		sheet.write(0,6,'Discount Amount',format2)
+		sheet.write(0,5,'Discount(%)',format3)
+		sheet.write(0,6,'Discount Amount',format3)
 		data = self.get_data()
 		dt = data.get('sale_ids')
 		row_number = 1
 		# col_number =0
 		for value in dt:
+			# raise UserError(round(value[5],2))
 			sheet.write(row_number,0,value[0])
 			sheet.write(row_number,1,value[1])
 			sheet.write(row_number,2,value[2])
@@ -113,9 +142,9 @@ class ProductDiscountWizard(models.TransientModel):
 
 		output = StringIO()
 		if platform.system() == 'Linux':
-			filename = ('/tmp/Discounts given - Detailed Report' +'.xls')
+			filename = ('/tmp/Discounts Given - Detailed Report' +'.xls')
 		else:
-			filename = ('Discounts given - Detailed Report' +'.xls')
+			filename = ('Discounts Given - Detailed Report' +'.xls')
 
 		workbook.save(filename)
 		fp = open(filename, "rb")
@@ -124,7 +153,7 @@ class ProductDiscountWizard(models.TransientModel):
 
 		# Files actions
 		attach_vals = {
-				'product_data': 'Discounts given - Detailed Report'+ '.xls',
+				'product_data': 'Discounts Given - Detailed Report'+ '.xls',
 				'file_name': out,
 				# 'purchase_work':'Purchase'+ '.csv',
 				# 'file_names':data,
