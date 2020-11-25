@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_product_discount_details_given">
+            <t t-call="web.basic_layout">
+                <t t-set="discount_dic" t-value="discount_report"/>
+                
+                <div class="page">
+                    
+                    <div style="text-align:center;">
+                        <span style="font-size: 24px;text-align:center;"><strong>Discounts Given - Detailed Report</strong></span>
+                    </div><br/><br/>
+                
+                
+                    <table class="table_border" width ="100%">
+                        
+                            <tr>
+                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">SO#</th>
+                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">Cust#</th>
+                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">Customer Name</th>
+                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">Product#</th>
+                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">Product Name</th>
+                                <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">Discount(%)</th>
+                                <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">Discount Amount</th>
+                            </tr>
+                        
+                        <tbody>
+                            
+                                <t t-foreach="discount_dic.get('sale_ids')" t-as="sale_id">
+                                    <tr>
+                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
+                                            <span t-esc="sale_id[0]"/>
+                                        </td>
+                                       
+                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
+                                            <span t-esc="sale_id[1]"/>
+                                        </td>
+                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">
+                                            <span t-esc="sale_id[2]"/> 
+                                        </td>
+                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
+                                            <span t-esc="sale_id[3]"/>
+                                        </td>
+                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">
+                                            <span t-esc="sale_id[4]"/>
+                                        </td>
+                                        <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
+                                            <span t-esc="float(sale_id[5])"/>
+                                        </td>
+                                        <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
+                                            <span t-esc="float(sale_id[6])"/>
+                                        </td>
+                                    </tr>
+                            
+                                </t>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+
+
+
+        <template id="discount_summary_product_wise_report">
+
+            <t t-call="web.basic_layout">
+
+                <t t-set="discount_dic" t-value="discount_value"/>
+
+                    <!-- <span t-esc="discount_dic"/> -->
+                    
+                    <div class="page">
+
+                        <div style="text-align:center;">
+                             <span style="font-size: 24px;text-align:center;"><strong>Discounts Summary - Report(Product Wise)</strong></span>
+                        </div><br/><br/>
+
+                            <table  width ="100%">
+
+                                <tr>
+                                    <th style="text-align:left; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="40%">Product Name</th>
+                                    <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">Discount(%)</th>
+                                    <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">Discount Amount</th>
+                                    
+                                </tr>
+
+                                <tbody>
+                            
+                                    <t t-foreach="discount_dic" t-as="sale_id">
+                                        <tr>
+                                            <td style="text-align:left; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="40%">
+                                                <span t-esc="sale_id[0]"/>
+                                            </td>
+                                           
+                                            <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">
+                                                <span t-esc="sale_id[1]"/>
+                                            </td>
+                                            <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">
+                                                <span t-esc="sale_id[2]"/> 
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+
+                </div>    
+            </t>    
+        </template>
+
+
+
+    </data>
+</odoo>
