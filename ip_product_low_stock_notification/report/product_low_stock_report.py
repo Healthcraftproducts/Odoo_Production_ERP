@@ -44,10 +44,10 @@ class ProductLowStockReport(models.AbstractModel):
             for product_id in product_ids:
                 product_domain = [('product_id', '=', product_id.id)]
                 quant_ids = StockQuantObj.search(domain + product_domain)
-                tot_qty = sum(quant_id.quantity for quant_id in quant_ids if quant_id.quantity < product_id.minimum_qty)
+                tot_qty = sum(quant_id.quantity for quant_id in quant_ids)
                 
                 for quant_id in quant_ids:
-                    if quant_id.quantity < product_id.minimum_qty:
+                    if tot_qty < product_id.minimum_qty:
                         c=quant_id.product_id.id
                         d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name]
                         product_detail1 = {'id':c,'values':d}
@@ -78,10 +78,10 @@ class ProductLowStockReport(models.AbstractModel):
             for rule_id in reordering_rule_ids:
                 product_domain = [('product_id', '=', rule_id.product_id.id)]
                 quant_ids = StockQuantObj.search(domain + product_domain)
-                total_qty = sum(quant_id.quantity for quant_id in quant_ids if quant_id.quantity < rule_id.product_min_qty)
+                total_qty = sum(quant_id.quantity for quant_id in quant_ids)
                 # total_qty = -(total_qty)
                 for quant_id in quant_ids:
-                    if quant_id.quantity < rule_id.product_min_qty:
+                    if total_qty < rule_id.product_min_qty:
                         a=quant_id.product_id.id
                         b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name]
                         product_detail = {'id':a,'values':b}
