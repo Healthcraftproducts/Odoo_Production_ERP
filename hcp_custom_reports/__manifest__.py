@@ -23,19 +23,23 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
 
         # 'reports/sale_custom_header.xml',
         'reports/all_print_menu.xml',
-        'reports/sale_report_inherit.xml',
-        'reports/invoice_report_inherit.xml',
+        'reports/sale_custom_report_inherit.xml',
+        'reports/invoice_custom_report_inherit.xml',
         'reports/purchase_quotation_inherit.xml',
         'reports/purchase_report_inherit.xml',
         'views/sale_views.xml',
         'views/invoice_views.xml',
+        'wizard/product_discount_consolidated_wizard_views.xml',
+        'wizard/product_discount_individual_report_customers_views.xml',
+        'reports/report_action_view.xml',
+        'reports/report_product_discount_detailed.xml',
         'data/mail_template_data.xml',
         'data/sale_sequence.xml',
-        'data/sale_default_data.xml',
+        # 'data/sale_default_data.xml',
         
         # 'reports/invoice_custom_header.xml',
         
