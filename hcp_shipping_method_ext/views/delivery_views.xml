@@ -27,7 +27,7 @@
                 <field name="partner_country_name"/>
             </field>
             <filter name="customer" position="after">
-                <filter name="Country" string="Partner Country" domain="[]"
+                <filter name="Country" string="Delivery Country" domain="[]"
                         context="{'group_by': 'partner_country_name'}"/>
             </filter>
         </field>
@@ -43,5 +43,51 @@
             </field>
         </field>
     </record>
+
+    <record id="account_move_shipping_tree_view" model="ir.ui.view">
+            <field name="name">account.move.shipping.tree.view</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="invoice_user_id" position="after">
+                    <field name="partner_country_name" optional="hide" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+    <record id="vpicktree_inherit_country" model="ir.ui.view">
+            <field name="name">stock.picking.tree</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <field name="partner_country_name" optional="hide" invisible="1"/>
+                </field>
+            </field>
+    </record>
+
+    <record id="shipping_view_stock_picking_filter_country" model="ir.ui.view">
+            <field name="name">stock.picking.search</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='status']" position="after">
+                    <filter string="Delivery Country" name="partner_country_name" domain="[]" context="{'group_by':'partner_country_name'}" />
+                </xpath>
+            </field>
+        </record>
+
+
+    <record id="delivery_view_account_invoice_inherit_filter" model="ir.ui.view">
+            <field name="name">account.move.search</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='status']" position="after">
+                    <filter string="Delivery Country" name="partner_country_name" domain="[]" context="{'group_by':'partner_country_name'}" />
+                </xpath>
+            </field>
+        </record>
+
 
 </odoo>

@@ -11,15 +11,28 @@ class SaleOrder(models.Model):
     partner_country_name = fields.Char('Partner Country',compute="compute_country_id",store=True)
 
 
-    @api.depends('partner_id','partner_id.country_id')
+    @api.depends('partner_shipping_id','partner_shipping_id.country_id')
     def compute_country_id(self):
         for rec in self:
-            if rec.partner_id:
-                # rec.partner_country_id = rec.partner_id.country_id
-                rec.partner_country_name = rec.partner_id.country_id.name
+            if rec.partner_shipping_id:
+                rec.partner_country_name = rec.partner_shipping_id.country_id.name
+
+class AccountMove(models.Model):
+    _inherit = "account.move"
+
+
+    partner_country_name = fields.Char('Delivery Country',compute="compute_country_id",store=True)
+
+    @api.depends('partner_shipping_id', 'partner_shipping_id.country_id')
+    def compute_country_id(self):
+        for rec in self:
+            if rec.partner_shipping_id:
+                rec.partner_country_name = rec.partner_shipping_id.country_id.name
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
+
+    partner_country_name = fields.Char('Delivery Country', compute="compute_country_id", store=True)
 
     def add_delivery_cost_to_so(self):
         self._add_delivery_cost_to_so()
@@ -42,6 +55,12 @@ class StockPicking(models.Model):
                     # 'name': sale_order.carrier_id.with_context(lang=self.partner_id.lang).name,
                 })
         return res
+
+    @api.depends('partner_id', 'partner_id.country_id')
+    def compute_country_id(self):
+        for rec in self:
+            if rec.partner_id:
+                rec.partner_country_name = rec.partner_id.country_id.name
 
 
 
