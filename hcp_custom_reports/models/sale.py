@@ -8,6 +8,8 @@ from odoo.tools.misc import formatLang, get_lang
 from odoo.osv import expression
 from odoo.tools import float_is_zero, float_compare
 
+
+
 from werkzeug.urls import url_encode
 
 
@@ -100,6 +102,7 @@ class SaleOrder(models.Model):
 											"the order lines in case of Service products. In case of shipping, the shipping policy of "
 											"the order will be taken into account to either use the minimum or maximum lead time of "
 											"the order lines.",inverse='_inverse_expected_date')
+	ship_via_desc = fields.Char(string="Ship Via Description")
 	# state = fields.Selection([
 	# 			('draft', 'Draft SO'),
 	# 			('sent', 'Draft SO Sent'),
@@ -165,7 +168,13 @@ class SaleOrder(models.Model):
 			self.person_name= False
 			self.email=False
 			self.phone=False
-			
+		
+
+	@api.onchange('partner_invoice_id')
+	def on_change_carrier_id(self):
+		if self.partner_invoice_id:
+			self.carrier_id = self.partner_invoice_id.property_delivery_carrier_id
+			self.ship_via_desc = self.partner_invoice_id.hcp_ship_via_description
 
 
 
@@ -269,3 +278,17 @@ class SaleOrderLine(models.Model):
 	def _compute_line_level_amount(self):
 		for line in self:
 			line.line_amount = line.product_uom_qty * line.price_unit
+
+
+
+
+class AccountFiscalPosition(models.Model):
+	_inherit = 'account.fiscal.position'
+
+	tax_rate = fields.Char(string = "Tax Rate")
+
+
+class Country(models.Model):
+	_inherit = 'res.country'
+
+	remittance_address = fields.Char(string="Remittance Address")
