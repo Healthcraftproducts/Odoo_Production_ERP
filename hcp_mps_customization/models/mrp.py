@@ -27,7 +27,7 @@ class ProcurementGroup(models.Model):
     _inherit = 'procurement.group'    
     
     Procurement = namedtuple('Procurement', ['product_id', 'product_qty',
-        'product_uom', 'location_id', 'name', 'origin', 'company_id', 'values','mo_reference'])
+        'product_uom', 'location_id', 'name', 'origin', 'company_id', 'values',])
 
     @api.model
     def run(self, procurements):
@@ -141,7 +141,7 @@ class ProcurementGroup(models.Model):
                                             self.env['procurement.group'].run([self.env['procurement.group'].Procurement(
                                                 orderpoint.product_id, qty_rounded, orderpoint.product_uom,
                                                 orderpoint.location_id, orderpoint.name, orderpoint.name,
-                                                orderpoint.company_id, values,mo_reference)])
+                                                orderpoint.company_id, values)])
                                     except UserError as error:
                                         self.env['stock.rule']._log_next_activity(orderpoint.product_id, error.name)
                                     self._procurement_from_orderpoint_post_process([orderpoint.id])
@@ -362,7 +362,7 @@ class StockRule(models.Model):
             moves._action_confirm()
         return True
 
-    def _get_stock_move_values(self, product_id, product_qty, product_uom, location_id, name, origin, company_id, values, mo_reference):
+    def _get_stock_move_values(self, product_id, product_qty, product_uom, location_id, name, origin, company_id, values):
         ''' Returns a dictionary of values that will be used to create a stock move from a procurement.
         This function assumes that the given procurement has a rule (action == 'pull' or 'pull_push') set on it.
 
@@ -425,55 +425,62 @@ class PurchaseOrderLine(models.Model):
 
 class StockMove(models.Model):
     _inherit = 'stock.move'
+
+    def _prepare_procurement_values(self):
+        values = super(StockMove, self)._prepare_procurement_values()
+        values.update({
+            'mo_reference': False
+        })
+        return values
     
-    def _action_confirm(self, merge=True, merge_into=False):
-        """ Confirms stock move or put it in waiting if it's linked to another move.
-        :param: merge: According to this boolean, a newly confirmed move will be merged
-        in another move of the same picking sharing its characteristics.
-        """
-        move_create_proc = self.env['stock.move']
-        move_to_confirm = self.env['stock.move']
-        move_waiting = self.env['stock.move']
-
-        to_assign = {}
-        for move in self:
-            # if the move is preceeded, then it's waiting (if preceeding move is done, then action_assign has been called already and its state is already available)
-            if move.move_orig_ids:
-                move_waiting |= move
-            else:
-                if move.procure_method == 'make_to_order':
-                    move_create_proc |= move
-                else:
-                    move_to_confirm |= move
-            if move._should_be_assigned():
-                key = (move.group_id.id, move.location_id.id, move.location_dest_id.id)
-                if key not in to_assign:
-                    to_assign[key] = self.env['stock.move']
-                to_assign[key] |= move
-
-        # create procurements for make to order moves
-        procurement_requests = []
-        for move in move_create_proc:
-            values = move._prepare_procurement_values()
-            mo_reference = False
-            origin = (move.group_id and move.group_id.name or (move.origin or move.picking_id.name or "/"))
-            procurement_requests.append(self.env['procurement.group'].Procurement(
-                move.product_id, move.product_uom_qty, move.product_uom,
-                move.location_id, move.rule_id and move.rule_id.name or "/",
-                origin, move.company_id, values, mo_reference))
-        self.env['procurement.group'].run(procurement_requests)
-
-        move_to_confirm.write({'state': 'confirmed'})
-        (move_waiting | move_create_proc).write({'state': 'waiting'})
-
-        # assign picking in batch for all confirmed move that share the same details
-        for moves in to_assign.values():
-            moves._assign_picking()
-        self._push_apply()
-        self._check_company()
-        if merge:
-            return self._merge_moves(merge_into=merge_into)
-        return self
+    # def _action_confirm(self, merge=True, merge_into=False):
+    #     """ Confirms stock move or put it in waiting if it's linked to another move.
+    #     :param: merge: According to this boolean, a newly confirmed move will be merged
+    #     in another move of the same picking sharing its characteristics.
+    #     """
+    #     move_create_proc = self.env['stock.move']
+    #     move_to_confirm = self.env['stock.move']
+    #     move_waiting = self.env['stock.move']
+    #
+    #     to_assign = {}
+    #     for move in self:
+    #         # if the move is preceeded, then it's waiting (if preceeding move is done, then action_assign has been called already and its state is already available)
+    #         if move.move_orig_ids:
+    #             move_waiting |= move
+    #         else:
+    #             if move.procure_method == 'make_to_order':
+    #                 move_create_proc |= move
+    #             else:
+    #                 move_to_confirm |= move
+    #         if move._should_be_assigned():
+    #             key = (move.group_id.id, move.location_id.id, move.location_dest_id.id)
+    #             if key not in to_assign:
+    #                 to_assign[key] = self.env['stock.move']
+    #             to_assign[key] |= move
+    #
+    #     # create procurements for make to order moves
+    #     procurement_requests = []
+    #     for move in move_create_proc:
+    #         values = move._prepare_procurement_values()
+    #         mo_reference = False
+    #         origin = (move.group_id and move.group_id.name or (move.origin or move.picking_id.name or "/"))
+    #         procurement_requests.append(self.env['procurement.group'].Procurement(
+    #             move.product_id, move.product_uom_qty, move.product_uom,
+    #             move.location_id, move.rule_id and move.rule_id.name or "/",
+    #             origin, move.company_id, values,))
+    #     self.env['procurement.group'].run(procurement_requests)
+    #
+    #     move_to_confirm.write({'state': 'confirmed'})
+    #     (move_waiting | move_create_proc).write({'state': 'waiting'})
+    #
+    #     # assign picking in batch for all confirmed move that share the same details
+    #     for moves in to_assign.values():
+    #         moves._assign_picking()
+    #     self._push_apply()
+    #     self._check_company()
+    #     if merge:
+    #         return self._merge_moves(merge_into=merge_into)
+    #     return self
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'

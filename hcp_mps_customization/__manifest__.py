@@ -8,7 +8,7 @@
     'website' : 'http://www.navabrinditsolutions.com',
     'summary' : 'MPS Customization For Manufacturing Order Creations',
     'description' : """MPS Customization For Manufacturing Order Creations""",
-    'depends': ['base','stock','mrp','mrp_mps','purchase_stock','sale_stock'],
+    'depends': ['base','stock','mrp','mrp_subcontracting','mrp_mps','purchase_stock','sale_stock'],
     'data': [ 'views/mrp_views.xml',
               'data/ir_sequence.xml',
               'wizard/cancel_multi_order_wizard_view.xml'],
