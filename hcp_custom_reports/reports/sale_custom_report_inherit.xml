@@ -82,7 +82,7 @@
                       <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.email"/></br> 
                     </t>
                     <t t-if ="doc.partner_invoice_id.hcp_customer_id!=False">
-                        <br><span t-field="doc.partner_invoice_id.hcp_customer_id"/></br> 
+                        <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.hcp_customer_id"/></br> 
                     </t>
                 
                 </td>
