@@ -17,6 +17,6 @@ _logger = logging.getLogger(__name__)
 class MrpProductionSchedule(models.Model):
     _inherit = 'mrp.production.schedule'
     
-    def action_replenish(self, based_on_lead_time=False):
-        self.env['procurement.group'].run_scheduler()
-        super(MrpProductionSchedule, self).action_replenish()       
+    # def action_replenish(self, based_on_lead_time=False):
+    #     self.env['procurement.group'].run_scheduler()
+    #     super(MrpProductionSchedule, self).action_replenish()       
