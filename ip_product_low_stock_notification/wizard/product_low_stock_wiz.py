@@ -9,7 +9,6 @@ class ProductLowStock(models.TransientModel):
     _description = "product low stock wizard"
 
     stock_notification = fields.Selection([
-        ('global', 'Global'),
         ('individual', 'Individual'),
         ('reorder', 'Reorder Rules')
         ], string='Notification Rule Type')

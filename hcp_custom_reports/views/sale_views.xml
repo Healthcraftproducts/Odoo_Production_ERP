@@ -27,9 +27,7 @@
             <field name ="email"/>
             <field name ="phone"/>
             <field name ="total_amount" invisible="1"/>
-
-
-            
+     
         </xpath>
 
         <xpath expr="//form/sheet/group" position="after">
@@ -43,7 +41,8 @@
                                     <field name="require_payment"/>
                                     <field name="reference" readonly="1" attrs="{'invisible': [('reference', '=', False)]}"/>
                                     <field name="client_order_ref"/>
-                                    <field name="shipping_method"/>
+                                    <field name="carrier_id"/>
+                                    <field name="ship_via_desc"/>
                                 </group>
                                 <group name="sale_info" string="Invoicing">
                                     <field name="fiscal_position_id" options="{'no_create': True}"/>
@@ -95,13 +94,42 @@
                 <field name="line_amount"/>            
 
         </xpath>
-
-
-
-
-            </field>
+    </field>
 
 </record>
+
+
+        <record id="view_account_position_form_id" model="ir.ui.view">
+            <field name="name">account.fiscal.position.form</field>
+            <field name="model">account.fiscal.position</field>
+            <field name="inherit_id" ref="account.view_account_position_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/group/group[2]/field[@name = 'auto_apply']" position="after">
+
+                    <field name ="tax_rate"/>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <record id="view_country_form_id" model="ir.ui.view">
+            <field name="name">res.country.form</field>
+            <field name="model">res.country</field>
+            <field name="inherit_id" ref="base.view_country_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/group/group[1]/field[@name = 'code']" position="after">
+
+                    <field name ="remittance_address"/>
+                </xpath>
+
+            </field>
+        </record>
+
+
+
 
 
 <!-- <menuitem id="sale.menu_sale_order"

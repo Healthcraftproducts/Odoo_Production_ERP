@@ -6,10 +6,9 @@ class StockSettingsInherit(models.TransientModel):
     _inherit = 'res.config.settings'
 
     stock_notification = fields.Selection([
-        ('global', 'Global'),
         ('individual', 'Individual'),
         ('reorder', 'Reorder Rules')
-        ], string='Notification Rule Type', default='global')
+        ], string='Notification Rule Type', default='individual')
     minimum_qty = fields.Integer(string="Minimum Quantity")
     notification_user_ids = fields.Many2many("res.users", string="Notification to", help="Low stock Notification goes to Selected users")
     company_ids = fields.Many2many("res.company", string="Filter by Companies", help="Check Low stock for Notification from selected company only. if its blank it checks in all company")
