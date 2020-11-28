@@ -7,6 +7,20 @@ class ProductTemplate(models.Model):
 	_inherit = 'product.template'
 
 
+    def _get_default_category_id(self):
+        if self._context.get('categ_id') or self._context.get('default_categ_id'):
+            return self._context.get('categ_id') or self._context.get('default_categ_id')
+        category = self.env.ref('product.product_category_all', raise_if_not_found=False)
+        if not category:
+            category = self.env['product.category'].search([], limit=1)
+        if category:
+            return category.id
+        else:
+            err_msg = _('You must define at least one product category in order to be able to create products.')
+            redir_msg = _('Go to Internal Categories')
+            raise RedirectWarning(err_msg, self.env.ref('product.product_category_action_form').id, redir_msg)
+
+
 	# xdesc = fields.Char(string="XDesc")
 	# sales = fields.Char(string="Sales(Connect Sage300)")
 	cust_fld2 = fields.Char(string="HTS Code")
@@ -22,10 +36,7 @@ class ProductTemplate(models.Model):
 	fda_listing = fields.Char(string="FDA Listing#")
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 	obsolute_product = fields.Boolean('Obsolute Product')
-    categ_id = fields.Many2one(
-        'product.category', 'Account Category',
-        change_default=True, default=_get_default_category_id, group_expand='_read_group_categ_id',
-        required=True, help="Select category for the current product")
+	categ_id = fields.Many2one('product.category', 'Account Category',change_default=True, default=_get_default_category_id, group_expand='_read_group_categ_id',required=True, help="Select category for the current product")
 
 	@api.depends('product_variant_ids', 'product_variant_ids.default_code')
 	def _compute_default_code(self):
@@ -87,11 +98,7 @@ class ProductMaster(models.Model):
 	fda_listing = fields.Char(string="FDA Listing#")
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 	obsolute_product = fields.Boolean('Obsolute Product')
-    categ_id = fields.Many2one(
-        'product.category', 'Account Category',
-        change_default=True, default=_get_default_category_id, group_expand='_read_group_categ_id',
-        required=True, help="Select category for the current product")
-    
+	
 	def active_stage(self):
 		self.write({
 		'status': '0',
