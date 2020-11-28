@@ -6,20 +6,18 @@ from odoo import models, fields, api
 class ProductTemplate(models.Model):
 	_inherit = 'product.template'
 
-
-    def _get_default_category_id(self):
-        if self._context.get('categ_id') or self._context.get('default_categ_id'):
-            return self._context.get('categ_id') or self._context.get('default_categ_id')
-        category = self.env.ref('product.product_category_all', raise_if_not_found=False)
-        if not category:
-            category = self.env['product.category'].search([], limit=1)
-        if category:
-            return category.id
-        else:
-            err_msg = _('You must define at least one product category in order to be able to create products.')
-            redir_msg = _('Go to Internal Categories')
-            raise RedirectWarning(err_msg, self.env.ref('product.product_category_action_form').id, redir_msg)
-
+	def _get_default_category_id(self):
+		if self._context.get('categ_id') or self._context.get('default_categ_id'):
+			return self._context.get('categ_id') or self._context.get('default_categ_id')
+		category = self.env.ref('product.product_category_all', raise_if_not_found=False)
+		if not category:
+			category = self.env['product.category'].search([], limit=1)
+		if category:
+			return category.id
+		else:
+			err_msg = _('You must define at least one product category in order to be able to create products.')
+			redir_msg = _('Go to Internal Categories')
+			raise RedirectWarning(err_msg, self.env.ref('product.product_category_action_form').id, redir_msg)
 
 	# xdesc = fields.Char(string="XDesc")
 	# sales = fields.Char(string="Sales(Connect Sage300)")
