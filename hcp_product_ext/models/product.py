@@ -22,6 +22,10 @@ class ProductTemplate(models.Model):
 	fda_listing = fields.Char(string="FDA Listing#")
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 	obsolute_product = fields.Boolean('Obsolute Product')
+    categ_id = fields.Many2one(
+        'product.category', 'Account Category',
+        change_default=True, default=_get_default_category_id, group_expand='_read_group_categ_id',
+        required=True, help="Select category for the current product")
 
 	@api.depends('product_variant_ids', 'product_variant_ids.default_code')
 	def _compute_default_code(self):
@@ -83,7 +87,11 @@ class ProductMaster(models.Model):
 	fda_listing = fields.Char(string="FDA Listing#")
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 	obsolute_product = fields.Boolean('Obsolute Product')
-
+    categ_id = fields.Many2one(
+        'product.category', 'Account Category',
+        change_default=True, default=_get_default_category_id, group_expand='_read_group_categ_id',
+        required=True, help="Select category for the current product")
+    
 	def active_stage(self):
 		self.write({
 		'status': '0',
