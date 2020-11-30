@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="custom_external_layout">
+    <!-- Multicompany -->
+    <t t-if="not o and doc">
+        <t t-set="o" t-value="doc"/>
+    </t>
+    <t t-if="o and 'company_id' in o">
+        <t t-set="company" t-value="o.company_id"></t>
+    </t>
+    <t t-if="not o or not 'company_id' in o">
+        <t t-set="company" t-value="res_company"></t>
+    </t>
+
+
+    <t t-raw="0" />
+    <t t-call="hcp_deringer.custom_external_layout_footer" />
+</template>
+
+<template id="custom_external_layout_header">
+    <div class="header">
+        <div class="row">
+            <div class="col-xs-3">
+                <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+            </div>
+            <div class="col-xs-9 text-right" style="margin-top:20px;" t-field="company.rml_header1"/>
+        </div>
+        <div class="row zero_min_height">
+            <div class="col-xs-12">
+                <div style="border-bottom: 1px solid black;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6" name="company_address">
+                <span t-field="company.partner_id"
+                    t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'
+                    style="border-bottom: 1px solid black; display:inline-block;"/>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="custom_external_layout_footer">
+    <div class="footer" style="">
+<!--        <div style="border-top: 1px solid black;">-->
+            <div class="row" style="border:1px solid;">
+                <div>If the production of these goods involved furnishings, goods, or services to the seller (e.g.,
+                    assists such as dies, molds, tools, engineering work), and the value is not included in the invoice
+                    price, give explanation.
+                    If no assists, state so.
+                </div>
+                <br/>
+                <div>This invoice must specifically state that the applicable duty or fees for ADD/CVD, MPF, HMF, beef,
+                    pork, and honey fees are included in the invoice price.
+                </div>
+            </div>
+            <div class="row" style="border-right:1px solid;">
+                <div class="col-5" style="border-right:1px solid;border-left:1px solid;">
+                    To the best of my knowledge as the preparer, this invoice is true and complete and discloses true
+                    prices, values, quantities, rebates, drawbacks, fees, commissions, royalties, and any goods or
+                    services
+                    provided to the seller either free or at a reduced cost.
+                </div>
+                <div class="col-2" style="text-align:bottom;border-right:1px solid;">EXPORT PERMIT NO</div>
+                <div class="col-5" style="">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>TOTAL INVOICE VALUE</strong>
+                        </div>
+                        <div class="col-6">
+                            <span t-field="o.amount_total"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="border-top:1px solid;border-bottom:1px solid;border-left:1px solid;border-right:1px solid;">
+                <div class="col-7" style="border-right:1px solid;">
+                    <div style="height:40px;">
+                        ESTIMATED FREIGHT CHARGE
+                    </div>
+                    <div class="row">TO POINT OF EXIT $<div style="border:1px solid;width:20%;"></div>OR TO DESTINATION $<div style="border:1px solid;width:25%;"></div></div>
+                    <div style="height:3px;"/>
+                    <div style="height:100%;border-top:1px solid;" class="row">GIVE NAME AND ADDRESS IF DIFFERENT FROM EXPORTER BOX ABOVE</div>
+                </div>
+                <div class="col-5">
+                    <center>SOFTWOOD LUMBER ONLY</center>
+                    <div class="row">EXPORT PRICE <div style="width:40px;"></div>CURRENCY
+                        <div style="width:40px;"/>
+                        <div style="font-size:8px;">BLANKET IMPORTER DECLARATION ON FILE</div>
+                    </div>
+                    <div class="row">
+                        <div style="border:1px solid;width:20%;"></div>
+                        <div style="width:40px;"/>
+                        <div style="border:1px solid;width:20%;"></div>
+                        <div style="width:40px;"/>
+                        <input type="checkbox" id="oe_import_tracking"/>YES
+                        <div style="width:20px;"/>
+                        <input type="checkbox" id="oe_import_tracking"/>NO
+                    </div>
+                    <div class="row">EXPORT CHARGE<div style="width:40px;"></div>CURRENCY
+                        <div style="width:40px;"/>
+                        <div style="font-size:8px;">IMPORTER DECLARATION ATTACHED</div>
+                    </div>
+                    <div class="row">
+                        <div style="border:1px solid;width:20%;"></div>
+                        <div style="width:40px;"/>
+                        <div style="border:1px solid;width:20%;"></div>
+                        <div style="width:40px;"/>
+                        <input type="checkbox" id="oe_import_tracking"/>YES
+                        <div style="width:20px;"/>
+                        <input type="checkbox" id="oe_import_tracking"/>NO
+                    </div>
+
+                    <div class="row" style="border-top:1px solid;">I HEREBY CERTIFY THAT THE INFORMATION GIVEN ABOVE AND ON
+                        THE CONTINUATION
+                        SHEET(S), IF ANY, IS TRUE AND COMPLETE IN EVERY RESPECT.
+                    </div>
+                    <div class="row text-center">DATE _______________________ STATUS<div style="width:10px;"></div>SHIPPER <div style="width:40px;"></div> AGENT</div>
+                    <div class="row">SIGNATURE ______________________________ <input type="checkbox" id="oe_import_tracking"/> <div style="width:70px;"></div> <input type="checkbox" id="oe_import_tracking"/>
+
+                    </div>
+
+                </div>
+            </div>
+<!--        </div>-->
+    </div>
+</template>
+
+
+
+
+
+<template id="deringer_comm_inv_xml">
+    <t t-call="web.basic_layout">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="hcp_deringer.deringer_comm_inv_xml_report" t-lang="doc.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+
+
+
+   <template id="deringer_comm_inv_xml_report">
+<!--    <t t-call="web.custom_external_layout"/>-->
+        <t t-call="web.basic_layout"/>
+
+      <t t-foreach="doc" t-as="o">
+
+            <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+<!--            <xpath expr="//div[@class='header']" position="replace">-->
+           <div class="page">
+                <div class="first-page" style="font-size:8px;">
+                    <div class="row">
+
+                        <div class="col-5" style="border: 1px solid;border-right:0px;border-bottom:none;">
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;word-break: break-word;font-size:10px;">NAME OF SHIPPER,EXPORTER,SELLER</div>
+                                <div class="col-8" style="border-bottom:1px solid;font-size:14px;" ><span t-field="o.company_id.name"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;font-size:10px;">ADDRESS <br/>ADDRESS</div>
+                                <div class="col-8" style="border-bottom:1px solid;font-size:14px;">
+                                    <t t-if="o.company_id.street"><span t-field="o.company_id.street"/></t>
+                                    <t t-if="o.company_id.street2"><span t-field="o.company_id.street2"/>, </t>
+                                    <t t-if="o.company_id.city"><span t-field="o.company_id.city"/>, </t>
+                                    <t t-if="o.company_id.state_id.name"><span t-field="o.company_id.state_id.name"/>, </t>
+                                    <t t-if="o.company_id.country_id"><span t-field="o.company_id.country_id.name"/> </t>
+                                    <t t-if="o.company_id.zip"><span t-field="o.company_id.zip"/><span> </span></t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;font-size:10px;">TELEPHONE#</div>
+                                <div class="col-8" style="font-size:14px;"><t t-if='o.company_id.phone'><span t-field="o.company_id.phone"/></t></div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-7" style="border: 1px solid;border-bottom:none;">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div style="height:20px;"/>
+                                    <center>
+                                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="height:80px;width:200px;"/>
+<!--                                    <img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_id.logo" style="height:100px;width:200px;"/>-->
+                                 </center>
+                                    <div style="height:20px;"/>
+                                </div>
+                                <div class="col-3" style="font-size:14px;">
+                                    <div class="row text-center" style="height:60px;border-left:1px solid;border-bottom:1px solid;">
+                                        <span style="font-size:8px;">REFERENCE NOS</span><br/>
+                                        <span>DANQ 16803176</span></div>
+                                     <div class="row"></div>
+                                </div>
+                                </div>
+
+                            <div class="row" >
+                                <div class="col-2">INVOICE DATE</div>
+                                <div class="col-3" style="border:1px solid;border-bottom:none;"></div>
+                                <div class="col-4"></div>
+                                <div class="col-3" style="border:1px solid;border-bottom:none;"><span>PAGE OF PAGES</span> <br/><span class="page"/>OF <span class="topage"/></div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    <div class="row">
+                         <div class="col-5" style="border: 1px solid;border-right:0px;">
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;font-size:10px;">CONSIGNEE</div>
+                                <div class="col-8" style="border-bottom:1px solid;font-size:14px;"><span t-field="o.company_id.name"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;font-size:10px;">ADDRESS <br/>ADDRESS</div>
+                                <div class="col-8" style="border-bottom:1px solid;font-size:14px;">
+                                    <t t-if="o.partner_shipping_id.street"><span t-field="o.partner_shipping_id.street"/></t>
+                                    <t t-if="o.partner_shipping_id.street2"><span t-field="o.partner_shipping_id.street2"/>, </t>
+                                    <t t-if="o.partner_shipping_id.city"><span t-field="o.partner_shipping_id.city"/>, </t>
+                                    <t t-if="o.partner_shipping_id.state_id.name"><span t-field="o.partner_shipping_id.state_id.name"/>, </t>
+                                    <t t-if="o.partner_shipping_id.country_id"><span t-field="o.partner_shipping_id.country_id.name"/> </t>
+                                    <t t-if="o.partner_shipping_id.zip"><span t-field="o.partner_shipping_id.zip"/><span> </span></t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;font-size:10px;">IRS#</div>
+                                <div class="col-8" style="font-size:14px;"><t t-if='o.partner_shipping_id.phone'><span t-field="o.partner_shipping_id.phone"/></t></div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-7" style="border: 1px solid;">
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;font-size:10px;">BUYER</div>
+                                <div class="col-8" style="border-bottom:1px solid;font-size:14px;"><span t-field="o.company_id.name"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;font-size:10px;">ADDRESS <br/>ADDRESS</div>
+                                <div class="col-8" style="border-bottom:1px solid;font-size:14px;">
+                                    <t t-if="o.partner_id.street"><span t-field="o.partner_id.street"/></t>
+                                    <t t-if="o.partner_id.street2"><span t-field="o.partner_id.street2"/>, </t>
+                                    <t t-if="o.partner_id.city"><span t-field="o.partner_id.city"/>, </t>
+                                    <t t-if="o.partner_id.state_id.name"><span t-field="o.partner_id.state_id.name"/>, </t>
+                                    <t t-if="o.partner_id.country_id"><span t-field="o.partner_id.country_id.name"/> </t>
+                                    <t t-if="o.partner_id.zip"><span t-field="o.partner_id.zip"/><span> </span></t>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4" style="border-right:1px solid;font-size:10px;">IRS#</div>
+                                <div class="col-8" style="font-size:14px;"><t t-if='o.partner_id.phone'><span t-field="o.partner_id.phone"/></t></div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    </div>
+
+<!--            </xpath>-->
+
+              <div class="row" style="border-right:1px solid;border-left:1px solid;">
+                  <div class="col-8">
+                      <span style="font-size:9px;">BILL U.S. DUTY,MPF,AND/OR BROKERAGE TO:</span>
+                      <br/>
+                      <center>
+                          <span>
+                              <i class="far fa-times-square" role="img"/>
+                              <input type="checkbox" id="oe_import_tracking"/>CONSIGNEE
+                          </span>
+                          <span><input type="checkbox" id="oe_import_tracking"/>BUYER
+                          </span>
+                          <span><input type="checkbox" id="oe_import_tracking"/>SHIPPER
+                          </span>
+                      </center>
+                  </div>
+                  <div class="col-4" style="border-left:1px solid;">
+                      <span>ACCOUNT NUMBER:</span>
+                  </div>
+              </div>
+              <div class="row" style="border-top:1px solid;border-right:1px solid;border-left:1px solid;">
+                  <div class="col-5" style="border-right:1px solid;">
+                      <span style="font-size:9px;">PORT OF ENTRY</span>
+                      <br/>Ogdensburg, NY
+                  </div>
+                  <div class="col-7" style="font-size:12px;">
+                      <span style="font-size:9px;word-break:break-word">U.S. DUTY AND BROKERAGE
+                          INCLUDED IN INVOICE VALUE:
+                      </span>
+                      <br/>
+                      <center>
+                          <input type="checkbox" id="oe_import_tracking"/>YES
+                          <input type="checkbox" id="oe_import_tracking"/>NO
+                      </center>
+
+                  </div>
+              </div>
+              <div class="row" style="border-top:1px solid;border-right:1px solid;border-left:1px solid;">
+                  <div class="col-5" style="solid;border-right:1px solid;">
+                      <span style="font-size:9px;">PLACE OF LADING (CITY/PROVINCE)</span>
+                      <br/>
+                      Ottawa, ON
+
+                  </div>
+                  <div class="col-7" style="border-left:0px solid;">
+                      <div>
+                          <span style="font-size:9px;">TERMS OF SALE, PAYMENT, AND DISCOUNT</span>
+                          <br/>
+                      </div>
+                      <div class="row" style="font-size:9px;">
+                          <div class="col-6">
+                              <span>F.O.B</span>
+                              &#160; &#160; &#160; <input type="checkbox" id="oe_import_tracking"/>PLANT &#160; &#160;
+                              &#160; <input type="checkbox" id="oe_import_tracking"/>DESTINATION,OR
+                          </div>
+                          <div class="col-6" style="border-top:1px solid;border-left:1px solid;">
+                              <br/>
+                          </div>
+                      </div>
+
+                  </div>
+              </div>
+              <div class="row" style="border-top:1px solid;border-right:1px solid;border-left:1px solid;">
+                  <div class="col-5" style="border-right:1px solid;">
+                      <div class="row">
+                          <div class="col-6" style="border-right:1px solid;">
+                              <span style="font-size:9px;">LOCAL CARRIER</span>
+                              <br/>
+                              AN Deringer
+                          </div>
+                          <div class="col-6" style="font-size:9px;">
+                              <span>BILL OF LADING #:</span>
+                              <br/>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-7">
+                      <div class="row" style="font-size:9px;">
+                          <div class="col-5" style="border-right:1px solid;">
+                              <div style="" class="text-center">DATE OF SALE</div>
+                              <div class="row" style="height:20px;border-top:1px solid;"></div>
+                          </div>
+                          <div class="col-7">
+
+                              <span>DERINGER TO PROVIDE CARGO INSURANCE?</span>
+                              <br/>
+                              <center>
+                                  <input type="checkbox" id="oe_import_tracking"/>YES
+                                  <input type="checkbox" id="oe_import_tracking"/>NO
+                              </center>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row" style="border-top:1px solid;border-right:1px solid;border-left:1px solid;">
+                  <div class="col-5" style="border-right:1px solid;">
+                      <div class="row">
+                          <div class="col-6" style="border-right:1px solid;">
+                              <span style="font-size:9px;">EXPORTING CARRIER</span>
+                              <br/>
+                              AN Deringer
+                          </div>
+                          <div class="col-6" style="font-size:9px; height:100%;">
+                              <span style="font-size:9px;">IS FREIGHT INCLUDED IN INVOICE VALUE?</span>
+                              <br></br>
+                              <input type="checkbox" id="oe_import_tracking"/>NO
+                              <br></br>
+                              <div class="row">
+                                  <div>
+                                      <span style="padding-left:15px;"><input type="checkbox" id="oe_import_tracking"/>
+                                          YES&#160; &#160;AMOUNT &#160; &#160;
+                                      </span>
+                                  </div>
+                                  <div style="border:1px solid;width:30%;"></div>
+                                  <br/>
+                              </div>
+                              <div class="row" style="height:3px;">
+                              </div>
+                              <div class="row">
+                                  <div style="padding-left:50px;font-size:9px;">CURRENCY &#160;&#160;</div>
+                                  <div style="border:1px solid;width:30%;"></div>
+                                  <br/>
+                              </div>
+
+                              <br/>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-7" >
+                      <div class="row">
+                          <div class="col-2" style="border-right:1px solid;font-size:8px;height:100%;padding-left:0px;">CURRENCY
+                              <br/>
+                              <br/>
+                              <br/>
+                              <strong style="font-size:13px;padding-left:10px;" t-field="o.currency_id"/>
+                              <br/>
+                          </div>
+                          <div class="col-5" style="border-right:1px solid;border-left:0px solid;font-size:9px;">SHIPMENT PRICING SUBJECT TO FIRST SALE
+                              PRINCIPLE UNDER 19 USC 1401a.
+                              <center>
+                                  <input type="checkbox" id="oe_import_tracking"/>YES
+                              </center>
+                          </div>
+                          <div class="col-5" style="font-size:9px;">PARTIES TO THIS TRANSACTION ARE:
+                              <center>
+                                  &#160;&#160;<input type="checkbox" id="oe_import_tracking"/>RELATED&#160;&#160;&#160;&#160;<input
+                                      type="checkbox" id="oe_import_tracking"/>NOT RELATED
+                              </center>
+                          </div>
+
+                      </div>
+
+                  </div>
+              </div>
+              <div class="row" style="border:1px solid;">
+                  <div class="col-10" style="font-size:8px;">
+                      <strong>DECLARATION BY FOREIGN SHIPPER (COMPLETE IF GOODS DESCRIBED BELOW ARE OF U.S. ORIGIN AND
+                          VALUE EXCEEDS $1000.00)
+                      </strong>
+                      <br/>
+                      <span>I, __________________________________ , DECLARE TO THE BEST OF MY KNOWLEDGE AND BELIEF THE
+                          ARTICLES HEREIN SPECIFIED ARE PRODUCTS OF THE UNITED STATES; THAT
+                          THEY WERE EXPORTED FROM THE UNITED STATES, FROM THE PORT OF
+                          ______________________________________________ ON OR ABOUT ____________________________ ,THAT
+                          THEY
+                          ARE RETURNED WITHOUT HAVING BEEN ADVANCED IN VALUE OR IMPROVED IN CONDITION BY ANY PROCESS OF
+                          MANUFACTURE OR OTHER MEANS.
+                          SIGNATURE ____________________________________________________________________ CAPACITY
+                          __________________________________________________________________
+                      </span>
+                  </div>
+                  <div class="col-2" style="border-left:1px solid;font-size:9px;">
+                      SHIPPING WEIGHT:
+                      <br/>
+                      <span style="float:right;padding-right:20px;">&#160;KGS</span>
+                      <input style="float:right" type="checkbox" id="oe_import_tracking"/>&#160;<br/>
+                      <span style="float:right;padding-right:20px;">&#160;LBS</span>
+                      <input style="float:right" type="checkbox" id="oe_import_tracking"/>&#160;
+                  </div>
+              </div>
+              <div class="row">
+                  <table class="table-bordered" style="width:100%;">
+                      <thead>
+                          <tr style="font-size:9px;">
+                              <th rowspan="2">COUNTRY OF MANUFACTURE OR GROWTH</th>
+                              <!--                        <th></th>-->
+                              <th colspan="2">MARKS AND NUMBERS</th>
+                              <th></th>
+                              <th colspan="2">NUMBER AND KIND OF PACKAGES</th>
+                              <th></th>
+                          </tr>
+                          <tr style="font-size:10px;">
+                              <th colspan="2">DESCRIPTION OF GOODS</th>
+                              <!--                        <th></th>-->
+                              <th>HTS NUMBER</th>
+                              <th>QUANTITY</th>
+                              <th>UNIT PRICE</th>
+                              <th>TOTAL PRICE</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr t-foreach="o.invoice_line_ids" t-as="l">
+                              <td></td>
+                              <td colspan="2">
+                                  <span t-field="l.name"/>
+                              </td>
+                              <td>
+                                  <span t-field="l.product_id.default_code"/>
+                              </td>
+                              <td>
+                                  <span t-field="l.quantity"/>
+                              </td>
+                              <td>
+                                  <span t-field="l.price_unit"/>
+                              </td>
+                              <td>
+                                  <span t-field="l.price_subtotal"/>
+                              </td>
+<!--                            <div style="page-break-inside: always;"/>-->
+                          </tr>
+
+                      </tbody>
+<!--                      <p style="page-break-after:always;"/>-->
+<!--                      <div style="page-break-inside: always;"/>-->
+                  </table>
+              </div>
+                <div class="footer first-page" style="">
+<!--        <div style="border-top: 1px solid black;">-->
+            <div class="row" style="border:1px solid;">
+                <div>If the production of these goods involved furnishings, goods, or services to the seller (e.g.,
+                    assists such as dies, molds, tools, engineering work), and the value is not included in the invoice
+                    price, give explanation.
+                    If no assists, state so.
+                </div>
+                <br/>
+                <div>This invoice must specifically state that the applicable duty or fees for ADD/CVD, MPF, HMF, beef,
+                    pork, and honey fees are included in the invoice price.
+                </div>
+            </div>
+            <div class="row" style="border-right:1px solid;">
+                <div class="col-5" style="border-right:1px solid;border-left:1px solid;">
+                    To the best of my knowledge as the preparer, this invoice is true and complete and discloses true
+                    prices, values, quantities, rebates, drawbacks, fees, commissions, royalties, and any goods or
+                    services
+                    provided to the seller either free or at a reduced cost.
+                </div>
+                <div class="col-2" style="text-align:bottom;border-right:1px solid;">EXPORT PERMIT NO</div>
+                <div class="col-5" style="">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>TOTAL INVOICE VALUE</strong>
+                        </div>
+                        <div class="col-6" style="font-size:15px;">
+                            <span t-field="o.amount_total"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="border-top:1px solid;border-bottom:1px solid;border-left:1px solid;border-right:1px solid;">
+                <div class="col-7" style="border-right:1px solid;">
+                    <div style="height:40px;">
+                        ESTIMATED FREIGHT CHARGE
+                    </div>
+                    <div class="row">TO POINT OF EXIT $<div style="border:1px solid;width:20%;"></div>OR TO DESTINATION $<div style="border:1px solid;width:25%;"></div></div>
+                    <div style="height:3px;"/>
+                    <div style="height:100%;border-top:1px solid;" class="row">GIVE NAME AND ADDRESS IF DIFFERENT FROM EXPORTER BOX ABOVE</div>
+                </div>
+                <div class="col-5">
+                    <center>SOFTWOOD LUMBER ONLY</center>
+                    <div class="row">EXPORT PRICE <div style="width:40px;"></div>CURRENCY
+                        <div style="width:40px;"/>
+                        <div style="font-size:8px;">BLANKET IMPORTER DECLARATION ON FILE</div>
+                    </div>
+                    <div class="row">
+                        <div style="border:1px solid;width:20%;"></div>
+                        <div style="width:40px;"/>
+                        <div style="border:1px solid;width:20%;"></div>
+                        <div style="width:40px;"/>
+                        <input type="checkbox" id="oe_import_tracking"/>YES
+                        <div style="width:20px;"/>
+                        <input type="checkbox" id="oe_import_tracking"/>NO
+                    </div>
+                    <div class="row">EXPORT CHARGE<div style="width:40px;"></div>CURRENCY
+                        <div style="width:20px;"/>
+                        <div style="font-size:8px;">IMPORTER DECLARATION ATTACHED</div>
+                    </div>
+                    <div class="row">
+                        <div style="border:1px solid;width:20%;"></div>
+                        <div style="width:40px;"/>
+                        <div style="border:1px solid;width:20%;"></div>
+                        <div style="width:40px;"/>
+                        <input type="checkbox" id="oe_import_tracking"/>YES
+                        <div style="width:20px;"/>
+                        <input type="checkbox" id="oe_import_tracking"/>NO
+                    </div>
+
+                    <div class="row" style="border-top:1px solid;">I HEREBY CERTIFY THAT THE INFORMATION GIVEN ABOVE AND ON
+                        THE CONTINUATION
+                        SHEET(S), IF ANY, IS TRUE AND COMPLETE IN EVERY RESPECT.
+                    </div>
+                    <div class="row text-center">DATE _______________________ STATUS<div style="width:10px;"></div>SHIPPER <div style="width:40px;"></div> AGENT</div>
+                    <div class="row">SIGNATURE ______________________________ <input type="checkbox" id="oe_import_tracking"/> <div style="width:70px;"></div> <input type="checkbox" id="oe_import_tracking"/>
+
+                    </div>
+
+                </div>
+            </div>
+<!--        </div>-->
+    </div>
+
+          </div>
+
+    </t>
+
+   </template>
+
+      <report id="deringer_comm_inv_report"
+           string="Commercial Invoice"
+           model="account.move"
+           report_type="qweb-pdf"
+           file="hcp_deringer.deringer_comm_inv_xml"
+           name="hcp_deringer.deringer_comm_inv_xml"/>
+
+
+</odoo>

@@ -3,7 +3,7 @@
 
 <odoo>
 
-    <record id="mrp_workcenter_inherited_form2" model="ir.ui.view">
+        <record id="mrp_workcenter_inherited_form2" model="ir.ui.view">
             <field name="name">mrp.workcenter.form.inherited2</field>
             <field name="model">mrp.workcenter</field>
             <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
@@ -55,7 +55,7 @@
             </xpath>
 
         </field>
-</record>
+    </record>
 
 
 <record id="mrp_routing_workcenter_form_view_id" model="ir.ui.view">
@@ -86,12 +86,11 @@
 
 
 
-    <record id="view_product_supplier_inherit2" model="ir.ui.view">
+             <record id="view_product_supplier_inherit2" model="ir.ui.view">
             <field name="name">product.template.supplier.form.inherit3</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>
             <field name="arch" type="xml">
-    
                 <xpath expr="//page[@name='purchase']/group[2]" position="replace">
                     <group string="Description for Purchase Department">
                         <field name="description_purchase" nolabel="1" placeholder="This note will show up on purchase orders."/>
@@ -99,8 +98,7 @@
                </xpath>
 
             </field>
-
-    </record>
+        </record>
 
 
 
@@ -111,7 +109,6 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-                
                 <xpath expr="//page[@name='inventory']" position='after'>
                     <page string='Documents'>
 
@@ -123,19 +120,24 @@
                <xpath expr="//form/sheet/notebook/page/group[2]" position='replace'>
 
                    <group string="Description For Sales">
-                        <field name="description" nolabel="1" placeholder="This note is only for Sales purposes."/>
-                    </group>
+                                    <field name="description" nolabel="1" placeholder="This note is only for Sales purposes."/>
+                                </group>
                 </xpath>
 
 
-            <!--         <xpath expr="//form/header" position='inside'>
+<!--                 <xpath expr="//form/header" position='inside'>
 
-                        <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
+                    <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
 
-                    </xpath>
+                </xpath>
  -->
-        </field>
-    </record>
+
+
+
+
+ 
+    </field>
+        </record>
  
      <record id="mrp_bom_form_view_inherited2" model="ir.ui.view">
             <field name="name">mrp.bom.form.inherited</field>

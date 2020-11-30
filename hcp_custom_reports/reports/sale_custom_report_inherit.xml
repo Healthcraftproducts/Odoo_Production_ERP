@@ -14,13 +14,13 @@
 
                         <td style="width: 10%; text-align: left;" border="None"><br><img t-if="company.logo" width="140" height="140" t-att-src="image_data_uri(company.logo)" alt="Logo"/></br></td>
                         <td style="width: 90%; text-align: left;" border="None">
-                           <p>&amp;nbsp;</p> 
-                            <strong><span style="font-size:32px;" t-field= "company.partner_id.name"/></strong>
+                           <p>&amp;nbsp;</p>  
+                            <strong><span style="font-size:20pt;" t-field= "company.partner_id.name"/></strong>
                                 
-                                <br><span style="font-size:16px;" t-field= "company.partner_id.street"/>,<span style="font-size:16px;" t-field= "company.partner_id.street2"/>,<span style="font-size:16px;" t-field= "company.partner_id.city"/>, <span style="font-size:16px;" t-field="company.partner_id.state_id"/>,<span style="font-size:16px;" t-field="company.partner_id.country_id"/>, <span style="font-size:16px;" t-field= "company.partner_id.zip"/>, </br>
-                                <br><span style="font-size:16px;" t-field= "company.partner_id.email"/>,</br>
-                                <br><span style="font-size:16px;" t-field= "company.partner_id.phone"/>,</br>
-                                <br><strong><span style="font-size:16px;">Worldwide leaders in fall prevention:</span> <span style="font-size:16px;" t-field= "company.partner_id.website"/></strong></br>
+                                <br><span style="font-size:10pt;" t-field= "company.partner_id.street"/>,<span style="font-size:10pt;" t-field= "company.partner_id.street2"/>,<span style="font-size:10pt;" t-field= "company.partner_id.city"/>, <span style="font-size:10pt;" t-field="company.partner_id.state_id"/>,<span style="font-size:10pt;" t-field="company.partner_id.country_id"/>, <span style="font-size:10pt;" t-field= "company.partner_id.zip"/>, </br>
+                                <br><span style="font-size:10pt;" t-field= "company.partner_id.email"/>,</br>
+                                <br><span style="font-size:10pt;" t-field= "company.partner_id.phone"/>,</br>
+                                <br><strong><span style="font-size:10pt;">Worldwide leaders in fall prevention:</span> <span style="font-size:10pt;" t-field= "company.partner_id.website"/></strong></br>
                                 
                         </td>
                     </tr>
@@ -31,6 +31,7 @@
 
         <xpath expr="//div/div[2]" position="replace">
         </xpath>
+
         <xpath expr="//div[3]" position="replace">
         </xpath>
     </template>
@@ -60,51 +61,50 @@
                 </tr>
                 <tr>
                 <td style="width: 50%; text-align: left;">
-                <span t-field="doc.partner_invoice_id.name"/>
+                <span style="font-size:9pt;" t-field="doc.partner_invoice_id.name"/>
                     <t t-if="doc.partner_invoice_id.street!=False or doc.partner_invoice_id.street2!=False">
-                    <br><span t-field="doc.partner_invoice_id.street"/><span t-field="doc.partner_invoice_id.street2"/></br>
+                    <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.street"/><span style="font-size:9pt;" t-field="doc.partner_invoice_id.street2"/></br>
                     </t>
                     <t t-if ="doc.partner_invoice_id.city!=False">
-                    <br><span t-field="doc.partner_invoice_id.city"/></br>
+                    <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.city"/></br>
                 </t>
                     <t t-if ="doc.partner_invoice_id.state_id!=False or doc.partner_invoice_id.country_id!=False">
 
-                        <br><span t-field="doc.partner_invoice_id.state_id"/><span t-field="doc.partner_invoice_id.country_id"/></br>
+                        <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.state_id"/><span  style="font-size:9pt;" t-field="doc.partner_invoice_id.country_id"/></br>
                     </t>
                     <t t-if ="doc.partner_invoice_id.zip!=False">
-                      <br><span t-field="doc.partner_invoice_id.zip"/></br> 
+                      <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.zip"/></br> 
                     </t>
                     <t t-if ="doc.partner_invoice_id.phone!=False">
-                      <br><span t-field="doc.partner_invoice_id.phone"/></br> 
+                      <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.phone"/></br> 
                     </t>
                     <t t-if ="doc.partner_invoice_id.email!=False">
-                      <br><span t-field="doc.partner_invoice_id.email"/></br> 
+                      <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.email"/></br> 
                     </t>
-                    <t t-if ="doc.partner_id.bank_ids">
-                        <t t-foreach="doc.partner_id.bank_ids" t-as="ba">
-                            <br><span t-field="ba.acc_number"/></br> 
-                        </t>
+                    <t t-if ="doc.partner_invoice_id.hcp_customer_id!=False">
+                        <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.hcp_customer_id"/></br> 
                     </t>
+                
                 </td>
                 <td style="width: 50%; text-align: left;">
-                <span t-field="doc.partner_shipping_id.name"/>
+                <span style="font-size:9pt;" t-field="doc.partner_shipping_id.name"/>
                     <t t-if="doc.partner_shipping_id.street!=False or doc.partner_shipping_id.street2!=False">
-                    <br><span t-field="doc.partner_shipping_id.street"/><span t-field="doc.partner_shipping_id.street2"/></br>
+                    <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.street"/><span style="font-size:9pt;" t-field="doc.partner_shipping_id.street2"/></br>
                     </t>
                     <t t-if ="doc.partner_shipping_id.city!=False">
-                    <br><span t-field="doc.partner_shipping_id.city"/></br>
+                    <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.city"/></br>
                     </t>
                 <t t-if ="doc.partner_shipping_id.state_id!=False or doc.partner_shipping_id.country_id!=False">
-                        <br><span t-field="doc.partner_shipping_id.state_id"/><span t-field="doc.partner_shipping_id.country_id"/></br>
+                        <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.state_id"/><span  style="font-size:9pt;" t-field="doc.partner_shipping_id.country_id"/></br>
                     </t>
                     <t t-if ="doc.partner_shipping_id.zip!=False">
-                      <br><span t-field="doc.partner_shipping_id.zip"/></br> 
+                      <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.zip"/></br> 
                     </t>
                     <t t-if ="doc.partner_shipping_id.phone!=False">
-                      <br><span t-field="doc.partner_shipping_id.phone"/></br> 
+                      <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.phone"/></br> 
                     </t>
                     <t t-if ="doc.partner_shipping_id.email!=False">
-                      <br><span t-field="doc.partner_shipping_id.email"/></br> 
+                      <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.email"/></br> 
                     </t>
                   </td>
             </tr>
@@ -115,30 +115,37 @@
  <xpath expr="//div[@class='row mt32 mb32']" position="replace">
 
     <div class="row mt32 mb32" id="informations">
-        <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-auto mw-100 mb-2">
-            <strong>Quotation Date:</strong>
-            <p class="m-0" t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/>
+        
+        <div t-if="doc.date_order" class="col-auto mw-100 mb-2">
+            <span t-if="doc.state in ['draft','sent']"><strong>Quotation Date:</strong></span>
+            <span t-if="doc.state not in ['draft','sent']"><strong>Order Date:</strong></span>
+            <p style="font-size:10pt;" class="m-0" t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/>
+        </div>
+
+        <div t-if="doc.po_number and doc.state not in ['draft', 'sent']" class="col-auto mw-100 mb-2" name="po_number">
+            <strong>Customer P.O.#</strong>
+            <p style="font-size:10pt;" class="m-0" t-field="doc.po_number"/>
         </div>
         
         <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto mw-100 mb-2" name="expiration_date">
             <strong>Expiration:</strong>
-            <p class="m-0" t-field="doc.validity_date" t-options='{"format": "MM/dd/yyyy"}'/>
+            <p style="font-size:10pt;" class="m-0" t-field="doc.validity_date" t-options='{"format": "MM/dd/yyyy"}'/>
         </div>
-        <div t-if="doc.user_id.name and doc.state in ['draft', 'sent']" class="col-auto mw-100 mb-2">
+        <div t-if="doc.user_id.name and doc.state in ['draft', 'sent','sale','done']" class="col-auto mw-100 mb-2">
             <strong>Salesperson:</strong>
-            <p class="m-0" t-field="doc.user_id"/>
+            <p style="font-size:10pt;" class="m-0" t-field="doc.user_id"/>
         </div>
         <div t-if="doc.client_order_ref and doc.state in ['draft', 'sent']" class="col-auto mw-100 mb-2">
             <strong>Reference:</strong>
-            <p class="m-0" t-field="doc.client_order_ref"/>
+            <p style="font-size:10pt;" class="m-0" t-field="doc.client_order_ref"/>
         </div>
-        <div t-if="doc.shipping_method and doc.state in ['draft', 'sent']" class="col-auto mw-100 mb-2">
+        <div t-if="doc.ship_via_desc and doc.state in ['draft', 'sent','sale','done']" class="col-auto mw-100 mb-2">
             <strong>Shipping:</strong>
-            <p class="m-0" t-field="doc.shipping_method"/>
+            <p style="font-size:10pt;" class="m-0" t-field="doc.ship_via_desc"/>
         </div>
-        <div t-if="doc.client_order_ref and doc.state in ['draft', 'sent']" class="col-auto mw-100 mb-2">
+        <div t-if="doc.payment_term_id and doc.state in ['draft', 'sent','sale','done']" class="col-auto mw-100 mb-2">
             <strong>Terms:</strong>
-            <p class="m-0" t-field="doc.payment_term_id"/>
+            <p style="font-size:10pt;" class="m-0" t-field="doc.payment_term_id"/>
         </div>
 
                 
@@ -151,11 +158,11 @@
 
     <h2 class="mt16">
         <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
-            <span t-if="doc.state not in ['draft','sent']">Order # <span t-field="doc.name"/></span>
-            <span t-if="doc.state in ['draft','sent']">Quotation #<span t-field="doc.quotation_id"/> </span>
+            <span style="font-size:20pt;" t-if="doc.state not in ['draft','sent']">Order # <span style="font-size:20pt;" t-field="doc.name"/></span>
+            <span style="font-size:20pt;" t-if="doc.state in ['draft','sent']">Quotation #<span style="font-size:20pt;" t-field="doc.quotation_id"/> </span>
         </t>
         <t t-if="env.context.get('proforma', False) or is_pro_forma">
-            <span>Pro-Forma Invoice # </span><span t-field="doc.name"/>
+            <span style="font-size:20pt;">Pro-Forma Invoice # </span><span style="font-size:20pt;" t-field="doc.name"/>
         </t>
         
     </h2>
@@ -288,7 +295,7 @@
                     <tr>
                     <td style="width: 50%;" border="None">&amp;nbsp;</td>
                     <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
-                        <span><strong>Tax Rate</strong></span>
+                        <span><strong>Tax Rate(<span t-esc="doc.fiscal_position_id.tax_rate"/>)</strong></span>
                     </td>
                     <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span style="text-align: right;"><span t-field="doc.amount_tax"/></span>
@@ -298,7 +305,7 @@
                     <tr>
                     <td style="width: 50%;" border="None">&amp;nbsp;</td>
                     <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
-                        <span><strong>Total</strong></span>
+                        <span><strong>Total(<span t-field="doc.currency_id.name"/>)</strong></span>
                     </td>
                     <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span style="text-align: right;"><span t-field="doc.amount_total"/></span>
@@ -313,9 +320,18 @@
     </xpath>
 
     <xpath expr="//p[@t-field='doc.note']" position="replace">
-        <strong><u><span style="font-size:18px;">Terms and Conditions</span></u></strong>
-        <p t-field="doc.note" />
+        <strong><u><span style="font-size:14px;">Terms and Conditions</span></u></strong>
+        <p style="font-size:10pt;" t-field="doc.note" />
     </xpath>
+
+    <xpath expr="//p[@t-if='doc.payment_term_id.note']" position="replace">
+
+    </xpath>
+
+    <xpath expr="//p[@id='fiscal_position_remark']" position="replace">
+
+    </xpath>
+
 
 
 </template>

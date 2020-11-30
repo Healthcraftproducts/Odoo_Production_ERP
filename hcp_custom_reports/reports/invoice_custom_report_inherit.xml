@@ -18,54 +18,54 @@
                         </tr>
                         <tr>
                         <td style="width: 50%; text-align: left;">
-                        <span t-field="o.partner_id.name"/>
+                        <span style="font-size:9pt;" t-field="o.partner_id.name"/>
                             <t t-if="o.partner_id.street!=False or o.partner_id.street2!=False">
-                            <br><span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/></br>
+                            <br><span style="font-size:9pt;" t-field="o.partner_id.street"/><span style="font-size:9pt;" t-field="o.partner_id.street2"/></br>
                             </t>
                             <t t-if ="o.partner_id.city!=False">
-                            <br><span t-field="o.partner_id.city"/></br>
+                            <br><span style="font-size:9pt;" t-field="o.partner_id.city"/></br>
                         </t>
                             <t t-if ="o.partner_id.state_id!=False or o.partner_id.country_id!=False">
 
-                                <br><span t-field="o.partner_id.state_id"/><span t-field="o.partner_id.country_id"/></br>
+                                <br><span style="font-size:9pt;" t-field="o.partner_id.state_id"/><span style="font-size:9pt;" t-field="o.partner_id.country_id"/></br>
                             </t>
                             <t t-if ="o.partner_id.zip!=False">
-                              <br><span t-field="o.partner_id.zip"/></br> 
+                              <br><span style="font-size:9pt;" t-field="o.partner_id.zip"/></br> 
                             </t>
                             <t t-if ="o.partner_id.phone!=False">
-                              <br><span t-field="o.partner_id.phone"/></br> 
+                              <br><span style="font-size:9pt;" t-field="o.partner_id.phone"/></br> 
                             </t>
                             <t t-if ="o.partner_id.email!=False">
-                              <br><span t-field="o.partner_id.email"/></br> 
+                              <br><span style="font-size:9pt;" t-field="o.partner_id.email"/></br> 
                             </t>
-                            <t t-if ="o.partner_id.bank_ids">
-                                <t t-foreach="o.partner_id.bank_ids" t-as="ba">
-                                    <br><span t-field="ba.acc_number"/></br> 
-                                </t>
+
+                            <t t-if ="o.partner_id.hcp_customer_id!=False">
+                                <br><span style="font-size:9pt;" t-field="o.partner_id.hcp_customer_id"/></br>
                             </t>
-                            <t t-if ="o.partner_id.email!=False">
-                              <br><span t-field="o.partner_id.vat"/></br> 
+                            
+                            <t t-if ="o.partner_id.vat!=False">
+                              <br><span style="font-size:9pt;" t-field="o.partner_id.vat"/></br> 
                             </t>
                         </td>
                         <td style="width: 50%; text-align: left;">
-                        <span t-field="o.partner_shipping_id.name"/>
+                        <span style="font-size:9pt;" t-field="o.partner_shipping_id.name"/>
                             <t t-if="o.partner_shipping_id.street!=False or o.partner_shipping_id.street2!=False">
-                            <br><span t-field="o.partner_shipping_id.street"/><span t-field="o.partner_shipping_id.street2"/></br>
+                            <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.street"/><span style="font-size:9pt;" t-field="o.partner_shipping_id.street2"/></br>
                             </t>
                             <t t-if ="o.partner_shipping_id.city!=False">
-                            <br><span t-field="o.partner_shipping_id.city"/></br>
+                            <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.city"/></br>
                             </t>
                         <t t-if ="o.partner_shipping_id.state_id!=False or o.partner_shipping_id.country_id!=False">
-                                <br><span t-field="o.partner_shipping_id.state_id"/><span t-field="o.partner_shipping_id.country_id"/></br>
+                                <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.state_id"/><span style="font-size:9pt;" t-field="o.partner_shipping_id.country_id"/></br>
                             </t>
                             <t t-if ="o.partner_shipping_id.zip!=False">
-                              <br><span t-field="o.partner_shipping_id.zip"/></br> 
+                              <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.zip"/></br> 
                             </t>
                             <t t-if ="o.partner_shipping_id.phone!=False">
-                              <br><span t-field="o.partner_shipping_id.phone"/></br> 
+                              <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.phone"/></br> 
                             </t>
                             <t t-if ="o.partner_shipping_id.email!=False">
-                              <br><span t-field="o.partner_shipping_id.email"/></br> 
+                              <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.email"/></br> 
                             </t>
                           </td>
                     </tr>
@@ -74,6 +74,45 @@
     </xpath>
 
     <xpath expr="//div[@id='informations']" position="replace">
+
+    <div id="informations" class="row mt32 mb32">
+        <t t-set="sale_obj" t-value="request.env['sale.order'].search([('name','=',o.invoice_origin)])"/>
+        
+        <div class="col-auto mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">
+            <strong>Invoice Date:</strong>
+            <br><span style="font-size:10pt;" class="m-0" t-field="o.invoice_date" t-options='{"format": "MM/dd/yyyy"}'/></br>
+        </div>
+        
+        <div class="col-auto mw-100 mb-2" t-if="o.invoice_date_due and o.type == 'out_invoice' and o.state == 'posted'" name="due_date">
+            <strong>Due Date:</strong>
+            <br><span style="font-size:10pt;" class="m-0" t-field="o.invoice_date_due" t-options='{"format": "MM/dd/yyyy"}'/></br>
+        </div>
+
+        
+        <div class="col-auto mw-100 mb-2" t-if="sale_obj.po_number" name="po_number">
+            <strong>Customer P.O.#:</strong>
+            <br><span style="font-size:10pt;" class="m-0" t-esc="sale_obj.po_number"/></br>
+            <!-- <p style="font-size:10pt;" class="m-0" t-field="sale_obj.po_number"/> -->
+        </div>
+
+        <div class="col-auto mw-100 mb-2" t-if="o.invoice_origin" name="origin">
+            <strong>Sales Order:</strong>
+            <br><span style="font-size:10pt;" class="m-0" t-esc="o.invoice_origin"/></br>
+            <!-- <p style="font-size:10pt;" class="m-0" t-field="o.invoice_origin"/> -->
+        </div>
+
+        <div class="col-auto mw-100 mb-2" t-if="sale_obj.ship_via_desc" name="ship_via_desc">
+            <strong>Shipping:</strong>
+            <br><span style="font-size:10pt;" class="m-0" t-esc="sale_obj.ship_via_desc"/></br>
+            <!-- <p style="font-size:10pt;" class="m-0" t-field="sale_obj.ship_via_desc"/> -->
+        </div>
+
+        <div t-if="o.invoice_payment_term_id" class="col-auto mw-100 mb-2">
+            <strong>Terms:</strong>
+            <br><span style="font-size:10pt;" class="m-0" t-esc="o.invoice_payment_term_id.name"/></br>
+            <!-- <p style="font-size:10pt;" class="m-0" t-field="o.invoice_payment_term_id"/> -->
+        </div>
+    </div>
 
     </xpath>
 
@@ -215,7 +254,7 @@
                     <tr>
                     <td style="width: 50%;" border="None">&amp;nbsp;</td>
                     <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
-                        <span><strong>Tax Rate</strong></span>
+                        <span><strong>Tax Rate(<span t-esc="o.fiscal_position_id.tax_rate"/>)</strong></span>
                     </td>
                     <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span style="text-align: right;"><span t-field="o.amount_tax"/></span>
@@ -225,7 +264,7 @@
                     <tr>
                     <td style="width: 50%;" border="None">&amp;nbsp;</td>
                     <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
-                        <span><strong>Total</strong></span>
+                        <span><strong>Total&amp;nbsp;(<span t-field="o.currency_id.name"/>)</strong></span>
                     </td>
                     <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span style="text-align: right;"><span t-field="o.amount_total"/></span>
@@ -236,7 +275,7 @@
 
     </xpath>
 
-    <xpath expr="//p" position="replace">
+    <xpath expr="//p[1]" position="replace">
     </xpath>
 
     <xpath expr="//p[@t-if='o.invoice_payment_term_id']" position="replace">
@@ -249,17 +288,22 @@
     </xpath>
 
     <xpath expr="//p[@t-if='o.narration']" position="replace">
-        <strong><u><span style="font-size:18px;">Terms and Conditions</span></u></strong>
+        <strong><u><span style="font-size:14px;">Terms and Conditions</span></u></strong>
         <p t-if="o.narration" name="comment">
-            <span t-field="o.narration"/>
+            <span style="font-size:10pt;" t-field="o.narration"/>
         </p>
-        <br><strong><u>REMITTANCE ADDRESS:</u></strong></br>
-        <t t-foreach="request.env['sale.order'].search([('name', '=', o.invoice_origin)])" t-as="obj">
-            <br><span t-esc="obj.warehouse_id.partner_id.name"/>/<span t-esc="obj.warehouse_id.partner_id.street"/>/
-            <span t-esc="obj.warehouse_id.partner_id.street2"/>/<span t-esc="obj.warehouse_id.partner_id.city"/>/<span t-esc="obj.warehouse_id.partner_id.state_id.name"/>/<span t-esc="obj.warehouse_id.partner_id.country_id.name"/>/<span t-esc="obj.warehouse_id.partner_id.zip"/></br>
-            <br><strong>GST/HST #:</strong><span t-esc="obj.warehouse_id.partner_id.vat"/></br>
 
+        <t t-if="o.partner_shipping_id.country_id.remittance_address">
+
+            <br><strong><u>REMITTANCE ADDRESS:</u></strong></br>
+            
+                <br><span t-esc="o.partner_shipping_id.country_id.remittance_address"/></br>
+                
         </t>
+
+        <br><strong>GST/HST #:</strong><span t-esc="o.partner_shipping_id.vat"/></br>
+
+        
 
     </xpath>
 

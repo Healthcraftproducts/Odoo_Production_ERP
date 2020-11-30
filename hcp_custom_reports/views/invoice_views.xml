@@ -15,8 +15,8 @@
                 <field name="total_amount" invisible="1"/>
             
             </xpath>
-            
-            <xpath expr = "//field[@name = 'invoice_line_ids']/tree/field[@name = 'quantity']" position = "before" > 
+
+             <xpath expr = "//field[@name = 'invoice_line_ids']/tree/field[@name = 'quantity']" position = "before" > 
                 <field name = "invoice_ship_method" /> 
             </xpath> 
 
@@ -28,6 +28,7 @@
                 <field name = "inv_line_amount" /> 
             </xpath>  
 
+ 
     </field>
 
 </record>

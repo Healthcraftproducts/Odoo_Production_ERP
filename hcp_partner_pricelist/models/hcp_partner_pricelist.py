@@ -377,7 +377,8 @@ class SaleOrder(models.Model):
             'view_id': form_view_id,
             'target': 'new',
         }
-     
+
+    
     def _create_delivery_line(self, carrier, price_unit):
         SaleOrderLine = self.env['sale.order.line']
         if self.partner_id:
@@ -404,7 +405,7 @@ class SaleOrder(models.Model):
             'product_uom': carrier.product_id.uom_id.id,
             'product_id': carrier.product_id.id,
             'tax_id': [(6, 0, taxes_ids)],
-	    'product_ship_method': True,
+            'product_ship_method': True,
             'is_delivery': True,
         }
         if carrier.invoice_policy == 'real':

@@ -102,6 +102,7 @@ class AccountMoveLine(models.Model):
 			line.inv_line_amount = line.quantity * line.price_unit
 
 
+
 	def ship_line_method(self):
 		for line in self:
 			ship_line = self.env['delivery.carrier'].search([('name','=',line.name)])

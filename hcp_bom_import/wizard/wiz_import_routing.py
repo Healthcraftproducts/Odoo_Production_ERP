@@ -178,12 +178,8 @@ class ImportBomData(models.TransientModel):
 						    if itemcode == line2[0]:
 						        main_product = itemcode
 						        prod = self.env['product.product'].search([('default_code','=',str(main_product))])
-						        if not prod:
-						            raise ValidationError(_('Product (%s).') % str(main_product))
 						        bom = self.env['mrp.bom'].search([('product_id','=',prod.id)])
 						       # print(bom,'BOM###########################')
-						        if len(bom)>1:
-						            raise ValidationError(_('Product (%s).') % prod.id)
 						        if bom:
 						            variant = self.env['product.product'].search([('default_code','=',str(line2[5]))])
 						            if not variant:
