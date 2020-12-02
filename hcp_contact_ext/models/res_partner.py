@@ -181,7 +181,7 @@ class ResPartner(models.Model):
 			parent_id = vals.get('parent_id')
 			if parent_id:
 				main_company = self.env['res.partner'].search([('id', '=', parent_id)])
-				vals.update({'hcp_customer_id': main_company.hcp_customer_id.id})
+				vals.update({'hcp_customer_id': main_company.hcp_customer_id})
 		res = super(ResPartner, self).create(vals)
 		return res
 
