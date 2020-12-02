@@ -43,8 +43,8 @@
                                 <br><span style="font-size:9pt;" t-field="o.partner_id.hcp_customer_id"/></br>
                             </t>
                             
-                            <t t-if ="o.partner_id.vat!=False">
-                              <br><span style="font-size:9pt;" t-field="o.partner_id.vat"/></br> 
+                            <t t-if ="o.partner_id.federal_tax_id!=False">
+                              <br><span style="font-size:9pt;" t-field="o.partner_id.federal_tax_id"/></br> 
                             </t>
                         </td>
                         <td style="width: 50%; text-align: left;">
