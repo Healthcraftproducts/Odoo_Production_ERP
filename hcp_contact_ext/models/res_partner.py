@@ -163,29 +163,38 @@ class ResPartner(models.Model):
 		selection=[('person', 'Individual'), ('company', 'Company')],
 		compute='_compute_company_type', inverse='_write_company_type',
 		default='company')	
-	hcp_is_customer = fields.Boolean(string="Is Customer?")
+	hcp_is_customer = fields.Boolean(string="Is Customer?",default=True)
 	hcp_customer_currency = fields.Many2one("res.currency",string="Customer Currency")
 	hcp_is_vendor = fields.Boolean(string="Is Vendor?")	
-    
+
 	@api.model
-	def create(self, vals_list):
-		res = super(ResPartner, self).create(vals_list)
-		if not res.parent_id and res.customer_rank == 1:
+	def create(self, vals):
+
+		if vals['hcp_is_customer'] == True and vals['company_type'] == 'company':
 			customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
-			res.write({'hcp_customer_id': customer_no})
+			vals['hcp_customer_id'] = customer_no
+
+		if vals['hcp_is_vendor'] == True and vals['company_type'] == 'company':
+			vendor_no = self.env['ir.sequence'].next_by_code('vendor.sequence')
+			vals['hcp_vendor_no'] = vendor_no
+		if vals['company_type'] == 'person':
+			parent_id = vals.get('parent_id')
+			if parent_id:
+				main_company = self.env['res.partner'].search([('id', '=', parent_id.id)])
+				vals.update({'hcp_customer_id': main_company.hcp_customer_id.id})
+		res = super(ResPartner, self).create(vals)
 		return res
 
+	# @api.onchange('company_id', 'parent_id')
+	# def _onchange_company_id(self):
+	# 	super(ResPartner, self)._onchange_company_id()
+	# 	if self.parent_id:
+	# 		self.hcp_customer_id = self.parent_id.hcp_customer_id
 
-	@api.onchange('company_id', 'parent_id')
-	def _onchange_company_id(self):
-		super(ResPartner, self)._onchange_company_id()
-		if self.parent_id:
-			self.hcp_customer_id = self.parent_id.hcp_customer_id
 
-
-	@api.onchange('property_delivery_carrier_id')
-	def onchange_property_delivery_carrier_id(self):
-		if self.property_delivery_carrier_id:
-			desc = self.property_delivery_carrier_id.website_description
-			self.hcp_ship_via_description = desc
+	# @api.onchange('property_delivery_carrier_id')
+	# def onchange_property_delivery_carrier_id(self):
+	# 	if self.property_delivery_carrier_id:
+	# 		desc = self.property_delivery_carrier_id.website_description
+	# 		self.hcp_ship_via_description = desc
 

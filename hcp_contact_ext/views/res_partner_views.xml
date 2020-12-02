@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="view_partner_tree_id" model="ir.ui.view">
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='phone']" position="before">
+                    <field name="hcp_customer_id"/>
+                    <field name="hcp_vendor_no"/>
+                </xpath>
+
+            </field>
+    </record>
+
     <record id="delivery_form_view_id" model="ir.ui.view">
             <field name="name">delivery.carrier.form.inherit2</field>
             <field name="model">delivery.carrier</field>
@@ -100,6 +113,8 @@
             </xpath>
 
             <xpath expr="//field[@name='function']" position="before">
+                 <field name="hcp_is_customer"/>
+                 <field name="hcp_is_vendor"/>
                  <field name="hcp_status"/>
                  <field name="hcp_source"/>
                  <field name="hcp_training_completed" widget="many2many_tags"/>
@@ -113,8 +128,6 @@
                 <field name="hcp_display_healthcraft" widget="many2many_tags"/>
                 <field name="hcp_display_invisia" widget="many2many_tags"/>
                  <field name="hcp_fea_registration"/>
-                <field name="hcp_is_customer"/>
-                <field name="hcp_is_vendor"/>
                 <field name="hcp_customer_currency"/>
             </xpath>
 
