@@ -146,7 +146,9 @@
             </xpath>-->
 
             <xpath expr="//field[@name='child_ids']" position="replace">
-                 <field name="child_ids" mode="kanban" context="{'default_parent_id': active_id, 'default_hcp_customer_id': hcp_customer_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_lang': lang, 'default_user_id': user_id, 'default_type': 'other'}">
+                  <field name="child_ids" mode="kanban" context="{'default_parent_id': active_id, 'default_hcp_customer_id': hcp_customer_id,'default_hcp_is_customer': hcp_is_customer,
+                 'default_company_type':'person','default_hcp_is_vendor':hcp_is_vendor,
+                 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_lang': lang, 'default_user_id': user_id, 'default_type': 'other'}">
                                 <kanban>
                                     <field name="id"/>
                                     <field name="color"/>
@@ -241,6 +243,9 @@
                                                 <field name="company_id" invisible="1"/>
                                                 <!-- Asana Ticket - Make customer ID field read only  across all form where ever it refers - GAP ID: 2804 Dif -->
                                                 <field name="hcp_customer_id" string="Customer ID" readonly="1"/>
+                                                <field name="hcp_is_customer" string="Is Customer" invisible="1" />
+                                                <field name="company_type" string="company_type" invisible="1" />
+                                                <field name="hcp_is_vendor" string="Is Vendor" invisible="1" />
                                             </group>
                                             <group colspan="1">
                                                 <field name="image_1920" widget="image" class="oe_avatar" nolabel="1" options="{'image_preview': 'image_128'}"/>
