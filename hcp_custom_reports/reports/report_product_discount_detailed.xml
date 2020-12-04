@@ -17,11 +17,12 @@
                             <tr>
                                 <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">SO#</th>
                                 <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">Cust#</th>
-                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">Customer Name</th>
+                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="15%">Customer Name</th>
                                 <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">Product#</th>
-                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">Product Name</th>
+                                <th style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">Product Name</th>
                                 <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">Discount(%)</th>
                                 <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">Discount Amount</th>
+                                <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">Sale Amount</th>
                             </tr>
                         
                         <tbody>
@@ -35,13 +36,13 @@
                                         <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
                                             <span t-esc="sale_id[1]"/>
                                         </td>
-                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">
+                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="15%">
                                             <span t-esc="sale_id[2]"/> 
                                         </td>
                                         <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
                                             <span t-esc="sale_id[3]"/>
                                         </td>
-                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">
+                                        <td style="text-align:center; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">
                                             <span t-esc="sale_id[4]"/>
                                         </td>
                                         <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
@@ -49,6 +50,9 @@
                                         </td>
                                         <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="10%">
                                             <span t-esc="float(sale_id[6])"/>
+                                        </td>
+                                        <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="25%">
+                                            <span t-esc="float(sale_id[7])"/>
                                         </td>
                                     </tr>
                             
@@ -82,7 +86,7 @@
                                     <th style="text-align:left; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="40%">Product Name</th>
                                     <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">Discount(%)</th>
                                     <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">Discount Amount</th>
-                                    
+                                    <th style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">Sale Amount</th>
                                 </tr>
 
                                 <tbody>
@@ -98,6 +102,9 @@
                                             </td>
                                             <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">
                                                 <span t-esc="sale_id[2]"/> 
+                                            </td>
+                                            <td style="text-align:right; border: 1px solid black; border-left:none; border-top:none; border-right:none;" width="20%">
+                                                <span t-esc="sale_id[3]"/> 
                                             </td>
                                         </tr>
                                     </t>

@@ -49,10 +49,11 @@ class ProductDiscountWizard(models.TransientModel):
 					if date>=self.date_from and date<=self.date_to:
 						for line in sale.order_line:
 							if not line.display_type:
-								a = sale.id
-								b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100]
-								discount_details ={'id':a,'values':b}
-								discount_list.append(discount_details)
+								if line.discount>0.0:
+									a = sale.id
+									b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100,line.line_amount]
+									discount_details ={'id':a,'values':b}
+									discount_list.append(discount_details)
 				list_product=discount_list
 				for data in list_product:
 					prdt_details =[]
@@ -63,6 +64,7 @@ class ProductDiscountWizard(models.TransientModel):
 					prdt_details.append(data['values'][4])
 					prdt_details.append(data['values'][5])
 					prdt_details.append(data['values'][6])
+					prdt_details.append(data['values'][7])
 					prdt_list1.append(prdt_details)
 				return_list['sale_ids'] = prdt_list1
 
@@ -76,10 +78,11 @@ class ProductDiscountWizard(models.TransientModel):
 				if date>=self.date_from and date<=self.date_to:
 					for line in sale.order_line:
 						if not line.display_type:
-							a = sale.id
-							b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100]
-							discount_details ={'id':a,'values':b}
-							discount_list.append(discount_details)
+							if line.discount>0.0:
+								a = sale.id
+								b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100,line.line_amount]
+								discount_details ={'id':a,'values':b}
+								discount_list.append(discount_details)
 			list_product=discount_list
 			for data in list_product:
 				prdt_details =[]
@@ -90,6 +93,7 @@ class ProductDiscountWizard(models.TransientModel):
 				prdt_details.append(data['values'][4])
 				prdt_details.append(data['values'][5])
 				prdt_details.append(data['values'][6])
+				prdt_details.append(data['values'][7])
 				prdt_list1.append(prdt_details)
 			return_list['sale_ids'] = prdt_list1
 
@@ -109,6 +113,7 @@ class ProductDiscountWizard(models.TransientModel):
 		fifth_col = sheet.col(4)
 		sixth_col = sheet.col(5)
 		seventh_col = sheet.col(6)
+		eigth_col = sheet.col(7)
 		first_col.width = 150*20
 		two_col.width = 150*20
 		three_col.width = 500*20
@@ -116,6 +121,7 @@ class ProductDiscountWizard(models.TransientModel):
 		fifth_col.width = 500 * 20
 		sixth_col.width = 200 * 20
 		seventh_col.width = 250 * 20
+		eigth_col.width = 250*20
 
 		style1 = xlwt.easyxf(num_format_str='#,##0.00')
 		sheet.write(0,0,'SO#',format2)
@@ -125,6 +131,7 @@ class ProductDiscountWizard(models.TransientModel):
 		sheet.write(0,4,'Product Name',format2)
 		sheet.write(0,5,'Discount(%)',format3)
 		sheet.write(0,6,'Discount Amount',format3)
+		sheet.write(0,7,'Sale Amount',format3)
 		data = self.get_data()
 		dt = data.get('sale_ids')
 		row_number = 1
@@ -138,6 +145,7 @@ class ProductDiscountWizard(models.TransientModel):
 			sheet.write(row_number,4,value[4])
 			sheet.write(row_number,5,value[5],style1)
 			sheet.write(row_number,6,value[6],style1)
+			sheet.write(row_number,7,value[7],style1)
 			row_number+=1	
 
 		output = StringIO()
