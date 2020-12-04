@@ -29,10 +29,11 @@ class DiscountDetailedReport(models.AbstractModel):
 					if date>=date_from and date<=date_to:
 						for line in sale.order_line:
 							if not line.display_type:
-								a = sale.id
-								b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100]
-								discount_details ={'id':a,'values':b}
-								discount_list.append(discount_details)
+								if line.discount>0.0:
+									a = sale.id
+									b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100,line.line_amount]
+									discount_details ={'id':a,'values':b}
+									discount_list.append(discount_details)
 				list_product=discount_list
 				for data in list_product:
 					prdt_details =[]
@@ -43,6 +44,7 @@ class DiscountDetailedReport(models.AbstractModel):
 					prdt_details.append(data['values'][4])
 					prdt_details.append(data['values'][5])
 					prdt_details.append(data['values'][6])
+					prdt_details.append(data['values'][7])
 					prdt_list1.append(prdt_details)
 				return_list['sale_ids'] = prdt_list1
 
@@ -57,10 +59,11 @@ class DiscountDetailedReport(models.AbstractModel):
 				if date>=date_from and date<=date_to:
 					for line in sale.order_line:
 						if not line.display_type:
-							a = sale.id
-							b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100]
-							discount_details ={'id':a,'values':b}
-							discount_list.append(discount_details)
+							if line.discount>0.0:
+								a = sale.id
+								b = [sale.name,sale.partner_id.hcp_customer_id,sale.partner_id.name,line.product_id.default_code,line.product_id.name,line.discount,line.line_amount*line.discount/100,line.line_amount]
+								discount_details ={'id':a,'values':b}
+								discount_list.append(discount_details)
 			list_product=discount_list
 			for data in list_product:
 				prdt_details =[]
@@ -71,6 +74,7 @@ class DiscountDetailedReport(models.AbstractModel):
 				prdt_details.append(data['values'][4])
 				prdt_details.append(data['values'][5])
 				prdt_details.append(data['values'][6])
+				prdt_details.append(data['values'][7])
 				prdt_list1.append(prdt_details)
 			return_list['sale_ids'] = prdt_list1
 
@@ -116,10 +120,10 @@ class DiscountSummaryReport(models.AbstractModel):
 		# 	raise UserError(type(date_from))
 
 		self._cr.execute("""select 
-							 	
 								sol.name,
 								sum(sol.discount) as Disc,
-								sum(sol.discount*sol.line_amount/100) as Discount_Amount
+								sum(sol.discount*sol.line_amount/100) as Discount_Amount,
+								sum(sol.line_amount) as Sale_Amount
 
 							from 
 								sale_order so,
@@ -127,10 +131,11 @@ class DiscountSummaryReport(models.AbstractModel):
 							where
 								so.id = sol.order_id and
 								date(so.date_order) >= %s and date(so.date_order) <= %s and
-								sol.display_type is NULL
+								sol.display_type is NULL and
+								sol.discount > 0.0
 							group by 
- 								
-								sol.name;
+ 								sol.name,
+ 								sol.discount;
 											""", (date_from,date_to))
 		sql_data = self._cr.fetchall()
 
