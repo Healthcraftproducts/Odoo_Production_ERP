@@ -12,8 +12,6 @@ from odoo.exceptions import UserError, AccessError
 from odoo.addons.phone_validation.tools import phone_validation
 from collections import OrderedDict, defaultdict
 
-from . import crm_stage
-
 class DisplaysHealthcraft(models.Model):
 	_name = 'displays.healthcraft'
 	_rec_name ='name'
