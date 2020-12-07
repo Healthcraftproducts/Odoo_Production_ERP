@@ -70,5 +70,12 @@ class StockMove(models.Model):
             'mo_reference': False
         })
         return values
-    
-  
+
+
+class ProductReplenish(models.TransientModel):
+    _inherit = 'product.replenish'
+
+    def _prepare_run_values(self):
+        values = super(ProductReplenish, self)._prepare_run_values()
+        values.update({'mo_reference': False})
+        return values
