@@ -82,29 +82,29 @@
 
     </template>
 
-			<template id="stock_picking_operations_inherit_id" inherit_id="stock.report_picking">
+    <template id="stock_picking_operations_inherit_id" inherit_id="stock.report_picking">
 
-					<xpath expr="//div[@class='row justify-content-end mb16']" position="replace">
+                    <xpath expr="//div[@class='row justify-content-end mb16']" position="replace">
                         <div class="row justify-content-end mb16">
-    						<div class="col-4" name="right_box">
-    							<br/>
-                            	<img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/>
+                            <div class="col-4" name="right_box">
+                                <br/>
+                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/>
                             </div>
                         </div>
 
-					</xpath>
+                    </xpath>
 
-					<xpath expr="//div[@class='row']" position="replace">
+                    <xpath expr="//div[@class='row']" position="replace">
 
-							<div class="row">
+                            <div class="row">
                                 <div class="col-6" name="div_outgoing_address">
                                     <div t-if="o.move_ids_without_package and o.move_ids_without_package[0].partner_id and o.move_ids_without_package[0].partner_id.id != o.partner_id.id">
                                         <span><strong>Delivery Address:</strong></span>
                                         <div t-field="o.move_ids_without_package[0].partner_id"
                                             t-options='{"widget": "contact", "fields": ["address", "name", "phone","email"], "no_marker": True, "phone_icons": True}'/>
                                         <t t-if="o.move_ids_without_package[0].partner_id.hcp_customer_id">
-	                						<span><strong>Customer ID:&amp;nbsp;</strong></span><span t-esc="o.move_ids_without_package[0].partner_id.hcp_customer_id"/>
-	            						</t>
+                                            <span><strong>Customer ID:&amp;nbsp;</strong></span><span t-esc="o.move_ids_without_package[0].partner_id.hcp_customer_id"/>
+                                        </t>
                                     </div>
                                     <div t-if="o.picking_type_id.code != 'internal' and (not o.move_ids_without_package or not o.move_ids_without_package[0].partner_id) and o.picking_type_id.warehouse_id.partner_id">
                                         <span><strong>Warehouse Address:</strong></span>
@@ -127,14 +127,95 @@
                                            t-options='{"widget": "contact", "fields": ["address","name", "phone","email"], "no_marker": True, "phone_icons": True}'/>
                                         <p t-if="o.sudo().partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.sudo().partner_id.vat"/></p>
                                         <t t-if="o.partner_id.hcp_customer_id">
-	                						<span><strong>Customer ID:&amp;nbsp;</strong></span><span t-esc="o.partner_id.hcp_customer_id"/>
-	            						</t>
+                                            <span><strong>Customer ID:&amp;nbsp;</strong></span><span t-esc="o.partner_id.hcp_customer_id"/>
+                                        </t>
                                     </div>
                                 </div>
                             </div>
 
-					</xpath>
+                    </xpath>
 
-	</template>
+                <xpath expr="//table[2]" position="after">
+
+                        <table class="table table-sm">
+
+                                <thead>
+                                    <tr>
+                                        <th name="th_sm_product">
+                                            <strong>Product</strong>
+                                        </th>
+                                        <th name="th_sm_order_qty">
+                                            <strong>Ordered Qty</strong>
+                                        </th>
+                                        <th name="th_sm_reserved_qty">
+                                            <strong>Reserved Qty</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                            <tbody>   
+                            <!-- <t t-foreach="o.move_ids_without_package.sorted(key=lambda m: m.product_id.id)" t-as="move">  -->
+                                <t t-set="lines" t-value="o.move_ids_without_package.sorted(key=lambda m: m.product_id.id)" />
+
+                                    <tr t-foreach="lines" t-as="move">
+                                        <td>
+                                            <span t-field="move.product_id"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-field="move.product_uom_qty"/>
+                                            <span t-field="move.product_uom"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-field="move.reserved_availability"/>
+                                            <span t-field="move.product_uom"/>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+
+               
+                </xpath>
+
+                <xpath expr="//div[@class='row mt48 mb32']" position="replace">
+
+                    <div class="row mt48 mb32">
+
+                        <div t-if="o.origin" class="col-auto" name="div_origin">
+                            <strong>Order:</strong>
+                            <p t-field="o.origin"/>
+                        </div>
+
+                        <div class="col-auto" name="div_state">
+                            <strong>Status:</strong>
+                            <p t-field="o.state"/>
+                        </div>
+
+                        <div class="col-auto" name="div_sched_date">
+                            <strong>Scheduled Date:</strong>
+                            <p t-field="o.scheduled_date"/>
+                        </div>
+                        
+                        <t t-set="sale_obj" t-value="request.env['sale.order'].search([('name','=',o.origin)],limit=1)"/>
+
+                        <div t-if="sale_obj.po_number" class="col-auto" name="div_origin">
+                            <strong>PO#</strong>
+                            <p t-esc="sale_obj.po_number"/>
+                        </div>
+
+                        <div t-if="sale_obj.ship_via_desc" class="col-auto" name="div_origin">
+                            <strong>Ship Via Description</strong>
+                            <p t-esc="sale_obj.ship_via_desc"/>
+                        </div>
+ 
+
+                    </div>
+
+                </xpath>
+
+
+
+    </template>
 
 </odoo>
