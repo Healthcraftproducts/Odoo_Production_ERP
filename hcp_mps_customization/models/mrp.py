@@ -71,7 +71,6 @@ class StockMove(models.Model):
         })
         return values
 
-
 class ProductReplenish(models.TransientModel):
     _inherit = 'product.replenish'
 
