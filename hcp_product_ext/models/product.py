@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import api, fields, models, SUPERUSER_ID, _
 
 
 class ProductTemplate(models.Model):
