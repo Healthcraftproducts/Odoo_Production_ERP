@@ -72,6 +72,12 @@
                                         <field name="source_id"/>
                                     </group>
                                 </group>
+
+                                <group string="Opportunity" name="opportunity">
+
+                                    <field name="opportunity_id"/>
+
+                                </group>
                             </group>
 
         </xpath>
