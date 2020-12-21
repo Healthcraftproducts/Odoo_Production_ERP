@@ -47,8 +47,9 @@ class ProductDiscountWizard(models.TransientModel):
 		self._cr.execute("""select 
 							 	
 								sol.name,
-								avg(sol.discount) as Disc,
-								sum(sol.discount*sol.line_amount/100) as Discount_Amount
+								avg(sol.discount)::Numeric(10,2) as Disc,
+								sum(sol.discount*sol.line_amount/100) as Discount_Amount,
+								sum(sol.line_amount) as Sale_Amount
 
 							from 
 								sale_order so,
@@ -56,10 +57,11 @@ class ProductDiscountWizard(models.TransientModel):
 							where
 								so.id = sol.order_id and
 								date(so.date_order) >= %s and date(so.date_order) <= %s and
-								sol.display_type is NULL
+								sol.display_type is NULL and
+								sol.discount > 0.0
 							group by 
- 								
-								sol.name;
+ 								sol.name,
+ 								sol.discount;
 											""", (date_from,date_to))
 		sql_data = self._cr.fetchall()
 		workbook = xlwt.Workbook()
