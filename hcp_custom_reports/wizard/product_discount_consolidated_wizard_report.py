@@ -47,7 +47,7 @@ class ProductDiscountWizard(models.TransientModel):
 		self._cr.execute("""select 
 							 	
 								sol.name,
-								sum(sol.discount) as Disc,
+								avg(sol.discount) as Disc,
 								sum(sol.discount*sol.line_amount/100) as Discount_Amount
 
 							from 
