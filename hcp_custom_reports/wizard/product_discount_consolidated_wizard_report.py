@@ -68,10 +68,12 @@ class ProductDiscountWizard(models.TransientModel):
 		sheet = workbook.add_sheet("Discounts Given - Summary Report")
 		first_col = sheet.col(0)
 		two_col = sheet.col(1)
-		three_col = sheet.col(2)		
+		three_col = sheet.col(2)
+		fourth_col = sheet.col(3)		
 		first_col.width = 500*20
 		two_col.width = 200*20
 		three_col.width = 250*20
+		fourth_col.width = 250*20
 
 		format2 = xlwt.easyxf('font: bold 1')
 		format3 = xlwt.easyxf('font: bold 1; align: horiz right')
@@ -79,6 +81,7 @@ class ProductDiscountWizard(models.TransientModel):
 		sheet.write(0,0,'Product Name',format2)
 		sheet.write(0,1,'Discount(%)',format3)
 		sheet.write(0,2,'Discount Amount',format3)
+		sheet.write(0,3,'Sale Amount',format3)
 		for row, line in enumerate(sql_data,start=1):
 			for col, cell in enumerate(line):
 				if isinstance(cell,float):
