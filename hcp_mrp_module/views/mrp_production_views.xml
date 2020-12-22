@@ -71,10 +71,19 @@
                 <field name="runtime_per_unit"/>
                 <field name="total_time"/>               
             </xpath>
+            
+            <xpath expr="//field[@name='sequence']" position="replace">
+            </xpath>
+            
+            <xpath expr="//field[@name='time_mode']" position="before">
+                <field name="sequence" groups="base.group_no_one"/>           
+            </xpath>
+            
             <xpath expr="//field[@name='time_mode']" position="before">
                 <field name="done_by" string="Done By" label="Done By"/>
                 <field name="operator" string="Operator" label="Operator" />
             </xpath>
+            
             <label for="time_cycle_manual" position="replace">
                  <label for="time_cycle_manual" attrs="{'invisible': [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}" string="Total Time"/>
             </label>
