@@ -85,7 +85,7 @@
             </xpath>
             
             <label for="time_cycle_manual" position="replace">
-                 <label for="time_cycle_manual" attrs="{'invisible': [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}" string="Cycle Time"/>
+                 <label for="time_cycle_manual" attrs="{'invisible': [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}" string="Total Time"/>
             </label>
 
             <!-- <xpath expr="//field[@name='time_cycle_manual']" position="after">
