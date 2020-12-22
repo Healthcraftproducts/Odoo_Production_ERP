@@ -64,13 +64,26 @@
             <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
             <field name="arch" type="xml">
         
-            <xpath expr="//field[@name='sequence']" position="after">
-                <field name="setup_time" widget="float_time" string="Setup Time(minutes)" />
-                <field name="cycle_time" invisible="1" widget="float_time" string="Cycle Time(minutes)" />
+            <xpath expr="//field[@name='sequence']" position="before">
+                <field name="setup_time" widget="float_time" string="Batch Setup Time(Mins)" />
+                <field name="batch_size"/>
+                <field name="setuptime_per_unit"/>
+                <field name="runtime_per_unit"/>
+                <field name="total_time"/>               
+            </xpath>
+            
+            <xpath expr="//field[@name='sequence']" position="replace">
+            </xpath>
+            
+            <xpath expr="//field[@name='time_mode']" position="before">
+                <field name="sequence" groups="base.group_no_one"/>           
+            </xpath>
+            
+            <xpath expr="//field[@name='time_mode']" position="before">
                 <field name="done_by" string="Done By" label="Done By"/>
                 <field name="operator" string="Operator" label="Operator" />
-                <field name="batch_size"/>
             </xpath>
+            
             <label for="time_cycle_manual" position="replace">
                  <label for="time_cycle_manual" attrs="{'invisible': [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}" string="Cycle Time"/>
             </label>
