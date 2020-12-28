@@ -1,0 +1,15 @@
+<odoo>
+
+  <record id="view_order_product_search_inherited2" model="ir.ui.view">
+        <field name="name">sale.report.search.inherited2</field>
+        <field name="model">sale.report</field>
+        <field name="inherit_id" ref="sale.view_order_product_search"/>
+            <field name="arch" type="xml">
+               <xpath expr="//search" position="inside">
+                    <field name="commercial_partner_id" string="Parent Customer"/>   
+                    <filter string="Parent Customer" name="Parent Customer" context="{'group_by':'commercial_partner_id'}"/>
+                </xpath>
+        </field>
+    </record>
+
+</odoo>
