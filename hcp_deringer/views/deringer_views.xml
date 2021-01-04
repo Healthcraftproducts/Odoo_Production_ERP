@@ -21,6 +21,8 @@
                         <group colspan="2">
                             <group>
                                 <field name="date" readonly="1"/>
+                                <field name="fee_percentage"/>
+                                <field name="arrival_date"/>
                             </group>
                             <group>
                                 <field name="partner_id" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>

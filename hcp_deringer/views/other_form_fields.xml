@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--
+    <record id="view_partner_tree_id" model="ir.ui.view">
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='phone']" position="before">
+                    <field name="hcp_customer_id"/>
+                    <field name="hcp_vendor_no"/>
+                </xpath>
+
+            </field>
+    </record>-->
+
+    <record id="view_company_form_inherited2" model="ir.ui.view">
+            <field name="name">res.company.form.inherit2</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                  <xpath expr="//field[@name='website']" position="after">
+                      <field name="mid"/>
+                      <field name="irs_number"/>
+                  </xpath>
+            </field>
+    </record>
+    
+     <record id="view_partner_form_inherited2" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit2</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                  <xpath expr="//field[@name='vat']" position="after">
+                      <field name="irs_number"/>
+                  </xpath>
+            </field>
+    </record>
+
+</odoo>
