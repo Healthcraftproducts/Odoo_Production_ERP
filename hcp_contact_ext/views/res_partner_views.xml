@@ -243,6 +243,7 @@
                                                 <field name="company_id" invisible="1"/>
                                                 <!-- Asana Ticket - Make customer ID field read only  across all form where ever it refers - GAP ID: 2804 Dif -->
                                                 <field name="hcp_customer_id" string="Customer ID" readonly="1"/>
+                                                <field name="hcp_vendor_no" string="Vendor ID" readonly="1"/>
                                                 <field name="hcp_is_customer" string="Is Customer" invisible="1" />
                                                 <field name="company_type" string="company_type" invisible="1" />
                                                 <field name="hcp_is_vendor" string="Is Vendor" invisible="1" />
