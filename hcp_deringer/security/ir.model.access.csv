@@ -1,4 +1,4 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 deringer_report_model_access_right_user,deringer_model_access_right,model_deringer_form,base.group_user,1,1,1,0
 fee_percentage_model_access_right_user,fee_percentage_model_access_right,model_fee_percentage,base.group_user,1,1,1,0
-
+deringer_uom_model_access_right_user,deringer_uom_model_access_right,model_deringer_uom,base.group_user,1,1,1,0

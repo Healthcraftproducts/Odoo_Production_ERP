@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="email_template_deringer" model="mail.template">
             <field name="name">Deringer: Send by email</field>
@@ -23,7 +23,7 @@
                 </p>
             </div>
             </field>
-<!--             <field name="report_template" ref="deringer_xml_report"/> -->
+            <field name="report_template" ref="deringer_xml_report"/>
             <field name="report_name">${(object.name or '').replace('/','_')}</field>
             <field name="lang">${object.partner_id.lang}</field>
             <field name="user_signature" eval="False"/>
