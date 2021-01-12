@@ -9,6 +9,13 @@ from odoo import api, fields, models, _
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import date_utils, float_compare, float_round, float_is_zero
 
+class StockScrap(models.Model):
+	_inherit = 'stock.scrap'
+
+
+	production = fields.Char(string="Manufacturing Order",related='production_id.name')
+	work_order = fields.Char(string="Work Order",related='workorder_id.name')
+
 
 class MrpProduction(models.Model):
 	_inherit="mrp.production"

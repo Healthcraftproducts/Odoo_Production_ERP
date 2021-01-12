@@ -3,6 +3,22 @@
 
 <odoo>
 
+    <record id="stock_scrap_view_form2_mrp_inherit_mrp_id" model="ir.ui.view">
+        <field name="name">stock.scrap.view.form2.inherit.mrp</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="mrp.stock_scrap_view_form2_mrp_inherit_mrp"/>
+        <field name="arch" type="xml">
+            <field name="owner_id" position="after">
+                <field name="workorder_id" invisible="1" />
+                <field name="production_id" invisible="1" />
+                <field name="production" />
+                <field name="work_order" string="Operation"/>
+            </field>
+        </field>
+    </record>
+
+
+
         <record id="mrp_workcenter_inherited_form2" model="ir.ui.view">
             <field name="name">mrp.workcenter.form.inherited2</field>
             <field name="model">mrp.workcenter</field>
