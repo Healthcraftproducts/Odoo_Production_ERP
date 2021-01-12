@@ -40,18 +40,6 @@ class DeringerUom(models.Model):
     _description = "Derinfer UOM"
     
     name = fields.Char('Deringer UOM')
-
-class ProductTemplate(models.Model):
-     _inherit = "product.template"    
-     
-     deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
-     usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
-
-class ProductProduct(models.Model):
-     _inherit = "product.product"    
-     
-     deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
-     usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
      
 class DeringerForm(models.Model):
     _name = "deringer.form"

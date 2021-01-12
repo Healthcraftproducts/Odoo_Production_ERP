@@ -141,10 +141,6 @@
     </record>
 
     
-
-
-
-
     <record id="product_form_inherit_id" model="ir.ui.view">
             <field name="name">product.template.common.form.inherit</field>
             <field name="model">product.template</field>
@@ -154,7 +150,6 @@
                     <field name="product_categ_id"/>
                     <field name="product_sub_categ_id"/>
                     <field name="pick"/>
-                    <field name="fda_listing"/>
                     <field name="obsolute_product"/>
                 </xpath>
 
@@ -212,7 +207,23 @@
                     <attribute name="string">Accounting Category</attribute>
 
                 </xpath>
-
+                <xpath expr="//page[@name='inventory']" position="after">
+                    <page string="Deringer Info" name="deringer_info">
+                        <group>
+                            <group>
+                                <field name="manufacturer_id" invisible="1"/>
+                                <field name="cust_fld2"/>
+                                <field name="cust_fld3"/>
+                                <field name="binding_rule"/>
+                            </group>
+                            <group>
+                                <field name="fda_listing"/>
+                                <field name="deringer_uom_id"/>
+                                <field name="usmca_eligible"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
             </field>
     </record>
 
@@ -266,9 +277,6 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//group[@name='bill']/field[@name='purchase_method']" position='after'>
-                    <field name="cust_fld3"/>
-                    <field name="cust_fld2"/>
-                    <field name="binding_rule"/>
                     <label for="duty_rate"/>
                     <div class="o_row">
                     <field name="duty_rate"/><span>%%</span>
@@ -292,7 +300,6 @@
                     <field name="product_categ_id"/>
                     <field name="product_sub_categ_id"/>
                     <field name="pick"/>
-                    <field name="fda_listing"/>
                     <field name="obsolute_product"/>
                 </xpath>
 
