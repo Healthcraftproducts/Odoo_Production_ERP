@@ -22,9 +22,13 @@ class ProductLowStockReport(models.AbstractModel):
         min_qty = data['form']['minimum_qty']
         company_ids = data['form']['company_ids']
         location_ids = data['form']['stock_lctn_id']
+        if not location_ids:
+            raise UserError("Please Select Location")
         return_list['type'] = stock_notification_type
         return_list['min_qty'] = min_qty
-
+        total_qty = 0
+        unreserved_qty = 0
+        unreserved_qty = 0
         if company_ids and company_ids:
             domain += [('company_id', 'in', company_ids)]
         if location_ids:
@@ -45,11 +49,13 @@ class ProductLowStockReport(models.AbstractModel):
                 product_domain = [('product_id', '=', product_id.id)]
                 quant_ids = StockQuantObj.search(domain + product_domain)
                 tot_qty = sum(quant_id.quantity for quant_id in quant_ids)
-                
+                reserved_qty = sum(quant_id.reserved_quantity for quant_id in quant_ids)
+                #if reserved_qty:
+                unreserved_qty = tot_qty - reserved_qty
                 for quant_id in quant_ids:
                     if tot_qty < product_id.minimum_qty:
                         c=quant_id.product_id.id
-                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name]
+                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty]
                         product_detail1 = {'id':c,'values':d}
                         product_list3.append(product_detail1)
             list_quant = product_list3
@@ -63,6 +69,7 @@ class ProductLowStockReport(models.AbstractModel):
                 product_detail3.append(dt['values'][1])
                 product_detail3.append(dt['values'][2])
                 product_detail3.append(dt['values'][3])
+                product_detail3.append(dt['values'][4])
                 product_list4.append(product_detail3)
             return_list['quant_ids'] = product_list4
             return_list['location_ids'] = location_ids[1]
@@ -79,11 +86,14 @@ class ProductLowStockReport(models.AbstractModel):
                 product_domain = [('product_id', '=', rule_id.product_id.id)]
                 quant_ids = StockQuantObj.search(domain + product_domain)
                 total_qty = sum(quant_id.quantity for quant_id in quant_ids)
+                reserved_qty = sum(quant_id.reserved_quantity for quant_id in quant_ids)
                 # total_qty = -(total_qty)
+                #if reserved_qty:
+                unreserved_qty = total_qty - reserved_qty
                 for quant_id in quant_ids:
                     if total_qty < rule_id.product_min_qty:
                         a=quant_id.product_id.id
-                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name]
+                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty]
                         product_detail = {'id':a,'values':b}
                         product_list.append(product_detail)
             list_quants = product_list
@@ -100,6 +110,7 @@ class ProductLowStockReport(models.AbstractModel):
                 product_detail2.append(data['values'][1])
                 product_detail2.append(data['values'][2])
                 product_detail2.append(data['values'][3])
+                product_detail2.append(data['values'][4])
                 product_list2.append(product_detail2)
             return_list['quant_ids'] = product_list2
             return_list['location_ids'] = location_ids[1]

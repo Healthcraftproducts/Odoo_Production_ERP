@@ -22,9 +22,9 @@
                         <div>
                             <tr>
                                 <th>Product Name</th>
-                                <!-- <th>On Hand Qty</th> -->
-                                <th class="text_center">On Hand Qty</th>
                                 <th class="text_center">Minimum Stock</th>
+                                <th class="text_center">On Hand Qty</th>
+                                <th class="text_center">Unreserved Qty</th>
                                 <th class="text_center">Unit of Measure</th>
                             </tr>
                         </div>
@@ -39,15 +39,13 @@
                                             <span t-esc="quant_id.location_id.display_name"/>
                                         </td> -->
                                         <td class="text_center">
-                                            <span t-esc="quant_id[1]"/>
+                                            <span t-esc="quant_id[2]"/>
                                         </td>
                                         <td class="text_center">
-                                            
-                                                <span t-esc="quant_id[2]"/>
-                                            
-                                            
-                                                <!-- <span t-esc="product_dic.get('min_qty')"/> -->
-                                            
+                                            <span t-esc="quant_id[1]"/>
+                                        </td>
+                                         <td class="text_center">
+                                            <span t-esc="quant_id[4]"/>
                                         </td>
                                         <td class="text_center">
                                             <span t-esc="quant_id[3]"/>
@@ -61,14 +59,14 @@
                                         <td>
                                             <span t-esc="quant_id[0]"/>
                                         </td>
-                                        <!-- <td>
-                                            <span t-esc="quant_id[1]"/>
-                                        </td> -->
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[2]"/>
+                                        </td>
                                         <td class="text_center">
                                             <span t-esc="quant_id[1]"/>
                                         </td>
-                                        <td class="text_center">
-                                            <span t-esc="quant_id[2]"/>
+                                         <td class="text_center">
+                                            <span t-esc="quant_id[4]"/>
                                         </td>
                                         <td class="text_center">
                                             <span t-esc="quant_id[3]"/>
