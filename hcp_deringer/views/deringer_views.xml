@@ -22,10 +22,10 @@
                             <group>
                                 <field name="date" readonly="1"/>
                                 <field name="fee_percentage"/>
-                                <field name="export_country_id"/>
                             </group>
                             <group>
-                                <field name="partner_id" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                                <field name="export_country_id"/>
+                                <field name="partner_id" invisible="1"/>
                                 <field name="arrival_date"/>
                             </group>
                         </group>

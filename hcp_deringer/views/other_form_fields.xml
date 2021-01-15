@@ -37,4 +37,30 @@
             </field>
     </record>
 
+    
+    <record id="view_account_invoice_inherited2" model="ir.ui.view">
+            <field name="name">account.invoice.form.inherit2</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form" />
+            <field name="arch" type="xml">
+                    <xpath expr="//header" position="inside">
+                        <button string="Uncheck Deringer Status" type="object" class="oe_highlight" name="unlink_deringer_shipment" attrs="{'invisible': [('deringer_shipping_done', '=', False)]}"/>
+                    </xpath>
+                    <xpath expr="//field[@name='ref']" position="after">
+                      <field name="deringer_shipping_done"/>
+                  </xpath>
+            </field>
+    </record>
+    
+        <record id="view_account_move_filter_inherited2" model="ir.ui.view">
+            <field name="name">account.move.select.inherited2</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter string="To Process Deringer" name="deringer_shipping_done" domain="[('deringer_shipping_done', '=', False)]"/>
+                </xpath>
+            </field>
+        </record>
+
 </odoo>

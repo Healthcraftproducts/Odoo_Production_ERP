@@ -25,3 +25,12 @@ class ResPartner(models.Model):
 
     irs_number = fields.Char('IRS No.')   
  
+class AccountMove(models.Model):
+    _inherit = "account.move"
+    
+    deringer_shipping_done = fields.Boolean('Deringer Shipment Done?',readonly=1,default=False)
+
+    def unlink_deringer_shipment(self):
+        res={}
+        self.write({'deringer_shipping_done':False})
+        return res
