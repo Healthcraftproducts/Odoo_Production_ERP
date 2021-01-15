@@ -8,10 +8,11 @@
                 <form string="View Deringer Form">
                    <header>
                         <button name="print_report_xml" type="object" string="Generate XML" states="draft"/>
+                        <button name="print_report_xml" type="object" string="Generate XML Again" states="xml_created"/>
                         <button name="action_send_email" type="object" string="Send Email" states="xml_created"/>
-                        <button name="action_draft" type="object" string="Set To Draft" states="xml_created"/>
-                        <button name="action_cancel" type="object" string="Cancel" states="draft,xml_created"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,cancel,"/>
+<!--                         <button name="action_draft" type="object" string="Set To Draft" states="xml_created"/> -->
+                        <button name="action_cancel" type="object" string="Cancel" states="draft"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,xml_created,cancel,"/>
                     </header>
                     <sheet>
                         <label for="name" class="oe_edit_only"/>

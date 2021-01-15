@@ -150,6 +150,7 @@ class DeringerForm(models.Model):
         byte_xml = bytes(xml_data, 'utf-8') 
         output = base64.b64encode(byte_xml)
         res = self.env['deringer.report.download'].create({'data':output})
+        self.write({'state': 'xml_created'})
         return { 
             'type': 'ir.actions.act_window',
             'res_model': 'deringer.report.download',
