@@ -44,7 +44,6 @@
                 <field name="model">mrp.production</field>
                 <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
                 <field name="arch" type="xml">
-
                  <xpath expr="//button[@name='post_inventory']"  position='replace'>
                      <button name="post_inventory" string="Post Inventory" type="object" attrs="{'invisible': [('post_visible', '=', False)]}"/>
                 </xpath>
