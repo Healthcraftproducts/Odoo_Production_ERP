@@ -141,7 +141,7 @@
             <field name="inherit_id" ref="stock.view_picking_form" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='date_done']" position="after">
-                    <field name ="shipment_date"/>
+                    <field name ="shipment_date" readonly="1" attrs="{'invisible': [('state', '!=', 'done')]}"/>
                 </xpath>
 
             </field>
