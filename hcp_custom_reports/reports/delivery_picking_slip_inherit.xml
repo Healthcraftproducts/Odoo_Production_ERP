@@ -36,6 +36,15 @@
 
         </xpath>
 
+        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="replace">
+                <div t-if="o.state" class="col-auto" name="div_sched_date">
+                    <div t-if="o.state" class="col-auto" name="div_sched_date">
+                        <strong>Shipping Date:</strong>
+                        <t><p t-field='o.shipment_date'/></t>
+                    </div>
+                </div>
+        </xpath>
+                    
 
         <xpath expr="//table[@class='table table-sm']" position="replace">
 
