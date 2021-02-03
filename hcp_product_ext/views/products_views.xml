@@ -1,5 +1,46 @@
 <odoo>
 
+      <record id="view_tariff_number_form" model="ir.ui.view">
+            <field name="name">tariff.number.form</field>
+            <field name="model">tariff.number</field>
+            <field name="arch" type="xml">
+                <form string="View Tariff Number Form">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_tariff_number_tree" model="ir.ui.view">
+            <field name="name">tariff.number.view</field>
+            <field name="model">tariff.number</field>
+            <field name="arch" type="xml">
+                <tree string="View Tariff Tree" editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_tariff_number" model="ir.actions.act_window">
+            <field name="name">Tariff Number</field>
+            <field name="res_model">tariff.number</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="action_deringer_new">
+                Add a New Tariff Number
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="menu_tariff_number"
+            action="action_tariff_number"
+            parent="sale.menu_sale_config"
+            sequence="6"/>
+        
     <record id="product_pricelist_view_id" model="ir.ui.view">
             <field name="name">product.pricelist.form</field>
             <field name="model">product.pricelist</field>
@@ -220,6 +261,7 @@
                                 <field name="fda_listing"/>
                                 <field name="deringer_uom_id"/>
                                 <field name="usmca_eligible"/>
+                                <field name="tarrif_number"  widget="many2many_tags"/>
                             </group>
                         </group>
                     </page>
@@ -255,10 +297,7 @@
             </xpath>    
             <xpath expr="//form/sheet/group/group[@name='codes']" position='after'>
                 <group name="custom" string="Others">
-                    <field name="cust_fld2"/>
-                    <field name="cust_fld3"/>
                     <field name="cycle"/>
-                    <field name="binding_rule"/>
                     <field name="duty_rate"/>
                     <field name="pick"/>
                     <field name="product_categ_id"/>
@@ -300,7 +339,7 @@
                     <field name="product_categ_id"/>
                     <field name="product_sub_categ_id"/>
                     <field name="pick"/>
-                    <field name="obsolute_product"/>
+                    <field name="obsolute_product" invisible="1"/>
                 </xpath>
 
                 <xpath expr="//field[@name='default_code']" position="replace">
