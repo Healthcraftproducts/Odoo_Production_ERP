@@ -116,7 +116,7 @@ class DeringerForm(models.Model):
             delivery_contact_phone = record.partner_shipping_id.phone or ""
             delivery_contact_irs = record.partner_shipping_id.irs_number or ""
             invoice_date = record.date or ""
-            fee_percentage = self.fee_percentage or ""
+            fee_percentage = self.fee_percentage.name or ""
             source = record.invoice_origin or ""
             shipping_details = self._get_shipment_details(source)
             weight = shipping_details['weight']
@@ -141,7 +141,7 @@ class DeringerForm(models.Model):
                         usmac_eligibility = 'S'
                     else:
                         usmac_eligibility =""
-                country_of_origin = line.product_id.cust_fld3.name or ""
+                country_of_origin = line.product_id.cust_fld3.code or ""
                 binding_rule = line.product_id.binding_rule or ""
                 fda_desription = line.product_id.fda_listing or ""
                 hsc_code = line.product_id.cust_fld2 or ""
