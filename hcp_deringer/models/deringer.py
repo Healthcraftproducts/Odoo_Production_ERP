@@ -124,8 +124,8 @@ class DeringerForm(models.Model):
             shipping_amount = 0
             for invoice_line in  record.invoice_line_ids:
                 if invoice_line.invoice_ship_method == True:
-                    #shipping_amount = invoice_line.inv_line_amount
-                    print(shipping_amount,'SHIPPING AMOUNT **************************')
+                    shipping_amount = invoice_line.inv_line_amount
+                    #print(shipping_amount,'SHIPPING AMOUNT **************************')
             total_amount = record.amount_total - shipping_amount
             #print(total_amount,'TOTAL AMOUNT *********************************')
             #date =  shipping_details['arrival_date']
