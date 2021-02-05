@@ -12,7 +12,7 @@
     'version': '0.1',
     'depends': ['base','mrp'],
     'data': [
-        'views/workorder_report.xml',  
-        'views/report.xml',  
+        'report/workorder_report.xml',  
+        'report/report.xml',  
     ],   
 }
