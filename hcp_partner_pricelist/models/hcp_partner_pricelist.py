@@ -97,7 +97,7 @@ class Lead(models.Model):
     def action_new_quotation(self):
         action = super().action_new_quotation()
         action['context']['default_priority'] = self.priority
-        action['context']['default_lead_confirmation_date'] = datetime.now().strftime('%Y-%m-01')
+        action['context']['default_lead_confirmation_date'] = datetime.now().strftime('%Y-%m-%d')
         return action
 
     
