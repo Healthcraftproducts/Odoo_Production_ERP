@@ -2,6 +2,7 @@
 from odoo import api, fields, models, tools, _
 from odoo.tools.misc import formatLang, get_lang
 from odoo.exceptions import AccessError, UserError, ValidationError
+from datetime import datetime, timedelta, date
 
 class Lead(models.Model):
     _inherit = "crm.lead"
@@ -92,6 +93,13 @@ class Lead(models.Model):
                 'website': partner.website,
             }
         return {}
+        
+    def action_new_quotation(self):
+        action = super().action_new_quotation()
+        action['context']['default_priority'] = self.priority
+        action['context']['default_lead_confirmation_date'] = datetime.now().strftime('%Y-%m-01')
+        return action
+
     
 class PricelistItem(models.Model):
     _inherit = "product.pricelist.item"
@@ -331,6 +339,8 @@ class SaleOrder(models.Model):
         ('so_email_sent', 'Sale Order Email Sent')], "Email Status",
     )
     po_number = fields.Char(string='PO Number')
+    priority = fields.Selection([('0','Low'),('1','Medium'),('2','High'),('3','Very High')],string='Priority', index=True,)
+    lead_confirmation_date = fields.Date('Lead Confirmation Date')
     
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
