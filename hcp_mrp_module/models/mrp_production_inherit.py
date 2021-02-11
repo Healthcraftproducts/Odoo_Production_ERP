@@ -21,7 +21,7 @@ class MrpProduction(models.Model):
 	_inherit="mrp.production"
 
 	release_date = fields.Date(string='Release Date')
-	priority = fields.Selection([('0', 'Not urgent'), ('1', 'Normal'), ('2', 'Urgent'), ('3', 'Very Urgent')], 'Priority',readonly=False,states={'done': [('readonly', True)]},default='1')
+	priority = fields.Selection([('0', 'Low'), ('1', 'Medium'), ('2', 'High'), ('3', 'Very High')], 'Priority',readonly=False,states={'done': [('readonly', True)]},default='1')
 
 	def get_attachment(self):
 		import base64
