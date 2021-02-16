@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <odoo>
+
+     <record id="mrp_workorder_inherited3" model="ir.ui.view">
+            <field name="name">mrp.workorder.form.inherited3</field>
+            <field name="model">mrp.workorder</field>
+            <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='finished_lot_id']" position="after">
+                    <field name="hcp_priority"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_mrp_production_workorder_form_view_filter_inherited2" model="ir.ui.view">
+        <field name="name">mrp.production.work.order.select.inherited2</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.view_mrp_production_workorder_form_view_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='available']" position="after">
+                <separator/>
+                <filter string="Low Priority" name="hcp_priority" domain="[('hcp_priority', '=', '0')]"/>
+                <filter string="Medium Priority" name="hcp_priority" domain="[('hcp_priority', '=', '1')]"/>
+                <filter string="High Priority" name="hcp_priority" domain="[('hcp_priority', '=', '2')]"/>
+                <filter string="Very High Priority" name="hcp_priority" domain="[('hcp_priority', '=', '3')]"/>
+            </xpath>
+        </field>
+    </record>
 
     <record id="stock_scrap_view_form2_mrp_inherit_mrp_id" model="ir.ui.view">
         <field name="name">stock.scrap.view.form2.inherit.mrp</field>
