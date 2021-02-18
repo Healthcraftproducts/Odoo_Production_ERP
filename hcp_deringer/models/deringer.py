@@ -192,7 +192,7 @@ class DeringerForm(models.Model):
                     if country_of_origin:
                         xml_data +="      "+"<CountryOfOrigin>"+str(country_of_origin)+"</CountryOfOrigin>\n"
                         
-                    xml_data +="      "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"      "+"<InvoiceUOM>"+str(line.product_uom_id.name)+"</InvoiceUOM>\n"+"      "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"      "+"<Manufacturer>\n"+"        "+"<Name>"+str(company_name)+"</Name>\n"+"        "+"<Street1>"+str(company_street)+"</Street1>\n"+"        "+"<Street2>"+str(company_street2)+"</Street2>\n"+"        "+"<City>"+str(company_city)+"</City>\n"+"        "+"<State>"+str(company_state_code)+"</State>\n"+"        "+"<PostCode>"+str(company_postal_code)+"</PostCode>\n"+"        "+"<Country>"+str(company_country_code)+"</Country>\n"+"        "+"<Phone>"+str(company_phone)+"</Phone>\n"
+                    xml_data +="      "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"      "+"<InvoiceUOM>"+str(line.product_uom_id.name)+"</InvoiceUOM>\n"+"      "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"      "+"<Manufacturer>\n"+"        "+"<Name>"+str(company_name)+"</Name>\n"+"        "+"<Street1>"+str(company_street)+"</Street1>\n"+"        "+"<City>"+str(company_city)+"</City>\n"+"        "+"<State>"+str(company_state_code)+"</State>\n"+"        "+"<PostCode>"+str(company_postal_code)+"</PostCode>\n"+"        "+"<Country>"+str(company_country_code)+"</Country>\n"+"        "+"<Phone>"+str(company_phone)+"</Phone>\n"
                     if company_irs:
                         xml_data += "        "+"<IRS_No>"+company_irs+"</IRS_No>\n"
                         
