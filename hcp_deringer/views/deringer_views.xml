@@ -22,12 +22,12 @@
                         <group colspan="2">
                             <group>
                                 <field name="date" readonly="1"/>
-                                <field name="fee_percentage"/>
+                                <field name="fee_percentage" required="1"/>
                             </group>
                             <group>
                                 <field name="export_country_id"/>
                                 <field name="partner_id" invisible="1"/>
-                                <field name="arrival_date"/>
+                                <field name="arrival_date" required="1"/>
                             </group>
                         </group>
                         <group>
