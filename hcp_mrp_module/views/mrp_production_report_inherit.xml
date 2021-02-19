@@ -65,14 +65,14 @@
                                 <th style="width: 200px; text-align: left;"><strong>Setup Time(Min)</strong></th>
                              <!--   <th style="width: 100px; text-align: left;"><strong>Done By</strong></th>-->
                                 <th style="width: 200px; text-align: left;"><strong>Cycle Time(Min)</strong></th>
-                               <!-- <th style="width: 100px; text-align: left;"><strong>Operator</strong></th>-->
-
+                                <th style="width: 200px; text-align: left;"><strong>Total Exp. Time(Min)</strong></th>
                             </tr>
                             <tr t-foreach="o.routing_id.operation_ids" t-as="oper_line_id">
                                 <td style="width: 200px; text-align: left;"><span t-field="oper_line_id.name"/></td>
                                 <td style="width: 200px; text-align: left;"><span t-field="oper_line_id.workcenter_id.name"/></td>
                                 <td style="width: 200px; text-align: left;"><span t-field="oper_line_id.setup_time"/></td>
                                <!-- <td style="width: 100px; text-align: left;"><span t-field="oper_line_id.done_by"/></td>-->
+                                <td style="width: 100px; text-align: left;"><span t-esc="oper_line_id.cycle_time"/></td>
                                 <td style="width: 100px; text-align: left;"><span t-esc="oper_line_id.cycle_time * o.product_qty"/></td>
                                 <!--<td style="width: 100px; text-align: left;"><span t-field="oper_line_id.operator"/></td>-->
                                 
