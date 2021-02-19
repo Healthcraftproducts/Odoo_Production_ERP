@@ -62,9 +62,9 @@
                             <tr>
                                 <th style="width: 200px; text-align: left;"><strong>Operation</strong></th>
                                 <th style="width: 200px; text-align: left;"><strong>WorkCenter</strong></th>
-                                <th style="width: 200px; text-align: left;"><strong>Setup Time(Mins)</strong></th>
+                                <th style="width: 200px; text-align: left;"><strong>Setup Time(Min)</strong></th>
                              <!--   <th style="width: 100px; text-align: left;"><strong>Done By</strong></th>-->
-                                <th style="width: 200px; text-align: left;"><strong>Cycle Time(Mins)</strong></th>
+                                <th style="width: 200px; text-align: left;"><strong>Cycle Time(Min)</strong></th>
                                <!-- <th style="width: 100px; text-align: left;"><strong>Operator</strong></th>-->
 
                             </tr>
