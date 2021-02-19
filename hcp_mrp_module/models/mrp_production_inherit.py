@@ -202,3 +202,9 @@ class MrpBom(models.Model):
 # 				'total': self.env.company.currency_id.round(total),
 # 			})
 # 		return operations
+
+
+class MrpWorkorder(models.Model):
+	_inherit = 'mrp.workorder'
+
+	hcp_priority = fields.Selection('Production Priority', readonly=True,related='production_id.priority',help='Technical: used in views only.')
