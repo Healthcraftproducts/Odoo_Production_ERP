@@ -176,10 +176,10 @@ class ResPartner(models.Model):
 		if vals['hcp_is_customer'] == True and vals['company_type'] == 'company':
 			customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
 			vals['hcp_customer_id'] = customer_no
-
-		if vals['hcp_is_vendor'] == True and vals['company_type'] == 'company':
-			vendor_no = self.env['ir.sequence'].next_by_code('vendor.sequence')
-			vals['hcp_vendor_no'] = vendor_no
+		if 'hcp_is_vendor' in vals:           
+			if vals['hcp_is_vendor'] == True and vals['company_type'] == 'company':
+				vendor_no = self.env['ir.sequence'].next_by_code('vendor.sequence')
+				vals['hcp_vendor_no'] = vendor_no
 		if vals['company_type'] == 'person':
 			parent_id = vals.get('parent_id')
 			if parent_id:
