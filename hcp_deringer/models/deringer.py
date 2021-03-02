@@ -88,6 +88,7 @@ class DeringerForm(models.Model):
         xml_data = ''
         for record in self.invoice_ids:
             company_name = record.company_id.name
+            company_name = company_name.replace('&','And')
             company_street = record.company_id.street or ""
             company_street2 = record.company_id.street2 or ""
             company_city = record.company_id.city or ""
@@ -98,6 +99,7 @@ class DeringerForm(models.Model):
             company_mid = record.company_id.mid or ""
             company_irs = record.company_id.irs_number or ""
             billing_contact_name = record.partner_id.name or ""
+            billing_contact_name = billing_contact_name.replace('&','And')
             billing_contact_street = record.partner_id.street or ""
             billing_contact_street2 = record.partner_id.street2 or ""
             billing_contact_city = record.partner_id.city or ""
@@ -107,6 +109,7 @@ class DeringerForm(models.Model):
             billing_contact_phone = record.partner_id.phone or ""
             billing_contact_irs = record.partner_id.irs_number or ""
             delivery_contact_name = record.partner_shipping_id.name or ""
+            delivery_contact_name = delivery_contact_name.replace('&','And')
             delivery_contact_street = record.partner_shipping_id.street or ""
             delivery_contact_street2 = record.partner_shipping_id.street2 or ""
             delivery_contact_city = record.partner_shipping_id.city or ""
@@ -136,6 +139,8 @@ class DeringerForm(models.Model):
                 #arrival_date = ""
             #invoice_line = self._get_total_qty(record.id)
             total_qty = shipping_details['total_qty']
+            if total_qty:
+                total_qty = int(total_qty)
             country_of_export = self.export_country_id.code
             
             xml_data += "  "+"<Invoice>\n"+"    "+"<Importer>HEAPRO0002</Importer>\n"+"    "+"<Invoice_No>" +record.name +"</Invoice_No>\n"+"    "+"<Invoice_Type>"+'PI'+"</Invoice_Type>\n"+"    "+"<Supplier>\n"+"      "+"<Name>"+company_name+"</Name>\n"+"      "+"<Street1>"+company_street+"</Street1>\n"+"      "+"<City>"+company_city+"</City>\n"+"      "+"<State>"+company_state_code+"</State>\n"+"      "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"      "+"<Country>"+company_country_code+"</Country>\n"+"      "+"<Phone>"+company_phone+"</Phone>\n"+"      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Supplier>\n"+"    "+"<Exporter>\n"+"      "+"<Name>"+company_name+"</Name>\n"+"      "+"<Street1>"+company_street+"</Street1>\n"+"      "+"<City>"+company_city+"</City>\n"+"      "+"<State>"+company_state_code+"</State>\n"+"      "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"      "+"<Country>"+company_country_code+"</Country>\n"+"      "+"<Phone>"+company_phone+"</Phone>\n"+"      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Exporter>\n"+"    "+"<UCons>\n"+"      "+"<Name>"+delivery_contact_name+"</Name>\n"+"      "+"<Street1>"+delivery_contact_street+"</Street1>\n"
@@ -167,6 +172,9 @@ class DeringerForm(models.Model):
             xml_data += "      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Buyer>\n"+"    "+"<ReleasePort>"+"0701"+"</ReleasePort>\n"+"    "+"<Invoice_Date>"+str(invoice_date)+"</Invoice_Date>\n"+"    "+"<Currency>"+record.currency_id.name+"</Currency>\n"+"    "+"<TransType>"+"PAPS-BCS"+"</TransType>\n"+"    "+"<RefNum>"+record.name+"</RefNum>\n"+"    "+"<TotalAmount>"+str(total_amount)+"</TotalAmount>\n"+"    "+"<GrossWeight>"+str(weight)+"</GrossWeight>\n"+"    "+"<BillLading>"+"BOL20200911A"+"</BillLading>\n"+"    "+"<FeePercent>"+str(fee_percentage)+"</FeePercent>\n"+"    "+"<DiscountValue>"+"0"+"</DiscountValue>\n"+"    "+"<Freight>"+"0"+"</Freight>\n"+"    "+"<ArrivalDate>"+str(arrival_date)+"</ArrivalDate>\n"+"    "+"<SCACCode>"+"DANQ"+"</SCACCode>\n"+"    "+"<TotalUnitsShipped>"+str(total_qty)+"</TotalUnitsShipped>\n"+"    "+"<TotalDue>"+str(total_amount)+"</TotalDue>\n"+"    "+"<UOM>"+"BX"+"</UOM>\n"+"    "+"<RelatedParty>"+"N"+"</RelatedParty>\n"+"    "+"<CountryOfExport>"+str(country_of_export)+"</CountryOfExport>\n"+"    "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"    "+"<Charges>"+"10.00"+"</Charges>\n"+"    "+"<Insured>"+"N"+"</Insured>\n"+"    "+"<DateSubmitted>"+str(arrival_date)+"</DateSubmitted>\n"+"    "+"<DateCreated>"+str(arrival_date)+"</DateCreated>\n"+"    "+"<UserName>"+"shipping@healthcraftsproducts.com"+"</UserName>\n"
             count=1
             for line in  record.invoice_line_ids:
+                invoice_uom = line.product_uom_id.name
+                if invoice_uom:
+                    invoice_uom = invoice_uom.upper()
                 if line.invoice_ship_method != True:
                     usmac_eligibility = ""
                     usmaca = line.product_id.usmca_eligible
@@ -192,7 +200,7 @@ class DeringerForm(models.Model):
                     if country_of_origin:
                         xml_data +="      "+"<CountryOfOrigin>"+str(country_of_origin)+"</CountryOfOrigin>\n"
                         
-                    xml_data +="      "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"      "+"<InvoiceUOM>"+str(line.product_uom_id.name)+"</InvoiceUOM>\n"+"      "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"      "+"<Manufacturer>\n"+"        "+"<Name>"+str(company_name)+"</Name>\n"+"        "+"<Street1>"+str(company_street)+"</Street1>\n"+"        "+"<City>"+str(company_city)+"</City>\n"+"        "+"<State>"+str(company_state_code)+"</State>\n"+"        "+"<PostCode>"+str(company_postal_code)+"</PostCode>\n"+"        "+"<Country>"+str(company_country_code)+"</Country>\n"+"        "+"<Phone>"+str(company_phone)+"</Phone>\n"
+                    xml_data +="      "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"      "+"<InvoiceUOM>"+invoice_uom+"</InvoiceUOM>\n"+"      "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"      "+"<Manufacturer>\n"+"        "+"<Name>"+str(company_name)+"</Name>\n"+"        "+"<Street1>"+str(company_street)+"</Street1>\n"+"        "+"<City>"+str(company_city)+"</City>\n"+"        "+"<State>"+str(company_state_code)+"</State>\n"+"        "+"<PostCode>"+str(company_postal_code)+"</PostCode>\n"+"        "+"<Country>"+str(company_country_code)+"</Country>\n"+"        "+"<Phone>"+str(company_phone)+"</Phone>\n"
                     if company_irs:
                         xml_data += "        "+"<IRS_No>"+company_irs+"</IRS_No>\n"
                         
@@ -216,35 +224,37 @@ class DeringerForm(models.Model):
                             tariff_count = 1
                             xml_data += "        "+"<ProductTariff>\n"
                             if tariff.name:
-                                xml_data += "          "+"<Tariff>"+str(tariff.name)+"</Tariff>\n"
+                                tarrif = tariff.name
+                                tarrif = tarrif.replace('.','')
+                                xml_data += "          "+"<Tariff>"+tarrif+"</Tariff>\n"
                                 
-                            xml_data += "          "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+str(line.product_uom_id.name)+"</InvoiceUOM>\n"+"          "+"<NumUnitsShipped>"+str(product_qty)+"</NumUnitsShipped>\n"
+                            xml_data += "          "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+invoice_uom+"</InvoiceUOM>\n"+"          "+"<NumUnitsShipped>"+str(product_qty)+"</NumUnitsShipped>\n"
                             
-                            if pounds:
-                                xml_data += "          "+"<NumUnitsShipped2>"+str(pounds)+"</NumUnitsShipped2>\n"
+                            #if pounds:
+                                #xml_data += "          "+"<NumUnitsShipped2>"+str(pounds)+"</NumUnitsShipped2>\n"
                                 
                             xml_data += "          "+"<UnitsShippedUOM>"+"KG"+"</UnitsShippedUOM>\n"
                             
                             if usmac_eligibility:
                                 xml_data += "          "+"<SI>"+usmac_eligibility+"</SI>\n"
                                 
-                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"        "+"</ProductTariff>\n"
+                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"          "+"<ItemValue>"+"0"+"</ItemValue>\n"+"        "+"</ProductTariff>\n"
                             tariff_count = tariff_count + 1
                         xml_data += "      "+"</Tariff>\n"+"    "+"</LineItem>\n"
                     else:
-                            xml_data += "        "+"<ProductTariff>\n"+"          "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+str(line.product_uom_id.name)+"</InvoiceUOM>\n"+"          "+"<NumUnitsShipped>"+str(product_qty)+"</NumUnitsShipped>\n"+"          "+"<UnitsShippedUOM>"+"KG"+"</UnitsShippedUOM>\n"
+                            xml_data += "        "+"<ProductTariff>\n"+"          "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+invoice_uom+"</InvoiceUOM>\n"+"          "+"<NumUnitsShipped>"+str(product_qty)+"</NumUnitsShipped>\n"+"          "+"<UnitsShippedUOM>"+"KG"+"</UnitsShippedUOM>\n"
                             
-                            if pounds:
-                                xml_data +="          "+"<NumUnitsShipped2>"+str(pounds)+"</NumUnitsShipped2>\n"
+                            #if pounds:
+                                #xml_data +="          "+"<NumUnitsShipped2>"+str(pounds)+"</NumUnitsShipped2>\n"
                                 
                             if usmac_eligibility:
                                 xml_data += "          "+"<SI>"+usmac_eligibility+"</SI>\n"
                                 
-                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"        "+"</ProductTariff>\n"+"      "+"</Tariff>\n"+"    "+"</LineItem>\n"
+                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"          "+"<ItemValue>"+"0"+"</ItemValue>\n"+"        "+"</ProductTariff>\n"+"      "+"</Tariff>\n"+"    "+"</LineItem>\n"
                 count = count + 1
             xml_data += "  "+"</Invoice>\n"
         record.write({'deringer_shipping_done': True})
-        xml_data = "<?xml version="+str(1.0)+" encoding="+"UTF-8"+" standalone="+"yes"+"?>\n<Consolidated>\n" + xml_data + "</Consolidated>\n"
+        xml_data = "<?xml version="+'"1.0"'+" encoding="+'"UTF-8"'+" standalone="+'"yes"'+" ?>\n<Consolidated>\n" + xml_data + "</Consolidated>\n"
         byte_xml = bytes(xml_data, 'utf-8') 
         output = base64.b64encode(byte_xml)
         res = self.env['deringer.report.download'].create({'data':output})
