@@ -298,7 +298,7 @@
             <br><strong><u>REMITTANCE ADDRESS:</u></strong></br>
             
                 <br><span t-esc="o.partner_shipping_id.country_id.remittance_address"/></br>
-                <br><strong>GST/HST #:</strong><span t-esc="o.partner_shipping_id.country_id.vat"/></br>
+                <br><strong>GST/HST #:</strong><span t-esc="o.partner_shipping_id.country_id.vat_label"/></br>
                 
         </t>
 
