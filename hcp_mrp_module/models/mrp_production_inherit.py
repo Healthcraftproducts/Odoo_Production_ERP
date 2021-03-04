@@ -208,3 +208,8 @@ class MrpWorkorder(models.Model):
 	_inherit = 'mrp.workorder'
 
 	hcp_priority = fields.Selection('Production Priority', readonly=True,related='production_id.priority',help='Technical: used in views only.')
+
+
+	def name_get(self):
+		return [(wo.id, "%s - %s - %s" % (wo.production_id.name, wo.product_id.display_name, wo.name)) for wo in self]
+
