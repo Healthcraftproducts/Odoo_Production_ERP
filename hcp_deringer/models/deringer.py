@@ -107,7 +107,7 @@ class DeringerForm(models.Model):
             billing_contact_postal_code = record.partner_id.zip or ""
             billing_contact_country_code =  record.partner_id.country_id.code or ""
             billing_contact_phone = record.partner_id.phone or ""
-            billing_contact_irs = record.partner_id.irs_number or ""
+            billing_contact_irs = record.partner_id.federal_tax_id or ""
             delivery_contact_name = record.partner_shipping_id.name or ""
             delivery_contact_name = delivery_contact_name.replace('&','And')
             delivery_contact_street = record.partner_shipping_id.street or ""
@@ -117,7 +117,7 @@ class DeringerForm(models.Model):
             delivery_contact_postal_code = record.partner_shipping_id.zip or ""
             delivery_contact_country_code =  record.partner_shipping_id.country_id.code or ""
             delivery_contact_phone = record.partner_shipping_id.phone or ""
-            delivery_contact_irs = record.partner_shipping_id.irs_number or ""
+            delivery_contact_irs = record.partner_shipping_id.federal_tax_id or ""
             invoice_date = record.date or ""
             fee_percentage = self.fee_percentage.name or ""
             source = record.invoice_origin or ""
@@ -130,8 +130,11 @@ class DeringerForm(models.Model):
                     shipping_amount = invoice_line.inv_line_amount
                     #print(shipping_amount,'SHIPPING AMOUNT **************************')
             tot_amount = record.amount_total - shipping_amount
-            total_amount = round(tot_amount, 2)
-            #print(total_amount,'TOTAL AMOUNT *********************************')
+            tot_amount_format = format(tot_amount, '.2f')
+            total_amount = tot_amount_format.replace('.','')
+            due_amount_cal = record.amount_residual - shipping_amount
+            due_amount_format = format(due_amount_cal, '.2f')
+            due_amount = due_amount_format.replace('.','')
             #date =  shipping_details['arrival_date']
             #if date:
                 #arrival_date = date.date()
@@ -155,6 +158,9 @@ class DeringerForm(models.Model):
             
             if delivery_contact_irs:
                 xml_data +="      "+"<IRS_No>"+delivery_contact_irs+"</IRS_No>\n"
+
+            if not delivery_contact_irs:
+                xml_data +="      "+"<IRS_No>"+"00-0000000"+"</IRS_No>\n"
                 
             xml_data += "      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</UCons>\n"+"    "+"<Buyer>\n"+"      "+"<Name>"+billing_contact_name+"</Name>\n"+"      "+"<Street1>"+billing_contact_street+"</Street1>\n"
             
@@ -169,7 +175,10 @@ class DeringerForm(models.Model):
             if billing_contact_irs:
                 xml_data += "      "+"<IRS_No>"+billing_contact_irs+"</IRS_No>\n"
                 
-            xml_data += "      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Buyer>\n"+"    "+"<ReleasePort>"+"0701"+"</ReleasePort>\n"+"    "+"<Invoice_Date>"+str(invoice_date)+"</Invoice_Date>\n"+"    "+"<Currency>"+record.currency_id.name+"</Currency>\n"+"    "+"<TransType>"+"PAPS-BCS"+"</TransType>\n"+"    "+"<RefNum>"+record.name+"</RefNum>\n"+"    "+"<TotalAmount>"+str(total_amount)+"</TotalAmount>\n"+"    "+"<GrossWeight>"+str(weight)+"</GrossWeight>\n"+"    "+"<BillLading>"+"BOL20200911A"+"</BillLading>\n"+"    "+"<FeePercent>"+str(fee_percentage)+"</FeePercent>\n"+"    "+"<DiscountValue>"+"0"+"</DiscountValue>\n"+"    "+"<Freight>"+"0"+"</Freight>\n"+"    "+"<ArrivalDate>"+str(arrival_date)+"</ArrivalDate>\n"+"    "+"<SCACCode>"+"DANQ"+"</SCACCode>\n"+"    "+"<TotalUnitsShipped>"+str(total_qty)+"</TotalUnitsShipped>\n"+"    "+"<TotalDue>"+str(total_amount)+"</TotalDue>\n"+"    "+"<UOM>"+"BX"+"</UOM>\n"+"    "+"<RelatedParty>"+"N"+"</RelatedParty>\n"+"    "+"<CountryOfExport>"+str(country_of_export)+"</CountryOfExport>\n"+"    "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"    "+"<Charges>"+"10.00"+"</Charges>\n"+"    "+"<Insured>"+"N"+"</Insured>\n"+"    "+"<DateSubmitted>"+str(arrival_date)+"</DateSubmitted>\n"+"    "+"<DateCreated>"+str(arrival_date)+"</DateCreated>\n"+"    "+"<UserName>"+"shipping@healthcraftsproducts.com"+"</UserName>\n"
+            if not billing_contact_irs:
+                xml_data += "      "+"<IRS_No>"+"99-9999999"+"</IRS_No>\n"
+                
+            xml_data += "      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Buyer>\n"+"    "+"<ReleasePort>"+"0701"+"</ReleasePort>\n"+"    "+"<Invoice_Date>"+str(invoice_date)+"</Invoice_Date>\n"+"    "+"<Currency>"+record.currency_id.name+"</Currency>\n"+"    "+"<TransType>"+"PAPS-BCS"+"</TransType>\n"+"    "+"<RefNum>"+record.name+"</RefNum>\n"+"    "+"<TotalAmount>"+str(total_amount)+"</TotalAmount>\n"+"    "+"<GrossWeight>"+str(weight)+"</GrossWeight>\n"+"    "+"<BillLading>"+"BOL20200911A"+"</BillLading>\n"+"    "+"<FeePercent>"+str(fee_percentage)+"</FeePercent>\n"+"    "+"<DiscountValue>"+"0"+"</DiscountValue>\n"+"    "+"<Freight>"+"0"+"</Freight>\n"+"    "+"<ArrivalDate>"+str(arrival_date)+"</ArrivalDate>\n"+"    "+"<SCACCode>"+"DANQ"+"</SCACCode>\n"+"    "+"<TotalUnitsShipped>"+str(total_qty)+"</TotalUnitsShipped>\n"+"    "+"<TotalDue>"+str(due_amount)+"</TotalDue>\n"+"    "+"<UOM>"+"BX"+"</UOM>\n"+"    "+"<RelatedParty>"+"N"+"</RelatedParty>\n"+"    "+"<CountryOfExport>"+str(country_of_export)+"</CountryOfExport>\n"+"    "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"    "+"<Charges>"+"10.00"+"</Charges>\n"+"    "+"<Insured>"+"N"+"</Insured>\n"+"    "+"<DateSubmitted>"+str(arrival_date)+"</DateSubmitted>\n"+"    "+"<DateCreated>"+str(arrival_date)+"</DateCreated>\n"+"    "+"<UserName>"+"shipping@healthcraftsproducts.com"+"</UserName>\n"
             count=1
             for line in  record.invoice_line_ids:
                 invoice_uom = line.product_uom_id.name
@@ -238,7 +247,7 @@ class DeringerForm(models.Model):
                             if usmac_eligibility:
                                 xml_data += "          "+"<SI>"+usmac_eligibility+"</SI>\n"
                                 
-                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"          "+"<ItemValue>"+"0"+"</ItemValue>\n"+"        "+"</ProductTariff>\n"
+                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"          "+"<ItemValue>"+str(line.price_subtotal)+"</ItemValue>\n"+"        "+"</ProductTariff>\n"
                             tariff_count = tariff_count + 1
                         xml_data += "      "+"</Tariff>\n"+"    "+"</LineItem>\n"
                     else:
@@ -250,7 +259,7 @@ class DeringerForm(models.Model):
                             if usmac_eligibility:
                                 xml_data += "          "+"<SI>"+usmac_eligibility+"</SI>\n"
                                 
-                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"          "+"<ItemValue>"+"0"+"</ItemValue>\n"+"        "+"</ProductTariff>\n"+"      "+"</Tariff>\n"+"    "+"</LineItem>\n"
+                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"          "+"<ItemValue>"+str(line.price_subtotal)+"</ItemValue>\n"+"        "+"</ProductTariff>\n"+"      "+"</Tariff>\n"+"    "+"</LineItem>\n"
                 count = count + 1
             xml_data += "  "+"</Invoice>\n"
         record.write({'deringer_shipping_done': True})
