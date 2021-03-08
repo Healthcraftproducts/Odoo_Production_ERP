@@ -36,6 +36,7 @@
         'views/invoice_views.xml',
         'wizard/product_discount_consolidated_wizard_views.xml',
         'wizard/product_discount_individual_report_customers_views.xml',
+        'wizard/inventory_count_cycle_wizard_view.xml',
         'reports/report_action_view.xml',
         'reports/report_product_discount_detailed.xml',
         'data/mail_template_data.xml',
