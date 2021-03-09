@@ -25,7 +25,8 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 
 	date_from = fields.Date(string="Date From",required=True)
 	date_to = fields.Date(string="Date To",required=True)
-	location_id = fields.Many2one('stock.location',string="Location",required=True)
+	# location_id = fields.Many2one('stock.location',string="Location",required=True)
+	loc_ids = fields.Many2many('stock.location',string="Location",required=True,domain="[('usage','=','internal')]")
 
 	def get_data(self):
 		inv_list = []
@@ -33,23 +34,28 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 		return_list = {}
 		date_from = self.date_from
 		date_to = self.date_to
-		location_id = self.location_id.id
-		loc_name=self.location_id.complete_name
-		stock_inventory = self.env['stock.inventory'].search([])
+		# location_id = self.location_id.id
+		loc_ids = self.loc_ids.ids
+
+		# loc_name = self.loc_ids.complete_name
+		# if loc_ids:
+		# 	raise UserError(loc_ids)
+		# loc_name=self.location_id.complete_name
+		stock_inventory = self.env['stock.inventory'].search([('location_ids','in',loc_ids)])
 		for stock in stock_inventory:
-			for loc in stock.location_ids:
-				if loc.id == location_id:
-					dt = stock.date
-					st_date = datetime.strptime(str(dt), "%Y-%m-%d %H:%M:%S").date()
-					if st_date>=date_from and st_date<=date_to:
-						for line in stock.line_ids:
-							product = self.env['product.product'].search([('id','=',line.product_id.id)])
-							# onhand_qty = sum(line.theoretical_qty for line in stock.line_ids if line.product_id.id in product.ids)
-							# adj_qty = sum(line.product_qty for line in stock.line_ids if line.product_id.id in product.ids)
-							a=line.product_id.id
-							b=[stock.name,loc_name,line.inventory_date,line.prod_lot_id.name,line.product_id.default_code,line.product_id.name,line.theoretical_qty,line.product_qty,line.difference_qty,line.product_uom_id.name,line.product_id.standard_price,line.difference_qty*line.product_id.standard_price]
-							invent_details={'id':a,'values':b}
-							inv_list.append(invent_details)
+			dt = stock.date
+			st_date = datetime.strptime(str(dt), "%Y-%m-%d %H:%M:%S").date()
+			if st_date>=date_from and st_date<=date_to:
+				for line in stock.line_ids:
+					if line.location_id.id in loc_ids:
+						# product = self.env['product.product'].search([('id','=',line.product_id.id)])
+						# loc_name = [loc_id.complete_name for loc_id in self.loc_ids if loc_id.id == line.location_id.id]
+						# onhand_qty = sum(line.theoretical_qty for line in stock.line_ids if line.product_id.id in product.ids)
+						# adj_qty = sum(line.product_qty for line in stock.line_ids if line.product_id.id in product.ids)
+						a=line.product_id.id
+						b=[stock.name,line.location_id.complete_name,line.inventory_date,line.product_id.default_code,line.product_id.name,line.prod_lot_id.name,line.theoretical_qty,line.product_qty,line.difference_qty,line.product_uom_id.name,line.product_id.standard_price,line.difference_qty*line.product_id.standard_price]
+						invent_details={'id':a,'values':b}
+						inv_list.append(invent_details)
 		list_inventory = inv_list
 		# new_v =[]
 		# for y in list_inventory:
@@ -101,8 +107,8 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 		two_col.width = 250*20
 		three_col.width = 250*20
 		fourth_col.width = 200*20
-		fifth_col.width = 200*20
-		sixth_col.width = 400*20
+		fifth_col.width = 400*20
+		sixth_col.width = 200*20
 		seventh_col.width = 200*20
 		eigth_col.width = 200*20
 		ninth_col.width = 200*20
@@ -112,9 +118,9 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 		sheet.write(0,0,'Inventory',format2)
 		sheet.write(0,1,'Location Name',format2)
 		sheet.write(0,2,'Inventory Date',format2)
-		sheet.write(0,3,'Lot/Serial No',format2)
-		sheet.write(0,4,'Item Code',format2)
-		sheet.write(0,5,'Product Name',format2)
+		sheet.write(0,3,'Item Code',format2)
+		sheet.write(0,4,'Product Name',format2)
+		sheet.write(0,5,'Lot/Serial No',format2)
 		sheet.write(0,6,'OnHand Qty',format3)
 		sheet.write(0,7,'Counted Qty',format3)
 		sheet.write(0,8,'Difference Qty',format3)

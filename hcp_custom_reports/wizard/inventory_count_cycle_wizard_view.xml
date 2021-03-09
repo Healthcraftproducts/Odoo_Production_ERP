@@ -11,7 +11,8 @@
                         
                         <field name="date_from"/>
                         <field name="date_to"/>
-                        <field name="location_id"/>
+                        <!-- <field name="location_id"/> -->
+                        <field name="loc_ids" widget="many2many_tags"/>
                     </group>
                 </group>
                 <footer>
