@@ -51,9 +51,13 @@
             <field name="arch" type="xml">
             <xpath expr="//group[@name='capacity']" position="after">
                 <group>
-                     <label for="shiftid"/>
+                     <label for="shiftid" invisible="1"/>
                     <div>
-                        <field name="shiftid" class="oe_inline"/>
+                        <field name="shiftid" class="oe_inline" invisible="1"/>
+                    </div>
+                     <label for="department" />
+                    <div>
+                        <field name="department" class="oe_inline"/>
                     </div>
                      <label for="cycle_time" invisible="1"/>
                     <div invisible="1">
