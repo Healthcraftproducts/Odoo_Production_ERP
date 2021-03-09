@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-	<record id="inventory_count_excel_wizard_id" model="ir.ui.view">
+    <record id="inventory_count_excel_wizard_id" model="ir.ui.view">
         <field name="name">inventory.count.excel.report</field>
         <field name="model">inventory.count.report.wizard</field>
         <field name="arch" type="xml">
@@ -42,13 +42,13 @@
     </record>
 
     <record id="inventory_action_wizard_id" model="ir.actions.act_window">
-        <field name="name">Inventory Count Cycle Report</field>
+        <field name="name">Inventory Cycle Count Report</field>
         <field name="res_model">inventory.count.report.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="view_id" ref="inventory_count_excel_wizard_id"/>
     </record>
 
-    <menuitem id="inventory_menu_item_cycle_report_id" name="Inventory Count Cycle Report" action="inventory_action_wizard_id" parent="stock.menu_stock_warehouse_mgmt" sequence="100"/>
+    <menuitem id="inventory_menu_item_cycle_report_id" name="Inventory Cycle Count" action="inventory_action_wizard_id" parent="stock.menu_warehouse_report" sequence="100"/>
 
 </odoo>
