@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
             <xpath expr="//field[@name='finished_lot_id']" position="after">
                     <field name="hcp_priority"/>
+                    <field name="workcenter_department"/>
             </xpath>
         </field>
     </record>
