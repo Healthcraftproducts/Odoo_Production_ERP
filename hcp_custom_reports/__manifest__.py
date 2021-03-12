@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','account','mail','contacts','portal','utm','purchase','web','delivery'],
+    'depends': ['base','sale','account','mail','contacts','portal','utm','purchase','web','delivery','stock'],
 
     # always loaded
     'data': [
@@ -36,6 +36,7 @@
         'views/invoice_views.xml',
         'wizard/product_discount_consolidated_wizard_views.xml',
         'wizard/product_discount_individual_report_customers_views.xml',
+        'wizard/inventory_count_cycle_wizard_view.xml',
         'reports/report_action_view.xml',
         'reports/report_product_discount_detailed.xml',
         'data/mail_template_data.xml',
