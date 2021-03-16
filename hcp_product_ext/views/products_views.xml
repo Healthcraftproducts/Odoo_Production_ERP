@@ -304,6 +304,9 @@
                     <field name="product_sub_categ_id"/>
                 </group>
             </xpath>
+             <xpath expr="//field[@name='weight']" position="after">
+                    <field name="batch_size"/>
+            </xpath>
             </field>
     </record>
 
@@ -360,6 +363,9 @@
                     <label class="oe_edit_only" for="default_code" string="Item Code"/>
                     <h1><field name="default_code" placeholder="Item Code"/></h1>
                 </xpath>
+                <xpath expr="//field[@name='hs_code']" position="after">
+                    <field name="batch_size"/>
+            </xpath>
             </field>
     </record>
 

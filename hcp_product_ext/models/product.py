@@ -109,6 +109,7 @@ class ProductMaster(models.Model):
 	usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
 	manufacturer_id = fields.Char('MID')
 	tarrif_number = fields.Many2many('tariff.number', 'tariff_number_rel', 'product_id', 'tariff_id',string='Tariff Number', copy=False,)
+	batch_size = fields.Integer('Batch Size')
 	
 	def active_stage(self):
 		self.write({
