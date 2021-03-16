@@ -55,7 +55,7 @@ class ProductLowStockReport(models.AbstractModel):
                 for quant_id in quant_ids:
                     if tot_qty < product_id.minimum_qty:
                         c=quant_id.product_id.id
-                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty]
+                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size]
                         product_detail1 = {'id':c,'values':d}
                         product_list3.append(product_detail1)
             list_quant = product_list3
@@ -70,6 +70,7 @@ class ProductLowStockReport(models.AbstractModel):
                 product_detail3.append(dt['values'][2])
                 product_detail3.append(dt['values'][3])
                 product_detail3.append(dt['values'][4])
+                product_detail3.append(dt['values'][5])
                 product_list4.append(product_detail3)
             return_list['quant_ids'] = product_list4
             return_list['location_ids'] = location_ids[1]
@@ -93,7 +94,7 @@ class ProductLowStockReport(models.AbstractModel):
                 for quant_id in quant_ids:
                     if total_qty < rule_id.product_min_qty:
                         a=quant_id.product_id.id
-                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty]
+                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size]
                         product_detail = {'id':a,'values':b}
                         product_list.append(product_detail)
             list_quants = product_list
@@ -111,6 +112,7 @@ class ProductLowStockReport(models.AbstractModel):
                 product_detail2.append(data['values'][2])
                 product_detail2.append(data['values'][3])
                 product_detail2.append(data['values'][4])
+                product_detail2.append(data['values'][5])
                 product_list2.append(product_detail2)
             return_list['quant_ids'] = product_list2
             return_list['location_ids'] = location_ids[1]

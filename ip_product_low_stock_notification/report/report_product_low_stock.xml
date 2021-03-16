@@ -25,6 +25,7 @@
                                 <th class="text_center">Minimum Stock</th>
                                 <th class="text_center">On Hand Qty</th>
                                 <th class="text_center">Unreserved Qty</th>
+                                <th class="text_center">Batch Size</th>
                                 <th class="text_center">Unit of Measure</th>
                             </tr>
                         </div>
@@ -43,6 +44,9 @@
                                         </td>
                                          <td class="text_center">
                                             <span t-esc="quant_id[4]"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[5]"/>
                                         </td>
                                         <td class="text_center">
                                             <span t-esc="quant_id[3]"/>
@@ -64,6 +68,9 @@
                                         </td>
                                          <td class="text_center">
                                             <span t-esc="quant_id[4]"/>
+                                        </td>
+                                         <td class="text_center">
+                                            <span t-esc="quant_id[5]"/>
                                         </td>
                                         <td class="text_center">
                                             <span t-esc="quant_id[3]"/>
