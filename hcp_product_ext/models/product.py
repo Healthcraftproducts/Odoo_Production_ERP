@@ -2,6 +2,11 @@
 
 from odoo import api, fields, models, SUPERUSER_ID, _
 
+class TarrifNumber(models.Model):
+	_name = 'tariff.number'
+	_description = "Tariff Number"
+
+	name = fields.Char(string="Tariff Number")
 
 class ProductTemplate(models.Model):
 	_inherit = 'product.template'
@@ -32,9 +37,13 @@ class ProductTemplate(models.Model):
 	name = fields.Char('Product Description', index=True, required=True, translate=True)
 	default_code = fields.Char('Item Code', compute='_compute_default_code',inverse='_set_default_code', store=True)
 	fda_listing = fields.Char(string="FDA Listing#")
+	deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
+	usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
+	manufacturer_id = fields.Char('MID')
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 	obsolute_product = fields.Boolean('Obsolute Product')
 	categ_id = fields.Many2one('product.category', 'Account Category',change_default=True, default=_get_default_category_id, group_expand='_read_group_categ_id',required=True, help="Select category for the current product")
+	tarrif_number = fields.Many2many('tariff.number', 'tariff_number_rel2', 'product_id', 'tariff_id',string='Tariff Number', copy=False,)
 
 	@api.depends('product_variant_ids', 'product_variant_ids.default_code')
 	def _compute_default_code(self):
@@ -96,7 +105,12 @@ class ProductMaster(models.Model):
 	fda_listing = fields.Char(string="FDA Listing#")
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 	obsolute_product = fields.Boolean('Obsolute Product')
-
+	deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
+	usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
+	manufacturer_id = fields.Char('MID')
+	tarrif_number = fields.Many2many('tariff.number', 'tariff_number_rel', 'product_id', 'tariff_id',string='Tariff Number', copy=False,)
+	batch_size = fields.Integer('Batch Size')
+	
 	def active_stage(self):
 		self.write({
 		'status': '0',
