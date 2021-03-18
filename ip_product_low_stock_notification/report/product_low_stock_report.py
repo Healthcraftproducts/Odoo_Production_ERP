@@ -1,11 +1,21 @@
 # -*- coding: utf-8 -*-
+from odoo import api, fields, models,  _
 import time
-from odoo import api, models, _
 from odoo.exceptions import UserError
 from ast import literal_eval
 # import json
+import xlwt
+from io import StringIO
+import base64
+import platform
 
+class LowStockreportXls(models.Model):
+    _name = 'low.stockreport.xls'
+    _description = 'Low Stock Report'
 
+    name_data = fields.Char('Name', size=256)
+    file_name = fields.Binary('Click to download', readonly=True)
+    
 class ProductLowStockReport(models.AbstractModel):
     _name = 'report.ip_product_low_stock_notification.report_stock_menu'
     _description = "product low stock report"
@@ -55,7 +65,7 @@ class ProductLowStockReport(models.AbstractModel):
                 for quant_id in quant_ids:
                     if tot_qty < product_id.minimum_qty:
                         c=quant_id.product_id.id
-                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size]
+                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name]
                         product_detail1 = {'id':c,'values':d}
                         product_list3.append(product_detail1)
             list_quant = product_list3
@@ -71,6 +81,9 @@ class ProductLowStockReport(models.AbstractModel):
                 product_detail3.append(dt['values'][3])
                 product_detail3.append(dt['values'][4])
                 product_detail3.append(dt['values'][5])
+                product_detail3.append(dt['values'][6])
+                product_detail3.append(dt['values'][7])
+                product_detail3.append(dt['values'][8])
                 product_list4.append(product_detail3)
             return_list['quant_ids'] = product_list4
             return_list['location_ids'] = location_ids[1]
@@ -94,7 +107,7 @@ class ProductLowStockReport(models.AbstractModel):
                 for quant_id in quant_ids:
                     if total_qty < rule_id.product_min_qty:
                         a=quant_id.product_id.id
-                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size]
+                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name]
                         product_detail = {'id':a,'values':b}
                         product_list.append(product_detail)
             list_quants = product_list
@@ -113,6 +126,9 @@ class ProductLowStockReport(models.AbstractModel):
                 product_detail2.append(data['values'][3])
                 product_detail2.append(data['values'][4])
                 product_detail2.append(data['values'][5])
+                product_detail2.append(data['values'][6])
+                product_detail2.append(data['values'][7])
+                product_detail2.append(data['values'][8])
                 product_list2.append(product_detail2)
             return_list['quant_ids'] = product_list2
             return_list['location_ids'] = location_ids[1]
@@ -188,3 +204,60 @@ class ProductLowStockReport(models.AbstractModel):
             'time': time,
             'low_stock': low_product,
         }
+
+
+    def print_low_stock_xls_report(self,data):
+        workbook = xlwt.Workbook()
+        sheet = workbook.add_sheet("Low Stock Report")
+        format1 = xlwt.easyxf('font: bold 1, color white;\
+                     pattern: pattern solid, fore_color black;')
+        first_col = sheet.col(0)
+        two_col = sheet.col(1)
+        three_col = sheet.col(2)
+        fourth_col = sheet.col(3)
+        fifth_col = sheet.col(4)
+        sixth_col = sheet.col(5)
+        seventh_col = sheet.col(6)
+        eight_col = sheet.col(7)
+        
+        sheet.write(0,0,'Item Code',format1)
+        sheet.write(0,1,'Item Name',format1)
+        sheet.write(0,2,'Location',format1)
+        sheet.write(0,3,'Min Stock',format1)
+        sheet.write(0,4,'Onhand Qty',format1)
+        sheet.write(0,5,'Unreserved Qty',format1)
+        sheet.write(0,6,'Batch Size',format1)
+        sheet.write(0,7,'UOM',format1)
+        data = self.get_low_stock_products(data)
+        dt = data.get('quant_ids')
+        row_number = 1
+        for value in dt:
+            sheet.write(row_number,0,value[7])
+            sheet.write(row_number,1,value[6])
+            sheet.write(row_number,2,value[8])
+            sheet.write(row_number,3,value[2])
+            sheet.write(row_number,4,value[1])
+            sheet.write(row_number,5,value[4])
+            sheet.write(row_number,6,value[5])
+            sheet.write(row_number,7,value[3])
+            row_number +=1
+        output = StringIO()
+        if platform.system() == 'Linux':
+            filename = ('/tmp/Low Stock Report' +'.xls')
+        else:
+            filename = ('Low Stock Report' +'.xls')
+
+        workbook.save(filename)
+        fp = open(filename, "rb")
+        file_data = fp.read()
+        out = base64.encodestring(file_data)
+        # Files actions
+        attach_vals = {
+                'name_data': 'Low Stock Report'+ '.xls',
+                'file_name': out,
+        }
+        act_id = self.env['low.stockreport.xls'].create(attach_vals)
+        fp.close()
+        return act_id
+
+

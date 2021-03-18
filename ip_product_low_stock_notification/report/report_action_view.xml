@@ -29,5 +29,21 @@
         <record id="ip_product_low_stock_notification.action_report_product_stock" model="ir.actions.report">
             <field name="paperformat_id" ref="ip_product_low_stock_notification.paperformat_product_stock"/>
         </record>
+        
+        <record id="low_stock_xls_report" model="ir.ui.view">
+        <field name="name">Low Stock XLS Report</field>
+        <field name="model">low.stockreport.xls</field>
+        <field name="arch" type="xml">
+            <form string="Low Stock XLS Report">
+                <group>
+                    <field name="file_name" filename="name_data" />
+                    <field name="name_data" invisible="1" />
+                </group>
+                <footer>
+                    <button string="Cancel" class="btn-primary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
     </data>
 </odoo>
