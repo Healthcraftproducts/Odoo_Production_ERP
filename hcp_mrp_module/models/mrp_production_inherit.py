@@ -65,6 +65,7 @@ class MrpWorkcenter(models.Model):
 	cycle_time = fields.Float(string='Cycle Time Old')
 	shiftid = fields.Selection([('production','Production'),('outside_pro','Outside Pro'),('inventory','Inventory')],string='ShiftId')
 	time_stop = fields.Float('Cycle Time', help="Time in minutes for the cleaning.")
+	department = fields.Selection([('assembly','Assembly'),('machining','Machining'),('welding','Welding'),('fabrication','Fabrication'),('paint','Paint')],string='Department')
 
 	def name_get(self):
 		res = []
@@ -208,8 +209,8 @@ class MrpWorkorder(models.Model):
 	_inherit = 'mrp.workorder'
 
 	hcp_priority = fields.Selection('Production Priority', readonly=True,related='production_id.priority',help='Technical: used in views only.')
-
-
+	workcenter_department = fields.Selection('Department', readonly=True,related='workcenter_id.department')
+	
 	def name_get(self):
 		return [(wo.id, "%s - %s - %s" % (wo.production_id.name, wo.product_id.display_name, wo.name)) for wo in self]
 
