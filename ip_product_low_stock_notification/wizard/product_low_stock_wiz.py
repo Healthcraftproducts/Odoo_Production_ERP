@@ -46,6 +46,21 @@ class ProductLowStock(models.TransientModel):
         data['form'] = (self.read(['stock_notification', 'minimum_qty', 'company_ids', 'stock_lctn_id'])[0])
         return self.env.ref('ip_product_low_stock_notification.action_report_product_stock').report_action(self, data=data, config=False)
 
+#HEM NEW
+    def print_low_stock_notification_report_xls(self):
+        data = {}
+        data['form'] = (self.read(['stock_notification', 'minimum_qty', 'company_ids', 'stock_lctn_id'])[0])
+        res=self.env['report.ip_product_low_stock_notification.report_stock_menu'].sudo().print_low_stock_xls_report(data=data)
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'low.stockreport.xls',
+            'res_id': res.id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'context': self.env.context,
+            'target': 'new',
+            }
+    
     @api.model
     def default_get(self, fields):
         rec = super(ProductLowStock, self).default_get(fields)

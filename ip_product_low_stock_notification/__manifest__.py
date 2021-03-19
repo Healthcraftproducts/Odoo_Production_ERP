@@ -12,6 +12,7 @@
     'version': '13.0.0.1.2',
     'depends': ['stock'],
     'data': [
+        'security/ir.model.access.csv',
         'wizard/product_low_stock_wiz_view.xml',
         'views/product_view.xml',
         'views/stock_config_settings_view.xml',
