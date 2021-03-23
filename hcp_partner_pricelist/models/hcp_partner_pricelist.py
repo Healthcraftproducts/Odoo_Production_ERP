@@ -2,6 +2,7 @@
 from odoo import api, fields, models, tools, _
 from odoo.tools.misc import formatLang, get_lang
 from odoo.exceptions import AccessError, UserError, ValidationError
+from datetime import datetime, timedelta, date
 
 class Lead(models.Model):
     _inherit = "crm.lead"
@@ -453,7 +454,9 @@ class SaleOrderLine(models.Model):
             uom=self.product_uom.id
         )
 
-        vals.update(name=self.get_sale_order_line_multiline_description_sale(product))
+        #vals.update(name=self.get_sale_order_line_multiline_description_sale(product))
+        #HEM NEW
+        vals.update(name=self.product_id.name)
         #self.tax_id = self.order_id.partner_id.taxes_id # Added to get tax from Customer 
         self._compute_tax_id() # commented to not to derive tax from product
 
