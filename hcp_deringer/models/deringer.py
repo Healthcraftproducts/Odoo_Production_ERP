@@ -107,7 +107,7 @@ class DeringerForm(models.Model):
             billing_contact_postal_code = record.partner_id.zip or ""
             billing_contact_country_code =  record.partner_id.country_id.code or ""
             billing_contact_phone = record.partner_id.phone or ""
-            billing_contact_irs = record.partner_id.federal_tax_id or ""
+            billing_contact_irs = record.partner_id.vat or ""
             delivery_contact_name = record.partner_shipping_id.name or ""
             delivery_contact_name = delivery_contact_name.replace('&','And')
             delivery_contact_street = record.partner_shipping_id.street or ""
@@ -117,7 +117,7 @@ class DeringerForm(models.Model):
             delivery_contact_postal_code = record.partner_shipping_id.zip or ""
             delivery_contact_country_code =  record.partner_shipping_id.country_id.code or ""
             delivery_contact_phone = record.partner_shipping_id.phone or ""
-            delivery_contact_irs = record.partner_shipping_id.federal_tax_id or ""
+            delivery_contact_irs = record.partner_shipping_id.vat or ""
             invoice_date = record.date or ""
             fee_percentage = self.fee_percentage.name or ""
             source = record.invoice_origin or ""
