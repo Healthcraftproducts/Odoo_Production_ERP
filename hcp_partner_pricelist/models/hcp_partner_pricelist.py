@@ -332,6 +332,11 @@ class SaleOrder(models.Model):
         ('so_email_sent', 'Sale Order Email Sent')], "Email Status",
     )
     po_number = fields.Char(string='PO Number')
+    pricelist_id = fields.Many2one(
+        'product.pricelist', string='Pricelist', check_company=True,  # Unrequired company
+        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        help="If you change the pricelist, only newly added lines will be affected.",track_visibility='always')
     
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
