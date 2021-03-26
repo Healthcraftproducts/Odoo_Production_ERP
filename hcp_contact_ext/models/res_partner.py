@@ -167,8 +167,11 @@ class ResPartner(models.Model):
 		default='company')	
 	hcp_is_customer = fields.Boolean(string="Is Customer?",default=True)
 	hcp_customer_currency = fields.Many2one("res.currency",string="Customer Currency")
-	hcp_is_vendor = fields.Boolean(string="Is Vendor?")	
-	hcp_contact_creation_date = fields.Date('Creation Date(From Lead)')
+	hcp_is_vendor = fields.Boolean(string="Is Vendor?")
+	property_product_pricelist = fields.Many2one(
+        'product.pricelist', 'Pricelist', compute='_compute_product_pricelist',
+        inverse="_inverse_product_pricelist", company_dependent=False,
+        help="This pricelist will be used, instead of the default one, for sales to the current partner", track_visibility='always')
 
 	@api.model
 	def create(self, vals):
