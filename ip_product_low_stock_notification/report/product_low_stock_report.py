@@ -65,7 +65,22 @@ class ProductLowStockReport(models.AbstractModel):
                 for quant_id in quant_ids:
                     if tot_qty < product_id.minimum_qty:
                         c=quant_id.product_id.id
-                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name]
+                        sale_obj = self.env['stock.move.line'].search([('product_id','=',c),('state','=','assigned'),('reference','ilike','SHP')])
+                        inv_ss_price = 0
+                        for inv_sale_forecast in sale_obj:
+                           inv_sale_prd_qty =  inv_sale_forecast.product_qty
+                           inv_ss_price += inv_sale_prd_qty
+                        mrp_obj = self.env['stock.move.line'].search([('product_id','=',c),('state','=','assigned'),('reference','ilike','WH')])
+                        inv_mm_price = 0
+                        for inv_mrp_forecast in mrp_obj:
+                           inv_mrp_prd_qty =  inv_mrp_forecast.product_qty
+                           inv_mm_price += inv_mrp_prd_qty
+                        inv_pc_price = 0
+                        pur_obj = self.env['stock.move.line'].search([('product_id','=',c),('state','=','assigned'),('reference','ilike','RCV')])
+                        for inv_purchase_forecast in pur_obj:
+                           inv_purchase_prd_qty =  inv_purchase_forecast.product_qty
+                           inv_pc_price += inv_purchase_prd_qty
+                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name,reserved_qty,inv_ss_price,inv_mm_price,inv_pc_price]
                         product_detail1 = {'id':c,'values':d}
                         product_list3.append(product_detail1)
             list_quant = product_list3
@@ -84,6 +99,10 @@ class ProductLowStockReport(models.AbstractModel):
                 product_detail3.append(dt['values'][6])
                 product_detail3.append(dt['values'][7])
                 product_detail3.append(dt['values'][8])
+                product_detail3.append(dt['values'][9])
+                product_detail3.append(dt['values'][10])
+                product_detail3.append(dt['values'][11])
+                product_detail3.append(dt['values'][12])
                 product_list4.append(product_detail3)
             return_list['quant_ids'] = product_list4
             return_list['location_ids'] = location_ids[1]
@@ -107,7 +126,22 @@ class ProductLowStockReport(models.AbstractModel):
                 for quant_id in quant_ids:
                     if total_qty < rule_id.product_min_qty:
                         a=quant_id.product_id.id
-                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name]
+                        d = self.env['stock.move.line'].search([('product_id','=',a),('state','=','assigned'),('reference','ilike','SHP')])
+                        ss_price = 0
+                        for sale_forecast in d:
+                           sale_prd_qty =  sale_forecast.product_qty
+                           ss_price += sale_prd_qty
+                        e = self.env['stock.move.line'].search([('product_id','=',a),('state','=','assigned'),('reference','ilike','WH')])
+                        mm_price = 0
+                        for mrp_forecast in e:
+                           mrp_prd_qty =  mrp_forecast.product_qty
+                           mm_price += mrp_prd_qty
+                        pc_price = 0
+                        g = self.env['stock.move.line'].search([('product_id','=',a),('state','=','assigned'),('reference','ilike','RCV')])
+                        for purchase_forecast in g:
+                           purchase_prd_qty =  purchase_forecast.product_qty
+                           pc_price += purchase_prd_qty
+                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name,reserved_qty,ss_price,mm_price,pc_price]
                         product_detail = {'id':a,'values':b}
                         product_list.append(product_detail)
             list_quants = product_list
@@ -129,6 +163,10 @@ class ProductLowStockReport(models.AbstractModel):
                 product_detail2.append(data['values'][6])
                 product_detail2.append(data['values'][7])
                 product_detail2.append(data['values'][8])
+                product_detail2.append(data['values'][9])
+                product_detail2.append(data['values'][10])
+                product_detail2.append(data['values'][11])
+                product_detail2.append(data['values'][12])
                 product_list2.append(product_detail2)
             return_list['quant_ids'] = product_list2
             return_list['location_ids'] = location_ids[1]
@@ -228,6 +266,9 @@ class ProductLowStockReport(models.AbstractModel):
         sheet.write(0,5,'Unreserved Qty',format1)
         sheet.write(0,6,'Batch Size',format1)
         sheet.write(0,7,'UOM',format1)
+        sheet.write(0,8,'Forecast Sales Qty',format1)
+        sheet.write(0,9,'Forecast Manufacture Qty',format1)
+        sheet.write(0,10,'Forecast Purchase Qty',format1)
         data = self.get_low_stock_products(data)
         dt = data.get('quant_ids')
         row_number = 1
@@ -240,6 +281,9 @@ class ProductLowStockReport(models.AbstractModel):
             sheet.write(row_number,5,value[4])
             sheet.write(row_number,6,value[5])
             sheet.write(row_number,7,value[3])
+            sheet.write(row_number,8,value[10])
+            sheet.write(row_number,9,value[11])
+            sheet.write(row_number,10,value[12])
             row_number +=1
         output = StringIO()
         if platform.system() == 'Linux':
