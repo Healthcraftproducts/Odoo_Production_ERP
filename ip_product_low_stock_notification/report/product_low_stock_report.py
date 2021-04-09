@@ -70,7 +70,9 @@ class ProductLowStockReport(models.AbstractModel):
                         for inv_sale_forecast in sale_obj:
                            inv_sale_prd_qty =  inv_sale_forecast.product_qty
                            inv_ss_price += inv_sale_prd_qty
-                        mrp_obj = self.env['stock.move.line'].search([('product_id','=',c),('state','=','assigned'),('reference','ilike','WH')])
+                        #mrp_obj = self.env['stock.move.line'].search([('product_id','=',c),('state','=','assigned'),('reference','ilike','WH')])
+                        mrp_obj = self.env['mrp.production'].search([('product_id','=',c),('state','=','confirmed')])
+                        print(mrp_obj,'MRP OBJECT ####################')
                         inv_mm_price = 0
                         for inv_mrp_forecast in mrp_obj:
                            inv_mrp_prd_qty =  inv_mrp_forecast.product_qty
