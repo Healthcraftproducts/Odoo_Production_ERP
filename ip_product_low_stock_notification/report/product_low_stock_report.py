@@ -53,8 +53,9 @@ class ProductLowStockReport(models.AbstractModel):
         #             if quant_id.quantity < min_qty:
         #                 product_list.append(quant_id)
         #         return_list['quant_ids'] = product_list
+        loc_obj = self.env['stock.location'].search([('id','=',loc)])
         if stock_notification_type == 'individual':
-            product_ids = self.env['product.product'].search([('type', 'not in', ['service'])])
+            product_ids = self.env['product.product'].search([('type', 'not in', ['service']),('product_categ_id', '=', 66)])
             for product_id in product_ids:
                 product_domain = [('product_id', '=', product_id.id)]
                 quant_ids = StockQuantObj.search(domain + product_domain)
@@ -62,29 +63,49 @@ class ProductLowStockReport(models.AbstractModel):
                 reserved_qty = sum(quant_id.reserved_quantity for quant_id in quant_ids)
                 #if reserved_qty:
                 unreserved_qty = tot_qty - reserved_qty
-                for quant_id in quant_ids:
+                if quant_ids:
+                  for quant_id in quant_ids:
                     if tot_qty < product_id.minimum_qty:
                         c=quant_id.product_id.id
-                        sale_obj = self.env['stock.move.line'].search([('product_id','=',c),('state','=','assigned'),('reference','ilike','SHP')])
+                        sale_obj = self.env['stock.move'].search([('product_id','=',c),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','SHP'),('location_id','=',int(loc))])
                         inv_ss_price = 0
                         for inv_sale_forecast in sale_obj:
                            inv_sale_prd_qty =  inv_sale_forecast.product_qty
                            inv_ss_price += inv_sale_prd_qty
-                        #mrp_obj = self.env['stock.move.line'].search([('product_id','=',c),('state','=','assigned'),('reference','ilike','WH')])
-                        mrp_obj = self.env['mrp.production'].search([('product_id','=',c),('state','=','confirmed')])
-                        print(mrp_obj,'MRP OBJECT ####################')
+                        mrp_move_obj = self.env['stock.move'].search([('product_id','=',c),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','WH')])
                         inv_mm_price = 0
-                        for inv_mrp_forecast in mrp_obj:
+                        for inv_mrp_forecast in mrp_move_obj:
                            inv_mrp_prd_qty =  inv_mrp_forecast.product_qty
                            inv_mm_price += inv_mrp_prd_qty
                         inv_pc_price = 0
-                        pur_obj = self.env['stock.move.line'].search([('product_id','=',c),('state','=','assigned'),('reference','ilike','RCV')])
+                        pur_obj = self.env['stock.move'].search([('product_id','=',c),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV'),('location_id','=',int(loc))])
                         for inv_purchase_forecast in pur_obj:
                            inv_purchase_prd_qty =  inv_purchase_forecast.product_qty
                            inv_pc_price += inv_purchase_prd_qty
-                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name,reserved_qty,inv_ss_price,inv_mm_price,inv_pc_price]
+                        d=[quant_id.product_id.display_name,tot_qty,product_id.minimum_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name,reserved_qty,round(inv_ss_price,2),round(inv_mm_price,2),round(inv_pc_price,2)]
                         product_detail1 = {'id':c,'values':d}
                         product_list3.append(product_detail1)
+                if not quant_ids:
+                    prod_id = product_id
+                    mv_obj = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','SHP'),('location_id','=',int(loc))])
+                    ss_price = 0
+                    for sale_forecast in mv_obj:
+                        sale_prd_qty =  sale_forecast.product_qty
+                        ss_price += sale_prd_qty
+                    mv_obj2 = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','WH')])
+                    mm_price = 0
+                    if mv_obj2:
+                        for mrp_forecast in mv_obj2:
+                                mrp_prd_qty =  mrp_forecast.product_qty
+                                mm_price += mrp_prd_qty
+                    pc_price = 0
+                    mv_obj3 = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV'),('location_id','=',int(loc))])
+                    for purchase_forecast in mv_obj3:
+                        purchase_prd_qty =  purchase_forecast.product_qty
+                        pc_price += purchase_prd_qty                    
+                    b=[prod_id.display_name,0,prod_id.minimum_qty,prod_id.uom_id.name,prod_id.qty_available_not_res,prod_id.batch_size,prod_id.name,prod_id.default_code,loc_obj.complete_name,0,round(ss_price,2),round(mm_price,2),round(pc_price,2)]
+                    product_detail = {'id':prod_id.id,'values':b}
+                    product_list3.append(product_detail)
             list_quant = product_list3
             new_v =[]
             for y in list_quant:
@@ -108,10 +129,7 @@ class ProductLowStockReport(models.AbstractModel):
                 product_list4.append(product_detail3)
             return_list['quant_ids'] = product_list4
             return_list['location_ids'] = location_ids[1]
-    
-                       
-                        
-                # return_list['quant_ids'] = product_list
+
         if stock_notification_type == 'reorder':
             # raise UserError("reorder")
             # if location_ids:
@@ -125,27 +143,49 @@ class ProductLowStockReport(models.AbstractModel):
                 # total_qty = -(total_qty)
                 #if reserved_qty:
                 unreserved_qty = total_qty - reserved_qty
-                for quant_id in quant_ids:
-                    if total_qty < rule_id.product_min_qty:
-                        a=quant_id.product_id.id
-                        d = self.env['stock.move.line'].search([('product_id','=',a),('state','=','assigned'),('reference','ilike','SHP')])
-                        ss_price = 0
-                        for sale_forecast in d:
-                           sale_prd_qty =  sale_forecast.product_qty
-                           ss_price += sale_prd_qty
-                        e = self.env['stock.move.line'].search([('product_id','=',a),('state','=','assigned'),('reference','ilike','WH')])
-                        mm_price = 0
-                        for mrp_forecast in e:
-                           mrp_prd_qty =  mrp_forecast.product_qty
-                           mm_price += mrp_prd_qty
-                        pc_price = 0
-                        g = self.env['stock.move.line'].search([('product_id','=',a),('state','=','assigned'),('reference','ilike','RCV')])
-                        for purchase_forecast in g:
-                           purchase_prd_qty =  purchase_forecast.product_qty
-                           pc_price += purchase_prd_qty
-                        b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name,reserved_qty,ss_price,mm_price,pc_price]
-                        product_detail = {'id':a,'values':b}
-                        product_list.append(product_detail)
+                if quant_ids:
+                    for quant_id in quant_ids:
+                        if total_qty < rule_id.product_min_qty:
+                            a=quant_id.product_id.id
+                            d = self.env['stock.move'].search([('product_id','=',a),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','SHP'),('location_id','=',int(loc))])
+                            ss_price = 0
+                            for sale_forecast in d:
+                                sale_prd_qty =  sale_forecast.product_qty
+                                ss_price += sale_prd_qty
+                            e = self.env['stock.move'].search([('product_id','=',a),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','WH')])
+                            mm_price = 0
+                            for mrp_forecast in e:
+                                    mrp_prd_qty =  mrp_forecast.product_qty
+                                    mm_price += mrp_prd_qty
+                            pc_price = 0
+                            g = self.env['stock.move'].search([('product_id','=',a),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV'),('location_id','=',int(loc))])
+                            for purchase_forecast in g:
+                                purchase_prd_qty =  purchase_forecast.product_qty
+                                pc_price += purchase_prd_qty
+                            b=[quant_id.product_id.display_name,total_qty,rule_id.product_min_qty,quant_id.product_uom_id.name,unreserved_qty,quant_id.product_id.batch_size,quant_id.product_id.name,quant_id.product_id.default_code,quant_id.location_id.complete_name,reserved_qty,round(ss_price,2),round(mm_price,2),round(pc_price,2)]
+                            product_detail = {'id':a,'values':b}
+                            product_list.append(product_detail)
+                if not quant_ids:
+                    prod_id = rule_id.product_id
+                    mv_obj = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','SHP'),('location_id','=',int(loc))])
+                    ss_price = 0
+                    for sale_forecast in mv_obj:
+                        sale_prd_qty =  sale_forecast.product_qty
+                        ss_price += sale_prd_qty
+                    mv_obj2 = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','WH')])
+                    mm_price = 0
+                    if mv_obj2:
+                        for mrp_forecast in mv_obj2:
+                                mrp_prd_qty =  mrp_forecast.product_qty
+                                mm_price += mrp_prd_qty
+                    pc_price = 0
+                    mv_obj3 = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV'),('location_id','=',int(loc))])
+                    for purchase_forecast in mv_obj3:
+                        purchase_prd_qty =  purchase_forecast.product_qty
+                        pc_price += purchase_prd_qty                    
+                    b=[prod_id.display_name,0,rule_id.product_min_qty,prod_id.uom_id.name,prod_id.qty_available_not_res,prod_id.batch_size,prod_id.name,prod_id.default_code,loc_obj.complete_name,0,round(ss_price,2),round(mm_price,2),round(pc_price,2)]
+                    product_detail = {'id':prod_id.id,'values':b}
+                    product_list.append(product_detail)
             list_quants = product_list
             # if product_list:
             #     raise UserError(product_list)
