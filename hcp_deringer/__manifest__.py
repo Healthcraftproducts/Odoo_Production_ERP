@@ -7,7 +7,7 @@
     'category': 'Generate Deringer XML Template for posting shipment data',
     'summary': 'Generate Deringer XML Template for posting shipment data',
     'description': """This module allow to generate shipment data in xml format for deringer integration""",
-    'depends': ['base','account','report_xml'],
+    'depends': ['base','account','report_xml','hcp_product_ext'],
     'data': [
         'security/ir.model.access.csv',
         'views/deringer_views.xml',
