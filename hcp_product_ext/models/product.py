@@ -258,7 +258,8 @@ class StockQuant(models.Model):
 			if rec.product_id:
 				minimum = self.env['stock.warehouse.orderpoint'].search([('product_id','=',rec.product_id.id),('location_id','=',rec.location_id.id)])
 				if minimum:
-					rec.min_reorder_quantity = minimum.product_min_qty
+					for data in minimum:
+						rec.min_reorder_quantity = data.product_min_qty
 				else:
 					rec.min_reorder_quantity = 0.0
 
