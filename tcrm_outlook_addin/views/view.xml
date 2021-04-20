@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="tcrm_outlook_addin.open_link" model="ir.actions.act_url">
+        <field name="name">Microsoft Office 365 Add-In for Outlook</field>
+        <field name="type">ir.actions.act_url</field>
+        <field name="target">self</field>
+        <field name="url">https://tractionerp.odoo.com/outlook-add-in-for-odoo-erp</field>
+    </record>
+    <record id="tcrm_outlook_addin.outlook_add_in_app" model="ir.ui.menu">
+        <field name="action" ref="tcrm_outlook_addin.open_link"/>
+        <field name="active" eval="True"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="name">Outlook Add-In</field>
+        <field name="parent_id" eval="False"/>
+        <field name="sequence">10</field>
+        <field name="web_icon">fa fa-envelope,#f1c40f,#34495e</field>
+    </record>
+</odoo>
