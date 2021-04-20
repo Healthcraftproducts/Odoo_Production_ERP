@@ -78,7 +78,7 @@ class ProductLowStockReport(models.AbstractModel):
                            inv_mrp_prd_qty =  inv_mrp_forecast.product_qty
                            inv_mm_price += inv_mrp_prd_qty
                         inv_pc_price = 0
-                        pur_obj = self.env['stock.move'].search([('product_id','=',c),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV')])
+                        pur_obj = self.env['stock.move'].search([('product_id','=',c),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV'),('location_dest_id','=',int(loc))])
                         for inv_purchase_forecast in pur_obj:
                            inv_purchase_prd_qty =  inv_purchase_forecast.product_qty
                            inv_pc_price += inv_purchase_prd_qty
@@ -99,7 +99,7 @@ class ProductLowStockReport(models.AbstractModel):
                                 mrp_prd_qty =  mrp_forecast.product_qty
                                 mm_price += mrp_prd_qty
                     pc_price = 0
-                    mv_obj3 = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV')])
+                    mv_obj3 = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV'),('location_dest_id','=',int(loc))])
                     for purchase_forecast in mv_obj3:
                         purchase_prd_qty =  purchase_forecast.product_qty
                         pc_price += purchase_prd_qty                    
@@ -158,7 +158,7 @@ class ProductLowStockReport(models.AbstractModel):
                                     mrp_prd_qty =  mrp_forecast.product_qty
                                     mm_price += mrp_prd_qty
                             pc_price = 0
-                            g = self.env['stock.move'].search([('product_id','=',a),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV')])
+                            g = self.env['stock.move'].search([('product_id','=',a),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV'),('location_dest_id','=',int(loc))])
                             for purchase_forecast in g:
                                 purchase_prd_qty =  purchase_forecast.product_qty
                                 pc_price += purchase_prd_qty
@@ -179,7 +179,7 @@ class ProductLowStockReport(models.AbstractModel):
                                 mrp_prd_qty =  mrp_forecast.product_qty
                                 mm_price += mrp_prd_qty
                     pc_price = 0
-                    mv_obj3 = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV')])
+                    mv_obj3 = self.env['stock.move'].search([('product_id','=',prod_id.id),('state','in',('waiting','confirmed','assigned','partially_available')),('reference','ilike','RCV'),('location_dest_id','=',int(loc))])
                     for purchase_forecast in mv_obj3:
                         purchase_prd_qty =  purchase_forecast.product_qty
                         pc_price += purchase_prd_qty                    
