@@ -27,6 +27,10 @@
                                 <th class="text_center">Unreserved Qty</th>
                                 <th class="text_center">Batch Size</th>
                                 <th class="text_center">Unit of Measure</th>
+                                <th class="text_center">Forecast Sale Qty</th>
+                                <th class="text_center">Forecast Manufacture Qty</th>
+                                <th class="text_center">Forecast Purchase Qty</th>
+                                
                             </tr>
                         </div>
                         <tbody>
@@ -54,6 +58,15 @@
                                         <td class="text_center">
                                             <span t-esc="quant_id[3]"/>
                                         </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[10]"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[11]"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[12]"/>
+                                        </td>
                                     </tr>
                                 </t>
                             </t>
@@ -77,6 +90,15 @@
                                         </td>
                                         <td class="text_center">
                                             <span t-esc="quant_id[3]"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[10]"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[11]"/>
+                                        </td>
+                                        <td class="text_center">
+                                            <span t-esc="quant_id[12]"/>
                                         </td>
                                     </tr>
                                 </t>
