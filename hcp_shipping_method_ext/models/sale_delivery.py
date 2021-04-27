@@ -42,7 +42,7 @@ class StockPicking(models.Model):
         self.ensure_one()
         res = super(StockPicking,self)._add_delivery_cost_to_so()
         sale_order = self.sale_id
-        if sale_order and self.carrier_id.delivery_type=='fixed' and self.carrier_price:
+        if sale_order and sale_order.shipment_pay_policy == 'post_pay' and self.carrier_id.delivery_type=='fixed' and self.carrier_price:
             delivery_lines = sale_order.order_line.filtered(lambda l: l.is_delivery  and l.product_id == self.carrier_id.product_id)
             carrier_price = self.carrier_price * (1.0 + (float(self.carrier_id.margin) / 100.0))
             if not delivery_lines:

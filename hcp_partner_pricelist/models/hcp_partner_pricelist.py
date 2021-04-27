@@ -346,6 +346,7 @@ class SaleOrder(models.Model):
         required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="If you change the pricelist, only newly added lines will be affected.",track_visibility='always')
+    shipment_pay_policy = fields.Selection([('post_pay','Postpay'),('pre_pay','Prepay')],'Shipment Pay Policy',default='post_pay')
     
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
