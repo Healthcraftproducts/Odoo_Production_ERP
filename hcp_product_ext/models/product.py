@@ -2,6 +2,12 @@
 
 from odoo import api, fields, models, SUPERUSER_ID, _
 
+class DeringerUom(models.Model):
+	_name = "deringer.uom"
+	_description = "Derinfer UOM"
+    
+	name = fields.Char('Deringer UOM')
+    
 class TarrifNumber(models.Model):
 	_name = 'tariff.number'
 	_description = "Tariff Number"
@@ -37,7 +43,7 @@ class ProductTemplate(models.Model):
 	name = fields.Char('Product Description', index=True, required=True, translate=True)
 	default_code = fields.Char('Item Code', compute='_compute_default_code',inverse='_set_default_code', store=True)
 	fda_listing = fields.Char(string="FDA Listing#")
-	#deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
+	deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
 	usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
 	manufacturer_id = fields.Char('MID')
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
