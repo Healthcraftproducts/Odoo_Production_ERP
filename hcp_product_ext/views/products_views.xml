@@ -303,7 +303,7 @@
                             </group>
                             <group>
                                 <field name="fda_listing"/>
-                                <field name="deringer_uom_id" invisible="1"/>
+<!--                                 <field name="deringer_uom_id" invisible="1"/> -->
                                 <field name="usmca_eligible"/>
                                 <field name="tarrif_number"  widget="many2many_tags"/>
                             </group>
