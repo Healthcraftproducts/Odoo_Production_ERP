@@ -44,6 +44,9 @@ class ProductTemplate(models.Model):
 	obsolute_product = fields.Boolean('Obsolute Product')
 	categ_id = fields.Many2one('product.category', 'Account Category',change_default=True, default=_get_default_category_id, group_expand='_read_group_categ_id',required=True, help="Select category for the current product")
 	tarrif_number = fields.Many2many('tariff.number', 'tariff_number_rel2', 'product_id', 'tariff_id',string='Tariff Number', copy=False,)
+	product_mid = fields.Many2one('manufacturer.identification','MID')
+	deringer_uom1 = fields.Selection([('kg','KG'),('no','NO')],'UOM1')
+	deringer_uom2 = fields.Selection([('kg','KG'),('no','NO')],'UOM2')
 
 	@api.depends('product_variant_ids', 'product_variant_ids.default_code')
 	def _compute_default_code(self):
@@ -110,6 +113,8 @@ class ProductMaster(models.Model):
 	manufacturer_id = fields.Char('MID')
 	tarrif_number = fields.Many2many('tariff.number', 'tariff_number_rel', 'product_id', 'tariff_id',string='Tariff Number', copy=False,)
 	batch_size = fields.Integer('Batch Size')
+	deringer_uom1 = fields.Selection([('kg','KG'),('no','NO')],'UOM1')
+	deringer_uom2 = fields.Selection([('kg','KG'),('no','NO')],'UOM2')
 	
 	def active_stage(self):
 		self.write({
@@ -258,7 +263,8 @@ class StockQuant(models.Model):
 			if rec.product_id:
 				minimum = self.env['stock.warehouse.orderpoint'].search([('product_id','=',rec.product_id.id),('location_id','=',rec.location_id.id)])
 				if minimum:
-					rec.min_reorder_quantity = minimum.product_min_qty
+					for data in minimum:
+						rec.min_reorder_quantity = data.product_min_qty
 				else:
 					rec.min_reorder_quantity = 0.0
 
