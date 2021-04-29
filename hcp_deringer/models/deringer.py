@@ -59,6 +59,8 @@ class DeringerForm(models.Model):
     fee_percentage = fields.Many2one('fee.percentage','Fee Percentage')
     arrival_date = fields.Date('Arrival Date',invisible=1)
     export_country_id = fields.Many2one('res.country','Country of Export',required=1,default=_get_default_country)
+    bill_landing = fields.Char('Bill Landing')
+    scac_code = fields.Char('SCAC Code')
     
     @api.model
     def create(self, vals):
@@ -122,7 +124,7 @@ class DeringerForm(models.Model):
             fee_percentage = self.fee_percentage.name or ""
             source = record.invoice_origin or ""
             shipping_details = self._get_shipment_details(source)
-            weight = shipping_details['weight']
+            weight = round((shipping_details['weight'] * 0.45359237),2)
             arrival_date = self.arrival_date
             shipping_amount = 0
             for invoice_line in  record.invoice_line_ids:
@@ -135,6 +137,8 @@ class DeringerForm(models.Model):
             due_amount_cal = record.amount_residual - shipping_amount
             due_amount_format = format(due_amount_cal, '.2f')
             due_amount = due_amount_format.replace('.','')
+            bill_landing = self.bill_landing
+            scac_code = self.scac_code
             #date =  shipping_details['arrival_date']
             #if date:
                 #arrival_date = date.date()
@@ -148,7 +152,7 @@ class DeringerForm(models.Model):
             
             xml_data += "  "+"<Invoice>\n"+"    "+"<Importer>HEAPRO0002</Importer>\n"+"    "+"<Invoice_No>" +record.name +"</Invoice_No>\n"+"    "+"<Invoice_Type>"+'PI'+"</Invoice_Type>\n"+"    "+"<Supplier>\n"+"      "+"<Name>"+company_name+"</Name>\n"+"      "+"<Street1>"+company_street+"</Street1>\n"+"      "+"<City>"+company_city+"</City>\n"+"      "+"<State>"+company_state_code+"</State>\n"+"      "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"      "+"<Country>"+company_country_code+"</Country>\n"+"      "+"<Phone>"+company_phone+"</Phone>\n"+"      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Supplier>\n"+"    "+"<Exporter>\n"+"      "+"<Name>"+company_name+"</Name>\n"+"      "+"<Street1>"+company_street+"</Street1>\n"+"      "+"<City>"+company_city+"</City>\n"+"      "+"<State>"+company_state_code+"</State>\n"+"      "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"      "+"<Country>"+company_country_code+"</Country>\n"+"      "+"<Phone>"+company_phone+"</Phone>\n"+"      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Exporter>\n"+"    "+"<UCons>\n"+"      "+"<Name>"+delivery_contact_name+"</Name>\n"+"      "+"<Street1>"+delivery_contact_street+"</Street1>\n"
             
-            if billing_contact_street2:
+            if delivery_contact_street2:
                 xml_data += "      "+"<Street2>"+delivery_contact_street2+"</Street2>\n"
                 
             xml_data += "      "+"<City>"+delivery_contact_city+"</City>\n"+"      "+"<State>"+delivery_contact_state_code+"</State>\n"+"      "+"<PostCode>"+delivery_contact_postal_code+"</PostCode>\n"+"      "+"<Country>"+delivery_contact_country_code+"</Country>\n"
@@ -178,9 +182,20 @@ class DeringerForm(models.Model):
             if not billing_contact_irs:
                 xml_data += "      "+"<IRS_No>"+"99-9999999"+"</IRS_No>\n"
                 
-            xml_data += "      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Buyer>\n"+"    "+"<ReleasePort>"+"0701"+"</ReleasePort>\n"+"    "+"<Invoice_Date>"+str(invoice_date)+"</Invoice_Date>\n"+"    "+"<Currency>"+record.currency_id.name+"</Currency>\n"+"    "+"<TransType>"+"PAPS-BCS"+"</TransType>\n"+"    "+"<RefNum>"+record.name+"</RefNum>\n"+"    "+"<TotalAmount>"+str(total_amount)+"</TotalAmount>\n"+"    "+"<GrossWeight>"+str(weight)+"</GrossWeight>\n"+"    "+"<BillLading>"+"BOL20200911A"+"</BillLading>\n"+"    "+"<FeePercent>"+str(fee_percentage)+"</FeePercent>\n"+"    "+"<DiscountValue>"+"0"+"</DiscountValue>\n"+"    "+"<Freight>"+"0"+"</Freight>\n"+"    "+"<ArrivalDate>"+str(arrival_date)+"</ArrivalDate>\n"+"    "+"<SCACCode>"+"DANQ"+"</SCACCode>\n"+"    "+"<TotalUnitsShipped>"+str(total_qty)+"</TotalUnitsShipped>\n"+"    "+"<TotalDue>"+str(due_amount)+"</TotalDue>\n"+"    "+"<UOM>"+"BX"+"</UOM>\n"+"    "+"<RelatedParty>"+"N"+"</RelatedParty>\n"+"    "+"<CountryOfExport>"+str(country_of_export)+"</CountryOfExport>\n"+"    "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"    "+"<Charges>"+"100.00"+"</Charges>\n"+"    "+"<Insured>"+"N"+"</Insured>\n"+"    "+"<DateSubmitted>"+str(arrival_date)+"</DateSubmitted>\n"+"    "+"<DateCreated>"+str(arrival_date)+"</DateCreated>\n"+"    "+"<UserName>"+"shipping@healthcraftsproducts.com"+"</UserName>\n"
+            xml_data += "      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Buyer>\n"+"    "+"<ReleasePort>"+"0701"+"</ReleasePort>\n"+"    "+"<Invoice_Date>"+str(invoice_date)+"</Invoice_Date>\n"+"    "+"<Currency>"+record.currency_id.name+"</Currency>\n"+"    "+"<TransType>"+"PAPS-BCS"+"</TransType>\n"+"    "+"<RefNum>"+record.name+"</RefNum>\n"+"    "+"<TotalAmount>"+str(total_amount)+"</TotalAmount>\n"+"    "+"<GrossWeight>"+str(weight)+"</GrossWeight>\n"
+            if bill_landing:            
+                xml_data +="    "+"<BillLading>"+str(bill_landing)+"</BillLading>\n"
+            
+            xml_data +="    "+"<FeePercent>"+str(fee_percentage)+"</FeePercent>\n"+"    "+"<DiscountValue>"+"0"+"</DiscountValue>\n"+"    "+"<Freight>"+"0"+"</Freight>\n"+"    "+"<ArrivalDate>"+str(arrival_date)+"</ArrivalDate>\n"
+            
+            if scac_code:
+                xml_data += "    "+"<SCACCode>"+str(scac_code)+"</SCACCode>\n"
+            
+            xml_data += "    "+"<TotalUnitsShipped>"+str(total_qty)+"</TotalUnitsShipped>\n"+"    "+"<TotalDue>"+str(due_amount)+"</TotalDue>\n"+"    "+"<UOM>"+"BX"+"</UOM>\n"+"    "+"<RelatedParty>"+"N"+"</RelatedParty>\n"+"    "+"<CountryOfExport>"+str(country_of_export)+"</CountryOfExport>\n"+"    "+"<ExportDate>"+str(arrival_date)+"</ExportDate>\n"+"    "+"<Charges>"+"100.00"+"</Charges>\n"+"    "+"<Insured>"+"N"+"</Insured>\n"+"    "+"<DateSubmitted>"+str(arrival_date)+"</DateSubmitted>\n"+"    "+"<DateCreated>"+str(arrival_date)+"</DateCreated>\n"+"    "+"<UserName>"+"shipping@healthcraftsproducts.com"+"</UserName>\n"
             count=1
             for line in  record.invoice_line_ids:
+                num_unit_shipped = False
+                num_unit_shipped2 = False
                 invoice_uom = line.product_uom_id.name
                 if invoice_uom:
                     invoice_uom = invoice_uom.upper()
@@ -200,6 +215,18 @@ class DeringerForm(models.Model):
                     product_qty = line.quantity or ""
                     item_code = line.product_id.default_code or ""
                     pounds = round(product_qty/2.2046, 2)
+                    unit_shipped = line.product_id.deringer_uom1
+                    uom1 = line.product_id.deringer_uom1
+                    if unit_shipped == 'kg':
+                        num_unit_shipped = round(product_qty * (line.product_id.weight * 0.45359237),2)
+                    if unit_shipped == 'no':
+                        num_unit_shipped = product_qty
+                    uom2 = line.product_id.deringer_uom2
+                    unit_shipped2 = line.product_id.deringer_uom2
+                    if unit_shipped2 == 'kg':
+                        num_unit_shipped2 = round(product_qty * (line.product_id.weight * 0.45359237),2)
+                    if unit_shipped2 == 'no':
+                        num_unit_shipped2 = product_qty                    
                     xml_data += "    "+"<LineItem>\n"+"      "+"<Description>"+str(line.product_id.name)+"</Description>\n"+"      "+"<LineNumber>"+str(count)+"</LineNumber>\n"+"      "+"<TotalLineItemValue>"+str(line.price_subtotal)+"</TotalLineItemValue>\n"
                     if binding_rule:
                         xml_data += "      "+"<RulingNo>"+str(binding_rule)+"</RulingNo>\n"
@@ -236,28 +263,45 @@ class DeringerForm(models.Model):
                                 tarrif = tariff.name
                                 tarrif = tarrif.replace('.','')
                                 xml_data += "          "+"<Tariff>"+tarrif+"</Tariff>\n"
+                            if tariff.name == '9817.00.96':
+                                xml_data += "          "+"<InvoiceQty>"+''+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+''+"</InvoiceUOM>\n"+"          "+"<NumUnitsShipped>"+''+"</NumUnitsShipped>\n"+"          "+"<UnitsShippedUOM>"+''+"</UnitsShippedUOM>\n"+"          "+"<NumUnitsShipped2>"+''+"</NumUnitsShipped2>\n"+"          "+"<UnitsShippedUOM2>"+''+"</UnitsShippedUOM2>\n"
+                            if tariff.name != '9817.00.96':   
+                                xml_data += "          "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+invoice_uom+"</InvoiceUOM>\n"
                                 
-                            xml_data += "          "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+invoice_uom+"</InvoiceUOM>\n"+"          "+"<NumUnitsShipped>"+str(product_qty)+"</NumUnitsShipped>\n"
-                            
-                            #if pounds:
-                                #xml_data += "          "+"<NumUnitsShipped2>"+str(pounds)+"</NumUnitsShipped2>\n"
+                                if num_unit_shipped:
+                                    xml_data +="          "+"<NumUnitsShipped>"+str(num_unit_shipped)+"</NumUnitsShipped>\n"
+                                if uom1:    
+                                    xml_data += "          "+"<UnitsShippedUOM>"+str(uom1.upper())+"</UnitsShippedUOM>\n"
+                                if num_unit_shipped2:
+                                    xml_data +="          "+"<NumUnitsShipped2>"+str(num_unit_shipped2)+"</NumUnitsShipped2>\n"
+                                if uom2:    
+                                    xml_data += "          "+"<UnitsShippedUOM2>"+str(uom2.upper())+"</UnitsShippedUOM2>\n"                                
+                            if country_of_origin == 'CA':
+                                xml_data += "          "+"<SI>"+country_of_origin+"</SI>\n"
                                 
-                            xml_data += "          "+"<UnitsShippedUOM>"+"KG"+"</UnitsShippedUOM>\n"
-                            
-                            if usmac_eligibility:
-                                xml_data += "          "+"<SI>"+usmac_eligibility+"</SI>\n"
-                                
-                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"          "+"<ItemValue>"+str(line.price_subtotal)+"</ItemValue>\n"+"        "+"</ProductTariff>\n"
+                            xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"
+                            if tariff.name == '9817.00.96':
+                                xml_data += "          "+"<ItemValue>"+str(0.0)+"</ItemValue>\n"+"        "+"</ProductTariff>\n"
+                            if tariff.name != '9817.00.96':
+                                xml_data += "          "+"<ItemValue>"+str(line.price_subtotal)+"</ItemValue>\n"+"        "+"</ProductTariff>\n"
                             tariff_count = tariff_count + 1
                         xml_data += "      "+"</Tariff>\n"+"    "+"</LineItem>\n"
-                    else:
-                            xml_data += "        "+"<ProductTariff>\n"+"          "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+invoice_uom+"</InvoiceUOM>\n"+"          "+"<NumUnitsShipped>"+str(product_qty)+"</NumUnitsShipped>\n"+"          "+"<UnitsShippedUOM>"+"KG"+"</UnitsShippedUOM>\n"
+                    if len(tariff_number) <= 0:
+                            xml_data += "        "+"<ProductTariff>\n"+"          "+"<InvoiceQty>"+str(product_qty)+"</InvoiceQty>\n"+"          "+"<InvoiceUOM>"+invoice_uom+"</InvoiceUOM>\n"
                             
+                            if num_unit_shipped:
+                                xml_data +="          "+"<NumUnitsShipped>"+str(num_unit_shipped)+"</NumUnitsShipped>\n"
+                            if uom1:    
+                                xml_data += "          "+"<UnitsShippedUOM>"+str(uom1.upper())+"</UnitsShippedUOM>\n"
+                            if num_unit_shipped2:
+                                xml_data +="          "+"<NumUnitsShipped2>"+str(num_unit_shipped2)+"</NumUnitsShipped2>\n"
+                            if uom2:    
+                                xml_data += "          "+"<UnitsShippedUOM2>"+str(uom2.upper())+"</UnitsShippedUOM2>\n"                               
                             #if pounds:
                                 #xml_data +="          "+"<NumUnitsShipped2>"+str(pounds)+"</NumUnitsShipped2>\n"
                                 
-                            if usmac_eligibility:
-                                xml_data += "          "+"<SI>"+usmac_eligibility+"</SI>\n"
+                            if country_of_origin == 'CA':
+                                xml_data += "          "+"<SI>"+country_of_origin+"</SI>\n"
                                 
                             xml_data += "          "+"<Manufacturer>\n"+"            "+"<Name>"+company_name+"</Name>\n"+"            "+"<Street1>"+company_street+"</Street1>\n"+"            "+"<City>"+company_city+"</City>\n"+"            "+"<State>"+company_state_code+"</State>\n"+"            "+"<PostCode>"+company_postal_code+"</PostCode>\n"+"            "+"<Country>"+company_country_code+"</Country>\n"+"            "+"<Phone>"+company_phone+"</Phone>\n"+"            "+"<MID>"+company_mid+"</MID>\n"+"          "+"</Manufacturer>\n"+"          "+"<ItemValue>"+str(line.price_subtotal)+"</ItemValue>\n"+"        "+"</ProductTariff>\n"+"      "+"</Tariff>\n"+"    "+"</LineItem>\n"
                 count = count + 1

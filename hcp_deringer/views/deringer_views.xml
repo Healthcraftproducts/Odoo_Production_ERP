@@ -23,11 +23,13 @@
                             <group>
                                 <field name="date" readonly="1"/>
                                 <field name="fee_percentage" required="1"/>
+                                <field name="bill_landing"/>
                             </group>
                             <group>
                                 <field name="export_country_id"/>
                                 <field name="partner_id" invisible="1"/>
                                 <field name="arrival_date" required="1"/>
+                                <field name="scac_code"/>
                             </group>
                         </group>
                         <group>
