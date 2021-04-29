@@ -44,7 +44,7 @@ class ProductTemplate(models.Model):
 	obsolute_product = fields.Boolean('Obsolute Product')
 	categ_id = fields.Many2one('product.category', 'Account Category',change_default=True, default=_get_default_category_id, group_expand='_read_group_categ_id',required=True, help="Select category for the current product")
 	tarrif_number = fields.Many2many('tariff.number', 'tariff_number_rel2', 'product_id', 'tariff_id',string='Tariff Number', copy=False,)
-	product_mid = fields.Many2one('manufacturer.identification','MID')
+	#product_mid = fields.Many2one('manufacturer.identification','MID')
 	deringer_uom1 = fields.Selection([('kg','KG'),('no','NO')],'UOM1')
 	deringer_uom2 = fields.Selection([('kg','KG'),('no','NO')],'UOM2')
 
