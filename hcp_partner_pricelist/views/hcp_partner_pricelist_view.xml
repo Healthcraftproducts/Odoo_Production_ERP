@@ -66,6 +66,7 @@
 			    	<field name="so_email_status"/>
 			    	<field name="po_number"/>
                     <field name="tag_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    <field name="shipment_pay_policy"/>
 				</xpath>
 			</field>
      </record>
