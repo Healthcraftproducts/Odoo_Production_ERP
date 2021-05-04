@@ -33,12 +33,6 @@ class FeePercentage(models.Model):
     _description = "Fee Percentage"
     
     name = fields.Char('Fee Percentage')
-
-class DeringerUom(models.Model):
-    _name = "deringer.uom"
-    _description = "Derinfer UOM"
-    
-    name = fields.Char('Deringer UOM')
      
 class DeringerForm(models.Model):
     _name = "deringer.form"
@@ -166,7 +160,7 @@ class DeringerForm(models.Model):
             if not delivery_contact_irs:
                 xml_data +="      "+"<IRS_No>"+"00-0000000"+"</IRS_No>\n"
                 
-            xml_data += "      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</UCons>\n"+"    "+"<Buyer>\n"+"      "+"<Name>"+billing_contact_name+"</Name>\n"+"      "+"<Street1>"+billing_contact_street+"</Street1>\n"
+            xml_data += "    "+"</UCons>\n"+"    "+"<Buyer>\n"+"      "+"<Name>"+billing_contact_name+"</Name>\n"+"      "+"<Street1>"+billing_contact_street+"</Street1>\n"
             
             if billing_contact_street2:
                 xml_data += "      "+"<Street2>"+billing_contact_street2+"</Street2>\n"
@@ -182,7 +176,7 @@ class DeringerForm(models.Model):
             if not billing_contact_irs:
                 xml_data += "      "+"<IRS_No>"+"99-9999999"+"</IRS_No>\n"
                 
-            xml_data += "      "+"<MID>"+company_mid+"</MID>\n"+"    "+"</Buyer>\n"+"    "+"<ReleasePort>"+"0701"+"</ReleasePort>\n"+"    "+"<Invoice_Date>"+str(invoice_date)+"</Invoice_Date>\n"+"    "+"<Currency>"+record.currency_id.name+"</Currency>\n"+"    "+"<TransType>"+"PAPS-BCS"+"</TransType>\n"+"    "+"<RefNum>"+record.name+"</RefNum>\n"+"    "+"<TotalAmount>"+str(total_amount)+"</TotalAmount>\n"+"    "+"<GrossWeight>"+str(weight)+"</GrossWeight>\n"
+            xml_data +="    "+"</Buyer>\n"+"    "+"<ReleasePort>"+"0701"+"</ReleasePort>\n"+"    "+"<Invoice_Date>"+str(invoice_date)+"</Invoice_Date>\n"+"    "+"<Currency>"+record.currency_id.name+"</Currency>\n"+"    "+"<TransType>"+"PAPS-BCS"+"</TransType>\n"+"    "+"<RefNum>"+record.name+"</RefNum>\n"+"    "+"<TotalAmount>"+str(total_amount)+"</TotalAmount>\n"+"    "+"<GrossWeight>"+str(weight)+"</GrossWeight>\n"
             if bill_landing:            
                 xml_data +="    "+"<BillLading>"+str(bill_landing)+"</BillLading>\n"
             
