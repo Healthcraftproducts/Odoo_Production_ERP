@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="repair_order_inherited2" model="ir.ui.view">
+            <field name="name">repair.order.form.inherit2</field>
+            <field name="model">repair.order</field>
+            <field name="inherit_id" ref="repair.view_repair_order_form" />
+            <field name="arch" type="xml">
+                  <xpath expr="//field[@name='location_id']" position="after">
+                      <field name="destination_location_id" attrs="{'readonly':[('state','=', 'transfered')]}"/>
+                      <field name="repair_picking_id" invisible="1"/>
+                  </xpath>
+                  <xpath expr="//header" position="inside">
+                    <button string="Create Transfer"  type="object" class="oe_highlight" name="action_stock_move" attrs="{'invisible':[('state','!=', 'done')]}"/>
+                 </xpath>
+                 <xpath expr="//div[@name='button_box']" position="inside">
+                     <field name='repair_picking_id' invisible="1"/>
+                    <button name="view_transfer" type="object" string="Transfer" class="oe_stat_button" icon="fa-truck" attrs="{'invisible':['|', ('picking_count', '=', 0), ('state', 'not in', ('transfered'))]}">
+                        <field name="picking_count" widget="statinfo" string="Count" invisible="1"/>
+                    </button>
+                </xpath>
+                
+            </field>
+    </record>
+  
+</odoo>
