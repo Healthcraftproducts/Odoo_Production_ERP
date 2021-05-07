@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>        
+        <record id="so_inv_custom_xls_report" model="ir.ui.view">
+        <field name="name">SO INV XLS Report</field>
+        <field name="model">so.inv.xls</field>
+        <field name="arch" type="xml">
+            <form string="SO INV XLS Report">
+                <group>
+                    <field name="file_name" filename="name_data" />
+                    <field name="name_data" invisible="1" />
+                </group>
+                <footer>
+                    <button string="Cancel" class="btn-primary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    </data>
+</odoo>
