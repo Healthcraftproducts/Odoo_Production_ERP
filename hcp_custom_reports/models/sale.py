@@ -170,11 +170,11 @@ class SaleOrder(models.Model):
 			self.phone=False
 		
 
-	@api.onchange('partner_invoice_id')
+	@api.onchange('partner_shipping_id')
 	def on_change_carrier_id(self):
-		if self.partner_invoice_id:
-			self.carrier_id = self.partner_invoice_id.property_delivery_carrier_id
-			self.ship_via_desc = self.partner_invoice_id.hcp_ship_via_description
+		if self.partner_shipping_id:
+			self.carrier_id = self.partner_shipping_id.property_delivery_carrier_id
+			self.ship_via_desc = self.partner_shipping_id.hcp_ship_via_description
 
 
 
