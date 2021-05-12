@@ -94,8 +94,21 @@ class AccountMoveLine(models.Model):
 	price_tax = fields.Float(string="Total Tax")
 	invoice_ship_method = fields.Boolean(string='Invoice ship',default=False,compute='ship_line_method')
 	inv_line_amount = fields.Float(string="Line Amount",compute='_compute_invoice_line_level_amount',store=True)
+	country_origin = fields.Many2one('res.country','Origin')
 
-
+	def _get_computed_origin(self):
+		self.ensure_one()
+		if self.product_id:
+			return self.product_id.cust_fld3.id
+		return False
+    
+	@api.onchange('product_id')
+	def _onchange_product_id(self):
+		res = super(AccountMoveLine, self)._onchange_product_id()
+		for line in self:
+			line.country_origin = line._get_computed_origin()
+		return res
+            
 	@api.depends('quantity','price_unit')
 	def _compute_invoice_line_level_amount(self):
 		for line in self:
