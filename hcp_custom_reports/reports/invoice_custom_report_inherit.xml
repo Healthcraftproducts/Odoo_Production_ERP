@@ -148,7 +148,7 @@
                         <t t-if="not line.display_type">
                                 <td name="td_name" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.default_code"/></td>
                                 <td name="td_name" class="text-center" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.name"/></td>
-                                <td name="td_name" class="text-center" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.country_origin.code"/></td>
+                                <td name="td_name" class="text-center" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.cust_fld3.code"/></td>
                                 <td name="td_quantity" class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.quantity"/>
                                     <span t-field="line.product_uom_id"/>
