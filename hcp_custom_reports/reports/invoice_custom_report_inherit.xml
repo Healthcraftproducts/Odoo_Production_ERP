@@ -125,6 +125,7 @@
                     <tr>
                         <th name="th_itemcode" class="text-left">Item Code</th>
                         <th name="th_description" class="text-center">Description</th>
+                        <th name="th_origin" class="text-center">Origin</th>
                         <th name="th_quantity" class="text-right">Quantity</th>
                         <th name="th_price" class="text-right">Unit Cost</th>
                         <th name="th_discount" class="text-right">
@@ -147,6 +148,7 @@
                         <t t-if="not line.display_type">
                                 <td name="td_name" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.default_code"/></td>
                                 <td name="td_name" class="text-center" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.name"/></td>
+                                <td name="td_name" class="text-center" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.cust_fld3.code"/></td>
                                 <td name="td_quantity" class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.quantity"/>
                                     <span t-field="line.product_uom_id"/>
@@ -160,6 +162,7 @@
                                 <!-- <td name="td_taxes" class="text-right">
                                     <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
                                 </td> -->
+
                                 <td name="td_subtotal" class="text-right o_price_total" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.price_subtotal"/>
                                     
