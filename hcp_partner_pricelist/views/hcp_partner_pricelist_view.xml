@@ -65,6 +65,8 @@
 				<xpath expr="//field[@name='payment_term_id']" position="after">
 			    	<field name="so_email_status"/>
 			    	<field name="po_number"/>
+                    <field name="priority" widget="priority"/>
+                    <field name="lead_confirmation_date" invisible="1"/>
                     <field name="tag_ids" widget="many2many_tags" options="{'no_create': True}"/>
                     <field name="shipment_pay_policy"/>
 				</xpath>

@@ -16,7 +16,7 @@ from odoo.exceptions import UserError
 class StockPicking(models.Model):
 	_inherit = 'stock.picking'
 
-	shipment_date = fields.Date(string='Shipment Date',tracking=True)
+	shipment_date = fields.Datetime(string='Shipment Date',tracking=True)
 
 	def button_validate(self):
 		res = super(StockPicking, self).button_validate()

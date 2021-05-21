@@ -3,7 +3,4 @@
 
 
 from . import deringer
-from . import deringer_report
-from . import sale_stock
-from . import res_company
-
+from . import other_form_fields

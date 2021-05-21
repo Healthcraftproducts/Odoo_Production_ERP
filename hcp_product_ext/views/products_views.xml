@@ -40,6 +40,47 @@
             action="action_tariff_number"
             parent="sale.menu_sale_config"
             sequence="6"/>
+
+     <!-- <record id="view_mid_form" model="ir.ui.view">
+            <field name="name">mid.form</field>
+            <field name="model">manufacturer.identification</field>
+            <field name="arch" type="xml">
+                <form string="MID Form">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_mid_tree" model="ir.ui.view">
+            <field name="name">mid.tree.view</field>
+            <field name="model">manufacturer.identification</field>
+            <field name="arch" type="xml">
+                <tree string="View NID Tree" editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_mid" model="ir.actions.act_window">
+            <field name="name">Manufactured ID</field>
+            <field name="res_model">manufacturer.identification</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="action_deringer_new">
+                Add a New MID
+              </p>
+            </field>
+        </record>-->
+
+       <!-- <menuitem
+            id="menu_mid"
+            action="action_mid"
+            parent="sale.menu_sale_config"
+            sequence="7"/>-->
         
     <record id="product_pricelist_view_id" model="ir.ui.view">
             <field name="name">product.pricelist.form</field>
@@ -182,10 +223,6 @@
     </record>
 
     
-
-
-
-
     <record id="product_form_inherit_id" model="ir.ui.view">
             <field name="name">product.template.common.form.inherit</field>
             <field name="model">product.template</field>
@@ -261,10 +298,12 @@
                                 <field name="cust_fld2"/>
                                 <field name="cust_fld3"/>
                                 <field name="binding_rule"/>
+                                <field name="deringer_uom1"/>
+                                <field name="deringer_uom2"/>
                             </group>
                             <group>
                                 <field name="fda_listing"/>
-                                <field name="deringer_uom_id"/>
+<!--                                 <field name="deringer_uom_id" invisible="1"/> -->
                                 <field name="usmca_eligible"/>
                                 <field name="tarrif_number"  widget="many2many_tags"/>
                             </group>

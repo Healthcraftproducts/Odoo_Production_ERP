@@ -8,10 +8,11 @@
                 <form string="View Deringer Form">
                    <header>
                         <button name="print_report_xml" type="object" string="Generate XML" states="draft"/>
-                        <button name="action_send_email" type="object" string="Send Email" states="xml_created"/>
-                        <button name="action_draft" type="object" string="Set To Draft" states="xml_created"/>
-                        <button name="action_cancel" type="object" string="Cancel" states="draft,xml_created"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,xml_created,sent_email,cancel,"/>
+                        <button name="print_report_xml" type="object" string="Generate XML Again" states="xml_created"/>
+<!--                         <button name="action_send_email" type="object" string="Send Email" states="xml_created"/> -->
+<!--                         <button name="action_draft" type="object" string="Set To Draft" states="xml_created"/> -->
+                        <button name="action_cancel" type="object" string="Cancel" states="draft"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,xml_created,cancel,"/>
                     </header>
                     <sheet>
                         <label for="name" class="oe_edit_only"/>
@@ -21,9 +22,14 @@
                         <group colspan="2">
                             <group>
                                 <field name="date" readonly="1"/>
+                                <field name="fee_percentage" required="1"/>
+                                <field name="bill_landing"/>
                             </group>
                             <group>
-                                <field name="partner_id" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                                <field name="export_country_id"/>
+                                <field name="partner_id" invisible="1"/>
+                                <field name="arrival_date" required="1"/>
+                                <field name="scac_code"/>
                             </group>
                         </group>
                         <group>
@@ -126,4 +132,31 @@
             <field name="target">new</field>
         </record>
 
+   <!--       <record id="product_template_form_inherit_id2" model="ir.ui.view">
+            <field name="name">product.template.form.inherit2</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="deringer_uom_id"/>
+                    <field name="usmca_eligible"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="product_normal_form_view_id2" model="ir.ui.view">
+            <field name="name">product.product.form2</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="deringer_uom_id"/>
+                    <field name="usmca_eligible"/>
+                </xpath>
+            </field>
+
+    </record>-->
+    
 </odoo>

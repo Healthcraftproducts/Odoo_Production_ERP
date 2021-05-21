@@ -214,4 +214,3 @@ class MrpWorkorder(models.Model):
 	
 	def name_get(self):
 		return [(wo.id, "%s - %s - %s" % (wo.production_id.name, wo.product_id.display_name, wo.name)) for wo in self]
-

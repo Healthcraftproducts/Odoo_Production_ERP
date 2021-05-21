@@ -72,8 +72,8 @@
                                 <td style="width: 200px; text-align: left;"><span t-field="oper_line_id.workcenter_id.name"/></td>
                                 <td style="width: 200px; text-align: left;"><span t-field="oper_line_id.setup_time"/></td>
                                <!-- <td style="width: 100px; text-align: left;"><span t-field="oper_line_id.done_by"/></td>-->
-                                <td style="width: 100px; text-align: left;"><span t-esc="oper_line_id.cycle_time"/></td>
-                                <td style="width: 100px; text-align: left;"><span t-esc="round(oper_line_id.cycle_time * o.product_qty,0)"/></td>
+                                <td style="width: 100px; text-align: left;"><span t-esc="round(oper_line_id.total_time,2)" /></td>
+                                <td style="width: 100px; text-align: left;"><span t-esc="oper_line_id.total_time * o.product_qty" t-options='{"widget": "float", "precision": 2}'/></td>
                                 <!--<td style="width: 100px; text-align: left;"><span t-field="oper_line_id.operator"/></td>-->
                                 
                             </tr>

@@ -27,7 +27,10 @@
             <xpath expr = "//field[@name = 'invoice_line_ids']/tree/field[@name = 'price_subtotal']" position = "after" > 
                 <field name = "inv_line_amount" /> 
             </xpath>  
-
+            
+            <!-- <xpath expr = "//field[@name = 'invoice_line_ids']/tree/field[@name = 'account_id']" position = "before" > 
+                <field name = "country_origin" /> 
+            </xpath> -->
  
     </field>
 

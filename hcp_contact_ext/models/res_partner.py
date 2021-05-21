@@ -1,16 +1,7 @@
-from odoo import models, fields, api
-import logging
-import threading
-from psycopg2 import sql
-from datetime import datetime, timedelta, date
-from dateutil.relativedelta import relativedelta
-
 from odoo import api, fields, models, tools, SUPERUSER_ID
 from odoo.tools.translate import _
 from odoo.tools import email_re, email_split
-from odoo.exceptions import UserError, AccessError
-from odoo.addons.phone_validation.tools import phone_validation
-from collections import OrderedDict, defaultdict
+from datetime import datetime, timedelta, date
 
 class DisplaysHealthcraft(models.Model):
 	_name = 'displays.healthcraft'
@@ -176,7 +167,8 @@ class ResPartner(models.Model):
 		default='company')	
 	hcp_is_customer = fields.Boolean(string="Is Customer?",default=True)
 	hcp_customer_currency = fields.Many2one("res.currency",string="Customer Currency")
-	hcp_is_vendor = fields.Boolean(string="Is Vendor?")
+	hcp_is_vendor = fields.Boolean(string="Is Vendor?")	
+	hcp_contact_creation_date = fields.Date('Creation Date(From Lead)')
 	property_product_pricelist = fields.Many2one(
         'product.pricelist', 'Pricelist', compute='_compute_product_pricelist',
         inverse="_inverse_product_pricelist", company_dependent=False,
@@ -246,7 +238,8 @@ class Lead(models.Model):
 			'state_id': self.state_id.id,
 			'website': self.website,
 			'is_company': is_company,
-			'type': 'contact'
+			'type': 'contact',
+			'hcp_contact_creation_date': datetime.now().strftime('%Y-%m-%d')
 		}
 		if self.lang_id:
 			res['lang'] = self.lang_id.code

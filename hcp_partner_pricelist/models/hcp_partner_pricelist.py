@@ -93,6 +93,13 @@ class Lead(models.Model):
                 'website': partner.website,
             }
         return {}
+        
+    def action_new_quotation(self):
+        action = super().action_new_quotation()
+        action['context']['default_priority'] = self.priority
+        action['context']['default_lead_confirmation_date'] = datetime.now().strftime('%Y-%m-%d')
+        return action
+
     
 class PricelistItem(models.Model):
     _inherit = "product.pricelist.item"
@@ -332,6 +339,8 @@ class SaleOrder(models.Model):
         ('so_email_sent', 'Sale Order Email Sent')], "Email Status",
     )
     po_number = fields.Char(string='PO Number')
+    priority = fields.Selection([('0','Low'),('1','Medium'),('2','High'),('3','Very High')],string='Priority', index=True,)
+    lead_confirmation_date = fields.Date('Lead Confirmation Date')
     pricelist_id = fields.Many2one(
         'product.pricelist', string='Pricelist', check_company=True,  # Unrequired company
         required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
