@@ -168,7 +168,7 @@ class ResPartner(models.Model):
 	hcp_is_customer = fields.Boolean(string="Is Customer?",default=True)
 	hcp_customer_currency = fields.Many2one("res.currency",string="Customer Currency")
 	hcp_is_vendor = fields.Boolean(string="Is Vendor?")	
-	hcp_contact_creation_date = fields.Date('Creation Date(From Lead)')
+	#hcp_contact_creation_date = fields.Date('Creation Date(From Lead)')
 	property_product_pricelist = fields.Many2one(
         'product.pricelist', 'Pricelist', compute='_compute_product_pricelist',
         inverse="_inverse_product_pricelist", company_dependent=False,
@@ -239,7 +239,7 @@ class Lead(models.Model):
 			'website': self.website,
 			'is_company': is_company,
 			'type': 'contact',
-			'hcp_contact_creation_date': datetime.now().strftime('%Y-%m-%d')
+			#'hcp_contact_creation_date': datetime.now().strftime('%Y-%m-%d')
 		}
 		if self.lang_id:
 			res['lang'] = self.lang_id.code
