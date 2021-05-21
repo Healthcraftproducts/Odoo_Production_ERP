@@ -40,6 +40,9 @@
                                         <td>
                                             <span t-esc="quant_id[0]"/>
                                         </td>
+                                        <!-- <td>
+                                            <span t-esc="quant_id.location_id.display_name"/>
+                                        </td> -->
                                         <td class="text_center">
                                             <span t-esc="quant_id[2]"/>
                                         </td>

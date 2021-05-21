@@ -70,6 +70,7 @@ class StockMove(models.Model):
             'mo_reference': False
         })
         return values
+    
 
 class ProductReplenish(models.TransientModel):
     _inherit = 'product.replenish'

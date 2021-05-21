@@ -42,8 +42,6 @@
         </field>
     </record>
 
-
-
         <record id="mrp_workcenter_inherited_form2" model="ir.ui.view">
             <field name="name">mrp.workcenter.form.inherited2</field>
             <field name="model">mrp.workcenter</field>
@@ -73,9 +71,8 @@
                 <field name="model">mrp.production</field>
                 <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
                 <field name="arch" type="xml">
-
                  <xpath expr="//button[@name='post_inventory']"  position='replace'>
-                        <button name="post_inventory" string="Post Inventory" type="object" attrs="{'invisible': [('post_visible', '=', False)]}"/>
+                     <button name="post_inventory" string="Post Inventory" type="object" attrs="{'invisible': [('post_visible', '=', False)]}"/>
                 </xpath>
 
                 <xpath expr="//field[@name='date_deadline']" position="before">
@@ -119,8 +116,7 @@
 		<field name="batch_size"/>
                 <field name="setuptime_per_unit"  widget="float_time"/>
                 <field name="runtime_per_unit" widget="float_time"/>
-                <field name="total_time"  widget="float_time"/>   
-                <field name="cycle_time"  widget="float_time"/>   
+                <field name="total_time" widget="float_time"/>               
             </xpath>
             
             <xpath expr="//field[@name='sequence']" position="replace">
@@ -138,6 +134,7 @@
             <label for="time_cycle_manual" position="replace">
                  <label for="time_cycle_manual" attrs="{'invisible': [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}" string="Total Time"/>
             </label>
+            
 
             <!-- <xpath expr="//field[@name='time_cycle_manual']" position="after">
                            </xpath>

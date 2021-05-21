@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="inventory_count_excel_wizard_id" model="ir.ui.view">
+	<record id="inventory_count_excel_wizard_id" model="ir.ui.view">
         <field name="name">inventory.count.excel.report</field>
         <field name="model">inventory.count.report.wizard</field>
         <field name="arch" type="xml">

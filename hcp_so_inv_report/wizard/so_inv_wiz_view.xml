@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_so_inv_diff_form" model="ir.ui.view">
+        <field name="name">so.inv.diff.form</field>
+        <field name="model">so.inv.diff</field>
+        <field name="arch" type="xml">
+            <form string="Inv So Diff">
+                <group>
+                    <group>
+                        <field name="start_date" required="1"/>
+                        <field name="end_date" required="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string='Print XLS' name="print_so_notification_report_xls" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>   
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inv_so_diff" model="ir.actions.act_window">
+        <field name="name">Inv SO Diff</field>
+        <field name="res_model">so.inv.diff</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_so_inv_diff_form"/>
+    </record> 
+
+    <menuitem id="menu_so_notification" name="INV/SO Diff" action="action_inv_so_diff" parent="sale.menu_sale_config" sequence="10"/>
+</odoo>
