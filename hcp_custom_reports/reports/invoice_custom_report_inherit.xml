@@ -6,7 +6,8 @@
         <address/>
 
     </xpath>
-
+    <xpath expr="//t[@t-set='address']/div" position="replace">
+    </xpath>
     <xpath expr="//div[@class='page']" position="before">
             <br/><br/>
             <table width="100%">
@@ -22,29 +23,15 @@
                             <t t-if="o.partner_id.street!=False or o.partner_id.street2!=False">
                             <br><span style="font-size:9pt;" t-field="o.partner_id.street"/><span style="font-size:9pt;" t-field="o.partner_id.street2"/></br>
                             </t>
-                            <t t-if ="o.partner_id.city!=False">
-                            <br><span style="font-size:9pt;" t-field="o.partner_id.city"/></br>
-                        </t>
-                            <t t-if ="o.partner_id.state_id!=False or o.partner_id.country_id!=False">
-
-                                <br><span style="font-size:9pt;" t-field="o.partner_id.state_id"/><span style="font-size:9pt;" t-field="o.partner_id.country_id"/></br>
+                            <t t-if ="o.partner_id.city!=False or o.partner_id.state_id!=False or o.partner_id.country_id!=False or o.partner_id.zip!=False">
+                                <br><span style="font-size:9pt;" t-field="o.partner_id.city"/> <span style="font-size:9pt;" t-field="o.partner_id.state_id"/> <span style="font-size:9pt;" t-field="o.partner_id.country_id"/> <span style="font-size:9pt;" t-field="o.partner_id.zip"/></br>
                             </t>
-                            <t t-if ="o.partner_id.zip!=False">
-                              <br><span style="font-size:9pt;" t-field="o.partner_id.zip"/></br> 
-                            </t>
-                            <t t-if ="o.partner_id.phone!=False">
-                              <br><span style="font-size:9pt;" t-field="o.partner_id.phone"/></br> 
-                            </t>
-                            <t t-if ="o.partner_id.email!=False">
-                              <br><span style="font-size:9pt;" t-field="o.partner_id.email"/></br> 
+                            <t t-if ="o.partner_id.phone!=False or o.partner_id.mobile!=False or o.partner_id.email!=False">
+                              <br><span style="font-size:9pt;" t-field="o.partner_id.phone"/> <span style="font-size:9pt;" t-field="o.partner_id.mobile"/> <span style="font-size:9pt;" t-field="o.partner_id.email"/></br> 
                             </t>
 
-                            <t t-if ="o.partner_id.hcp_customer_id!=False">
-                                <br><span style="font-size:9pt;" t-field="o.partner_id.hcp_customer_id"/></br>
-                            </t>
-                            
-                            <t t-if ="o.partner_id.vat!=False">
-                              <br><span style="font-size:9pt;" t-field="o.partner_id.vat"/></br> 
+                            <t t-if ="o.partner_id.hcp_customer_id!=False or o.partner_id.vat!=False">
+                                <br><span style="font-size:9pt;">Cust ID:</span><span style="font-size:9pt;" t-field="o.partner_id.hcp_customer_id"/> <span style="font-size:9pt;">Tax ID:</span><span style="font-size:9pt;" t-field="o.partner_id.vat"/></br>
                             </t>
                         </td>
                         <td style="width: 50%; text-align: left;">
@@ -52,25 +39,17 @@
                             <t t-if="o.partner_shipping_id.street!=False or o.partner_shipping_id.street2!=False">
                             <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.street"/><span style="font-size:9pt;" t-field="o.partner_shipping_id.street2"/></br>
                             </t>
-                            <t t-if ="o.partner_shipping_id.city!=False">
-                            <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.city"/></br>
+                        <t t-if ="o.partner_shipping_id.city!=False or o.partner_shipping_id.state_id!=False or o.partner_shipping_id.country_id!=False or o.partner_shipping_id.zip!=False">
+                                <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.city"/> <span style="font-size:9pt;" t-field="o.partner_shipping_id.state_id"/> <span style="font-size:9pt;" t-field="o.partner_shipping_id.country_id"/> <span style="font-size:9pt;" t-field="o.partner_shipping_id.zip"/></br>
                             </t>
-                        <t t-if ="o.partner_shipping_id.state_id!=False or o.partner_shipping_id.country_id!=False">
-                                <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.state_id"/><span style="font-size:9pt;" t-field="o.partner_shipping_id.country_id"/></br>
-                            </t>
-                            <t t-if ="o.partner_shipping_id.zip!=False">
-                              <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.zip"/></br> 
-                            </t>
-                            <t t-if ="o.partner_shipping_id.phone!=False">
-                              <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.phone"/></br> 
-                            </t>
-                            <t t-if ="o.partner_shipping_id.email!=False">
-                              <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.email"/></br> 
+                            <t t-if ="o.partner_shipping_id.phone!=False or o.partner_shipping_id.mobile!=False or o.partner_shipping_id.email!=False">
+                              <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.phone"/> <span style="font-size:9pt;" t-field="o.partner_shipping_id.mobile"/> <span style="font-size:9pt;" t-field="o.partner_shipping_id.email"/></br> 
                             </t>
                           </td>
                     </tr>
                 </tbody>
             </table>
+            <br/>
     </xpath>
 
     <xpath expr="//div[@id='informations']" position="replace">

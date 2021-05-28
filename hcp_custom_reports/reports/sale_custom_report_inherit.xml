@@ -11,16 +11,16 @@
             <table width="100%" height="100%" border="None">
                 <tbody>
                     <tr>
-
-                        <td style="width: 10%; text-align: left;" border="None"><br><img t-if="company.logo" width="140" height="140" t-att-src="image_data_uri(company.logo)" alt="Logo"/></br></td>
+<!--                         style="width: 8%; margin: 1000px;"  -->
+                        <td border="None"><br><img t-if="company.logo" style="margin-top:20px;" width="90" height="90" t-att-src="image_data_uri(company.logo)" alt="Logo"/></br></td>
                         <td style="width: 90%; text-align: left;" border="None">
                            <p>&amp;nbsp;</p>  
-                            <strong><span style="font-size:20pt;" t-field= "company.partner_id.name"/></strong>
+                            <strong><span style="font-size:20pt;margin-left:20px;" t-field= "company.partner_id.name"/></strong>
                                 
-                                <br><span style="font-size:10pt;" t-field= "company.partner_id.street"/>,<span style="font-size:10pt;" t-field= "company.partner_id.street2"/>,<span style="font-size:10pt;" t-field= "company.partner_id.city"/>, <span style="font-size:10pt;" t-field="company.partner_id.state_id"/>,<span style="font-size:10pt;" t-field="company.partner_id.country_id"/>, <span style="font-size:10pt;" t-field= "company.partner_id.zip"/>, </br>
-                                <br><span style="font-size:10pt;" t-field= "company.partner_id.email"/>,</br>
-                                <br><span style="font-size:10pt;" t-field= "company.partner_id.phone"/>,</br>
-                                <br><strong><span style="font-size:10pt;">Worldwide leaders in fall prevention:</span> <span style="font-size:10pt;" t-field= "company.partner_id.website"/></strong></br>
+                                <br><span style="font-size:10pt;margin-left:20px;" t-field= "company.partner_id.street"/>,<span style="font-size:10pt;margin-left:20px;" t-field= "company.partner_id.street2"/>,<span style="font-size:10pt;" t-field= "company.partner_id.city"/>, <span style="font-size:10pt;" t-field="company.partner_id.state_id"/>,<span style="font-size:10pt;" t-field="company.partner_id.country_id"/>,<span style="font-size:10pt;" t-field= "company.partner_id.zip"/> </br>
+                                <br><span style="font-size:10pt;margin-left:20px;position: relative;top: -6px;" t-field= "company.partner_id.email"/></br>
+                                <br><span class="row zero_min_height" style="font-size:10pt;margin-left:20px;position: relative;top: -6px;" t-field= "company.partner_id.phone"/></br>
+                                <br><strong><span style="font-size:10pt;margin-left:20px;color:#875A7B;position: relative;top: -33px;">Worldwide leaders in fall prevention:</span> <span style="font-size:10pt;margin-left:20px;color:#875A7B;position: relative;top: -33px;" t-field= "company.partner_id.website"/></strong></br>
                                 
                         </td>
                     </tr>
@@ -33,6 +33,8 @@
         </xpath>
 
         <xpath expr="//div[3]" position="replace">
+        </xpath>
+        <xpath expr="//div/div[1]" position="replace">
         </xpath>
     </template>
 
