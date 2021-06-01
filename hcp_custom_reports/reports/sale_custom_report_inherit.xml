@@ -67,24 +67,14 @@
                     <t t-if="doc.partner_invoice_id.street!=False or doc.partner_invoice_id.street2!=False">
                     <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.street"/><span style="font-size:9pt;" t-field="doc.partner_invoice_id.street2"/></br>
                     </t>
-                    <t t-if ="doc.partner_invoice_id.city!=False">
-                    <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.city"/></br>
-                </t>
-                    <t t-if ="doc.partner_invoice_id.state_id!=False or doc.partner_invoice_id.country_id!=False">
-
-                        <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.state_id"/><span  style="font-size:9pt;" t-field="doc.partner_invoice_id.country_id"/></br>
+                    <t t-if ="doc.partner_invoice_id.city!=False or doc.partner_invoice_id.state_id!=False or doc.partner_invoice_id.country_id!=False or doc.partner_invoice_id.zip!=False">
+                        <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.city"/> <span style="font-size:9pt;" t-field="doc.partner_invoice_id.state_id"/> <span style="font-size:9pt;" t-field="doc.partner_invoice_id.country_id"/> <span style="font-size:9pt;" t-field="doc.partner_invoice_id.zip"/></br>
                     </t>
-                    <t t-if ="doc.partner_invoice_id.zip!=False">
-                      <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.zip"/></br> 
-                    </t>
-                    <t t-if ="doc.partner_invoice_id.phone!=False">
-                      <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.phone"/></br> 
-                    </t>
-                    <t t-if ="doc.partner_invoice_id.email!=False">
-                      <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.email"/></br> 
+                    <t t-if ="doc.partner_invoice_id.phone!=False or doc.partner_invoice_id.mobile!=False or doc.partner_invoice_id.email!=False">
+                        <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.phone"/> <span style="font-size:9pt;" t-field="doc.partner_invoice_id.mobile"/> <span style="font-size:9pt;" t-field="doc.partner_invoice_id.email"/></br> 
                     </t>
                     <t t-if ="doc.partner_invoice_id.hcp_customer_id!=False">
-                        <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.hcp_customer_id"/></br> 
+                        <br><span style="font-size:9pt;">Cust ID:</span><span style="font-size:9pt;" t-field="doc.partner_invoice_id.hcp_customer_id"/></br> 
                     </t>
                 
                 </td>
@@ -93,20 +83,11 @@
                     <t t-if="doc.partner_shipping_id.street!=False or doc.partner_shipping_id.street2!=False">
                     <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.street"/><span style="font-size:9pt;" t-field="doc.partner_shipping_id.street2"/></br>
                     </t>
-                    <t t-if ="doc.partner_shipping_id.city!=False">
-                    <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.city"/></br>
+                    <t t-if ="doc.partner_shipping_id.city!=False or doc.partner_shipping_id.state_id!=False or doc.partner_shipping_id.country_id!=False or doc.partner_shipping_id.zip!=False">
+                        <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.city"/> <span style="font-size:9pt;" t-field="doc.partner_shipping_id.state_id"/> <span style="font-size:9pt;" t-field="doc.partner_shipping_id.country_id"/> <span style="font-size:9pt;" t-field="doc.partner_shipping_id.zip"/></br>
                     </t>
-                <t t-if ="doc.partner_shipping_id.state_id!=False or doc.partner_shipping_id.country_id!=False">
-                        <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.state_id"/><span  style="font-size:9pt;" t-field="doc.partner_shipping_id.country_id"/></br>
-                    </t>
-                    <t t-if ="doc.partner_shipping_id.zip!=False">
-                      <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.zip"/></br> 
-                    </t>
-                    <t t-if ="doc.partner_shipping_id.phone!=False">
-                      <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.phone"/></br> 
-                    </t>
-                    <t t-if ="doc.partner_shipping_id.email!=False">
-                      <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.email"/></br> 
+                    <t t-if ="doc.partner_shipping_id.phone!=False or doc.partner_shipping_id.mobile!=False or doc.partner_shipping_id.email!=False">
+                        <br><span style="font-size:9pt;" t-field="doc.partner_shipping_id.phone"/> <span style="font-size:9pt;" t-field="doc.partner_shipping_id.mobile"/> <span style="font-size:9pt;" t-field="doc.partner_shipping_id.email"/></br> 
                     </t>
                   </td>
             </tr>
