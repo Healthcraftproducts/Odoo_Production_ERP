@@ -42,20 +42,20 @@ html *
 <table style="height: 11%;" width="100%" rules="none">
 <tbody>
 <tr style="height: 88.6193%;">
-<td style="width: 40%; text-align: left; border-left:none; border-right:none;">
+<td style="text-align: left; border-left:none; border-right:none;">
 <!-- <img t-att-src="'/module_name/static/src/img/image_name.png'" /> -->
 
-<p><img
+<p><img style="margin-left: 7px;"
   t-attf-src="data:image/*;base64,{{o.company_id.logo}}"
   t-att-alt="o.company_id.name"
   />
 </p>
 <p></p>
 </td>
-<td style="width: 30%; text-align: center; border-left:none; border-right:none;">
+<td style="width: 40%; text-align: center; border-left:none; border-right:none;margin-left:2px ">
 <span style="font-size:20px; text-align: center;"><strong>Request For Quotation</strong></span>
-<br><span style="font-size:15px;" t-field= "o.company_id.street"/><span style="font-size:15px;" t-field= "o.company_id.street2"/><span style="font-size:15px;" t-field= "o.company_id.city"/></br>
-<br><span style="font-size:15px;" t-field= "o.company_id.state_id"/><span style="font-size:15px;" t-field= "o.company_id.zip"/></br>
+<br><span style="font-size:15px;" t-field= "o.company_id.street"/>, <span style="font-size:15px;" t-field= "o.company_id.street2"/><span style="font-size:15px;" t-field= "o.company_id.city"/></br>
+<br><span style="font-size:15px;" t-field= "o.company_id.state_id.name"/>, <span style="font-size:15px;" t-field= "o.company_id.zip"/></br>
 <br><span style="font-size:15px;" t-field="o.company_id.country_id"/></br>
 <p></p>
 <p></p>
