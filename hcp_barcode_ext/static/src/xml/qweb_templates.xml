@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="stock_barcode_lines_widget">
+        <t t-jquery=".o_validate_page" t-operation="after">
+             <button t-if="widget.groups.group_stock_multi_locations" class="btn btn-secondary text-uppercase o_back_custom3"><i class="fa fa-angle-left mr-3"/>Back</button>
+        </t>
+    </t>
+</templates>
