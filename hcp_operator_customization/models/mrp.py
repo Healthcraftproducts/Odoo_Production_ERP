@@ -40,8 +40,8 @@ class StockScrap(models.Model):
         else:
             return super(StockScrap,self).do_scrap()
 
-    def action_validate(self):
-        if self.env.user.has_group('hcp_operator_customization.group_mrp_operator'):
-            raise UserError(_("Operator Don't Have access to Validate"))
-        else:
-            return super(StockScrap,self).action_validate()
+    # def action_validate(self):
+    #     if self.env.user.has_group('hcp_operator_customization.group_mrp_operator'):
+    #         raise UserError(_("Operator Don't Have access to Validate"))
+    #     else:
+    #         return super(StockScrap,self).action_validate()
