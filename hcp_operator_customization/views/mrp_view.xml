@@ -25,9 +25,9 @@
             <xpath expr="//button[@name='action_open_manufacturing_order']" position="attributes">
                     <attribute name="invisible">1</attribute>
                   </xpath>
-            <button name="do_finish" position="replace">
-                <button name="do_finish" type="object" string="Close WO" icon="fa-check" attrs="{'invisible': ['|', '|', '|', '|', ('is_user_working', '=', False), ('is_last_step', '!=', True), ('skipped_check_ids', '!=', []), ('is_last_lot', '=', False)]}" class="btn-primary" barcode_trigger="cloWO"/>
-            </button>
+<!--            <button name="do_finish" position="replace">-->
+<!--                <button name="do_finish" type="object" string="Close WO" icon="fa-check" attrs="{'invisible': ['|', '|', '|', '|', ('is_user_working', '=', False), ('is_last_step', '!=', True), ('skipped_check_ids', '!=', []), ('is_last_lot', '=', False)]}" class="btn-primary" barcode_trigger="cloWO"/>-->
+<!--            </button>-->
 
 
             </field>
