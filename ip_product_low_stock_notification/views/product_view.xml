@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <field name="route_ids" position="after">
-                <field name="minimum_qty"/>
-                <field name="maximum_qty"/>
+                <field name="minimum_qty" invisible="1"/>
+                <field name="maximum_qty" invisible="1"/>
             </field>
         </field>
     </record>
