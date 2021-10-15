@@ -9,6 +9,13 @@ class ProductTemplateInherit(models.Model):
     minimum_qty = fields.Float(string="Minimum Quantity")
     maximum_qty = fields.Float(string="Maximum Quantity")
 
+
+class ProductProductInherit(models.Model):
+    _inherit = 'product.product'
+
+    minimum_qty = fields.Float(string="Minimum Quantity")
+    maximum_qty = fields.Float(string="Maximum Quantity")
+
 class IrCron(models.Model):
     _inherit = 'ir.cron'
 

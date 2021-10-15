@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        
+        <record id="mrp_workorder_view_form_tablet_inherit" model="ir.ui.view">
+        <field name="name">mrp.workorder.view.inherit.hcp</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet"/>
+        <field name="groups_id" eval="[(6, 0, [ref('hcp_operator_customization.group_mrp_operator') ])]" />
+        <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='action_next'][3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                  </xpath>
+
+<!--            <xpath expr="//button[@name='action_next']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                  </xpath>-->
+            <xpath expr="//button[@name='action_next'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                  </xpath>
+            <xpath expr="//button[@name='do_finish']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                  </xpath>
+            <xpath expr="//button[@name='action_open_manufacturing_order']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                  </xpath>
+<!--            <button name="do_finish" position="replace">-->
+<!--                <button name="do_finish" type="object" string="Close WO" icon="fa-check" attrs="{'invisible': ['|', '|', '|', '|', ('is_user_working', '=', False), ('is_last_step', '!=', True), ('skipped_check_ids', '!=', []), ('is_last_lot', '=', False)]}" class="btn-primary" barcode_trigger="cloWO"/>-->
+<!--            </button>-->
+
+
+            </field>
+        </record>
+
+
+        <record id="mrp_workorder_tablet_view_form_inherit_operator" model="ir.ui.view">
+        <field name="name">mrp.workorder.view.form.inherit.maintenance1</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet_menu"/>
+        <field name="groups_id" eval="[(6, 0, [ref('hcp_operator_customization.group_mrp_operator')])]" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='workorder_quality_button']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[@id='workorder_maintenance_button']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <button name="%(mrp.act_mrp_block_workcenter_wo)d" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+        </field>
+    </record>
+
+         <record id="mrp_production_form_view_inherited" model="ir.ui.view">
+        <field name="name">mrp.production.view.inherited</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view" />
+        <field name="groups_id" eval="[(6, 0, [ref('hcp_operator_customization.group_mrp_operator')])]" />
+        <field name="arch" type="xml">
+            <button name="button_mark_done" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+        </field>
+         </record>
+
+        <record id="stock_scrap_form_view_inherited" model="ir.ui.view">
+            <field name="name">stock.scrap.form</field>
+            <field name="model">stock.scrap</field>
+             <field name="inherit_id" ref="stock.stock_scrap_form_view" />
+            <field name="groups_id" eval="[(6, 0, [ref('hcp_operator_customization.group_mrp_operator')])]" />
+            <field name="arch" type="xml">
+                <button name="action_validate" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+            </field>
+        </record>
+
+        
+        
+         <menuitem id="mrp.menu_mrp_root"
+            name="Manufacturing"
+            groups="mrp.group_mrp_user,mrp.group_mrp_manager,hcp_operator_customization.group_mrp_operator"
+            icon="fa-wrench"
+            web_icon="mrp,static/description/icon.png"
+            sequence="35"/>
+    </data>
+</odoo>
+
