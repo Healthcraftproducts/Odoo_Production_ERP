@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+        <record model ="ir.ui.view" id="import_product_valuation_difference_id">
+           <field name="name">import.product.valuation.difference</field>
+           <field name="model">import.product.valuation.difference</field>
+           <field name="arch" type="xml">
+               <form string="Import Product Valuation Difference Wizard">
+                   <separator string="This wizard will import Import Product Valuation Difference from selected excel file. Make sure you have selected .xls/xlsx file..."/>
+                   <group>
+                       <div>
+                            <field  name="files" class="oe_inline" filename="datas_fname" required="True"/>
+                            <field name="datas_fname" class="oe_inline" invisible="0" readonly="1"/>
+                       </div>
+                   </group>
+                   <footer>
+                        <button string="Import" name="import_file" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                   </footer>
+               </form>
+           </field>
+       </record>
+       
+       <record model="ir.actions.act_window" id="import_product_valuation_difference_action">
+           <field name="name">Import Product Valuation Difference</field>
+           <field name="res_model">import.product.valuation.difference</field>
+           <field name="view_mode">form</field>
+           <field name="target">new</field>
+       </record>
+       
+       
+       <menuitem id="menu_import_product_valuation_difference_id" name="Import Product Valuation Difference" action="import_product_valuation_difference_action" parent="stock.menu_stock_general_settings"/>
+       
+    </data>
+</odoo>
