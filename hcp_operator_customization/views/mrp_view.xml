@@ -32,6 +32,37 @@
 
             </field>
         </record>
+		
+		        <record id="mrp_workorder_view_form_tablet_inherit_operator" model="ir.ui.view">
+        <field name="name">mrp.workorder.view.inherit.hcp.operator</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet"/>
+        <field name="groups_id" eval="[(6, 0, [ref('hcp_operator_customization.group_mrp_new_operator') ])]" />
+        <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='action_next'][3]" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                  </xpath>
+
+<!--            <xpath expr="//button[@name='action_next']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                  </xpath>-->
+            <xpath expr="//button[@name='action_next'][2]" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                  </xpath>
+            <xpath expr="//button[@name='do_finish']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                  </xpath>
+            <xpath expr="//button[@name='action_open_manufacturing_order']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                  </xpath>
+<!--            <button name="do_finish" position="replace">-->
+<!--                <button name="do_finish" type="object" string="Close WO" icon="fa-check" attrs="{'invisible': ['|', '|', '|', '|', ('is_user_working', '=', False), ('is_last_step', '!=', True), ('skipped_check_ids', '!=', []), ('is_last_lot', '=', False)]}" class="btn-primary" barcode_trigger="cloWO"/>-->
+<!--            </button>-->
+
+
+            </field>
+        </record>
 
 
         <record id="mrp_workorder_tablet_view_form_inherit_operator" model="ir.ui.view">
@@ -63,6 +94,18 @@
             </button>
         </field>
          </record>
+		  <record id="mrp_production_form_view_inherited_operator" model="ir.ui.view">
+        <field name="name">mrp.production.view.inherited.operator</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view" />
+        <field name="groups_id" eval="[(6, 0, [ref('hcp_operator_customization.group_mrp_new_operator')])]" />
+        <field name="arch" type="xml">
+            <button name="button_mark_done" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </button>
+        </field>
+         </record>
+
 
         <record id="stock_scrap_form_view_inherited" model="ir.ui.view">
             <field name="name">stock.scrap.form</field>

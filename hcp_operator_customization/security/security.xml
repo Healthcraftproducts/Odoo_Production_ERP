@@ -9,6 +9,13 @@
     </record>
 
     <record id="group_mrp_operator" model="res.groups">
+        <field name="name">Trainee</field>
+        <field name="comment">Allows to process Manufacturing Orders</field>
+        <field name="category_id" ref="hcp_operator_customization.mrp_operator_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+	
+	 <record id="group_mrp_new_operator" model="res.groups">
         <field name="name">Operator</field>
         <field name="comment">Allows to process Manufacturing Orders</field>
         <field name="category_id" ref="hcp_operator_customization.mrp_operator_category"/>
