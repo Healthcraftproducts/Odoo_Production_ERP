@@ -91,8 +91,72 @@
 
 
             <table class="table table-sm" style="width: 900px;" t-if="o.move_raw_ids">
-
+                <t t-if="o.move_raw_ids.move_line_ids">
                 <thead>
+                            <tr>
+                                <th style="width: 300px; text-align: left;"><strong>Product</strong></th>
+                                <th style="width: 200px; text-align: left;"><strong>Operations</strong></th>
+                                <th style="width: 150px; text-align: center;"><strong>Source</strong></th>
+								<th style="width: 150px; text-align: right;"><strong>Qty</strong></th>
+                                <th style="width: 100px; text-align: left;"><strong>UOM</strong></th>
+								<th style="width: 100px; text-align: left;"><strong>Lot/Serial Number</strong></th>
+								<th style="width: 100px; text-align: left;"><strong>Finished Lot/Serial Number</strong></th>
+                                <th style="width: 100px; text-align: left;"><strong>Qty Reserved</strong></th>
+								<th style="width: 100px; text-align: left;"><strong>Qty Done</strong></th>
+                            </tr>
+                        </thead>
+
+                            <tbody>
+                                <t t-foreach="o.move_raw_ids" t-as="raw_line">
+								<tr t-foreach="raw_line.move_line_ids" t-as="move_line">
+								<!-- <t t-foreach="o.bom_id.bom_line_ids" t-as="bom_line"> -->
+                                    <td style="width: 300px; text-align: left;">
+                                        <span t-field="move_line.product_id"/>
+                                    </td>
+
+                                    <td style="width: 200px; text-align: left;">
+                                        <span t-field="raw_line.operation_id.name"/>
+                                    </td>
+
+
+                                    <td style="width: 150px; text-align: center;">
+                                        <span t-field="o.origin"/>
+                                    </td>
+									
+									 <td style="width: 150px; text-align: center;">
+                                        <span t-field="raw_line.bom_line_id.product_qty"/>
+                                    </td>
+
+                                   
+                                    <td style="width: 100px; text-align: left;">
+                                        <span t-field="move_line.product_id.uom_id.name"/>
+                                    </td>
+									<td style="width: 150px; text-align: left;">
+                                        <span t-esc="move_line.lot_id.name"/>
+                                    </td>
+									
+									<td style="width: 150px; text-align: left;">
+									<t t-foreach="move_line.lot_produced_ids" t-as="finished_lot_id">
+                                        <span t-esc="finished_lot_id.name"/>
+										</t>
+									
+                                    </td>
+									
+                                     <td style="width: 150px; text-align: left;">
+                                        <span t-esc="round(move_line.product_uom_qty,2)"/>
+                                    </td>
+									<td style="width: 150px; text-align: left;">
+                                        <span t-esc="round(move_line.qty_done,2)"/>
+                                    </td>
+									</tr>
+									</t>
+									<!-- </t> -->
+                                
+                            </tbody>
+							</t>
+							
+						<t t-else="">
+						<thead>
                             <tr>
                                 <th style="width: 300px; text-align: left;"><strong>Product</strong></th>
                                 <th style="width: 200px; text-align: left;"><strong>Operations</strong></th>
@@ -130,6 +194,7 @@
                                     </td>
                                 </tr>
                             </tbody>
+						</t>
                         </table>
 
                     <div class="oe_structure"/>
