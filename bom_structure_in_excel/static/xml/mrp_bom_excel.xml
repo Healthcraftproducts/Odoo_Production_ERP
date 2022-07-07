@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+            <t t-name="mrp.button" t-extend="mrp.excel">
+                <t t-jquery='.o_list_buttons o_mrp_bom_report_buttons' t-operation='replace'>
+                     <div class="o_list_buttons o_mrp_bom_report_buttons">
+                         <button type="button" class="btn btn-primary o_mrp_bom_print">Print</button>
+                         <button type="button" class="btn btn-primary o_mrp_bom_print_unfolded">Print Unfolded</button>
+                         <button name="custom_print_bom_structure_excel" class="btn btn-primary o_mrp_bom_print_excel"
+                                 type="button">EXCEL</button></div>
+                </t>
+            </t>
+        </templates>

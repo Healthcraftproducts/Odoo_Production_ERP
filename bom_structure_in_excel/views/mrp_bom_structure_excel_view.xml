@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="custom_mrp_bom_structure_excel_xls_output_view" model="ir.ui.view">
+        <field name="name">Excel Output</field>
+        <field name="model">custom.mrp.bom.structure.excel</field>
+        <field name="arch" type="xml">
+            <form string="BOM Structure Excel">
+                <separator colspan="4" string="Please save file as .xls excel format"/>
+                <field name="name" invisible="1"/>
+                <field name="xls_output" filename='name'/>
+                <footer>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_custom_mrp_bom_excel_report" model="ir.actions.server">
+        <field name="name">BOM Structure Excel</field>
+        <field name="model_id" ref="mrp.model_mrp_bom"/>
+        <field name="binding_model_id" ref="mrp.model_mrp_bom"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.custom_print_bom_structure_excel()</field>
+    </record>
+</odoo>
