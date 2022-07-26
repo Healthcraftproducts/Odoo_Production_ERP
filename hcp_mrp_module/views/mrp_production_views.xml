@@ -1,6 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<record id="qc_image_upload_wizard" model="ir.ui.view">
+        <field name="name">qc.image.upload.wizard</field>
+        <field name="model">qc.image.upload</field>
+        <field name="arch" type="xml">
+       <form string="Upload QC Images">
+                <group>
+                    <field name="upload_image"/>
+                </group>
+                <footer>
+                    <button name="upload_qc_image" string="Save" type="object" class="btn-danger text-uppercase"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+	
+	<record id="qc_image_upload_wizard_action" model="ir.actions.act_window">
+        <field name="name">QC Images Upload</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">qc.image.upload</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" eval="qc_image_upload_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+<record id="mrp_production_workorder_form_view_inherited" model="ir.ui.view">
+        <field name="name">mrp.production.workorder.form.view.inherited</field>
+        <field name="model">mrp.workorder</field>
+		<field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+        <field name="arch" type="xml">
+		<xpath expr="//page[@name='workorder_page_misc']" position="after">
+		 <page string="QC Images" name="workorder_qc_images">
+                    <group>
+                        <group>
+                            <field name="qc_image_ids" readonly="1">
+                        <tree>
+                            <field name="image" widget="image" class="oe_left oe_avatar"/>
+                        </tree>
+                    </field>
+                        </group>
+                    </group>
+                </page>
+		</xpath>
+		</field>
+		</record>
+
+ <record id="mrp_workorder_view_form_tablet_menu_inherit" model="ir.ui.view">
+        <field name="name">mrp.workorder.view.form.tablet.menu</field>
+        <field name="model">mrp.workorder</field>
+		<field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet_menu"/>
+        <field name="arch" type="xml">
+		<xpath expr="//div[@class='row workorder_menu'][last()]" position="after">
+        <div class="row workorder_menu">
+		<div class="col-3"/>
+		<div class="col-6">
+        <button name="%(hcp_mrp_module.qc_image_upload_wizard_action)d" type="action" context="{'default_workcenter_id': workcenter_id, 'default_workorder_id': id}" class="btn-primary btn-block btn btn-lg" string="Upload QC Image"/>           
+        </div>
+		<div class="col-3"/>
+		</div>
+        </xpath>
+	    </field>
+</record>
+
      <record id="mrp_workorder_inherited3" model="ir.ui.view">
             <field name="name">mrp.workorder.form.inherited3</field>
             <field name="model">mrp.workorder</field>

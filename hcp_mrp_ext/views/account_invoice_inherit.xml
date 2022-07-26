@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_invoice_view_inherit_ext" model="ir.ui.view">
+            <field name="name">account.invoice.form.inherit.ext</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <header>
+                    <button name="tracking_delivery_numbers" string="Tracking" type="object"
+                    />
+                </header>
+                <xpath expr="//field[@name='invoice_origin']" position="after">
+                    <field name="tracking_number"/>
+                </xpath>
+                <!--                <xpath expr="//form/sheet/notebook/page/field[@name='bom_line_ids']/tree/field[@name='product_uom_id']"-->
+                <!--                       position="after">-->
+                <!--                    &lt;!&ndash;                    <field name="currency_id" invisible="1"/>&ndash;&gt;-->
+                <!--                    <field name="n"/>-->
+                <!--                    <field name="v"/>-->
+                <!--                    <field name="m" sum="Total Bom Cost"/>-->
+                <!--                </xpath>-->
+            </field>
+        </record>
+    </data>
+</odoo>

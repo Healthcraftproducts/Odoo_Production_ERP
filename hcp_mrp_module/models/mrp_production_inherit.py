@@ -8,7 +8,32 @@ from itertools import groupby
 from odoo import api, fields, models, _
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import date_utils, float_compare, float_round, float_is_zero
+import logging
 
+class QCImageUploadWizard(models.TransientModel):
+    _name = "qc.image.upload"
+    upload_image = fields.Binary('Upload Image')
+	
+    def upload_qc_image(self):
+        work_order_ids = self.env['mrp.workorder'].sudo().search([('id','=',self.env.context.get('default_workorder_id'))])
+        logging.info('%s--------------work_order_ids',work_order_ids)
+        for work_order in work_order_ids.filtered(lambda self: self.state not in ['done', 'cancel']):
+            work_order.write({
+                    'qc_image_ids': [(0,0, {'image':self.upload_image})]
+					})
+        return True
+
+class MrpWorkOrderQCImages(models.Model):
+
+    _name = 'mrp.workorder.qc.images'
+    image = fields.Binary(string='Image')
+    workorder_id = fields.Many2one('mrp.workorder',string='Workorder ID')
+	
+class MrpWorkOrderInherit(models.Model):
+
+    _inherit = 'mrp.workorder'
+    qc_image_ids = fields.One2many('mrp.workorder.qc.images', 'workorder_id', string='QC Images')
+	
 class StockScrap(models.Model):
 	_inherit = 'stock.scrap'
 

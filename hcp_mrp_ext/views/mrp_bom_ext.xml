@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="mrp_bom_form_view_inherit_ext" model="ir.ui.view">
+            <field name="name">mrp.bom.form.inherit.ext</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="bom_cost_total" widget="monetary"/>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page/field[@name='bom_line_ids']/tree/field[@name='product_uom_id']"
+                       position="after">
+                    <!--                    <field name="currency_id" invisible="1"/>-->
+                    <field name="purchase_cost"/>
+                    <field name="v"/>
+                    <field name="m" sum="Total Bom Cost"/>
+                </xpath>
+            </field>
+        </record>
+        <!--        <record id="product_template_form_view_inherit_ext" model="ir.ui.view">-->
+        <!--            <field name="name">product.template.form.inherit.ext</field>-->
+        <!--            <field name="model">product.template</field>-->
+        <!--            <field name="inherit_id" ref="product.product_template_only_form_view"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <xpath expr="//form/sheet/notebook/page[@name='purchase']/field[@name='seller_ids']/tree/field[@name='product_id']"-->
+        <!--                       position="after">-->
+        <!--                    <field name="check_bom_cost" widget="boolean"/>-->
+        <!--                </xpath>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <record id="product_supplierinfo_form_view_inherit_ext" model="ir.ui.view">
+            <field name="name">product.supplierinfo.form.inherit.ext</field>
+            <field name="model">product.supplierinfo</field>
+            <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_tmpl_id']" position="after">
+                    <field name="check_bom_cost" widget="boolean"/>
+                </xpath>
+            </field>
+        </record>
+        <!--        <menuitem id="menu_mrp_reporting_calender"-->
+        <!--                  name="Maintenance Report"-->
+        <!--                  parent="mrp.menu_mrp_reporting"-->
+        <!--                  sequence="2"/>-->
+        <menuitem id="menu_mrp_reporting_calender"
+                  name="Maintenance Calendar"
+                  action="maintenance.hr_equipment_request_action_cal"
+                  parent="mrp.menu_mrp_root"
+                  sequence="14"/>
+    </data>
+</odoo>

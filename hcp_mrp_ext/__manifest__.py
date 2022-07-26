@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "HCP MRP Customization",
+    'name': "HCP MRP BOM Customization",
 
     'summary': """
         This module is used for manufacturing customizations""",
@@ -19,16 +19,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mrp','product','purchase'],
+    'depends': ['base', 'mrp', 'product', 'purchase', 'maintenance'],
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
-        'views/all_print_menu.xml',
-        'views/mrp_production_report_inherit.xml',
-        'views/mrp_production_views.xml',
-        # 'views/report.xml',
-        # 'views/templates.xml',
+        'views/mrp_bom_ext.xml',
+		#'views/account_invoice_inherit.xml',
     ],
     # only loaded in demonstration mode
     # 'demo': [
