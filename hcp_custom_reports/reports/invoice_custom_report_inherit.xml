@@ -82,7 +82,20 @@
 
         <div class="col-auto mw-100 mb-2" t-if="sale_obj.ship_via_desc" name="ship_via_desc">
             <strong>Shipping:</strong>
-            <br><span style="font-size:10pt;" class="m-0" t-esc="sale_obj.ship_via_desc"/></br>
+            <br>
+			<t t-set="stock_picking"
+				t-value="request.env['stock.picking'].search([('sale_id','=',sale_obj.id),('state','=','done')])"/>
+		    <t t-set="reference" t-value=""/>
+					<t t-foreach="stock_picking" t-as="line">
+						<t t-if="reference">
+							<t t-set="reference" t-value="reference+','+str(line.carrier_tracking_ref)"/>
+						</t>
+						<t t-else="">
+							<t t-set="reference" t-value="str(line.carrier_tracking_ref)"/>
+						</t>
+				</t>
+			</br>
+			<span style="font-size:10pt;" class="m-0" t-esc="reference"/>
             <!-- <p style="font-size:10pt;" class="m-0" t-field="sale_obj.ship_via_desc"/> -->
         </div>
 
