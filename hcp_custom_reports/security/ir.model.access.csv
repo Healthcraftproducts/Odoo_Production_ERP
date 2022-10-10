@@ -5,3 +5,4 @@ access_product_discount_consolidated_user,product.discount.consolidated.wizard,m
 access_discount_report_out_user,discount.report.out,model_discount_report_out,,1,1,1,1
 acess_inventory_count_report_out_user,inventory.count.report.out,model_inventory_count_report_out,,1,1,1,1
 access_inventory_wizard_count_report_user,inventory.count.report.wizard,model_inventory_count_report_wizard,,1,1,1,1
+access_operator_bom_efficiency_report_user,operator.bom.efficiency.report.wizard,model_operator_bom_efficiency_report,,1,1,1,1

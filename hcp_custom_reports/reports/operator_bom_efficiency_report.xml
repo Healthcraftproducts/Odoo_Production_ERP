@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="operator_bom_efficiency_report" model="ir.ui.view">
+     <field name="name">operator.bom.efficiency.report</field>
+     <field name="model">operator.bom.efficiency.report</field>
+     <field name="arch" type="xml">
+        <form string="BOM Efficiency Report">
+		<field name="state" invisible="1"/>
+           <div states="get">
+              <group>
+                 <field name="summary_data" colspan="4" invisible="1"/>
+                 <field name="file_name" filename="summary_data" colspan="4"/>
+              </group>
+           </div>
+           <div states="choose">
+              <group>
+                 <group>
+                    <field name="start_date" />
+                    <field name="end_date"/>
+                 </group>
+              </group>
+           </div>
+           <footer states="choose">
+              <button string="Generate Report"
+                           class="btn-primary"
+                           name="print_operator_bom_efficiency_report"
+                           type="object"/>
+              <button string="Cancel"
+                           class="btn-default"
+                           special="cancel" />
+           </footer>
+           <footer states="get">
+              <button special="cancel" string="Cancel" class="oe_highlight" />
+           </footer>
+        </form>
+     </field>
+  </record>
+  <record id="action_operator_bom_efficiency_report_xlwt" model="ir.actions.act_window">
+     <field name="name">BOM Efficiency Report</field>
+     <field name="type">ir.actions.act_window</field>
+     <field name="res_model">operator.bom.efficiency.report</field>
+     <field name="view_mode">form</field>
+     <field name="view_id" ref="operator_bom_efficiency_report"/>
+     <field name="target">new</field>
+  </record>
+
+  <menuitem id="operator_bom_efficiency_report_menu"
+            name="BOM Efficiency Report"
+            action="action_operator_bom_efficiency_report_xlwt"
+            parent="mrp.menu_mrp_reporting"
+            sequence="50"/>
+</odoo>
