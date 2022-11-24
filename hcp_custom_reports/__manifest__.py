@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','account','mail','contacts','portal','utm','purchase','web','delivery','stock'],
+    'depends': ['base','sale','account','mail','contacts','portal','utm','purchase','web','delivery','stock','hcp_mrp_module','hcp_product_ext'],
 
     # always loaded
     'data': [
@@ -32,7 +32,9 @@
         'reports/purchase_quotation_inherit.xml',
         'reports/purchase_report_inherit.xml',
         'reports/delivery_picking_slip_inherit.xml',
-		'reports/operator_bom_efficiency_report.xml',
+        'reports/operator_bom_efficiency_report.xml',
+        'reports/operator_bom_efficiency.xml',
+        #'reports/report_lot_barcode.xml',
         'views/sale_views.xml',
         'views/invoice_views.xml',
         'wizard/product_discount_consolidated_wizard_views.xml',

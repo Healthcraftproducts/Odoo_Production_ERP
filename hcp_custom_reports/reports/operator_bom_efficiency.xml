@@ -1,0 +1,71 @@
+<odoo>
+    <data>
+
+        <record id="oee_search_view_filter_new" model="ir.ui.view">
+            <field name="name">mrp.workcenter.productivity.filter</field>
+            <field name="model">mrp.workcenter.productivity</field>
+            <field name="arch" type="xml">
+               <search string="Search MRP Productivity"> 
+                <field name="user_id" string="Work Order"/>
+                <field name="workcenter_id"/>
+                <field name="department"/>
+                <field name="mrp_production_id"/>
+                <field name="finished_product_id"/>
+                <group expand='0' string='Group by...'>
+                    <filter string="Work Center" name="workcenter_id"
+                            context="{'group_by': 'workcenter_id'}"/>
+                    <filter string="Manufacturing Order" name="mrp_production_id"
+                            context="{'group_by': 'mrp_production_id'}"/>
+                    <filter string='Department' name="department" context="{'group_by': 'department'}"/>
+                    <filter string="Finished Product" name="finished_product_id"
+                            context="{'group_by': 'finished_product_id'}"/>
+                    <filter string="WorkOrder Operation" name="workorder_id" context="{'group_by': 'workorder_id'}"/>
+                    <filter string="Date" name="create_date" context="{'group_by': 'create_date'}"/>
+                </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="oee_tree_view_inherit2" model="ir.ui.view">
+            <field name="name">mrp.workcenter.productivity.tree.inherit</field>
+            <field name="model">mrp.workcenter.productivity</field>
+            <field name="priority">60</field>
+            <field name="arch" type="xml">
+                <tree string="Workcenter Productivity" create="false" delete="false" edit="false">
+                    <field name="user_id" string="User Name"/>
+                    <field name="workcenter_code" string="Workcenter"/>
+                    <field name="department" string="Department"/>
+                    <field name="mrp_production_id" string="MO #"/>
+                    <field name="finished_product_id" string="Item Code"/>
+                    <field name="qty_produced" string="Qty Produced"/>
+                    <field name="work_order_name" string="Operations"/>
+                    <field name="mrp_setup_time" widget="float_time" string="SetUp Time(in min)" sum="Setup Time"/>
+                    <field name="mrp_cycle_time" widget="float_time" string="Cycle Time(in min)" sum="Cycle Time"/>
+                    <field name="total_cycle_time" widget="float_time" string="Total Cycle Time(in min)" sum="Total Cycle Time"
+                           optional="hide"/>
+                    <field name="duration_expected" widget="float_time" string="Expected Time(in min)" sum="Expected Duration"
+                           optional="hide"/>
+                    <field name="real_duration" widget="float_time" string="Real Time(in min)" sum="Real Time Duration"/>
+                    <field name="duration" widget="float_time" string="User Spent Time(in min)" sum="User Spent Time Duration"/>
+                    <field name="efficiency" widget="float_time" string="Efficiency" sum="Efficiency"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_dashboard_bom_efficiency" model="ir.actions.act_window">
+            <field name="name">Dashboard:BOM Efficiency</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mrp.workcenter.productivity</field>
+            <field name="view_mode">tree,search</field>
+            <field name="view_id" ref="oee_tree_view_inherit2"/>
+            <field name="search_view_id" ref="oee_search_view_filter_new"/>
+            <field name="context">{'search_default_group_workcenter_id': 1}</field>
+        </record>
+
+        <menuitem id="dashboard_bom_efficiency_menu"
+                  name="Dashboard-BOM Efficiency"
+                  action="action_dashboard_bom_efficiency"
+                  parent="mrp.menu_mrp_reporting"
+                  sequence="56"/>
+    </data>
+</odoo>
