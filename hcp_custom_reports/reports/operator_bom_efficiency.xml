@@ -4,6 +4,7 @@
         <record id="oee_search_view_filter_new" model="ir.ui.view">
             <field name="name">mrp.workcenter.productivity.filter</field>
             <field name="model">mrp.workcenter.productivity</field>
+            <field name="priority">60</field>
             <field name="arch" type="xml">
                <search string="Search MRP Productivity"> 
                 <field name="user_id" string="Work Order"/>
@@ -39,14 +40,14 @@
                     <field name="finished_product_id" string="Item Code"/>
                     <field name="qty_produced" string="Qty Produced"/>
                     <field name="work_order_name" string="Operations"/>
-                    <field name="mrp_setup_time" widget="float_time" string="SetUp Time(in min)" sum="Setup Time"/>
-                    <field name="mrp_cycle_time" widget="float_time" string="Cycle Time(in min)" sum="Cycle Time"/>
-                    <field name="total_cycle_time" widget="float_time" string="Total Cycle Time(in min)" sum="Total Cycle Time"
+                    <field name="mrp_setup_time" widget="float_time" string="SetUp Time(in mm : ss)" sum="Setup Time"/>
+                    <field name="mrp_cycle_time" widget="float_time" string="Cycle Time(in mm : ss)" sum="Cycle Time"/>
+                    <field name="total_cycle_time" widget="float_time" string="Total Cycle Time(in mm : ss)" sum="Total Cycle Time"
                            optional="hide"/>
-                    <field name="duration_expected" widget="float_time" string="Expected Time(in min)" sum="Expected Duration"
+                    <field name="duration_expected" widget="float_time" string="Expected Time(in mm : ss)" sum="Expected Duration"
                            optional="hide"/>
-                    <field name="real_duration" widget="float_time" string="Real Time(in min)" sum="Real Time Duration"/>
-                    <field name="duration" widget="float_time" string="User Spent Time(in min)" sum="User Spent Time Duration"/>
+                    <field name="real_duration" widget="float_time" string="Real Time(in mm : ss)" sum="Real Time Duration"/>
+                    <field name="duration" widget="float_time" string="User Spent Time(in mm : ss)" sum="User Spent Time Duration"/>
                     <field name="efficiency" widget="float_time" string="Efficiency" sum="Efficiency"/>
                 </tree>
             </field>

@@ -4,8 +4,8 @@ from odoo import api, fields, models, _
 class MrpWorkcenterProductivity(models.Model):
     _inherit = "mrp.workcenter.productivity"
 
-    finished_product_id = fields.Many2one(related='workorder_id.production_id.product_id', string='Item Code',
-                                          store=True)
+    finished_product_id = fields.Char(related='workorder_id.production_id.product_id.default_code', string='Item Code',
+                                      store=True)
     mrp_production_id = fields.Many2one(related='workorder_id.production_id', string='MO #',
                                         store=True)
     work_order_name = fields.Char(related='workorder_id.name', string='Operations', store=True)
@@ -48,6 +48,6 @@ class MrpWorkcenterProductivity(models.Model):
     def _total_efficiency_time(self):
         for rec in self:
             if (rec.total_cycle_time) != 0.00 and (rec.real_duration) != 0.00:
-                rec.efficiency = (rec.real_duration) / (rec.total_cycle_time) * 100
+                rec.efficiency = (rec.total_cycle_time)/(rec.real_duration) * 100
             else:
                 rec.efficiency = 0.00
