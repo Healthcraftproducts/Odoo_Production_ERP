@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                string="Lot/Serial Number (UPC)"
+                id="action_report_lot_serial_label"
+                model="stock.production.lot"
+                report_type="qweb-pdf"
+                name="hcp_custom_reports.report_lot_serial_label"
+                file="hcp_custom_reports.report_lot_serial_label"
+                print_report_name="'Lot-Serial - %s' % object.name"
+        />
+        <record id="report_lot_serial_paperformats" model="report.paperformat">
+            <field name="name">European custom margin</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">80</field>
+            <field name="page_width">100</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">1.00</field>
+            <field name="margin_bottom">0.50</field>
+            <field name="margin_left">5.00</field>
+            <field name="margin_right">1.00</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">1</field>
+            <field name="dpi">90</field>
+            <field name="report_ids" eval="[(4, ref('hcp_custom_reports.action_report_lot_serial_label'))]"/>
+        </record>
+
+        <template id="report_lot_serial_label">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <div class="col-1"/>
+                            <div class="col-10">
+                                <table class="table table-bordered mb-0"
+                                       style="border: 1px solid gray !important;width: 3in;">
+                                    <tr>
+                                        <th class="table-active text-left" style="font-weight: bold;">
+                                            <span t-field="o.product_id.display_name"/>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-weight: bold;">
+                                            <img t-if="o.name"
+                                                 t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', quote_plus(o.name), 600, 150)"
+                                                 style="width:100%;height:20%;"/>
+                                            LN/SN:
+                                            <span t-field="o.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-weight: bold;">
+                                            <t t-if="o.product_id.barcode">
+                                                <img alt="Barcode"
+                                                     t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', quote_plus(o.product_id.barcode or ''), 600, 150)"
+                                                     style="width:100%;height:20%;"/>
+                                                <span t-field="o.product_id.barcode"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">No Barcode Available</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                   <!-- <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-weight: bold;">
+                                            <t t-if="o.product_id.barcode_eu">
+                                                <img alt="Barcode EU"
+                                                     t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', quote_plus(o.product_id.barcode_eu or ''), 600, 150)"
+                                                     style="width:100%;height:20%;"/>
+                                                <span t-field="o.product_id.barcode_eu"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">No UPC Barcode Available</span>
+                                            </t>
+                                        </td>
+                                    </tr> -->
+                                </table>
+                            </div>
+                            <div class="col-1"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
