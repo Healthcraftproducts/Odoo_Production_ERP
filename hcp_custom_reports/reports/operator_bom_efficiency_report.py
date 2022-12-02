@@ -66,7 +66,7 @@ class OperatorBOMEfficiencyReport(models.TransientModel):
         # format3 = xlwt.easyxf('align: horiz center; borders: \
         #                      left thin, right thin, top thin, bottom thin;')
         format6 = xlwt.easyxf('align: horiz right; borders: \
-                             left thin, right thin, top thin, bottom thin;font: bold on,height 280;')
+                             left thin, right thin, top thin, bottom thin;font: name Times New Roman,height 220;')
         format4 = xlwt.easyxf('align: horiz center; borders: \
                              left thin, right thin, top thin, bottom thin;pattern: pattern solid, fore_colour pink;')
         format5 = xlwt.easyxf('align: horiz center; borders: \
@@ -177,10 +177,12 @@ class OperatorBOMEfficiencyReport(models.TransientModel):
             #if (workorder_record.duration_expected) != 0.00 and (workorder_record.duration) != 0.00:
                 #bom_efficiency = (workorder_record.duration_expected) / (workorder_record.duration) * 100
             #worksheet1.write(index + 2, 14, bom_efficiency or 0.00, style1)
-            efficiency = 0.00
+            efficiency_per = 0.00
             if (total_cycle_time) != 0.00 and (workorder_record.duration) != 0.00:
-                efficiency =  (total_cycle_time)/(workorder_record.duration) * 100
-            worksheet1.write(index + 2, 13, efficiency or 0.00, style1)
+                #efficiency = (workorder_record.duration) / (total_cycle_time) * 100
+                efficiency = (total_cycle_time) / (workorder_record.duration) * 100
+                efficiency_per = "%.2f" % round(efficiency, 2)
+            worksheet1.write(index + 2, 13, str(efficiency_per) +'%', format6)
             s_no+=1
 
         fp = io.BytesIO()
