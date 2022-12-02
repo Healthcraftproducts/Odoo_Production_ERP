@@ -46,6 +46,16 @@
 		</xpath>
 		</field>
 		</record>
+    <!-- Adding Timesheet menu in the manufacturing modules-->
+
+    <record id="act_hr_timesheet_manufacturing_line" model="ir.actions.act_window">
+        <field name="name">Create Timesheets</field>
+        <field name="res_model">account.analytic.line</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="timesheet_grid.timesheet_view_form"/>
+        <field name="domain">[('project_id', '!=', False), ('user_id', '=', uid)]</field>
+        <field name="target">new</field>
+    </record>
 
  <record id="mrp_workorder_view_form_tablet_menu_inherit" model="ir.ui.view">
         <field name="name">mrp.workorder.view.form.tablet.menu</field>
@@ -315,15 +325,34 @@
             </field>
         </record>
 
-        <record id="mrp_production_tree_vie_inherit3" model="ir.ui.view">
-            <field name="name">mrp.production.tree.inherit3</field>
-            <field name="model">mrp.production</field>
-            <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
-            <field name="arch" type="xml">
-                 <xpath expr="//field[@name='product_id']" position="after">
-                    <field name="priority"/>
-                </xpath>
-            </field>
-        </record>
-  
+    <record id="mrp_production_tree_vie_inherit3" model="ir.ui.view">
+        <field name="name">mrp.production.tree.inherit3</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="priority"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!--    Adding timesheet in manufacturing module-->
+
+    <menuitem id="manufacturing_menu_hr_activity_employee"
+              name="Timesheet BY Employee"
+              parent="mrp.menu_mrp_reporting"
+              action="hr_timesheet.act_hr_timesheet_report"
+              sequence="0"/>
+    <menuitem id="manufacturing_menu_hr_activity_task"
+              name="Timesheet BY Task"
+              parent="mrp.menu_mrp_reporting"
+              action="hr_timesheet.timesheet_action_report_by_task"
+              sequence="0"/>
+    <menuitem id="timesheet_menu_activity_mine"
+              name="Timesheets"
+              parent="mrp.menu_mrp_root"
+              action="hr_timesheet.act_hr_timesheet_line"
+    />
+    
 </odoo>
