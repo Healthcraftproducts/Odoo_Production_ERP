@@ -133,7 +133,9 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 		for value in dt:
 			sheet.write(row_number,0,value[0])
 			sheet.write(row_number,1,value[1])
-			sheet.write(row_number,2,value[2],style2)
+			#sheet.write(row_number,2,value[2],style2)
+			custm_date = value[2] - timedelta(hours=5, minutes=30)
+			sheet.write(row_number,2,custm_date,style2)
 			sheet.write(row_number,3,value[3])
 			sheet.write(row_number,4,value[4])
 			sheet.write(row_number,5,value[5])
