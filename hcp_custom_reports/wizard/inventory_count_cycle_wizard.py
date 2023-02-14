@@ -28,60 +28,60 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 	# location_id = fields.Many2one('stock.location',string="Location",required=True)
 	loc_ids = fields.Many2many('stock.location',string="Location",required=True,domain="[('usage','=','internal')]")
 
-	def get_data(self):
-		inv_list = []
-		stock_list1 =[]
-		return_list = {}
-		date_from = self.date_from
-		date_to = self.date_to
-		# location_id = self.location_id.id
-		loc_ids = self.loc_ids.ids
+	#def get_data(self):
+		#inv_list = []
+		#stock_list1 =[]
+		#return_list = {}
+		#date_from = self.date_from
+		#date_to = self.date_to
+		## location_id = self.location_id.id
+		#loc_ids = self.loc_ids.ids
 
-		# loc_name = self.loc_ids.complete_name
-		# if loc_ids:
-		# 	raise UserError(loc_ids)
-		# loc_name=self.location_id.complete_name
-		stock_inventory = self.env['stock.inventory'].search([('location_ids','in',loc_ids)])
-		for stock in stock_inventory:
-			dt = stock.date
-			st_date = datetime.strptime(str(dt), "%Y-%m-%d %H:%M:%S").date()
-			if st_date>=date_from and st_date<=date_to:
-				for line in stock.line_ids:
-					if line.location_id.id in loc_ids:
-						# product = self.env['product.product'].search([('id','=',line.product_id.id)])
-						# loc_name = [loc_id.complete_name for loc_id in self.loc_ids if loc_id.id == line.location_id.id]
-						# onhand_qty = sum(line.theoretical_qty for line in stock.line_ids if line.product_id.id in product.ids)
-						# adj_qty = sum(line.product_qty for line in stock.line_ids if line.product_id.id in product.ids)
-						a=line.product_id.id
-						b=[stock.name,line.location_id.complete_name,line.inventory_date,line.product_id.default_code,line.product_id.name,line.prod_lot_id.name,line.theoretical_qty,line.product_qty,line.difference_qty,line.product_uom_id.name,line.product_id.standard_price,line.difference_qty*line.product_id.standard_price]
-						invent_details={'id':a,'values':b}
-						inv_list.append(invent_details)
-		list_inventory = inv_list
-		# new_v =[]
-		# for y in list_inventory:
-		# 	if y not in new_v:
-		# 		new_v.append(y)
-		for data in list_inventory:
-			stock_list=[]
-			stock_list.append(data['values'][0])
-			stock_list.append(data['values'][1])
-			stock_list.append(data['values'][2])
-			stock_list.append(data['values'][3])
-			stock_list.append(data['values'][4])
-			stock_list.append(data['values'][5])
-			stock_list.append(data['values'][6])
-			stock_list.append(data['values'][7])
-			stock_list.append(data['values'][8])
-			stock_list.append(data['values'][9])
-			stock_list.append(data['values'][10])
-			stock_list.append(data['values'][11])
-			stock_list1.append(stock_list)
+		## loc_name = self.loc_ids.complete_name
+		## if loc_ids:
+		## 	raise UserError(loc_ids)
+		## loc_name=self.location_id.complete_name
+		#stock_inventory = self.env['stock.inventory'].search([('location_ids','in',loc_ids)])
+		#for stock in stock_inventory:
+			#dt = stock.date
+			#st_date = datetime.strptime(str(dt), "%Y-%m-%d %H:%M:%S").date()
+			#if st_date>=date_from and st_date<=date_to:
+				#for line in stock.line_ids:
+					#if line.location_id.id in loc_ids:
+						## product = self.env['product.product'].search([('id','=',line.product_id.id)])
+						## loc_name = [loc_id.complete_name for loc_id in self.loc_ids if loc_id.id == line.location_id.id]
+						## onhand_qty = sum(line.theoretical_qty for line in stock.line_ids if line.product_id.id in product.ids)
+						## adj_qty = sum(line.product_qty for line in stock.line_ids if line.product_id.id in product.ids)
+						#a=line.product_id.id
+						#b=[stock.name,line.location_id.complete_name,line.inventory_date,line.product_id.default_code,line.product_id.name,line.prod_lot_id.name,line.theoretical_qty,line.product_qty,line.difference_qty,line.product_uom_id.name,line.product_id.standard_price,line.difference_qty*line.product_id.standard_price]
+						#invent_details={'id':a,'values':b}
+						#inv_list.append(invent_details)
+		#list_inventory = inv_list
+		## new_v =[]
+		## for y in list_inventory:
+		## 	if y not in new_v:
+		## 		new_v.append(y)
+		#for data in list_inventory:
+			#stock_list=[]
+			#stock_list.append(data['values'][0])
+			#stock_list.append(data['values'][1])
+			#stock_list.append(data['values'][2])
+			#stock_list.append(data['values'][3])
+			#stock_list.append(data['values'][4])
+			#stock_list.append(data['values'][5])
+			#stock_list.append(data['values'][6])
+			#stock_list.append(data['values'][7])
+			#stock_list.append(data['values'][8])
+			#stock_list.append(data['values'][9])
+			#stock_list.append(data['values'][10])
+			#stock_list.append(data['values'][11])
+			#stock_list1.append(stock_list)
 		
-		return_list['stock_ids'] = stock_list1
-		# if stock_list1:
-		# 	raise UserError(stock_list1)
+		#return_list['stock_ids'] = stock_list1
+		## if stock_list1:
+		## 	raise UserError(stock_list1)
 
-		return return_list
+		#return return_list
 	
 	def print_inv_count_xls_report(self):
 		workbook = xlwt.Workbook()
@@ -127,25 +127,37 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 		sheet.write(0,9,'Unit Of Measure',format2)
 		sheet.write(0,10,'Product Cost',format3)
 		sheet.write(0,11,'$Difference(Price)',format3)
-		data = self.get_data()
-		dt = data.get('stock_ids')
+		#data = self.get_data()
+		#dt = data.get('stock_ids')
+		date_from = self.date_from
+		date_to = self.date_to
+		loc_ids = self.loc_ids.ids
+		
+		domain=[('location_ids','in',loc_ids),('accounting_date','>=',date_from),('accounting_date','<=',date_to)]
+		stock_inventory = self.env['stock.inventory'].search(domain)
 		row_number = 1
-		for value in dt:
-			sheet.write(row_number,0,value[0])
-			sheet.write(row_number,1,value[1])
-			#sheet.write(row_number,2,value[2],style2)
-			custm_date = value[2] - timedelta(hours=5, minutes=30)
-			sheet.write(row_number,2,custm_date,style2)
-			sheet.write(row_number,3,value[3])
-			sheet.write(row_number,4,value[4])
-			sheet.write(row_number,5,value[5])
-			sheet.write(row_number,6,value[6],style1)
-			sheet.write(row_number,7,value[7],style1)
-			sheet.write(row_number,8,value[8],style1)
-			sheet.write(row_number,9,value[9])
-			sheet.write(row_number,10,value[10],style3)
-			sheet.write(row_number,11,value[11],style3)
-			row_number +=1
+		s_no = 1
+		#for value in dt:
+		for stock in stock_inventory:
+			for line in stock.line_ids:
+				sheet.write(row_number,0,s_no)
+				sheet.write(row_number,1,stock.name)
+				sheet.write(row_number,2,line.location_id.complete_name)
+				custm_date = line.inventory_date - timedelta(hours=5, minutes=30)
+				sheet.write(row_number,3,custm_date,style2)
+				sheet.write(row_number,4,line.product_id.default_code)
+				sheet.write(row_number,5,line.product_id.name)
+				sheet.write(row_number,6,line.prod_lot_id.name)
+				sheet.write(row_number,7,line.theoretical_qty,style1)
+				sheet.write(row_number,8,line.product_qty,style1)
+				sheet.write(row_number,9,line.difference_qty,style1)
+				sheet.write(row_number,10,line.product_uom_id.name)
+				sheet.write(row_number,11,line.product_id.standard_price,style3)
+
+				different_price = line.difference_qty*line.product_id.standard_price
+				sheet.write(row_number,12,different_price,style3)
+				row_number +=1
+				s_no+=1
 
 
 		output = StringIO()
