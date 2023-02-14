@@ -6,6 +6,8 @@ from io import StringIO
 import base64
 import platform
 import pdb
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+import pytz
 try:
 	from odoo.tools.misc import xlsxwriter
 except ImportError:
@@ -137,7 +139,10 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 				sheet.write(row_number,2,line.location_id.complete_name)
 				custm_date = line.inventory_date 
 				#- timedelta(hours=5, minutes=30)
-				sheet.write(row_number,3,custm_date,style2)
+				user_tz = self.env.user.tz or pytz.utc
+				local_time = pytz.timezone(user_tz)
+				display_date_result = datetime.strftime(pytz.utc.localize(datetime.strptime(str(line.inventory_date), DEFAULT_SERVER_DATETIME_FORMAT)).astimezone(local_time),"%d-%m-%Y %H:%M:%S")
+				sheet.write(row_number,3,display_date_result,style2)
 				sheet.write(row_number,4,line.product_id.default_code)
 				sheet.write(row_number,5,line.product_id.name)
 				sheet.write(row_number,6,line.prod_lot_id.name)
