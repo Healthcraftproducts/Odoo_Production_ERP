@@ -135,7 +135,8 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 				sheet.write(row_number,0,s_no)
 				sheet.write(row_number,1,stock.name)
 				sheet.write(row_number,2,line.location_id.complete_name)
-				custm_date = line.inventory_date - timedelta(hours=5, minutes=30)
+				custm_date = line.inventory_date 
+				#- timedelta(hours=5, minutes=30)
 				sheet.write(row_number,3,custm_date,style2)
 				sheet.write(row_number,4,line.product_id.default_code)
 				sheet.write(row_number,5,line.product_id.name)
