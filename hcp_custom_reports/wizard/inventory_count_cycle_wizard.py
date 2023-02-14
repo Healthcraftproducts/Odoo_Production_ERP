@@ -86,49 +86,41 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 	def print_inv_count_xls_report(self):
 		workbook = xlwt.Workbook()
 		sheet = workbook.add_sheet("Inventory Cycle Count Report")
-		format2 = xlwt.easyxf('font: bold 1')
+		format2 = xlwt.easyxf('font: bold 1,height 180;align: horiz center;')
 		format3 = xlwt.easyxf('font: bold 1; align: horiz right',)
 		style1 = xlwt.easyxf(num_format_str='#,##0.00')
 		style2 = xlwt.easyxf('align: horiz left',num_format_str='mm-dd-yyyy hh:mm:ss')
 		style3 = xlwt.easyxf(num_format_str ='"$"#,##0.00')
-		first_col = sheet.col(0)
-		two_col = sheet.col(1)
-		three_col = sheet.col(2)
-		fourth_col = sheet.col(3)
-		fifth_col = sheet.col(4)
-		sixth_col = sheet.col(5)
-		seventh_col = sheet.col(6)
-		eigth_col = sheet.col(7)
-		ninth_col = sheet.col(8)
-		tenth_col = sheet.col(9)
-		eleventh_col = sheet.col(10)
-		twelth_col = sheet.col(11)
-		first_col.width = 250*20
-		two_col.width = 250*20
-		three_col.width = 250*20
-		fourth_col.width = 200*20
-		fifth_col.width = 400*20
-		sixth_col.width = 200*20
-		seventh_col.width = 200*20
-		eigth_col.width = 200*20
-		ninth_col.width = 200*20
-		tenth_col.width = 200*20
-		eleventh_col.width = 180*20
-		twelth_col.width = 250*20
-		sheet.write(0,0,'Inventory',format2)
-		sheet.write(0,1,'Location Name',format2)
-		sheet.write(0,2,'Inventory Date',format2)
-		sheet.write(0,3,'Item Code',format2)
-		sheet.write(0,4,'Product Name',format2)
-		sheet.write(0,5,'Lot/Serial No',format2)
-		sheet.write(0,6,'OnHand Qty',format3)
-		sheet.write(0,7,'Counted Qty',format3)
-		sheet.write(0,8,'Difference Qty',format3)
-		sheet.write(0,9,'Unit Of Measure',format2)
-		sheet.write(0,10,'Product Cost',format3)
-		sheet.write(0,11,'$Difference(Price)',format3)
-		#data = self.get_data()
-		#dt = data.get('stock_ids')
+		sheet.row(0).height_mismatch = True
+		sheet.row(0).height = 300
+		sheet.col(0).width = 2000
+		sheet.col(1).width = 10000
+		sheet.col(2).width = 7000
+		sheet.col(3).width = 5000
+		sheet.col(4).width = 5000
+		sheet.col(5).width = 10000
+		sheet.col(6).width = 5000
+		sheet.col(7).width = 4000
+		sheet.col(8).width = 4000
+		sheet.col(9).width = 4000
+		sheet.col(10).width = 4000
+		sheet.col(11).width = 4000
+		sheet.col(12).width = 4000
+
+		field_heading1 = ["S.NO","Inventory","Location Name","Inventory Date",
+                        "Item Code", "Product Name", "Lot/Serial No", "OnHand Qty",
+                        "Counted Qty", "Difference Qty", "Unit Of Measure",
+                        "Product Cost", "$Difference(Price)"]
+
+		for index, col_data in enumerate(field_heading1):
+			sheet.write(0, index, col_data, format2)
+
+		sheet.set_panes_frozen(True)
+		sheet.set_horz_split_pos(1)
+		sheet.set_remove_splits(True)
+
+		# data = self.get_data()
+		# dt = data.get('stock_ids')
 		date_from = self.date_from
 		date_to = self.date_to
 		loc_ids = self.loc_ids.ids
