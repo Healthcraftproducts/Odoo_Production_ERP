@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="inventory_production_product_availability_action_server" model="ir.actions.server">
+            <field name="name">Check Availability</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.action_product_availability_produce()
+            </field>
+        </record>
+        
+        <record id="inventory_product_unreserve_action_server" model="ir.actions.server">
+            <field name="name">Unreserve</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.action_product_do_unreserve()
+            </field>
+        </record>
+
+    </data>
+</odoo>
