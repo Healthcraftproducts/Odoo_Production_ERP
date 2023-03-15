@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="paperformat_employee_attendance" model="report.paperformat">
+        <field name="name">Employee Attandance</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">325</field>
+        <field name="page_width">210</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">6</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">80</field>
+    </record>
+
+	<report
+        id="report_employee_attendance"
+        model="hr.attendance"
+        string="Employee Att Report"
+        name="hr_attendance_summary_report.employee_attendance_view"
+        file="hr_attendance_summary_report.employee_attendance_view"
+        paperformat="hr_attendance_summary_report.paperformat_employee_attendance"
+        report_type="qweb-pdf"
+    />
+
+    <template id="hr_attendance_summary_report.employee_attendance_view">
+    	<t t-call="web.basic_layout">
+    		<div class="page">
+	        	<t t-if="report_options == 'summary'">
+	        		<h4 style="text-align: center;">Employee Attendance Summary Report</h4>
+	        	</t>
+	        	<t t-if="report_options == 'Summary_with_horurs'">
+		    		<h4 style="text-align: center;">Employee Attendance Summary with HoursReport</h4>
+		    	</t>
+        		<div>
+                    <table>
+                        <tr>
+                            <td><strong>From: </strong>
+                                <span t-esc="datetime.datetime.strptime(from_date, '%Y-%m-%d').strftime('%d-%m-%Y')"/>
+								<strong>    To: </strong>
+                                <span t-esc="datetime.datetime.strptime(to_date, '%Y-%m-%d').strftime('%d-%m-%Y')"/>
+                            </td>
+           				</tr>
+                    </table>
+                </div>
+                <div>
+		    		<table class="table table-bordered mb32" style="table-layout:auto;">
+		                <thead>
+		                    <tr>
+		                    	<th rowspan="2">Employee</th>
+		                    	<t t-foreach="day" t-as="d">
+		    						<th t-esc="d"/>
+		    					</t>
+		    					<t t-if="report_options == 'summary'">					
+			   						<th rowspan="2">Total Present</th>
+			   					</t>
+			   					<t t-if="report_options == 'Summary_with_horurs'">
+			   						<th rowspan="2">Total Hour</th>
+			   					</t>
+			   				</tr>
+			   				<tr>
+			   					<t t-foreach="weekday" t-as="w">
+			   						<th t-esc="w"/>
+			   					</t>
+			   				</tr>
+						</thead>
+						<tbody>
+							<t t-foreach="status_dict" t-as="summury">
+								<t t-set="hours" t-value="[]"/>
+								<tr>
+									<t t-set='total_hour' t-value='0'/>
+									<t t-set='count' t-value='0'/>
+									<t t-if="report_options == 'summary'">
+										<td t-esc="summury"/>
+									</t>
+									<t t-if="report_options == 'Summary_with_horurs'">
+										<td rowspan="2" t-esc="summury"/>
+									</t>
+									<t t-foreach="time_dict" t-as="time">
+										<t t-if="summury == time">
+											<t t-foreach="summury_value" t-as="s">
+												<t t-if="s not in ('H','P','H/F','W')">
+													<td t-esc='s' style="background-color: red; text-align: center;color:black;"/>
+												</t>
+												<t t-if="s == 'P'">
+													<td t-esc='s' style="background-color: green; text-align: center;color:black;"/>
+													<t t-set="count" t-value="count + 1"/>
+												</t>
+												<t t-if="s == 'H/F'">
+		                                        	<td t-esc='s' style="background-color: blue; text-align: center;color:black;"/>
+		                                        </t>
+		                                        <t t-if="s == 'H'">
+		                                        	<td t-esc='s' style="background-color: yellow; text-align: center;color:black;"/>
+		                                        </t>
+		                                        <t t-if="s == 'W'">
+		                                        	<td t-esc='s' style="background-color: gray; text-align: center;color:gray;"/>
+		                                        </t>
+											</t>
+											<t t-foreach="time_value" t-as="t">
+		                                        <t t-set="hours" t-value="hours + [t]"/>
+		                                        <t t-if="t != 0">
+		                                            <t t-set="total_hour" t-value="total_hour + t"/>
+		                                        </t>
+		                                    </t>
+										</t>
+									</t>
+									<t t-if="report_options == 'summary'">
+										<td t-esc="count" style="text-align: center;"/>
+									</t>
+									<t t-if="report_options == 'Summary_with_horurs'">
+										<td rowspan="2" t-esc="'%.2f'%(total_hour)" style="text-align: center;"/>
+									</t>
+								</tr>
+								<t t-if="report_options == 'Summary_with_horurs'">
+									<tr>
+			                            <t t-foreach="hours" t-as="h">
+			                                <td t-esc="'%.2f'%(h)" style="text-align: center;"/>
+			                            </t>
+			                        </tr>
+								</t>
+							</t>
+						</tbody>
+		    		</table>
+		    	</div>
+		    </div>
+        </t>
+    </template>
+</odoo>
