@@ -20,6 +20,7 @@
 #
 #############################################################################
 from odoo import models, fields, api, _
+from odoo.tools.float_utils import float_round, float_compare, float_is_zero
 
 
 class MrpProductWizard(models.TransientModel):
@@ -102,3 +103,28 @@ class MrpProductProduceWizardLine(models.TransientModel):
     production_id = fields.Many2one('mrp.production')
     product_id = fields.Many2one('product.product', 'Product')
     qty = fields.Float('Quantity')
+
+
+class StockMoveInheritRoundOff(models.Model):
+    _inherit = 'stock.move'
+
+    @api.depends('product_id', 'product_uom', 'product_uom_qty')
+    def _compute_product_qty(self):
+        # DLE FIXME: `stock/tests/test_move2.py`
+        # `product_qty` is a STORED compute field which depends on the context :/
+        # I asked SLE to change this, task: 2041971
+        # In the mean time I cheat and force the rouding to half-up, it seems it works for all tests.
+        rounding_method = 'HALF-UP'
+        for move in self:
+            move.product_qty = round(move.product_uom._compute_quantity(
+                move.product_uom_qty, move.product_id.uom_id), 3)
+
+
+class StockMoveLineInheritRoundOff(models.Model):
+    _inherit = 'stock.move.line'
+
+    @api.depends('product_id', 'product_id.uom_id', 'product_uom_id', 'product_uom_qty')
+    def _compute_product_qty(self):
+        for line in self:
+            line.product_qty = round(
+                line.product_uom_id._compute_quantity(line.product_uom_qty, line.product_id.uom_id), 3)
