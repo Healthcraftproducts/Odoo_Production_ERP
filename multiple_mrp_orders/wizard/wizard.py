@@ -108,10 +108,10 @@ class MrpProductProduceWizardLine(models.TransientModel):
 class StockMoveInheritRoundOff(models.Model):
     _inherit = 'stock.move'
 
-    product_qty = fields.Float(
-        'Real Quantity', compute='_compute_product_qty', inverse='_set_product_qty',
-        digits=(12, 2), store=True, compute_sudo=True,
-        help='Quantity in the default UoM of the product')
+    #product_qty = fields.Float(
+        #'Real Quantity', compute='_compute_product_qty', inverse='_set_product_qty',
+        #digits=(12, 2), store=True, compute_sudo=True,
+        #help='Quantity in the default UoM of the product')
 
     @api.depends('product_id', 'product_uom', 'product_uom_qty')
     def _compute_product_qty(self):
@@ -128,9 +128,9 @@ class StockMoveInheritRoundOff(models.Model):
 class StockMoveLineInheritRoundOff(models.Model):
     _inherit = 'stock.move.line'
 
-    product_qty = fields.Float(
-        'Real Reserved Quantity', digits=(12, 2), copy=False,
-        compute='_compute_product_qty', inverse='_set_product_qty', store=True)
+    #product_qty = fields.Float(
+        #'Real Reserved Quantity', digits=(12, 2), copy=False,
+        #compute='_compute_product_qty', inverse='_set_product_qty', store=True)
 
     @api.depends('product_id', 'product_id.uom_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_qty(self):
