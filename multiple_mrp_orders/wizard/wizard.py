@@ -108,6 +108,11 @@ class MrpProductProduceWizardLine(models.TransientModel):
 class StockMoveInheritRoundOff(models.Model):
     _inherit = 'stock.move'
 
+    product_qty = fields.Float(
+        'Real Quantity', compute='_compute_product_qty', inverse='_set_product_qty',
+        digits=(12, 2), store=True, compute_sudo=True,
+        help='Quantity in the default UoM of the product')
+
     @api.depends('product_id', 'product_uom', 'product_uom_qty')
     def _compute_product_qty(self):
         # DLE FIXME: `stock/tests/test_move2.py`
@@ -123,8 +128,27 @@ class StockMoveInheritRoundOff(models.Model):
 class StockMoveLineInheritRoundOff(models.Model):
     _inherit = 'stock.move.line'
 
+    product_qty = fields.Float(
+        'Real Reserved Quantity', digits=(12, 2), copy=False,
+        compute='_compute_product_qty', inverse='_set_product_qty', store=True)
+
     @api.depends('product_id', 'product_id.uom_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_qty(self):
         for line in self:
             line.product_qty = round(
                 line.product_uom_id._compute_quantity(line.product_uom_qty, line.product_id.uom_id), 3)
+
+
+class StockQuantInherit(models.Model):
+    _inherit = 'stock.quant'
+
+    quantity = fields.Float(
+        'Quantity',
+        help='Quantity of products in this quant, in the default unit of measure of the product',
+        readonly=True, digits=(12, 2))
+
+    reserved_quantity = fields.Float(
+        'Reserved Quantity',
+        default=0.0,
+        help='Quantity of reserved products in this quant, in the default unit of measure of the product',
+        readonly=True, required=True, digits=(12, 2))
