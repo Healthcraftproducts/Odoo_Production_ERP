@@ -10,7 +10,8 @@
         'purchase', 'stock', 'mrp','base','mrp_mps'],
     'installable': True,
     'data': [  
-        'views/forecast_view.xml',   
+        'views/forecast_view.xml',  
+        'wizard/reservation_bug_fix.xml',
     ],
     'application': True,
     'uninstall_hook': 'uninstall_hook',
