@@ -15,7 +15,7 @@ from odoo.exceptions import ValidationError
 class Payment(models.Model):
     _inherit = 'account.payment'
 
-    def post(self):
+    def action_post(self):
         if self.purchase_id:
             if self.purchase_id.advance_payment_amount == 0:
                 if self.amount > self.purchase_id.amount_total:
@@ -26,7 +26,7 @@ class Payment(models.Model):
                 remaining_amount = self.purchase_id.amount_total - self.purchase_id.advance_payment_amount
                 if self.amount > remaining_amount:
                     raise ValidationError(_('''You have already advance paid %s out of %s now you can only pay %s''') % (self.purchase_id.advance_payment_amount, self.purchase_id.amount_total, remaining_amount))
-        super(Payment, self).post()
+        super(Payment, self).action_post()
 
     purchase_id = fields.Many2one('purchase.order', string='Purchase Order', copy=False)
 

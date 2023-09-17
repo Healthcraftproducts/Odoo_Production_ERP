@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+     <t t-inherit="mrp_workorder.MenuPopup" t-inherit-mode="extension">
+         <xpath expr="//button[@name='addByProduct']" position="after">
+            <button class="btn-primary btn-block btn btn-lg" t-on-click="() => this.callAction('action_upload_qc_image')">Upload Qc Image</button>
+        </xpath>
+    </t>
+</templates>

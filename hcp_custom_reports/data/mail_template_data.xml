@@ -230,7 +230,7 @@
 
 </record> -->
 
---------------------------------------Invoice Email-------------------------------------------------
+<!-- Invoice Email -->
 
 <!--Email template -->
 <!-- <record id="invoice_send_email_template_id" model="mail.template">
@@ -278,7 +278,7 @@
         </record>
  -->
 
-------------------------------------------Purchase Email---------------------------------------------------
+<!-- Purchase Email-->
 
 
  <record id="purchase_quotation_email_rfq_template" model="mail.template">
@@ -287,28 +287,29 @@
             <field name="subject">${object.company_id.name} Order (Ref ${object.name or 'n/a' })</field>
             <field name="partner_to">${object.partner_id.id}</field>
             <field name="body_html" type="html">
-<div style="margin: 0px; padding: 0px;">
-    <p style="margin: 0px; padding: 0px; font-size: 13px;">
-        Dear ${object.partner_id.name}
-        % if object.partner_id.parent_id:
-            (${object.partner_id.parent_id.name})
-        % endif
-        <br/><br/>
-        Here is in attachment a request for quotation <strong>${object.name}</strong>
-        % if object.partner_ref:
-            with reference: ${object.partner_ref}
-        % endif
-        from ${object.company_id.name}.
-        <br/><br/>
-        If you have any questions, please do not hesitate to contact us.
-        <br/><br/>
-        Best regards,
-    </p>
-</div></field>
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear ${object.partner_id.name}
+                    % if object.partner_id.parent_id:
+                        (${object.partner_id.parent_id.name})
+                    % endif
+                    <br/><br/>
+                    Here is in attachment a request for quotation <strong>${object.name}</strong>
+                    % if object.partner_ref:
+                        with reference: ${object.partner_ref}
+                    % endif
+                    from ${object.company_id.name}.
+                    <br/><br/>
+                    If you have any questions, please do not hesitate to contact us.
+                    <br/><br/>
+                    Best regards,
+                </p>
+            </div>
+        </field>
             <field name="report_template" ref="hcp_custom_reports.report_purchase_quotation_template_id"/>
             <field name="report_name">RFQ_${(object.name or '').replace('/','_')}</field>
             <field name="lang">${object.partner_id.lang}</field>
-            <field name="user_signature" eval="False"/>
+            <!-- <field name="user_signature" eval="False"/> -->
             <field name="auto_delete" eval="True"/>
         </record>
 
@@ -318,38 +319,133 @@
             <field name="subject">${object.company_id.name} Order (Ref ${object.name or 'n/a' })</field>
             <field name="partner_to">${object.partner_id.id}</field>
             <field name="body_html" type="html">
-<div style="margin: 0px; padding: 0px;">
-    <p style="margin: 0px; padding: 0px; font-size: 13px;">
-        Dear ${object.partner_id.name}
-        % if object.partner_id.parent_id:
-            (${object.partner_id.parent_id.name})
-        % endif
-        <br/><br/>
-        Here is in attachment a purchase order <strong>${object.name}</strong>
-        % if object.partner_ref:
-            with reference: ${object.partner_ref}
-        % endif
-        amounting in <strong>${format_amount(object.amount_total, object.currency_id)}</strong>
-        from ${object.company_id.name}.
-        <br/><br/>
-        If you have any questions, please do not hesitate to contact us.
-        <br/><br/>
-        Best regards,
-    </p>
-</div></field>
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear ${object.partner_id.name}
+                    % if object.partner_id.parent_id:
+                        (${object.partner_id.parent_id.name})
+                    % endif
+                    <br/><br/>
+                    Here is in attachment a purchase order <strong>${object.name}</strong>
+                    % if object.partner_ref:
+                        with reference: ${object.partner_ref}
+                    % endif
+                    amounting in <strong>${format_amount(object.amount_total, object.currency_id)}</strong>
+                    from ${object.company_id.name}.
+                    <br/><br/>
+                    If you have any questions, please do not hesitate to contact us.
+                    <br/><br/>
+                    Best regards,
+                </p>
+            </div>
+        </field>
             <field name="report_template" ref="hcp_custom_reports.report_purchase_order_template_id"/>
             <field name="report_name">PO_${(object.name or '').replace('/','_')}</field>
             <field name="lang">${object.partner_id.lang}</field>
-            <field name="user_signature" eval="False"/>
+            <!-- <field name="user_signature" eval="False"/> -->
             <field name="auto_delete" eval="True"/>
         </record>
 
-
-
-
- 
-
+<!--    purchase email from base -->
+ <record id="email_template_edi_purchase_ext" model="mail.template">
+     <field name="name">Purchase: Request For Quotation</field>
+     <field name="model_id" ref="purchase.model_purchase_order"/>
+     <field name="subject">{{ object.company_id.name }} Order (Ref {{ object.name or 'n/a' }})</field>
+     <field name="partner_to">{{ object.partner_id.id }}</field>
+     <field name="description">Sent manually to vendor to request a quotation</field>
+     <field name="body_html" type="html">
+         <div style="margin: 0px; padding: 0px;">
+             <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                 Dear
+                 <t t-out="object.partner_id.name or ''"></t>
+                 <t t-if="object.partner_id.parent_id">
+                     (<t t-out="object.partner_id.parent_id.name or ''"></t>)
+                 </t>
+                 <br/>
+                 <br/>
+                 Here is in attachment a request for quotation
+                 <span style="font-weight:bold;" t-out="object.name or ''"></span>
+                 <t t-if="object.partner_ref">
+                     with reference:
+                     <t t-out="object.partner_ref or ''"></t>
+                 </t>
+                 from <t t-out="object.company_id.name or ''"></t>.
+                 <br/>
+                 <br/>
+                 If you have any questions, please do not hesitate to contact us.
+                 <br/>
+                 <br/>
+                 Best regards,
+                 <t t-if="not is_html_empty(object.user_id.signature)">
+                     <br/>
+                     <br/>
+                     <t t-out="object.user_id.signature or ''">--
+                         <br/>
+                     </t>
+                 </t>
+             </p>
+         </div>
+     </field>
+     <field name="report_template" ref="hcp_custom_reports.report_purchase_quotation_template_id"/>
+     <field name="report_name">RFQ_{{ (object.name or '').replace('/','_') }}</field>
+     <field name="lang">{{ object.partner_id.lang }}</field>
+     <field name="auto_delete" eval="True"/>
+ </record>
+    <record id="email_template_edi_purchase_done_ext" model="mail.template">
+        <field name="name">Pobjecturchase: Purchase Order</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="subject">{{ object.company_id.name }} Order (Ref {{ object.name or 'n/a' }})</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="description">Sent to vendor with the purchase order in attachment</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name or ''"></t>
+                    <t t-if="object.partner_id.parent_id">
+                        (<t t-out="object.partner_id.parent_id.name or ''"></t>)
+                    </t>
+                    <br/>
+                    <br/>
+                    Here is in attachment a purchase order
+                    <span style="font-weight:bold;" t-out="object.name or ''"></span>
+                    <t t-if="object.partner_ref">
+                        with reference:
+                        <t t-out="object.partner_ref or ''"></t>
+                    </t>
+                    amounting in
+                    <span style="font-weight:bold;"
+                          t-out="format_amount(object.amount_total, object.currency_id) or ''">
+                    </span>
+                    from <t t-out="object.company_id.name or ''"></t>.
+                    <br/>
+                    <br/>
+                    <t t-if="object.date_planned">
+                        The receipt is expected for <span style="font-weight:bold;"
+                                                          t-out="format_date(object.date_planned) or ''"></span>.
+                        <br/>
+                        <br/>
+                        Could you please acknowledge the receipt of this order?
+                    </t>
+                    <br/>
+                    If you have any questions, please do not hesitate to contact us.
+                    <br/>
+                    <t t-if="not is_html_empty(object.user_id.signature)">
+                        <br/>
+                        <br/>
+                        <t t-out="object.user_id.signature or ''">--
+                            <br/>
+                        </t>
+                    </t>
+                    <br/>
+                    <br/>
+                </p>
+            </div>
+        </field>
+        <field name="report_template" ref="hcp_custom_reports.report_purchase_order_template_id"/>
+        <field name="report_name">PO_{{ (object.name or '').replace('/','_') }}</field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
 </data>
-
-
 </odoo>

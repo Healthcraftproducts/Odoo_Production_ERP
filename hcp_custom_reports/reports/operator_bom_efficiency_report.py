@@ -187,7 +187,8 @@ class OperatorBOMEfficiencyReport(models.TransientModel):
 
         fp = io.BytesIO()
         workbook.save(fp)
-        self.write({'state': 'get', 'file_name': base64.encodestring(fp.getvalue()), 'summary_data': file_name})
+
+        self.write({'state': 'get', 'file_name': base64.encodebytes(fp.getvalue()), 'summary_data': file_name})
         fp.close()
         return {
             'type': 'ir.actions.act_window',

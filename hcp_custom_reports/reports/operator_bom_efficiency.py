@@ -20,14 +20,13 @@ class MrpWorkcenterProductivity(models.Model):
     mrp_cycle_time = fields.Float(related='workorder_id.operation_id.total_time', string='Cycle Time(in min)',
                                   store=True)
     total_cycle_time = fields.Float(string='Total Cycle Time(in min)', compute='_total_cycle_time', store=True)
-
+    
     duration_expected = fields.Float(related='workorder_id.duration_expected', string='Expected Time(in min)',
                                      store=True)
     real_duration = fields.Float(related='workorder_id.duration', string='Real Time(in min)', store=True)
     duration_efficiency = fields.Float(string='BOM Efficiency', compute='duration_expected_efficiency', store=True)
-
     efficiency = fields.Float(string='Efficiency', compute='_total_efficiency_time', store=True)
-
+    
     @api.depends('duration_expected', 'real_duration')
     def duration_expected_efficiency(self):
         for rec in self:

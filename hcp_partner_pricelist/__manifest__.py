@@ -4,9 +4,10 @@
     'name': 'HCP Customer Price Lists Products in SO',
     'category': 'Sales/Sales',
     'version': '1.0',
-    'description': "Show Products Based on Customer Pricelists",
+    'description': "Show Products Based on Customer Pricelists. ",
     'depends': [
-        'sale', 'product', 'crm', 'sale_crm', 'sale_coupon', 'delivery',
+        'sale', 'product', 'crm', 'sale_crm', 'sale_loyalty', 'delivery',
+
     ],
     'installable': True,
     'data': [  

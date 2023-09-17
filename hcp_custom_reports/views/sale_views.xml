@@ -9,11 +9,7 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//form/sheet/div[@class='oe_title']/h1/field[@name='name']" position="attributes">
-
                     <attribute name="attrs">{'invisible': [('state', 'in', ['draft','sent'])]}</attribute>
-
-
-
                 </xpath>
 
         <xpath expr="//form/sheet/div[@class='oe_title']/h1" position="inside">
@@ -27,7 +23,6 @@
             <field name ="email"/>
             <field name ="phone"/>
             <field name ="total_amount" invisible="1"/>
-     
         </xpath>
 
         <xpath expr="//form/sheet/group" position="after">
@@ -96,9 +91,7 @@
         </xpath>
 
         <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
-
                 <field name="line_amount"/>            
-
         </xpath>
     </field>
 
@@ -142,6 +135,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='date_done']" position="after">
                     <field name ="shipment_date" readonly="1" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+                </xpath>
+
+                <xpath expr="//field[@name='move_type']" position="after">
+                    <field name="priority" widget="priority"/>
                 </xpath>
 
             </field>

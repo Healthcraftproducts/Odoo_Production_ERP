@@ -58,8 +58,7 @@ class ProductTemplate(models.Model):
 		for template in unique_variants:
 			template.default_code = template.product_variant_ids.default_code
 		for template in (self - unique_variants):
-			template.default_code = False
-
+			template.default_code = self.default_code
 
 	def _set_default_code(self):
 		for template in self:
@@ -67,15 +66,11 @@ class ProductTemplate(models.Model):
 				template.product_variant_ids.default_code = template.default_code
 
 
-
 	def active_stage(self):
 		self.write({
 		'status': '0',
 		'active': True,
 			})
-
-
-
 	
 	def inactive_stage(self):
 		self.write({
@@ -83,15 +78,11 @@ class ProductTemplate(models.Model):
 		'active': False,
 			})
 
-
-	
 	def rd_stage(self):
 		self.write({
 		'status': '2',
 		'active': True,
 			})
-
-
 
 class ProductMaster(models.Model):
 	_inherit = 'product.product'
@@ -142,7 +133,7 @@ class ProductMaster(models.Model):
 
 
 class StockLotMaster(models.Model):
-	_inherit = 'stock.production.lot'
+	_inherit = 'stock.lot'
 
 
 	lot_size = fields.Float(string="Lot Size")
@@ -270,14 +261,14 @@ class StockQuant(models.Model):
 				else:
 					rec.min_reorder_quantity = 0.0
 
-	@api.model
-	def _get_removal_strategy_order(self, removal_strategy):
-		if removal_strategy == 'fifo':
-		    return 'lot_id ASC NULLS FIRST, id'
-		elif removal_strategy == 'lifo':
-		    return 'lot_id DESC NULLS LAST, id desc'
-		raise UserError(_('Removal strategy %s not implemented.') % (removal_strategy,))
-    
+	# @api.model
+	# def _get_removal_strategy_order(self, removal_strategy):
+	# 	if removal_strategy == 'fifo':
+	# 	    return 'lot_id ASC NULLS FIRST, id'
+	# 	elif removal_strategy == 'lifo':
+	# 	    return 'lot_id DESC NULLS LAST, id desc'
+	# 	raise UserError(_('Removal strategy %s not implemented.') % (removal_strategy,))
+    # 
 	@api.model
 	def _update_reserved_quantity(self, product_id, location_id, quantity, lot_id=None, package_id=None, owner_id=None, strict=False):
 		""" Increase the reserved quantity, i.e. increase `reserved_quantity` for the set of quants

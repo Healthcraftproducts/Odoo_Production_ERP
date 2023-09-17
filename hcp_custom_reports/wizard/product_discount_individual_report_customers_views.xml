@@ -7,18 +7,20 @@
             <form string="Discounts given - Detailed Report">
                 <group>
                     <group>
-                        
+
                         <field name="date_from"/>
                         <field name="date_to"/>
                         <field name="partner_id"/>
-                        
+
                     </group>
                 </group>
                 <footer>
-                    <button name="print_discount_details_report_pdf" type="object" string="Print PDF" class="oe_highlight"/>
-                    <button string='Print XLS' name="print_xlsx_report" type="object" default_focus="1" class="oe_highlight"/>
+                    <button name="print_discount_details_report_pdf" type="object" string="Print PDF"
+                            class="oe_highlight"/>
+                    <button string='Print XLS' name="print_xlsx_report" type="object" default_focus="1"
+                            class="oe_highlight"/>
                     <button string="Cancel" class="btn-default" special="cancel"/>
-                </footer>   
+                </footer>
             </form>
         </field>
     </record>
@@ -29,13 +31,13 @@
         <field name="arch" type="xml">
             <form string="Discounts given - Detailed Report">
                 <group>
-                    <field name="file_name" filename="product_data" />
-                    <field name="product_data" invisible="1" />
+                    <field name="file_name" filename="product_data"/>
+                    <field name="product_data" invisible="1"/>
                     <!-- <field name="file_names" filename="purchase_work" />
                     <field name="purchase_work" invisible="1" /> -->
                 </group>
                 <footer>
-                    <button string="Cancel" class="btn-primary" special="cancel" />
+                    <button string="Cancel" class="btn-primary" special="cancel"/>
                 </footer>
             </form>
         </field>
@@ -48,7 +50,12 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="view_id" ref="product_form_wizard_reprot_customer_id"/>
-    </record> 
-
-    <menuitem id="product_menu_wizard_customer_report_id" name="Discounts given - Detailed Report" action="product_action_wizard_customer_wise_id" parent="sale.menu_sale_report" sequence="6"/>
+    </record>
+    <menuitem id="menu_report_product_all"
+              name="Sales"
+              action="sale.action_order_report_all"
+              parent="sale.menu_sale_report"
+              sequence="1"/>
+    <menuitem id="product_menu_wizard_customer_report_id" name="Discounts given - Detailed Report"
+              action="product_action_wizard_customer_wise_id" parent="sale.menu_sale_report" sequence="8"/>
 </odoo>

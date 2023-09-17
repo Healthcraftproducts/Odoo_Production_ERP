@@ -4,3 +4,7 @@
 * Alex Comba <alex.comba@agilebg.com>
 * Saran Limpajitkutaporn <saranl@ecosoft.co.th>
 * Pimolnat Suntian <pimolnats@ecosoft.co.th>
+* Tharathip Chaweewongphan <tharathipc@ecosoft.co.th>
+* `Trobz <https://trobz.com>`_:
+    * Hai Lang <hailn@trobz.com>
+* Ángel Tornero Hernández <angel.tornero@braintec.com>

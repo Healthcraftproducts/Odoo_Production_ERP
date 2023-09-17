@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="mrp_workorder.MenuPopup" t-inherit-mode="extension">
+        <xpath expr="//button[@t-on-click='block']" position="attributes">
+            <button class="btn btn-danger text-uppercase" t-on-click="block"
+                    attrs="{'invisible': [('groups', 'in', ref('hcp_operator_customization.group_mrp_operator'))]}">Block</button>
+        </xpath>
+    </t>
+<!--    need to add group here -->
+<!--    <t t-inherit="mrp_workorder.MenuPopup" t-inherit-mode="extension" owl="1">-->
+<!--            <xpath expr="//button[@t-on-click='() => .callAction('button_quality_alert')']" position="attributes">-->
+<!--                <button class="btn btn-warning btn-primary" t-on-click="() => this.callAction('button_quality_alert')"-->
+<!--                    attrs="{'invisible': [('groups', 'in', ref('hcp_operator_customization.group_mrp_operator'))]}">Quality Alert</button>-->
+<!--            </xpath>-->
+<!--    </t>-->
+<!--    <t t-inherit="mrp_workorder.MenuPopup" t-inherit-mode="extension">-->
+<!--        <xpath expr="//button[@name='addByProduct']" position="after">-->
+<!--            <button class="btn btn-warning btn-primary" t-on-click="() => this.callAction('button_maintenance_req')"-->
+<!--                    attrs="{'invisible': [('groups', 'in', ref('hcp_operator_customization.group_mrp_operator'))]}">Maintenance Request</button>-->
+<!--        </xpath>-->
+<!--    </t>-->
+</templates>
