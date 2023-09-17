@@ -26,7 +26,7 @@
         'security/ir.model.access.csv',
         # 'reports/sale_custom_header.xml',
         'reports/all_print_menu.xml',
-        'reports/sale_custom_report_inherit.xml',
+        #'reports/sale_custom_report_inherit.xml',
         'reports/invoice_custom_report_inherit.xml',
         'reports/purchase_quotation_inherit.xml',
         'reports/purchase_report_inherit.xml',
