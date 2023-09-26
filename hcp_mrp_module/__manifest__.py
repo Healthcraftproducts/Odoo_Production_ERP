@@ -30,6 +30,9 @@
         # 'views/report.xml',
         # 'views/templates.xml',
     ],
+    "application": False,
+    "installable": True,
+    'license': 'LGPL-3',
     # only loaded in demonstration mode
     # 'demo': [
     #     'demo/demo.xml',

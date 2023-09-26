@@ -20,4 +20,7 @@
         'security/ir.model.access.csv',
         'views/res_partner_views.xml',
     ],
+    "application": False,
+    "installable": True,
+    'license': 'LGPL-3'
 }

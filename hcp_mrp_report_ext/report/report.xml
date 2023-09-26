@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>        
-         <report
-            string="Print Product Label(PDF)"
-            id="action_report_work_order_finished_product"
-            model="mrp.workorder"
-            name="hcp_mrp_report_ext.label_work_order_view_pdf"
-            file="hcp_mrp_report_ext.label_work_order_view_pdf"
-            report_type="qweb-pdf"
-            print_report_name="'Finished products - %s' % object.name"
-        />
+    <data>
+                 <report
+                    string="Print Product Label(PDF)"
+                    id="action_report_work_order_finished_product"
+                    model="mrp.workorder"
+                    name="hcp_mrp_report_ext.label_work_order_view_pdf"
+                    file="hcp_mrp_report_ext.label_work_order_view_pdf"
+                    report_type="qweb-pdf"
+                    print_report_name="'Finished products - %s' % object.name"
+                />
+
     </data>
 </odoo>

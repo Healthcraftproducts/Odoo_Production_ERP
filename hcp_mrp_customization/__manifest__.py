@@ -12,6 +12,7 @@
     'data': [  
         'views/forecast_view.xml',   
     ],
+    'license': 'LGPL-3',
     'application': True,
     'uninstall_hook': 'uninstall_hook',
 

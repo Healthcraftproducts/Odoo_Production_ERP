@@ -150,6 +150,9 @@
             <!--                <button name="post_inventory" string="Post Inventory" type="object"-->
             <!--                        attrs="{'invisible': [('post_visible', '=', False)]}"/>-->
             <!--            </xpath>-->
+             <xpath expr="//form/sheet/div[2]/h1/field[@name='priority']" position="replace">
+<!--                   To hide (star) priority field-->
+                </xpath>
 
             <xpath expr="//field[@name='user_id']" position="before">
                 <field name="release_date"/>

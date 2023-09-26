@@ -14,5 +14,7 @@
         'views/view.xml',
     ],
     "installable": True,
+    "application": False,
+    'license': 'LGPL-3',
 }
 

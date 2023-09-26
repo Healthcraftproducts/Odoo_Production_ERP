@@ -14,5 +14,8 @@
     'data': [
         'report/workorder_report.xml',  
         'report/report.xml',  
-    ],   
+    ],
+    "application": False,
+    "installable": True,
+    'license': 'LGPL-3'
 }

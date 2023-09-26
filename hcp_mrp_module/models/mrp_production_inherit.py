@@ -15,6 +15,8 @@ from odoo.modules.module import get_module_resource
 
 class QCImageUploadWizard(models.TransientModel):
     _name = "qc.image.upload"
+    _description = "Qc Image Upload"
+
     upload_image = fields.Binary('Upload Image')
 
     def upload_qc_image(self):
@@ -30,6 +32,8 @@ class QCImageUploadWizard(models.TransientModel):
 
 class MrpWorkOrderQCImages(models.Model):
     _name = 'mrp.workorder.qc.images'
+    _description = "Workorder Qc Images"
+
     image = fields.Binary(string='Image')
     workorder_id = fields.Many2one('mrp.workorder', string='Workorder ID')
 

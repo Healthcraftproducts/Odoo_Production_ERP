@@ -15,6 +15,7 @@
     ],
     'application': True,
     'uninstall_hook': 'uninstall_hook',
+    'license': 'LGPL-3',
 
 'assets': {
     'web.assets_backend': [

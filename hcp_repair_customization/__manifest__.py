@@ -18,4 +18,7 @@
     'data': [
         'views/repair_views.xml',
     ],
+    "application": False,
+    "installable": True,
+    'license': 'LGPL-3'
 }
