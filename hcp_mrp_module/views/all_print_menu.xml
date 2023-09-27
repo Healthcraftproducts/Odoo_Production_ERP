@@ -30,7 +30,7 @@
         </record>
 
         <record id="action_report_production_order" model="ir.actions.report">
-            <field name="name">Production Orderss</field>
+            <field name="name">Production Orders</field>
             <field name="model">mrp.production</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">hcp_mrp_module.mrp_production_order_report_template_id</field>

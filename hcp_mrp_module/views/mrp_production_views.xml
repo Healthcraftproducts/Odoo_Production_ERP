@@ -283,13 +283,13 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='inventory']" position='after'>
-                <page string='Documents'>
+<!--            <xpath expr="//page[@name='inventory']" position='after'>-->
+<!--                <page string='Documents'>-->
 
-                    <field name="attachments_id" widget="many2many_binary" string="Attach a file" label="Attachments"/>
+<!--                    <field name="attachments_id" widget="many2many_binary" string="Attach a file" label="Attachments"/>-->
 
-                </page>
-            </xpath>
+<!--                </page>-->
+<!--            </xpath>-->
 
             <xpath expr="//form/sheet/notebook/page/group[2]" position='replace'>
                 <group string="Description For Sales">
