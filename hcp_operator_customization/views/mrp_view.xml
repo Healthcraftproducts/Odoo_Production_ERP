@@ -94,6 +94,10 @@
             </field>
         </record>
 
+        <record id="mrp.action_production_order_mark_done" model="ir.actions.server">
+            <field name="groups_id" eval="[(6, 0, [ref('mrp.group_mrp_user'),ref('mrp.group_mrp_manager')])]"/>
+        </record>
+
         <menuitem id="mrp.menu_mrp_root" name="Manufacturing"
                   groups="mrp.group_mrp_user,mrp.group_mrp_manager,hcp_operator_customization.group_mrp_operator"
                   web_icon="mrp,static/description/icon.png" sequence="35"
