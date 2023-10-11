@@ -25,27 +25,27 @@
         <field name="view_id" eval="qc_image_upload_wizard"/>
         <field name="target">new</field>
     </record>
-
-    <record id="mrp_production_workorder_form_view_inherited_ext" model="ir.ui.view">
-        <field name="name">mrp.production.workorder.form.view.inherited</field>
-        <field name="model">mrp.workorder</field>
-        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='finished_steps']" position="after">
-                <page string="QC Images" name="workorder_qc_images">
-                    <group>
-                        <group>
-                            <field name="qc_image_ids" readonly="1">
-                                <tree>
-                                    <field name="image" widget="image" class="oe_left oe_avatar"/>
-                                </tree>
-                            </field>
-                        </group>
-                    </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
+<!--# commented due to requirement from client #FR/C/004-->
+<!--    <record id="mrp_production_workorder_form_view_inherited_ext" model="ir.ui.view">-->
+<!--        <field name="name">mrp.production.workorder.form.view.inherited</field>-->
+<!--        <field name="model">mrp.workorder</field>-->
+<!--        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//page[@name='finished_steps']" position="after">-->
+<!--                <page string="QC Images" name="workorder_qc_images">-->
+<!--                    <group>-->
+<!--                        <group>-->
+<!--                            <field name="qc_image_ids" readonly="1">-->
+<!--                                <tree>-->
+<!--                                    <field name="image" widget="image" class="oe_left oe_avatar"/>-->
+<!--                                </tree>-->
+<!--                            </field>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </page>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
     <!-- Adding Timesheet menu in the manufacturing modules-->
 
     <record id="act_hr_timesheet_manufacturing_line" model="ir.actions.act_window">
