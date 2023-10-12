@@ -130,7 +130,20 @@
             <strong>Terms:</strong>
             <p style="font-size:10pt;" class="m-0" t-field="doc.payment_term_id"/>
         </div>
-
+        <div t-if="not (env.context.get('proforma', False) or is_pro_forma)" class="col-auto mw-100 mb-2">
+            <strong>Tracking Reference:</strong>
+            <t t-foreach="doc.picking_ids"
+               t-as="lines">
+                    <p style="font-size:10pt;" class="m-0" t-field="lines.carrier_tracking_ref"/>
+            </t>
+        </div>
+        <div  t-if="not (env.context.get('proforma', False) or is_pro_forma)" class="col-auto mw-100 mb-2">
+            <strong>Carrier:</strong>
+            <t t-foreach="doc.picking_ids"
+               t-as="lines">
+                    <p style="font-size:10pt;" class="m-0" t-field="lines.carrier_id"/>
+            </t>
+        </div>
                 
                 
     </div>
