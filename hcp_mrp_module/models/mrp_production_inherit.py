@@ -265,6 +265,7 @@ class MrpBom(models.Model):
 class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
 
+    custom_ids = fields.One2many("mrp_workorder.additional.product", 'custom_id')
     hcp_priority = fields.Selection('Production Priority', readonly=True, related='production_id.priority',
                                     help='Technical: used in views only.')
     workcenter_department = fields.Selection('Department', readonly=True, related='workcenter_id.department')
@@ -272,4 +273,13 @@ class MrpWorkorder(models.Model):
     def name_get(self):
         return [(wo.id, "%s - %s - %s" % (wo.production_id.name, wo.product_id.display_name, wo.name)) for wo in self]
 
+class MrpWorkorderAdditionalProduct(models.TransientModel):
+    _inherit="mrp_workorder.additional.product"
+
+    custom_id = fields.Many2one("mrp.workorder","custom ID")
+
+    @api.onchange('product_id')
+    def onchange_product_tmpl_id(self):
+        bom_product_id = [rec.product_id.id for rec in self.workorder_id.production_id.move_raw_ids]
+        return {'domain': {'product_id': [('id', 'in', bom_product_id)]}}
    
