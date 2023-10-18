@@ -50,13 +50,14 @@ class RepairOrder(models.Model):
 
     
     def action_stock_move(self):
+            type_id = self.env['stock.picking.type'].sudo().search([('name', '=', 'Returns'),('warehouse_id', '=', 'Amazon Canada')])
             if not self.destination_location_id:
                 raise UserError(_(
                     " Please select a Destination Location"))
             for order in self:
                 if not self.repair_picking_id:
                     pick = {
-                        'picking_type_id': 5,
+                        'picking_type_id': type_id.id,
                         'partner_id': self.partner_id.id,
                         'origin': self.name,
                         'location_dest_id': self.destination_location_id.id,
