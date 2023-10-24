@@ -365,3 +365,7 @@ class Pricelist(models.Model):
 			for line in self.item_ids:
 				line.unlink()
 
+class StockInventoryAdjustmentNameInherit(models.TransientModel):
+		_inherit = 'stock.inventory.adjustment.name'
+
+		inventory_adjustment_name = fields.Char(default="",required=1)

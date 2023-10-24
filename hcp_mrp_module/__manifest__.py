@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mrp','product','purchase','timesheet_grid'],
+    'depends': ['base','mrp','product','purchase','timesheet_grid','mrp_workorder'],
 
     # always loaded
     'data': [

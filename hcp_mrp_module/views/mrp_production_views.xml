@@ -344,6 +344,16 @@
         </field>
     </record>
 
+ <record id="view_mrp_workorder_additional_product_wizard_inherit" model="ir.ui.view">
+            <field name="name">MRP Additional Product Inherit</field>
+            <field name="model">mrp_workorder.additional.product</field>
+            <field name="inherit_id" ref="mrp_workorder.view_mrp_workorder_additional_product_wizard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="attributes">
+                          <attribute name="options">{'no_create_edit': True, 'no_create':True, 'no_open':True}</attribute>
+                       </xpath>
+            </field>
+ </record>
 
     <!--    Adding timesheet in manufacturing module-->
 
