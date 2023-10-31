@@ -10,6 +10,33 @@
                     report_type="qweb-pdf"
                     print_report_name="'Finished products - %s' % object.name"
                 />
+        <report
+                    string="Print Product Label(PDF)"
+                    id="action_report_work_order_finished_product_ext_mo"
+                    model="mrp.production"
+                    name="hcp_mrp_report_ext.label_work_order_view_pdf"
+                    file="hcp_mrp_report_ext.label_work_order_view_pdf"
+                    report_type="qweb-pdf"
+                    print_report_name="'Finished products - %s' % object.name"
+                />
+         <report
+                    string="Print Product EAN Barcode"
+                    id="action_report_work_order_finished_product_ext_mo_ean"
+                    model="mrp.production"
+                    name="hcp_mrp_report_ext.label_work_order_view_pdf_custom_ext"
+                    file="hcp_mrp_report_ext.label_work_order_view_pdf_custom_ext"
+                    report_type="qweb-pdf"
+                    print_report_name="'Finished products - %s' % object.name"
+                />
+  <report
+                    string="Print Product UPC Barcode"
+                    id="action_report_work_order_finished_product_ext_mo_upc"
+                    model="mrp.production"
+                    name="hcp_mrp_report_ext.label_work_order_view_pdf_custom_ext_upc"
+                    file="hcp_mrp_report_ext.label_work_order_view_pdf_custom_ext_upc"
+                    report_type="qweb-pdf"
+                    print_report_name="'Finished products - %s' % object.name"
+                />
 
     </data>
 </odoo>

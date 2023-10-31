@@ -123,6 +123,15 @@
                         <th name="th_origin" class="text-center">Origin</th>
                         <th name="th_quantity" class="text-right">Quantity</th>
                         <th name="th_price" class="text-right">Unit Cost</th>
+                        <th name="th_hts" class="text-center">
+                            HTS Code
+                        </th>
+                        <th name="th_origin"
+                            class="text-left">Origin Of Country
+                        </th>
+                        <th name="th_binding"
+                            class="text-center">Binding Rule
+                        </th>
                         <th name="th_discount" class="text-right">
                             <span>Additional Disc.%</span>
                         </th>
@@ -150,7 +159,19 @@
                                 </td>
                                 <td name="td_priceunit" class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.price_unit"/>
+
                                 </td>
+                            <t t-foreach="line.product_id.product_tmpl_id" t-as="prod">
+                                    <td class="text-right">
+                                        <span t-field="prod.cust_fld2"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="prod.cust_fld3"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="prod.binding_rule"/>
+                                    </td>
+                                </t>
                                 <td  class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.discount"/>
                                 </td>
