@@ -213,16 +213,27 @@
                                     <span t-field="line.price_unit"/>
                                 </td>
                                 <t t-if="env.context.get('proforma', False) or is_pro_forma"
-                                   t-foreach="line.product_template_id" t-as="prod">
-                                    <td class="text-right">
+                                   t-foreach="line.product_template_id" t-as="tmpl">
+                                    <t t-foreach="line.product_id" t-as="prod">
+                                    <td t-if="prod.cust_fld2" class="text-right">
                                         <span t-field="prod.cust_fld2"/>
                                     </td>
-                                    <td class="text-right">
+                                        <td t-if="not(prod.cust_fld2)" class="text-right">
+                                        <span t-field="tmpl.cust_fld2"/>
+                                    </td>
+                                    <td t-if="prod.cust_fld3" class="text-right">
                                         <span t-field="prod.cust_fld3"/>
                                     </td>
-                                    <td class="text-right">
+                                        <td t-if="not(prod.cust_fld3)" class="text-right">
+                                        <span t-field="tmpl.cust_fld3"/>
+                                    </td>
+                                    <td t-if="prod.binding_rule" class="text-right">
                                         <span t-field="prod.binding_rule"/>
                                     </td>
+                                        <td t-if="not(prod.binding_rule)" class="text-right">
+                                        <span t-field="tmpl.binding_rule"/>
+                                    </td>
+                                      </t>
                                 </t>
                                 <td class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.discount"/>

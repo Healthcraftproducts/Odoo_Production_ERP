@@ -339,17 +339,17 @@
                 <field name="default_code" invisible="1"/>
             </xpath>
 
-            <xpath expr="//form/sheet/div[@class='oe_title']/label[@class='oe_edit_only']" position='replace'>
-                <label class="oe_edit_only" for="name" string="Variant Description"/>
-            </xpath>
+            <!--            <xpath expr="//form/sheet/div[1]/label[2]" position='replace'>-->
+            <!--                <label class="oe_edit_only" for="product_description" string="Variant Description"/>-->
+            <!--            </xpath>-->
 
 
-            <xpath expr="//form/sheet/div[@class='oe_title']/label[@class='oe_edit_only']" position='before'>
-                <label class="oe_edit_only" for="default_code" string="Item Code"/>
-                <h1>
-                    <field name="default_code" placeholder="Item Code"/>
-                </h1>
-            </xpath>
+            <!--            <xpath expr="//form/sheet/div[@class='oe_title']/label[@class='oe_edit_only']" position='before'>-->
+            <!--                <label class="oe_edit_only" for="default_code" string="Item Code"/>-->
+            <!--                <h1>-->
+            <!--                    <field name="default_code" placeholder="Item Code"/>-->
+            <!--                </h1>-->
+            <!--            </xpath>-->
 
             <xpath expr="//field[@name='name']" position="replace">
                 <field name="product_description"/>
@@ -433,6 +433,24 @@
             </xpath>
             <xpath expr="//field[@name='hs_code']" position="after">
                 <field name="batch_size"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[4]" position="after">
+                <page string="Deringer Info" name="deringer_info">
+                    <group>
+                        <group>
+                            <field name="manufacturer_id" invisible="1"/>
+                            <field name="cust_fld2"/>
+                            <field name="cust_fld3"/>
+                            <field name="binding_rule"/>
+                        </group>
+                        <group>
+                            <field name="fda_listing"/>
+                            <!--                            <field name="deringer_uom_id"/>-->
+                            <field name="usmca_eligible"/>
+                            <field name="tarrif_number" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>
