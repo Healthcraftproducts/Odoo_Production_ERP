@@ -238,6 +238,18 @@ class StockPickingInherit(models.Model):
 
     is_return_transfer = fields.Boolean(string="Is Return")
 
+    def action_confirm(self):
+        self._check_company()
+        if self.sale_id.carrier_id:
+            self.carrier_id = self.sale_id.carrier_id
+        self.mapped('package_level_ids').filtered(lambda pl: pl.state == 'draft' and not pl.move_ids)._generate_moves()
+        # call `_action_confirm` on every draft move
+        self.move_ids.filtered(lambda move: move.state == 'draft')._action_confirm()
+
+        # run scheduler for moves forecasted to not have enough in stock
+        self.move_ids.filtered(lambda move: move.state not in ('draft', 'cancel', 'done'))._trigger_scheduler()
+        return True
+
     def button_validate(self):
         res = super(StockPickingInherit, self).button_validate()
         type_id = self.env['stock.picking.type'].sudo().search(
