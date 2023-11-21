@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            
+        <record id="account_invoice_set_to_draft_view" model="ir.ui.view">
+            <field name="name">account.invoice.to.draft.form</field>
+            <field name="model">account.invoice.to.draft</field>
+            <field name="arch" type="xml">
+                <form string="Set to Draft Selected Invoices">
+                	<p class="oe_grey">
+                        Once cancel invoices are draft, you will be able
+                        to modify them. The invoices will use a unique
+                        number and journal items will be created in your chart
+                        of accounts.
+                    </p>
+                    <footer>
+                        <button string="Set to Draft Invoices" name="invoice_to_draft" type="object" default_focus="1" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="account_invoice_set_to_draft" model="ir.actions.act_window">
+            <field name="name">Set to Draft Invoices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.invoice.to.draft</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account_invoice_set_to_draft_view"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+            <field name="help">This wizard will validate all journal entries selected. Once journal entries are cancelled, you can not update them anymore.</field>
+        	<field name="binding_model_id" ref="account.model_account_move" />
+        </record>
+
+        <!-- <act_window
+            id="account_invoice_set_to_draft"
+            name="Set to Draft Invoices"
+            res_model="account.invoice.to.draft"/> -->
+        
+        <!-- <record id="unpost_account_move_view" model="ir.ui.view">
+            <field name="name">Unpost Journal Entries</field>
+            <field name="model">unpost.account.move</field>
+            <field name="arch" type="xml">
+                <form string="Unpost Journal Entries">
+                    <label for="All selected journal entries will be cancel and unposted. You won't be able to modify them afterwards."/>
+                    <footer>
+                        <button string="Unpost Journal Entries" name="cancel_move" type="object" default_focus="1" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_unpost_account_move" model="ir.actions.act_window">
+            <field name="name">Unpost Journal Entries</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">unpost.account.move</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="unpost_account_move_view"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+            <field name="help">This wizard will validate all journal entries selected. Once journal entries are cancelled, you can not update them anymore.</field>
+        	<field name="binding_model_id" ref="account.model_account_move" />
+        </record> -->
+        
+    </data>
+</odoo>
