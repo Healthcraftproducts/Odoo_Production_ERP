@@ -151,7 +151,7 @@ class RepairOrder(models.Model):
             raise UserError(_("Repair must be under repair in order to end reparation."))
         self._check_product_tracking()
         for repair in self:
-
+            self.is_return_id_repair = False
             repair.write({'repaired': True})
             vals = {'state': 'done'}
             vals['move_id'] = repair.action_repair_done().get(repair.id)
