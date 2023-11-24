@@ -237,7 +237,7 @@
         </field>
     </record>
     <!--change-->
-    <record id="product_form_inherit_id" model="ir.ui.view">
+    <record id="product_form_inherit_id_ext" model="ir.ui.view">
         <field name="name">product.template.common.form.inherit</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
@@ -250,9 +250,9 @@
                 <field name="obsolute_product"/>
             </xpath>
 
-            <xpath expr="//field[@name='default_code']" position="replace">
-                <field name="default_code" invisible="1"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='default_code']" position="replace">-->
+<!--                <field name="default_code" invisible="1"/>-->
+<!--            </xpath>-->
 
             <xpath expr="//form/sheet/div[@class='oe_title']/label" position='replace'>
 
