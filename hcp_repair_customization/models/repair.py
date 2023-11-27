@@ -260,7 +260,16 @@ class StockPickingInherit(models.Model):
             self.is_return_transfer = False
         return res
 
+class RepairLineExt(models.Model):
+    _inherit = 'repair.line'
 
+# To update cost price in repair line instead of sale price as per client requirement
+    @api.onchange('product_id')
+    def _onchange_product_uom(self):
+        if self.product_id:
+            self.price_unit = self.product_id.standard_price
+        else:
+            self.price_unit == 0.0
 
 
 
