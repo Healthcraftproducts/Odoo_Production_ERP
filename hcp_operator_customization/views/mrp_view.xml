@@ -19,6 +19,9 @@
                 <xpath expr="//button[@name='action_generate_serial']" position="attributes">
                     <attribute name="groups">mrp.group_mrp_manager</attribute>
                 </xpath>
+                <xpath expr="//field[@name='finished_lot_id']" position="attributes">
+                    <attribute name="options">{'no_create_edit': True, 'no_create':True}</attribute>
+                </xpath>
             </field>
         </record>
 
