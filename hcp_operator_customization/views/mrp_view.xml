@@ -58,54 +58,75 @@
         <!--            </field>-->
         <!--        </record>-->
 
-        <record id="mrp_production_form_view_inherited" model="ir.ui.view">
+        <record id="mrp_production_form_view_inherited_custom_ext" model="ir.ui.view">
             <field name="name">mrp.production.view.inherited</field>
             <field name="model">mrp.production</field>
             <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='button_mark_done'][1]" position="attributes">
-                    <attribute name="groups">hcp_operator_customization.group_mrp_operator</attribute>
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="groups">mrp.group_mrp_manager</attribute>
                 </xpath>
                 <xpath expr="//button[@name='button_mark_done'][4]" position="attributes">
-                    <attribute name="groups">hcp_operator_customization.group_mrp_operator</attribute>
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="groups">mrp.group_mrp_manager</attribute>
                 </xpath>
                 <xpath expr="//button[@name='button_mark_done'][2]" position="attributes">
-                    <attribute name="groups">hcp_operator_customization.group_mrp_operator</attribute>
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="groups">mrp.group_mrp_manager</attribute>
                 </xpath>
                 <xpath expr="//button[@name='button_mark_done'][3]" position="attributes">
-                    <attribute name="groups">hcp_operator_customization.group_mrp_operator</attribute>
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="groups">mrp.group_mrp_manager</attribute>
                 </xpath>
 
             </field>
         </record>
 
-        <record id="mrp_production_form_view_inherited_operator" model="ir.ui.view">
-            <field name="name">mrp.production.view.inherited.operator</field>
-            <field name="model">mrp.production</field>
-            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//button[@name='button_mark_done'][1]" position="attributes">
-                    <attribute name="groups">hcp_operator_customization.group_mrp_new_operator</attribute>
-                    <attribute name="invisible">0</attribute>
-                </xpath>
-                <xpath expr="//button[@name='button_mark_done'][4]" position="attributes">
-                    <attribute name="groups">hcp_operator_customization.group_mrp_new_operator</attribute>
-                    <attribute name="invisible">0</attribute>
-                </xpath>
-                <xpath expr="//button[@name='button_mark_done'][2]" position="attributes">
-                    <attribute name="groups">hcp_operator_customization.group_mrp_new_operator</attribute>
-                    <attribute name="invisible">0</attribute>
-                </xpath>
-                <xpath expr="//button[@name='button_mark_done'][3]" position="attributes">
-                    <attribute name="groups">hcp_operator_customization.group_mrp_new_operator</attribute>
-                    <attribute name="invisible">0</attribute>
-                </xpath>
-            </field>
-        </record>
+<!--        <record id="mrp_production_form_view_inherited" model="ir.ui.view">-->
+<!--            <field name="name">mrp.production.view.inherited</field>-->
+<!--            <field name="model">mrp.production</field>-->
+<!--            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//button[@name='button_mark_done'][1]" position="attributes">-->
+<!--                    <attribute name="groups">hcp_operator_customization.group_mrp_operator</attribute>-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//button[@name='button_mark_done'][4]" position="attributes">-->
+<!--                    <attribute name="groups">hcp_operator_customization.group_mrp_operator</attribute>-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//button[@name='button_mark_done'][2]" position="attributes">-->
+<!--                    <attribute name="groups">hcp_operator_customization.group_mrp_operator</attribute>-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//button[@name='button_mark_done'][3]" position="attributes">-->
+<!--                    <attribute name="groups">hcp_operator_customization.group_mrp_operator</attribute>-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        <record id="mrp_production_form_view_inherited_operator" model="ir.ui.view">-->
+<!--            <field name="name">mrp.production.view.inherited.operator</field>-->
+<!--            <field name="model">mrp.production</field>-->
+<!--            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//button[@name='button_mark_done'][1]" position="attributes">-->
+<!--                    <attribute name="groups">hcp_operator_customization.group_mrp_new_operator</attribute>-->
+<!--                    <attribute name="invisible">0</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//button[@name='button_mark_done'][4]" position="attributes">-->
+<!--                    <attribute name="groups">hcp_operator_customization.group_mrp_new_operator</attribute>-->
+<!--                    <attribute name="invisible">0</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//button[@name='button_mark_done'][2]" position="attributes">-->
+<!--                    <attribute name="groups">hcp_operator_customization.group_mrp_new_operator</attribute>-->
+<!--                    <attribute name="invisible">0</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//button[@name='button_mark_done'][3]" position="attributes">-->
+<!--                    <attribute name="groups">hcp_operator_customization.group_mrp_new_operator</attribute>-->
+<!--                    <attribute name="invisible">0</attribute>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
 
         <record id="stock_scrap_form_view_inherited" model="ir.ui.view">
             <field name="name">stock.scrap.form</field>
@@ -119,7 +140,7 @@
         </record>
 
         <record id="mrp.action_production_order_mark_done" model="ir.actions.server">
-            <field name="groups_id" eval="[(6, 0, [ref('mrp.group_mrp_user'),ref('mrp.group_mrp_manager')])]"/>
+            <field name="groups_id" eval="[(6, 0, [ref('mrp.group_mrp_manager')])]"/>
         </record>
 
         <menuitem id="mrp.menu_mrp_root" name="Manufacturing"
