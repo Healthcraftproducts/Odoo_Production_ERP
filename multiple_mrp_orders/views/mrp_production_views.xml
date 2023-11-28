@@ -24,5 +24,6 @@
                 action = model.action_done_show_wizard()
             </field>
         </record>
+
     </data>
 </odoo>
