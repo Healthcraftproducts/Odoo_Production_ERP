@@ -13,7 +13,7 @@
                     <attribute name="groups">mrp.group_mrp_manager</attribute>
                 </xpath>
                 <xpath expr="//button[@name='action_open_manufacturing_order']" position="attributes">
-                    <attribute name="groups">mrp.group_mrp_manager</attribute>
+                    <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//button[@name='action_generate_serial']" position="attributes">
                     <attribute name="groups">mrp.group_mrp_manager</attribute>
