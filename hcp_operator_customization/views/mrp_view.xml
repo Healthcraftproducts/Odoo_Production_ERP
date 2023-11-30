@@ -7,8 +7,7 @@
             <field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='record_production']" position="replace">
-                    <button name="record_production" type="object" string="Record production" barcode_trigger="record"
-                            class="btn-primary"/>
+                     <button name="record_production" type="object" string="Record production" attrs="{'invisible': ['|', ('current_quality_check_id', '!=', False),('is_last_lot', '=', True)]}" barcode_trigger="record" class="btn-primary"/>
                 </xpath>
                 <xpath expr="//button[@name='do_finish']" position="attributes">
                     <attribute name="groups">mrp.group_mrp_manager</attribute>
