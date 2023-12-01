@@ -13,8 +13,8 @@
                 <xpath expr="//form/sheet/notebook/page/field[@name='bom_line_ids']/tree/field[@name='product_uom_id']"
                        position="after">
                     <!--                    <field name="currency_id" invisible="1"/>-->
-                    <field name="purchase_cost"/>
-                    <field name="v"/>
+<!--                    <field name="purchase_cost"/>-->
+<!--                    <field name="v"/>-->
                     <field name="m" sum="Total Bom Cost"/>
                 </xpath>
             </field>

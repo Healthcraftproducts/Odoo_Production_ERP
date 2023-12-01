@@ -89,54 +89,38 @@
 
 <!-- Purchase Report -->
 
- <report
-            string="Request for Quotation"
-            id="purchase.report_purchase_quotation"
-            model="purchase.order"
-            report_type="qweb-pdf"
-            name="purchase.report_purchasequotation"
-            file="purchase.report_purchasequotation"
-            menu="False"
-            print_report_name="'Request for Quotation - %s' % (object.name)"
-        />
+    <record id="purchase.report_purchase_quotation" model="ir.actions.report">
+        <field name="binding_model_id"></field>
+    </record>
+    <record id="purchase.action_report_purchase_order" model="ir.actions.report">
+        <field name="binding_model_id"></field>
+    </record>
 
+       <record id="report_purchase_quotation_template_id" model="ir.actions.report">
+        <field name="name">Request for Quotation</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hcp_custom_reports.purchase_quotation_report_new_template_id</field>
+        <field name="report_file">hcp_custom_reports.purchase_quotation_report_new_template_id</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="print_report_name">'Request for Quotation - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
 
-        <report
-            string="Purchase Order"
-            id="purchase.action_report_purchase_order"
-            model="purchase.order"
-            report_type="qweb-pdf"
-            name="purchase.report_purchaseorder"
-            file="purchase.report_purchaseorder"
-            menu="False"
-            print_report_name="
-                (object.state in ('draft', 'sent') and 'Request for Quotation - %s' % (object.name) or
-                'Purchase Order - %s' % (object.name))"
-        />
+    <record id="report_purchase_order_template_id" model="ir.actions.report">
+        <field name="name">Purchase Order</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hcp_custom_reports.purchase_order_new_report_template_id</field>
+        <field name="report_file">hcp_custom_reports.purchase_order_new_report_template_id</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="print_report_name">
+            (object.state in ('draft', 'sent') and 'Request for Quotation - %s' % (object.name) or
+            'Purchase Order - %s' % (object.name))
+        </field>
+        <field name="binding_type">report</field>
+    </record>
 
-
-
- <report
-            string="Request for Quotation"
-            id="report_purchase_quotation_template_id"
-            model="purchase.order"
-            report_type="qweb-pdf"
-            name="hcp_custom_reports.purchase_quotation_report_new_template_id"
-            file="hcp_custom_reports.purchase_quotation_report_new_template_id"
-            print_report_name="'Request for Quotation - %s' % (object.name)"
-        />
-
-        <report
-            string="Purchase Order"
-            id="report_purchase_order_template_id"
-            model="purchase.order"
-            report_type="qweb-pdf"
-            name="hcp_custom_reports.purchase_order_new_report_template_id"
-            file="hcp_custom_reports.purchase_order_new_report_template_id"
-            print_report_name="
-                (object.state in ('draft', 'sent') and 'Request for Quotation - %s' % (object.name) or
-                'Purchase Order - %s' % (object.name))"
-        />
     <record id="paperformat_purchase_order" model="report.paperformat">
             <field name="name">Purchase Order Paper Format</field>
             <field name="default" eval="True"/>

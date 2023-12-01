@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--# commented in manifest due to requirement from client #FR/C/004-->
 <templates id="template" xml:space="preserve">
      <t t-inherit="mrp_workorder.MenuPopup" t-inherit-mode="extension">
          <xpath expr="//button[@name='addByProduct']" position="after">

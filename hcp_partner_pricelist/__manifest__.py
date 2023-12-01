@@ -17,4 +17,5 @@
         'data/crm_stage_data.xml',
     ],
     'application': True,
+    'license': 'LGPL-3'
 }

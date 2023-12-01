@@ -13,5 +13,8 @@
     'depends': ['base','sale'],
     'data': [
         'views/sales_report.xml',   
-    ],   
+    ],
+    "application": False,
+    "installable": True,
+    'license': 'LGPL-3'
 }

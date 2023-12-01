@@ -61,9 +61,9 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
-<!--            <xpath expr="//button[@name='action_open_label_layout']" position="attributes">-->
-<!--                <attribute name="invisible">1</attribute>-->
-<!--            </xpath>-->
+            <!--            <xpath expr="//button[@name='action_open_label_layout']" position="attributes">-->
+            <!--                <attribute name="invisible">1</attribute>-->
+            <!--            </xpath>-->
             <xpath expr='//field[@name="categ_id"]' position="replace">
                 <field name="categ_id" string="Accounting Category" optional="hide"/>
             </xpath>
@@ -237,7 +237,7 @@
         </field>
     </record>
     <!--change-->
-    <record id="product_form_inherit_id" model="ir.ui.view">
+    <record id="product_form_inherit_id_ext" model="ir.ui.view">
         <field name="name">product.template.common.form.inherit</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
@@ -250,9 +250,9 @@
                 <field name="obsolute_product"/>
             </xpath>
 
-            <xpath expr="//field[@name='default_code']" position="replace">
-                <field name="default_code" invisible="1"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='default_code']" position="replace">-->
+<!--                <field name="default_code" invisible="1"/>-->
+<!--            </xpath>-->
 
             <xpath expr="//form/sheet/div[@class='oe_title']/label" position='replace'>
 
@@ -291,9 +291,9 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
 
-<!--            <xpath expr="//button[@name='action_open_label_layout']" position="attributes">-->
-<!--                 <attribute name="invisible">1</attribute>-->
-<!--            </xpath>-->
+            <!--            <xpath expr="//button[@name='action_open_label_layout']" position="attributes">-->
+            <!--                 <attribute name="invisible">1</attribute>-->
+            <!--            </xpath>-->
 
             <xpath expr="//form/header" position='inside'>
 
@@ -339,17 +339,17 @@
                 <field name="default_code" invisible="1"/>
             </xpath>
 
-            <xpath expr="//form/sheet/div[@class='oe_title']/label[@class='oe_edit_only']" position='replace'>
-                <label class="oe_edit_only" for="name" string="Variant Description"/>
-            </xpath>
+            <!--            <xpath expr="//form/sheet/div[1]/label[2]" position='replace'>-->
+            <!--                <label class="oe_edit_only" for="product_description" string="Variant Description"/>-->
+            <!--            </xpath>-->
 
 
-            <xpath expr="//form/sheet/div[@class='oe_title']/label[@class='oe_edit_only']" position='before'>
-                <label class="oe_edit_only" for="default_code" string="Item Code"/>
-                <h1>
-                    <field name="default_code" placeholder="Item Code"/>
-                </h1>
-            </xpath>
+            <!--            <xpath expr="//form/sheet/div[@class='oe_title']/label[@class='oe_edit_only']" position='before'>-->
+            <!--                <label class="oe_edit_only" for="default_code" string="Item Code"/>-->
+            <!--                <h1>-->
+            <!--                    <field name="default_code" placeholder="Item Code"/>-->
+            <!--                </h1>-->
+            <!--            </xpath>-->
 
             <xpath expr="//field[@name='name']" position="replace">
                 <field name="product_description"/>
@@ -401,9 +401,9 @@
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
 
-<!--           <xpath expr="//button[@name='action_open_label_layout']" position="attributes">-->
-<!--                 <attribute name="invisible">1</attribute>-->
-<!--            </xpath>-->
+            <!--           <xpath expr="//button[@name='action_open_label_layout']" position="attributes">-->
+            <!--                 <attribute name="invisible">1</attribute>-->
+            <!--            </xpath>-->
             <xpath expr="//field[@name='detailed_type']" position="after">
                 <field name="product_categ_id"/>
                 <field name="product_sub_categ_id"/>
@@ -433,6 +433,24 @@
             </xpath>
             <xpath expr="//field[@name='hs_code']" position="after">
                 <field name="batch_size"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[4]" position="after">
+                <page string="Deringer Info" name="deringer_info">
+                    <group>
+                        <group>
+                            <field name="manufacturer_id" invisible="1"/>
+                            <field name="cust_fld2"/>
+                            <field name="cust_fld3"/>
+                            <field name="binding_rule"/>
+                        </group>
+                        <group>
+                            <field name="fda_listing"/>
+                            <!--                            <field name="deringer_uom_id"/>-->
+                            <field name="usmca_eligible"/>
+                            <field name="tarrif_number" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>
@@ -486,9 +504,9 @@
         <field name="inherit_id" ref="product.product_product_tree_view"/>
         <field eval="7" name="priority"/>
         <field name="arch" type="xml">
-<!--            <xpath expr="//button[@name='action_open_label_layout']" position="attributes">-->
-<!--                <attribute name="invisible">1</attribute>-->
-<!--            </xpath>-->
+            <!--            <xpath expr="//button[@name='action_open_label_layout']" position="attributes">-->
+            <!--                <attribute name="invisible">1</attribute>-->
+            <!--            </xpath>-->
             <xpath expr="//field[@name='lst_price']" position="before">
                 <field name="product_description" string="Variant Description"/>
             </xpath>
@@ -666,7 +684,7 @@
             <xpath expr="//field[@name='user_id']" position="attributes">
                 <attribute name="string">Purchase Representative</attribute>
             </xpath>
-             <xpath expr="//field[@name='date_order']" position="attributes">
+            <xpath expr="//field[@name='date_order']" position="attributes">
                 <attribute name="string">Order Date</attribute>
             </xpath>
         </field>
@@ -765,15 +783,25 @@
         </t>
     </template>
 
-    <report
-            id="report_product_product_barcode"
-            string="Product Barcode UPC"
-            model="product.product"
-            report_type="qweb-pdf"
-            name="hcp_product_ext.report_productbarcode"
-            file="hcp_product_ext.report_productbarcode"
-            print_report_name="'Products barcode - %s' % (object.name)"
-    />
+    <!--    <report-->
+    <!--            id="report_product_product_barcode"-->
+    <!--            string="Product Barcode UPC"-->
+    <!--            model="product.product"-->
+    <!--            report_type="qweb-pdf"-->
+    <!--            name="hcp_product_ext.report_productbarcode"-->
+    <!--            file="hcp_product_ext.report_productbarcode"-->
+    <!--            print_report_name="'Products barcode - %s' % (object.name)"-->
+    <!--    />-->
+    <record id="report_product_product_barcode" model="ir.actions.report">
+        <field name="name">Product Barcode UPC</field>
+        <field name="model">product.product</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hcp_product_ext.report_productbarcode</field>
+        <field name="report_file">hcp_product_ext.report_productbarcode</field>
+        <field name="binding_model_id" ref="product.model_product_product"/>
+        <field name="print_report_name">'Products barcode - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
     <!--     <record model="ir.ui.view" id="view_stock_quant_tree_id">
             <field name="name">stock.quant.tree</field>
             <field name="model">stock.quant</field>
@@ -785,6 +813,17 @@
             </field>
         </record>
      -->
+     <record model="ir.ui.view" id="view_stock_quant_tree_inventory_editable_custom_ext">
+        <field name="name">stock.quant.inventory.tree.editable.custom.ext</field>
+        <field name="model">stock.quant</field>
+        <field eval="10" name="priority"/>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_apply_inventory']" position="replace">
+                <button name="stock.action_stock_inventory_adjustement_name" groups="stock.group_stock_manager" type="action" string="Apply"/>
+            </xpath>
 
+        </field>
+     </record>
 
 </odoo>

@@ -13,6 +13,7 @@ from odoo.exceptions import ValidationError, RedirectWarning, UserError
 
 class OperatorBOMEfficiencyReport(models.TransientModel):
     _name = 'operator.bom.efficiency.report'
+    _description = 'Operator Bom Efficiency Report'
 
     def get_defalut_today_date(self):
         today = datetime.today().date()

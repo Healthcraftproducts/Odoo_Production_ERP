@@ -17,15 +17,16 @@
             <field name="dpi">90</field>
         </record>
 
-        <report
-            string="Product Discount Details"
-            id="action_report_discount_details"
-            model="sale.order"
-            report_type="qweb-pdf"
-            name="hcp_custom_reports.report_product_discount_details_given"
-            file="hcp_custom_reports.report_product_discount_details_given"
-            menu="False"
-        />
+<!--        <report-->
+<!--            string="Product Discount Details"-->
+<!--            id="action_report_discount_details"-->
+<!--            model="sale.order"-->
+<!--            report_type="qweb-pdf"-->
+<!--            name="hcp_custom_reports.report_product_discount_details_given"-->
+<!--            file="hcp_custom_reports.report_product_discount_details_given"-->
+<!--            menu="False"-->
+<!--        />-->
+
         <record id="hcp_custom_reports.action_report_discount_details" model="ir.actions.report">
             <field name="paperformat_id" ref="hcp_custom_reports.paperformat_discount_details_report"/>
         </record>
@@ -47,15 +48,15 @@
             <field name="dpi">90</field>
         </record>
 
-        <report
-            string="Discount Summary Report"
-            id="discount_summary_action_report"
-            model="sale.order"
-            report_type="qweb-pdf"
-            name="hcp_custom_reports.discount_summary_product_wise_report"
-            file="hcp_custom_reports.discount_summary_product_wise_report"
-            menu="False"
-        />
+<!--        <report-->
+<!--            string="Discount Summary Report"-->
+<!--            id="discount_summary_action_report"-->
+<!--            model="sale.order"-->
+<!--            report_type="qweb-pdf"-->
+<!--            name="hcp_custom_reports.discount_summary_product_wise_report"-->
+<!--            file="hcp_custom_reports.discount_summary_product_wise_report"-->
+<!--            menu="False"-->
+<!--        />-->
 
         <record id="hcp_custom_reports.discount_summary_action_report" model="ir.actions.report">
             <field name="paperformat_id" ref="hcp_custom_reports.discount_details_summary_paperformat_report"/>

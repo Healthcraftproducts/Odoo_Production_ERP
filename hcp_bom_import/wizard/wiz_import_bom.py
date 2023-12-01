@@ -31,6 +31,7 @@ except ImportError:
 
 class ImportBomData(models.TransientModel):
 	_name = "import.bom.data"
+	_description="BOM Import"
 
 	File_slect = fields.Binary(string="Select Excel File")
 	import_option = fields.Selection([('xls', 'XLS File')],string='Select',default='xls')

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="_shipping_barcode_ext" inherit_id="web.assets_backend">
+       <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/hcp_barcode_ext/static/src/css/barcode.css"/>
+            <script type="text/javascript" src="/hcp_barcode_ext/static/src/js/stock_picking.js"></script>
+       </xpath>
+    </template>
+</odoo>
