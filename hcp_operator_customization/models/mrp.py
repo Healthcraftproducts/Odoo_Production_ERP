@@ -23,9 +23,9 @@ class MrpProduction(models.Model):
         #self.env['procurement.group'].run_scheduler()
         #super(MrpProductionSchedule, self).action_replenish()
     def button_mark_done(self):
-        for workorder in self.workorder_ids:
-            if workorder.state != "done":
-                raise ValidationError("Some of your work orders are still pending")
+        #for workorder in self.workorder_ids:
+            #if workorder.state != "done":
+                #raise ValidationError("Some of your work orders are still pending")
         self._button_mark_done_sanity_checks()
         if not self.env.context.get('button_mark_done_production_ids'):
             self = self.with_context(button_mark_done_production_ids=self.ids)
