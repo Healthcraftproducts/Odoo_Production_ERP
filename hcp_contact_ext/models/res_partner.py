@@ -183,6 +183,7 @@ class ResPartner(models.Model):
 
 	@api.model
 	def create(self, vals):
+		customer_no = False
 		if 'hcp_is_customer' in vals and vals['hcp_is_customer'] == True:
 			if vals['hcp_is_customer'] == True and vals['company_type'] == 'company':
 				customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
