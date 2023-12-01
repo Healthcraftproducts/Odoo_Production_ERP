@@ -25,27 +25,27 @@
         <field name="view_id" eval="qc_image_upload_wizard"/>
         <field name="target">new</field>
     </record>
-
-    <record id="mrp_production_workorder_form_view_inherited_ext" model="ir.ui.view">
-        <field name="name">mrp.production.workorder.form.view.inherited</field>
-        <field name="model">mrp.workorder</field>
-        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='finished_steps']" position="after">
-                <page string="QC Images" name="workorder_qc_images">
-                    <group>
-                        <group>
-                            <field name="qc_image_ids" readonly="1">
-                                <tree>
-                                    <field name="image" widget="image" class="oe_left oe_avatar"/>
-                                </tree>
-                            </field>
-                        </group>
-                    </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
+<!--# commented due to requirement from client #FR/C/004-->
+<!--    <record id="mrp_production_workorder_form_view_inherited_ext" model="ir.ui.view">-->
+<!--        <field name="name">mrp.production.workorder.form.view.inherited</field>-->
+<!--        <field name="model">mrp.workorder</field>-->
+<!--        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//page[@name='finished_steps']" position="after">-->
+<!--                <page string="QC Images" name="workorder_qc_images">-->
+<!--                    <group>-->
+<!--                        <group>-->
+<!--                            <field name="qc_image_ids" readonly="1">-->
+<!--                                <tree>-->
+<!--                                    <field name="image" widget="image" class="oe_left oe_avatar"/>-->
+<!--                                </tree>-->
+<!--                            </field>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </page>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
     <!-- Adding Timesheet menu in the manufacturing modules-->
 
     <record id="act_hr_timesheet_manufacturing_line" model="ir.actions.act_window">
@@ -150,6 +150,9 @@
             <!--                <button name="post_inventory" string="Post Inventory" type="object"-->
             <!--                        attrs="{'invisible': [('post_visible', '=', False)]}"/>-->
             <!--            </xpath>-->
+             <xpath expr="//form/sheet/div[2]/h1/field[@name='priority']" position="replace">
+<!--                   To hide (star) priority field-->
+                </xpath>
 
             <xpath expr="//field[@name='user_id']" position="before">
                 <field name="release_date"/>
@@ -280,13 +283,13 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='inventory']" position='after'>
-                <page string='Documents'>
+<!--            <xpath expr="//page[@name='inventory']" position='after'>-->
+<!--                <page string='Documents'>-->
 
-                    <field name="attachments_id" widget="many2many_binary" string="Attach a file" label="Attachments"/>
+<!--                    <field name="attachments_id" widget="many2many_binary" string="Attach a file" label="Attachments"/>-->
 
-                </page>
-            </xpath>
+<!--                </page>-->
+<!--            </xpath>-->
 
             <xpath expr="//form/sheet/notebook/page/group[2]" position='replace'>
                 <group string="Description For Sales">
@@ -341,6 +344,16 @@
         </field>
     </record>
 
+ <record id="view_mrp_workorder_additional_product_wizard_inherit" model="ir.ui.view">
+            <field name="name">MRP Additional Product Inherit</field>
+            <field name="model">mrp_workorder.additional.product</field>
+            <field name="inherit_id" ref="mrp_workorder.view_mrp_workorder_additional_product_wizard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="attributes">
+                          <attribute name="options">{'no_create_edit': True, 'no_create':True, 'no_open':True}</attribute>
+                       </xpath>
+            </field>
+ </record>
 
     <!--    Adding timesheet in manufacturing module-->
 

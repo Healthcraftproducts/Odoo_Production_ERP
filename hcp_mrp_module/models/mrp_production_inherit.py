@@ -15,6 +15,8 @@ from odoo.modules.module import get_module_resource
 
 class QCImageUploadWizard(models.TransientModel):
     _name = "qc.image.upload"
+    _description = "Qc Image Upload"
+
     upload_image = fields.Binary('Upload Image')
 
     def upload_qc_image(self):
@@ -30,6 +32,8 @@ class QCImageUploadWizard(models.TransientModel):
 
 class MrpWorkOrderQCImages(models.Model):
     _name = 'mrp.workorder.qc.images'
+    _description = "Workorder Qc Images"
+
     image = fields.Binary(string='Image')
     workorder_id = fields.Many2one('mrp.workorder', string='Workorder ID')
 
@@ -261,6 +265,7 @@ class MrpBom(models.Model):
 class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
 
+    custom_ids = fields.One2many("mrp_workorder.additional.product", 'custom_id')
     hcp_priority = fields.Selection('Production Priority', readonly=True, related='production_id.priority',
                                     help='Technical: used in views only.')
     workcenter_department = fields.Selection('Department', readonly=True, related='workcenter_id.department')
@@ -268,4 +273,13 @@ class MrpWorkorder(models.Model):
     def name_get(self):
         return [(wo.id, "%s - %s - %s" % (wo.production_id.name, wo.product_id.display_name, wo.name)) for wo in self]
 
+class MrpWorkorderAdditionalProduct(models.TransientModel):
+    _inherit="mrp_workorder.additional.product"
+
+    custom_id = fields.Many2one("mrp.workorder","custom ID")
+
+    @api.onchange('product_id')
+    def onchange_product_tmpl_id(self):
+        bom_product_id = [rec.product_id.id for rec in self.workorder_id.production_id.move_raw_ids]
+        return {'domain': {'product_id': [('id', 'in', bom_product_id)]}}
    

@@ -12,10 +12,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','repair','stock'],
+    'depends': ['base','repair','stock','stock_account'],
 
     # always loaded
     'data': [
         'views/repair_views.xml',
     ],
+    "application": False,
+    "installable": True,
+    'license': 'LGPL-3'
 }
