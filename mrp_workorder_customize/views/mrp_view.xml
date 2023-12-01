@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+        <record id="mrp_workorder.mrp_workorder_view_form_tablet" model="ir.ui.view">
+            <field name="name">mrp.workorder.view.form.inherit.quality.tablet.new</field>
+            <field name="model">mrp.workorder</field>
+            <field name="arch" type="xml">
+                <form string="Production Workcenter" delete="0" create="0" class="o_workorder_tablet_form form_top">
+                    <field name="allow_producing_quantity_change" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="is_last_lot" invisible="1"/>
+                    <field name="is_last_unfinished_wo" invisible="1"/>
+                    <field name="is_user_working" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="product_tracking" invisible="1"/>
+                    <field name="working_state" invisible="1"/>
+                    <field name="production_id" invisible="1"/>
+                    <field name="current_quality_check_id" invisible="1"/>
+                    <div class="o_workorder_bar">
+                        <div class="o_workorder_bar_left o_workorder_bar_content">
+                            <button name="action_back" type="object" class="btn btn-secondary o_exit fa fa-arrow-left o_unblock" title="back"/>
+                            <div class="o_workorder_field">
+                                <field name="production_id" options="{'no_open': True}" readonly="1"/> - <field name="name" readonly="1"/>
+                            </div>
+                        </div>
+                        <div class="o_workorder_bar_center o_workorder_bar_content">
+                            <div class="o_workorder_field">
+                                <field name="product_id" context="{'display_default_code': False}" options="{'no_open': True}" readonly="1"/>
+                                <label for="qty_producing_custom" string=":"/>
+                                <field name="qty_producing" class="oe_inline text-start" attrs="{'readonly': ['|', '|', ('allow_producing_quantity_change', '=', False), ('product_tracking', '=', 'serial'), ('state', 'in', ('done', 'cancel'))]}" required="1" invisible='1'/>
+                                <field name="qty_producing_custom" class="oe_inline text-start" attrs="{'readonly': ['|', '|', ('allow_producing_quantity_change', '=', False), ('product_tracking', '=', 'serial'), ('state', 'in', ('done', 'cancel'))]}" required="1" invisible='0'/>
+                                / <field name="qty_remaining" class="oe_inline text-start" attrs="{'invisible': [('state', '=', 'done')]}"/> <field name="qty_production" class="oe_inline text-start" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+                                <label for="product_uom_id" string="" class="oe_inline"/>
+                                <field name="product_uom_id" options="{'no_open': True}" class="oe_inline" readonly="1"/>
+                            </div>
+                        </div>
+                        <div class="o_workorder_bar_right o_workorder_bar_content">
+                        </div>
+                    </div>
+                    <div class="o_workorder_bar">
+                        <div class="o_workorder_bar_left o_workorder_action o_workorder_bar_content">
+                            <button name="openMenuPopup" class="btn btn-secondary o_workorder_icon_btn fa fa-bars" type="workorder_event" title="menu"/>
+                            <span groups="mrp_workorder.group_mrp_wo_tablet_timer">
+                                <button name="button_pending" type="object" class="btn btn-secondary" attrs="{'invisible': ['|', ('is_user_working', '=', False), ('working_state', '=', 'blocked')]}" barcode_trigger="pause" string="PAUSE"/>
+                                <button name="button_start" type="object" class="btn btn-warning" attrs="{'invisible': ['|', '|', ('is_user_working', '=', True), ('working_state', '=', 'blocked'), ('state', 'in', ('done', 'cancel'))]}" barcode_trigger="pause" string="CONTINUE"/>
+                                <button name="button_unblock" type="object" class="btn btn-secondary btn-danger o_unblock" attrs="{'invisible': [('working_state', '!=', 'blocked')]}">Unblock</button>
+                                <field name="duration" widget="mrp_timer" class="ms-1" readonly="1"/>
+                            </span>
+                        </div>
+                        <div class="o_workorder_bar_center o_workorder_bar_content">
+                            <div class="o_workorder_field o_workorder_lot">
+                                <div attrs="{'invisible': [('product_tracking', '=', 'none')]}">
+                                    <label for="finished_lot_id" string="Lot" attrs="{'invisible': [('product_tracking', '!=', 'lot')]}"/>
+                                    <label for="finished_lot_id" string="Serial" attrs="{'invisible': [('product_tracking', '!=', 'serial')]}"/>
+                                    <field name="finished_lot_id" context="{'default_product_id': product_id, 'default_company_id': company_id}" domain="[('product_id', '=', product_id)]"/>
+                                    <button name="action_generate_serial" type="object" class="btn btn-secondary fa fa-plus-square-o" aria-label="Creates a new serial/lot number" title="Creates a new serial/lot number" role="img" attrs="{'invisible': [('finished_lot_id', '!=', False)]}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_workorder_bar_right o_workorder_bar_content">
+                            <button name="do_finish" type="object" string="Mark as Done" icon="fa-check" attrs="{'invisible': ['|', ('current_quality_check_id', '!=', False), '&amp;', ('is_last_unfinished_wo', '=', False), ('is_last_lot', '=', False)]}" class="btn-primary" barcode_trigger="cloWO"/>
+                            <button name="action_open_manufacturing_order" type="object" string="Mark as Done and Close MO" icon="fa-check" attrs="{'invisible': ['|', ('current_quality_check_id', '!=', False), ('is_last_unfinished_wo', '=', False)]}" class="btn-primary" barcode_trigger="cloMO"/>
+                            <button name="record_production" type="object" string="Record production" attrs="{'invisible': ['|', '|', ('current_quality_check_id', '!=', False), ('is_last_unfinished_wo', '=', True), ('is_last_lot', '=', True)]}" barcode_trigger="record" class="btn-primary"/>
+                        </div>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="mrp_workorder_view_form_tablet_inherit_rcp" model="ir.ui.view">
+            <field name="name">mrp.workorder.view.inherit.hcp.rcp</field>
+            <field name="model">mrp.workorder</field>
+            <field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='record_production']" position="replace">
+                     <button name="record_production" type="object" string="Record production" barcode_trigger="record" class="btn-primary"/>
+                </xpath>
+                <xpath expr="//button[@name='do_finish']" position="attributes">
+                    <attribute name="groups">mrp.group_mrp_manager</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_open_manufacturing_order']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_generate_serial']" position="attributes">
+                    <attribute name="groups">mrp.group_mrp_manager</attribute>
+                </xpath>
+                <xpath expr="//field[@name='finished_lot_id']" position="attributes">
+                    <attribute name="options">{'no_create_edit': True, 'no_create':True}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="mrp_production_workorder_tree_editable_view_inherit_workorder1" model="ir.ui.view">
+            <field name="name">mrp.production.work.order.tree.editable.inherit.mrp.workorder</field>
+            <field name="model">mrp.workorder</field>
+            <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='open_tablet_view']" position="replace">
+                    <button name="open_tablet_view" type="object" icon="fa-tablet" title="Open Sumit View" context="{'from_production_order': True}" attrs="{'invisible': ['|', ('production_state', 'in', ('draft', 'cancel', 'done')), ('state', '=', 'done')]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
