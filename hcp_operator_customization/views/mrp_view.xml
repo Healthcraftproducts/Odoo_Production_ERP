@@ -74,7 +74,9 @@
                 <xpath expr="//button[@name='button_mark_done'][3]" position="attributes">
                     <attribute name="groups">mrp.group_mrp_manager</attribute>
                 </xpath>
-
+                <xpath expr="//form/header" position='inside'>
+                    <button name="update_workorder_qty1" string="Update Backorder Qty" type="object" attrs="{'invisible': [('state', 'not in', ('confirmed','progress'))]}" class="oe_highlight"/>
+                </xpath>
             </field>
         </record>
 

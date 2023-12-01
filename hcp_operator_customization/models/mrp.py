@@ -112,6 +112,22 @@ class MrpProduction(models.Model):
             })
         return action
 
+    def update_workorder_qty1(self):
+        for mrp in self:
+            for workorder in mrp.workorder_ids.filtered(lambda x:x.state != 'cancel'):
+                backorder_ids = self.procurement_group_id.mrp_production_ids.ids
+                total_qty_produced=0
+                # pdb.set_trace()
+                for mrp_line in backorder_ids:
+                    mrp_production = self.sudo().search([('id', '=', mrp_line)])
+                    domain11 = [('production_id', '=', mrp_production.id), ('workcenter_id', '=', workorder.id)]
+                    mrp_workorder = self.env['mrp.workorder'].sudo().search(domain11)
+                    for workorder_line1 in mrp_workorder:
+                        pdb.set_trace()
+                        total_qty_produced += workorder_line1.qty_produced
+                # value = workorder.production_id.original_quantity_production - workorder.production_id.product_uom_qty
+                workorder.write({'qty_reported_from_previous_wo': total_qty_produced})
+                    
 class StockScrap(models.Model):
     _inherit="stock.scrap"
 
