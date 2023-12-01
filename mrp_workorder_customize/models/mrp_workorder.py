@@ -53,6 +53,8 @@ class MrpProductionWorkcenterLine(models.Model):
     #             line.qty_producing_custom = line.qty_remaining
 
     qty_producing_custom = fields.Float(string='Current Quantity', digits='Product Unit of Measure', copy=False)
+    record_qty_production = fields.Float(string='Produced', digits='Product Unit of Measure', copy=False)
+    record_qty_production1 = fields.Float(string='Produced1', digits='Product Unit of Measure', copy=False)
 
     # @api.depends('production_id.qty_producing')
     # def _compute_qty_producing_custom1(self):
@@ -107,6 +109,7 @@ class MrpProductionWorkcenterLine(models.Model):
                 value = (workorder.qty_produced + workorder.qty_producing_custom)
             vals = {
                 'qty_produced': value,
+                'record_qty_production': value,
                 'state': 'done',
                 'date_finished': end_date,
                 'date_planned_finished': end_date,

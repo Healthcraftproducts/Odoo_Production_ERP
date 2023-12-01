@@ -74,7 +74,24 @@
                 <xpath expr="//button[@name='button_mark_done'][3]" position="attributes">
                     <attribute name="groups">mrp.group_mrp_manager</attribute>
                 </xpath>
+                <xpath expr="//field[@name='release_date']" position="after">
+                    <field name="update_backorder" invisible="1"/>
+                </xpath>
+                <xpath expr="//form/header" position='inside'>
+                    <button name="update_workorder_qty1" string="Update Backorder Qty" type="object" attrs="{'invisible': ['|',('state', 'not in', ('confirmed','progress')),('update_backorder','=',True)]}" class="oe_highlight"/>
+                </xpath>
+            </field>
+        </record>
 
+        <record model="ir.ui.view" id="mrp_production_workorder_tree_editable_view_inherit_custom">
+            <field name="name">mrp.production.work.order.tree.editable.custom</field>
+            <field name="model">mrp.workorder</field>
+            <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='duration']" position="after">
+                    <field name="qty_reported_from_previous_wo" optional="hide" readonly="0"/>
+                </xpath>
             </field>
         </record>
 
