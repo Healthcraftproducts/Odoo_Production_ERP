@@ -135,7 +135,7 @@
                 </ul>
             </xpath>
 
-            <xpath expr='//div[@class="oe_kanban_details"]/div[3]' position="replace">
+          <!--  <xpath expr='//div[@class="oe_kanban_details"]/div[3]' position="replace">
                 <ul>
                     <li>
                         <strong>Quantity On Hand:
@@ -144,7 +144,7 @@
                     </li>
                 </ul>
 
-            </xpath>
+            </xpath>-->
             <xpath expr='//div[@class="oe_kanban_details"]/t[1]' position="replace">
                 <t t-if="record.default_code.value">
                     <field name="default_code" on_change="1" invisible="1"/>
