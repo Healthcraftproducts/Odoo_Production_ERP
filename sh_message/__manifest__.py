@@ -23,5 +23,4 @@ create Success, warnings, alert message box wizard,success popup message app, al
     "images": ["static/description/background.jpg", ],
     "auto_install":False,
     "installable" : True,
-    'license': 'LGPL-3'
 }

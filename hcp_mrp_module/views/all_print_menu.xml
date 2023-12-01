@@ -2,55 +2,45 @@
 
 
 <odoo>
-    <data>
+  <data>
+   
+    <!-- <report 
+            string="QC Report" 
+            id="hcp_qc_template_id" 
+            model="mrp.production" 
+            name="hcp_mrp_module.qc_inspection_report_template_id"
+            file="hcp_mrp_module.qc_inspection_report_template_id" 
+            report_type="qweb-pdf"
+            
+        />
+ -->
 
-        <!-- <report
-                string="QC Report"
-                id="hcp_qc_template_id"
-                model="mrp.production"
-                name="hcp_mrp_module.qc_inspection_report_template_id"
-                file="hcp_mrp_module.qc_inspection_report_template_id"
-                report_type="qweb-pdf"
-
-            />
-     -->
-
-        <!--<report -->
-        <!--            string="Production Order" -->
-        <!--            id="mrp.action_report_production_order" -->
-        <!--            model="mrp.production" -->
-        <!--            name="mrp.report_mrporder"-->
-        <!--            file="mrp.report.mrp_production_templates" -->
-        <!--            report_type="qweb-pdf"-->
-        <!--            print_report_name="'Production Order - %s' % object.name"-->
-        <!--            menu="False"-->
-        <!--        />-->
-        <record id="mrp.action_report_production_order" model="ir.actions.report">
-            <field name="binding_model_id"></field>
-        </record>
-
-        <record id="action_report_production_order" model="ir.actions.report">
-            <field name="name">Production Orders</field>
-            <field name="model">mrp.production</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">hcp_mrp_module.mrp_production_order_report_template_id</field>
-            <field name="report_file">hcp_mrp_module.mrp_production_order_report_template_id</field>
-            <field name="binding_model_id" ref="mrp.model_mrp_production"/>
-            <field name="print_report_name">'Production Order - %s' % object.name</field>
-            <field name="binding_type">report</field>
-        </record>
-
-        <!--<report -->
-        <!--            string="Production Orders" -->
-        <!--            id="action_report_production_order" -->
-        <!--            model="mrp.production" -->
-        <!--            name="hcp_mrp_module.mrp_production_order_report_template_id"-->
-        <!--            file="hcp_mrp_module.views.mrp_production_report_inherit" -->
-        <!--            report_type="qweb-pdf"-->
-        <!--            print_report_name="'Production Order - %s' % object.name"-->
-        <!--        />-->
+<report 
+            string="Production Order" 
+            id="mrp.action_report_production_order" 
+            model="mrp.production" 
+            name="mrp.report_mrporder"
+            file="mrp.report.mrp_production_templates" 
+            report_type="qweb-pdf"
+            print_report_name="'Production Order - %s' % object.name"
+            menu="False"
+        />
 
 
-    </data>
+<report 
+            string="Production Orders" 
+            id="action_report_production_order" 
+            model="mrp.production" 
+            name="hcp_mrp_module.mrp_production_order_report_template_id"
+            file="hcp_mrp_module.views.mrp_production_report_inherit" 
+            report_type="qweb-pdf"
+            print_report_name="'Production Order - %s' % object.name"
+        />
+
+
+
+
+  
+</data>
 
 </odoo>

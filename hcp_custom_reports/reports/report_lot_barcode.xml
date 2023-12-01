@@ -10,7 +10,6 @@
                 file="hcp_custom_reports.report_lot_serial_label"
                 print_report_name="'Lot-Serial - %s' % object.name"
         />
-
         <record id="report_lot_serial_paperformats" model="report.paperformat">
             <field name="name">Paper Format Lot/Serial Number(UPC)</field>
             <field name="default" eval="True"/>
@@ -36,7 +35,7 @@
                             <br/>
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                             <div style="padding-top:5px;">
-                               <p style="font-size: 30px;"><b><span t-field="o.product_id.display_name"/></b></p>
+                               <p style="font-size: 30px;"><b><span t-field="o.product_id.display_name"/></b></p> 
                             </div>
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                             <div>

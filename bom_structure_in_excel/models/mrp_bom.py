@@ -341,7 +341,7 @@ class MrpBom(models.Model):
         stream = io.BytesIO()
         workbook.save(stream)
         attach_id = self.env['custom.mrp.bom.structure.excel'].create(
-            {'name': 'BOM Structure.xls', 'xls_output': base64.encodebytes(stream.getvalue())})
+            {'name': 'BOM Structure.xls', 'xls_output': base64.encodestring(stream.getvalue())})
         return {
             'context': self.env.context,
             'view_type': 'form',

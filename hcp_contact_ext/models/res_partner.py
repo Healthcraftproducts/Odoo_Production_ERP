@@ -14,7 +14,6 @@ from collections import OrderedDict, defaultdict
 
 class DisplaysHealthcraft(models.Model):
 	_name = 'displays.healthcraft'
-	_description = 'Display Healthcraft'
 	_rec_name ='name'
 
 	name = fields.Char(string='Name', required=True)
@@ -22,7 +21,6 @@ class DisplaysHealthcraft(models.Model):
 
 class DisplaysInvisia(models.Model):
 	_name = 'displays.invisia'
-	_description = 'Display invisia'
 	_rec_name = 'name'
 
 	name = fields.Char(string='Name', required=True)
@@ -30,7 +28,6 @@ class DisplaysInvisia(models.Model):
 
 class HCPFederalTax(models.Model):
 	_name = 'hcp.federal.tax'
-	_description = 'HCp Federal Tax'
 	_rec_name = 'federal_tax_name'
 
 	federal_tax_name = fields.Char(string='Tax Name')
@@ -38,7 +35,6 @@ class HCPFederalTax(models.Model):
 
 class ContactTraining(models.Model):
 	_name = 'contact.training'
-	_description = 'Contact Training'
 	_rec_name = 'contact_training_name'
 
 	contact_training_name = fields.Char(string="Name")
@@ -46,14 +42,12 @@ class ContactTraining(models.Model):
 
 class ContactsDesignation(models.Model):
 	_name = 'contacts.designation'
-	_description = 'Contacts Designation'
 	_rec_name ='contact_designation_name'
 
 	contact_designation_name = fields.Char(string="Name")
 
 class ContactsRole(models.Model):
 	_name = 'contact.role'
-	_description = 'Contact Role'
 	_rec_name = 'contact_role_name'
 
 	contact_role_name = fields.Char(string="Name")
@@ -75,6 +69,13 @@ class DeliveryCarrier(models.Model):
 class ResPartner(models.Model):
 	_inherit = 'res.partner'
 
+
+	#def name_get(self):
+		## name get function for the model executes automatically
+		#res = []
+		#for rec in self:
+			#res.append((rec.id, '%s' % (rec.name)))
+		#return res
 
 	@api.depends('is_company')
 	def _compute_company_type(self):
@@ -199,13 +200,6 @@ class ResPartner(models.Model):
 				vals.update({'hcp_customer_id': main_company.hcp_customer_id,'hcp_vendor_no': main_company.hcp_vendor_no,'hcp_is_customer':main_company.hcp_is_customer,'hcp_is_vendor':main_company.hcp_is_vendor,'property_delivery_carrier_id':main_company.property_delivery_carrier_id.id,'hcp_ship_via_description':main_company.hcp_ship_via_description})
 		res = super(ResPartner, self).create(vals)
 		return res
-
-	#def name_get(self):
-		## name get function for the model executes automatically
-		#res = []
-		#for rec in self:
-			#res.append((rec.id, '%s' % (rec.name)))
-		#return res
 
 	# @api.onchange('company_id', 'parent_id')
 	# def _onchange_company_id(self):

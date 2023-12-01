@@ -33,8 +33,6 @@ class ProductTemplate(models.Model):
 
 	# xdesc = fields.Char(string="XDesc")
 	# sales = fields.Char(string="Sales(Connect Sage300)")
-	product_variant_id = fields.Many2one('product.product', 'Product', compute='_compute_product_variant_id',
-										 search=True, )
 	cust_fld2 = fields.Char(string="HTS Code")
 	cust_fld3 = fields.Many2one('res.country',string="Origin Of Country")
 	status = fields.Selection([('0','Active'),('1','Inactive'),('2','R&D')],string="Status",default='0')
@@ -46,7 +44,7 @@ class ProductTemplate(models.Model):
 	name = fields.Char('Product Description', index=True, required=True, translate=True)
 	default_code = fields.Char('Item Code', compute='_compute_default_code',inverse='_set_default_code', store=True)
 	fda_listing = fields.Char(string="FDA Listing#")
-	# deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
+	deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
 	usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
 	manufacturer_id = fields.Char('MID')
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
@@ -105,7 +103,7 @@ class ProductMaster(models.Model):
 	fda_listing = fields.Char(string="FDA Listing#")
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 	obsolute_product = fields.Boolean('Obsolute Product')
-	# deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
+	deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
 	usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
 	manufacturer_id = fields.Char('MID')
 	tarrif_number = fields.Many2many('tariff.number', 'tariff_number_rel', 'product_id', 'tariff_id',string='Tariff Number', copy=False,)
@@ -354,8 +352,7 @@ class StockQuant(models.Model):
 			if float_is_zero(quantity, precision_rounding=rounding) or float_is_zero(available_quantity, precision_rounding=rounding):
 				break
 		return reserved_quants
-
-
+    
 class Pricelist(models.Model):
 	_inherit = "product.pricelist"
 
@@ -364,8 +361,3 @@ class Pricelist(models.Model):
 		if self.item_ids:
 			for line in self.item_ids:
 				line.unlink()
-
-class StockInventoryAdjustmentNameInherit(models.TransientModel):
-		_inherit = 'stock.inventory.adjustment.name'
-
-		inventory_adjustment_name = fields.Char(default="",required=1)

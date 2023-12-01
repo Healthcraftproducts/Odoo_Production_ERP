@@ -24,7 +24,6 @@ from odoo import models, fields, api, _
 
 class MrpProductWizard(models.TransientModel):
     _name = 'mrp.product.produce.wizard'
-    _description = "Product Produce Line"
 
     produce_line_ids = fields.One2many('mrp.product.produce.wizard.line', 'product_produce_id',
                                        string='Product to Track')

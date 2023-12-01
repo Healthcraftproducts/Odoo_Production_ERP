@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-       <record id="bi_mo_mass_produce.action_bulk_mo_produce_wizard" model="ir.actions.act_window">
+       <record id="multiple_mrp_orders.mrp_production_done_action_server" model="ir.actions.server">
           <field name="groups_id" eval="[(6, 0, [ref('mrp.group_mrp_user'),ref('mrp.group_mrp_manager')])]" />
        </record>
     </data>

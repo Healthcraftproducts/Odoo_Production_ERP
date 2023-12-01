@@ -15,14 +15,10 @@
     ],
     'application': True,
     'uninstall_hook': 'uninstall_hook',
-    'license': 'LGPL-3',
 
 'assets': {
     'web.assets_backend': [
-        # 'hcp_operator_customization/static/src/components/menuPopup.js',
-        # 'hcp_operator_customization/static/src/**/*.xml',
-        # 'hcp_operator_customization/static/src/components/menupopupA.xml',
-        # 'hcp_operator_customization/static/src/components/menupopupB.xml',
+        'hcp_operator_customization/static/src/**/*.xml',
     ],
 },
 }

@@ -12,11 +12,7 @@
     'version': '0.1',
     'depends': ['base','mrp'],
     'data': [
-        'report/workorder_report.xml',
-        'report/report_mrp.xml',
+        'report/workorder_report.xml',  
         'report/report.xml',  
-    ],
-    "application": False,
-    "installable": True,
-    'license': 'LGPL-3'
+    ],   
 }

@@ -51,7 +51,7 @@ class StockRule(models.Model):
     
     def _prepare_mo_vals(self, product_id, product_qty, product_uom, location_id, name, origin, company_id, values, bom):
         vals = super(StockRule ,self)._prepare_mo_vals(product_id, product_qty, product_uom, location_id, name, origin, company_id, values,bom)
-        mo_reference = values.get('mo_reference')
+        mo_reference = values['mo_reference']
         if origin != 'MPS':
             mrp_obj = self.env['mrp.production'].search([('name','=', origin)])
             mps_origin = mrp_obj.mo_reference

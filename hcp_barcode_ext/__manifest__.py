@@ -10,7 +10,6 @@
     'website': "http://www.navabrindsol.com",
     'category': 'Uncategorized',
     'version': '0.1',
-    'license': 'LGPL-3',
 
     'depends': ['base', 'web', 'stock_barcode'],
     'qweb': [
@@ -22,11 +21,6 @@
             'hcp_barcode_ext/static/src/**/*.js',
             '/hcp_barcode_ext/static/src/**/*.xml',
         ],
-
-    "application": False,
-    "installable": True,
-
-
     },
 
 

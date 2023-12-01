@@ -7,14 +7,12 @@
     'version': '1.0',
     'author' : 'nits',
     'description': "HCP Operator Lot restriction for create",
-    'depends': ['stock','hcp_operator_customization','mrp'],
+    'depends': ['stock','hcp_operator_customization','multiple_mrp_orders','mrp'],
     'installable': True,
     'data': [  
         'security/ir.model.access.csv',
-        # 'views/view.xml',
+        'views/view.xml',
     ],
     "installable": True,
-    "application": False,
-    'license': 'LGPL-3',
 }
 

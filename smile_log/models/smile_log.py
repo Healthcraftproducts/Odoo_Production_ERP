@@ -34,7 +34,7 @@ class SmileLog(models.Model):
                 log.log_res_name = infos[0][1]
 
     log_date = fields.Datetime('Date', readonly=True)
-    log_uid = fields.Integer('User ', readonly=True)
+    log_uid = fields.Integer('User', readonly=True)
     log_user_name = fields.Char(
         string='User', size=256, compute='_get_user_name')
     log_res_name = fields.Char(
