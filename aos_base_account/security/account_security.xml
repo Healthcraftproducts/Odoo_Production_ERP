@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+		<record id="group_show_line_subtotals_tax_basis" model="res.groups">
+		    <field name="name">Tax Basis display</field>
+		    <field name="comment">Show line subtotals taxes basis</field>
+		    <field name="category_id" ref="base.module_category_hidden"/>
+		</record>
+		
+		<record id="group_show_line_subtotals_tax_amount" model="res.groups">
+		    <field name="name">Tax Amount display</field>
+		    <field name="comment">Show line subtotals with taxes amount</field>
+		    <field name="category_id" ref="base.module_category_hidden"/>
+		</record>
+    
+	    <!-- <record id="group_accounting_configurations" model="res.groups">
+	        <field name="name">Settings</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_manager'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+	        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+	    </record> -->
+
+    	<record model="ir.module.category" id="module_category_accounting_and_finance_aos">
+            <field name="name">Accounting &amp; Finance Access</field>
+            <field name="sequence">2</field>
+            <field name="visible" eval="1" />
+        </record>
+        
+        <record id="account.group_account_user" model="res.groups">
+	        <field name="name">Show Full Accounting Features</field>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+	    
+        <record id="group_down_payment_accrue" model="res.groups">
+	        <field name="name">Down Payment Accrue</field>
+	        <field name="category_id" ref="base.module_category_hidden"/>
+	        <field name="comment">Handle Down Payment by Accrue</field>
+	    </record>
+	    
+	    <record id="group_invoicing_dashboard" model="res.groups">
+	        <field name="name">Finance Dashboard</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="aos_base_account.module_category_accounting_and_finance_aos"/>
+	    </record>
+	    <record id="group_accounting_dashboard" model="res.groups">
+	        <field name="name">Accounting Dashboard</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="aos_base_account.module_category_accounting_and_finance_aos"/>
+	    </record>
+	    
+	    <record id="group_accounting_receivable" model="res.groups">
+	        <field name="name">Receivable</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+
+	    <record id="group_accounting_payment_receivable" model="res.groups">
+	        <field name="name">Customer Payments</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+
+	    <record id="group_accounting_payable" model="res.groups">
+	        <field name="name">Payable</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+
+	    <record id="group_accounting_payment_payable" model="res.groups">
+	        <field name="name">Vendor Payments</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+	    <!-- <record id="group_accounting_cash_and_bank" model="res.groups">
+	        <field name="name">Cash &amp; Bank</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_manager'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record> -->
+	    
+	    
+	    <record id="group_general_operations" model="res.groups">
+	        <field name="name">General Operations</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+	    <record id="group_accounting_faktur_pajak" model="res.groups">
+	        <field name="name">Faktur Pajak</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+
+	    <record id="group_accounting_taxes" model="res.groups">
+	        <field name="name">Taxes</field>
+	        <field name="implied_ids" eval="[(4, ref('aos_base_account.group_accounting_faktur_pajak'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+
+	    <record id="group_accounting_reports" model="res.groups">
+	        <field name="name">Accounting Reports</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+
+	    <record id="group_invoicing_reports" model="res.groups">
+	        <field name="name">Invoicing Reports</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+	    
+	    <record id="group_stock_adjustment_valuation" model="res.groups">
+	        <field name="name">Adjustment Valuation</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+	    
+	    <record id="group_force_delete_entry" model="res.groups">
+	        <field name="name">Force Delete Entry</field>
+	        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+	    
+	    <record id="group_account_settings" model="res.groups">
+	        <field name="name">Settings</field>
+	        <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+	        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+	        <field name="category_id" ref="module_category_accounting_and_finance_aos"/>
+	    </record>
+
+</data>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="mrp_workorder.MenuPopup" owl="1">
+        <div role="dialog" class="popup">
+            <div class="popup-selection">
+                <header class="title h3" t-esc="title"/>
+                <div class="button_list">
+                    <button t-if="isSystemUsers" class="btn btn-danger text-uppercase" t-on-click="block">Block</button>
+                    <button class="btn btn-primary" t-on-click="() => this.callAction('button_scrap')">Scrap</button>
+                    <button class="btn btn-primary" t-on-click="() => this.callAction('action_add_component')">Add Component</button>
+                    <button class="btn btn-primary" t-on-click="() => this.callAction('action_add_byproduct')" name="addByProduct">Add By-product</button>
+
+                    <t t-if="props.popupData.has_bom">
+                        <span><h2>Suggest a Worksheet improvement</h2></span>
+                        <t t-if="step">
+                            <button class="btn btn-primary" t-on-click="() => this.proposeChange('update_step', 'Update Instructions', 'Your New Instructions feedback was created')">Update Instructions</button>
+                            <button class="btn btn-primary" t-on-click="() => this.proposeChange('remove_step', 'Remove Step', 'Your feedback to delete this step was created')">Delete this Step</button>
+                        </t>
+                        <button class="btn btn-primary" t-on-click="() => this.callAction('action_add_step')">Add a Step</button>
+                        <t t-if="step">
+                            <button class="btn btn-primary" t-on-click="() => this.proposeChange('set_picture', 'Change Picture', '')">Set a New picture</button>
+                        </t>
+                    </t>
+                </div>
+            </div>
+            <footer class="footer">
+                <div class="btn cancel text-uppercase" t-on-click="cancel">Cancel</div>
+            </footer>
+        </div>
+    </t>
+</templates>

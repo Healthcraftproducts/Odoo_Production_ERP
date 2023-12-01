@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="stock_barcode.MainComponent" t-inherit-mode="extension" owl="1">
+         <xpath expr="//button[hasclass('o_validate_page')]" position="after">
+             <button
+                     class="btn btn-secondary text-uppercase" t-on-click="_backToPage3"><i class="fa fa-angle-left mr-5 "/> Back </button>
+         </xpath>
+    </t>
+</templates>

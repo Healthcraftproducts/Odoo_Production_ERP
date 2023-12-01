@@ -14,18 +14,13 @@
             groups="mrp.group_mrp_manager"
             sequence="1"
             parent="mrp_forecast_main_menu"/>
+<!--this report not available in odoo16 so its commented-->
 
-        <menuitem id="menu_forecast_inventory_mrp" 
-            name="Forecast Report" 
-            parent="mrp_forecast_main_menu"
-            sequence="2" 
-            action="stock.report_stock_quantity_action"/>
-
-        <template id="mrp_mps_inherited_qweb" name="extended MPS" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/hcp_mrp_customization/static/src/js/qweb_template.js"></script>
-            </xpath>
-        </template>
+<!--        <menuitem id="menu_forecast_inventory_mrp" -->
+<!--            name="Forecast Report" -->
+<!--            parent="mrp_forecast_main_menu"-->
+<!--            sequence="2" -->
+<!--            action="stock.report_stock_quantity_action"/>-->
 
     </data>
 </odoo>

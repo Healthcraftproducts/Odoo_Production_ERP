@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_lot_label_inherit_id" inherit_id="stock.report_lot_label">
+        <xpath expr="//t[@t-call='web.basic_layout']" position="replace">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                        <div class="page">
+                            <table style="border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding-top: 5px;padding-bottom: 25px;border-top:2px solid gray;border-left-style:hidden;border-right-style:hidden;font-size: 25px;">
+                                        <span><b><span t-field="o.product_id.display_name"/></b></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 20px;padding-bottom: 25px;border-top:2px solid gray;border-left-style:hidden;border-right-style:hidden;font-size: 20px;">
+                                        <span>LN/SN:
+                                            <span t-field="o.name"/></span> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 20px;padding-bottom: 25px;border-top-style:2px solid gray;border-left-style:hidden;border-right-style:hidden;border-bottom-style:hidden;">
+                                        <t t-if="o.product_id.barcode">
+                                                    <div t-field="o.product_id.barcode" t-options="{'widget': 'barcode', 'width': 600, 'height': 70}"/>
+                                                </t>
+                                        <t t-else="">
+                                            <span class="text-muted">No Barcode Available</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="page-break-before:always;"> </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>

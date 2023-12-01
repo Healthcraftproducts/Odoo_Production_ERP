@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		
+        <!-- <menuitem name="Invoicing"
+            id="account.menu_finance"
+            groups="account.group_account_invoice"
+            web_icon="account,static/description/icon.png"
+            sequence="40"/>
+        
+		<menuitem id="account.menu_finance_receivables"
+			groups="aos_base_account.group_accounting_receivable"
+			name="Customers" parent="account.menu_finance" sequence="2" />
+		<menuitem action="account.action_account_payments" id="account.menu_action_account_payments_receivable" 
+			groups="aos_base_account.group_accounting_payment_receivable"
+			parent="account.menu_finance_receivables" sequence="15"/>
+			
+		<menuitem id="account.menu_finance_payables" name="Vendors"
+			groups="aos_base_account.group_accounting_payable"
+			parent="account.menu_finance" sequence="3" />
+        <menuitem action="account.action_account_payments_payable" id="account.menu_action_account_payments_payable" 
+        	groups="aos_base_account.group_accounting_payment_payable"
+        	parent="account.menu_finance_payables" sequence="20"/> -->
+
+		<menuitem name="Operational"
+			id="menu_finance_operational" parent="account.menu_finance_entries"
+			sequence="1" />
+			
+		<!-- <record id="menu_finance_operational" model="ir.ui.menu">
+            <field name="parent_id" ref="account_accountant.menu_accounting"/>
+        </record> -->
+			
+			
+        <!-- <menuitem id="menu_invoicing_reports" name="Reporting" parent="account.menu_finance" sequence="20" groups="aos_base_account.group_invoicing_reports"/>
+        
+        <record id="menu_invoicing_reports" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('aos_base_account.group_invoicing_reports')])]"/>
+        </record>
+        
+		<menuitem name="Invoices" action="account.action_account_invoice_report_all" id="account.menu_action_account_invoice_report_all" parent="menu_invoicing_reports" sequence="1"/>
+		
+		<menuitem action="account.action_account_chart_template_form"
+			id="menu_action_account_chart_template_form"
+			parent="account.account_account_menu"
+			groups="account.group_account_user" sequence="3" />
+			
+		<menuitem action="account.action_account_template_form"
+			id="menu_action_account_account_template_form"
+			parent="account.account_account_menu"
+			groups="account.group_account_user" sequence="4" />
+			
+			
+		<menuitem name="Accounting"
+            id="menu_accounting_base"
+            groups="account.group_account_manager"
+            web_icon="aos_base_account,static/description/accountant.png"
+            sequence="40"/>
+        <menuitem id="account.menu_finance_entries" name="Accounting" parent="menu_accounting_base" sequence="4" groups="account.group_account_user"/>
+        <record id="account.menu_finance_reports" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('aos_base_account.group_accounting_reports')])]"/>
+            <field name="parent_id" ref="menu_accounting_base"/>
+        </record>
+		<record id="account.menu_finance_configuration" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('aos_base_account.group_account_settings')])]"/>
+            <field name="parent_id" ref="menu_accounting_base"/>
+        </record>
+		<menuitem id="account.menu_account_config" name="Settings" parent="account.menu_finance_configuration" sequence="0" groups="base.group_system"/> -->
+		
+	</data>
+</odoo> 

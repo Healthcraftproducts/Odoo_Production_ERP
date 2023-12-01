@@ -48,5 +48,5 @@
         <field name="view_id" ref="product_discount_consolidated_wizard_id"/>
     </record> 
 
-    <menuitem id="menu_product_discount_consolidated_id" name="Discounts Given - Summary Report(Product Wise)" action="action_product_discount_view_id" parent="sale.menu_sale_report" sequence="4"/>
+    <menuitem id="menu_product_discount_consolidated_id" name="Discounts Given - Summary Report(Product Wise)" action="action_product_discount_view_id" parent="sale.menu_sale_report" sequence="6"/>
 </odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        
+		<record id="view_inherit_account_move_form" model="ir.ui.view">
+		    <field name="name">account.move.form</field>
+		    <field name="model">account.move</field>
+		    <field name="inherit_id" ref="account.view_move_form"/>
+		    <field name="arch" type="xml">		
+		    	<button name="button_draft" position="after">
+					<button name="action_unlink" context="{'force_delete': True}" 
+						states="cancel" string="Delete Entry" type="object"
+						confirm="Are you sure want to delete entry?" groups="aos_base_account.group_force_delete_entry" />
+				</button>			
+				<field name="partner_id" position="after">
+					<field name="attn" placeholder="Attention"/>
+				</field>
+				<xpath expr="//group[@name='sale_info_group']/field[@name='invoice_origin']" position="after">
+	    			<field name="journal_bank_id"/>
+	    			<field name="signature"/>
+	            </xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='tax_ids']" position="after">
+	    			<field name="price_tax" string="Tax" optional="show"/>
+	            </xpath>
+		    </field>
+		</record>
+		
+</odoo>

@@ -30,4 +30,18 @@ class CancelMultiMpsOrdersWizard(models.TransientModel):
                 raise UserError(_('You can not delete Done Or Cancelled MO'))
         return True
 
+class OpenCancelWizzard(models.Model):
+    _inherit = 'mrp.production'
+    _description = "Method for create a Cancel Order server action"
 
+    def open_cancel_orders_wizard(self):
+        return {
+            'name': 'Wizard',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            "view_type": "form",
+            'res_model': 'cancel.multi.mps.order.wizard',
+            'target': 'new',
+            'view_id': self.env.ref('hcp_mps_customization.view_cancel_multiple_mps_orders_ext').id,
+            'context': {'active_id': self.ids},
+        }

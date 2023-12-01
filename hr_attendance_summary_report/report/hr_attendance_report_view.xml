@@ -55,7 +55,7 @@
 		                    	<t t-foreach="day" t-as="d">
 		    						<th t-esc="d"/>
 		    					</t>
-		    					<t t-if="report_options == 'summary'">					
+		    					<t t-if="report_options == 'summary'">
 			   						<th rowspan="2">Total Present</th>
 			   					</t>
 			   					<t t-if="report_options == 'Summary_with_horurs'">

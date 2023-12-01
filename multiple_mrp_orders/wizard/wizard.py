@@ -20,11 +20,11 @@
 #
 #############################################################################
 from odoo import models, fields, api, _
-from odoo.tools.float_utils import float_round, float_compare, float_is_zero
 
 
 class MrpProductWizard(models.TransientModel):
     _name = 'mrp.product.produce.wizard'
+    _description = "Product Produce Line"
 
     produce_line_ids = fields.One2many('mrp.product.produce.wizard.line', 'product_produce_id',
                                        string='Product to Track')
@@ -103,52 +103,3 @@ class MrpProductProduceWizardLine(models.TransientModel):
     production_id = fields.Many2one('mrp.production')
     product_id = fields.Many2one('product.product', 'Product')
     qty = fields.Float('Quantity')
-
-
-class StockMoveInheritRoundOff(models.Model):
-    _inherit = 'stock.move'
-
-    #product_qty = fields.Float(
-        #'Real Quantity', compute='_compute_product_qty', inverse='_set_product_qty',
-        #digits=(12, 2), store=True, compute_sudo=True,
-        #help='Quantity in the default UoM of the product')
-
-    @api.depends('product_id', 'product_uom', 'product_uom_qty')
-    def _compute_product_qty(self):
-        # DLE FIXME: `stock/tests/test_move2.py`
-        # `product_qty` is a STORED compute field which depends on the context :/
-        # I asked SLE to change this, task: 2041971
-        # In the mean time I cheat and force the rouding to half-up, it seems it works for all tests.
-        rounding_method = 'HALF-UP'
-        for move in self:
-            move.product_qty = round(move.product_uom._compute_quantity(
-                move.product_uom_qty, move.product_id.uom_id), 3)
-
-
-#class StockMoveLineInheritRoundOff(models.Model):
-    #_inherit = 'stock.move.line'
-
-    ##product_qty = fields.Float(
-        ##'Real Reserved Quantity', digits=(12, 2), copy=False,
-        ##compute='_compute_product_qty', inverse='_set_product_qty', store=True)
-
-    #@api.depends('product_id', 'product_id.uom_id', 'product_uom_id', 'product_uom_qty')
-    #def _compute_product_qty(self):
-        #for line in self:
-            #line.product_qty = round(
-                #line.product_uom_id._compute_quantity(line.product_uom_qty, line.product_id.uom_id), 3)
-
-
-#class StockQuantInherit(models.Model):
-    #_inherit = 'stock.quant'
-
-    #quantity = fields.Float(
-        #'Quantity',
-        #help='Quantity of products in this quant, in the default unit of measure of the product',
-        #readonly=True, digits=(12, 2))
-
-    #reserved_quantity = fields.Float(
-        #'Reserved Quantity',
-        #default=0.0,
-        #help='Quantity of reserved products in this quant, in the default unit of measure of the product',
-        #readonly=True, required=True, digits=(12, 2))

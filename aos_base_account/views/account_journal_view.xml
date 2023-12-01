@@ -1,0 +1,187 @@
+<odoo>
+	<data>        
+        
+       <!--  <record id="account.view_account_journal_search" model="ir.ui.view">
+            <field name="name">account.journal.search</field>
+            <field name="model">account.journal</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <search string="Search Account Journal">
+                    <field name="name" filter_domain="['|', ('name','ilike',self), ('code','ilike',self)]" string="Journal"/>
+                    <filter name="dashboard_sale" domain="[('type', 'in', ('sale','sale_refund'))]" string="Sale"/>
+                    <filter name="dashboard_purchase" domain="[('type', 'in', ('purchase','purchase_refund'))]" string="Purchase"/>
+                    <filter name="dashboard_bank" domain="['|', ('type', '=', 'cash'), ('type', '=', 'bank')]" string="Liquidity"/>
+                    <filter name="dashboard_misc" domain="[('type', 'not in', ['sale', 'purchase', 'cash', 'bank'])]" string="Miscellaneous"/>
+                    <filter name="dashboard" string="Favorites" domain="[('show_on_dashboard', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="branch_id" string="Branch" groups="aos_base.group_multi_branch" context="{'group_by':'branch_id'}"/>
+                        <filter name="type" string="Type" context="{'group_by':'type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record> -->
+        
+        <!-- <record id="view_account_journal_search" model="ir.ui.view">
+            <field name="name">account.journal.search</field>
+            <field name="model">account.journal</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <search string="Search Account Journal">
+                    <field name="name" filter_domain="['|', ('name','ilike',self), ('code','ilike',self)]" string="Journal"/>
+                    <filter domain="[('type', '=', 'sale')]" string="Sale"/>
+                    <filter domain="[('type', '=', 'purchase')]" string="Purchase"/>
+                    <filter domain="['|', ('type', '=', 'cash'), ('type', '=', 'bank')]" string="Liquidity"/>
+                    <filter domain="[('type', 'not in', ['sale', 'purchase', 'cash', 'bank'])]" string="Miscellaneous"/>
+                    <filter name="dashboard" string="Favorites" domain="[('show_on_dashboard', '=', True)]"/>
+                </search>
+            </field>
+        </record> -->
+        
+        <!-- <record id="view_account_journal_tree_aos_branch" model="ir.ui.view">
+            <field name="name">account.journal.search</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_tree"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                	<field name="branch_id" groups="aos_base.group_multi_branch"/>
+                </field>
+            </field>
+        </record> -->
+        
+        <!-- <record id="view_account_journal_form_aos_account" model="ir.ui.view">
+            <field name="name">account.journal.form.aos_account</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <field name="currency_id" position="after">
+                	<field name="is_accrue"/>
+                    <field name="channel_id" options="{'no_create': True}"/>              	
+                </field>
+                <page name="advanced_settings" position="after">
+                	<page string="Notification User" name="notif">
+                		<field name="user_notif_ids"/>
+                	</page>
+                </page>
+                <field name="currency_id" position="after">
+	               <field name="default_debit_adm_account_id" domain="[('deprecated', '=', False)]" groups="account.group_account_user"/>
+	               <field name="default_credit_adm_account_id" domain="[('deprecated', '=', False)]" groups="account.group_account_user"/>
+                </field>                        
+                <field name="company_id" position="after">
+	                <field name="branch_id" options="{'no_create': True}" groups="aos_base.group_multi_branch"/>
+	            </field>
+            </field>
+        </record>
+        <record id="view_account_bank_journal_form_aos_account" model="ir.ui.view">
+            <field name="name">account.bank.journal.form.aos_account</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_bank_journal_form"/>
+            <field name="arch" type="xml">
+                <group name="bank_statement" position="inside">
+                	<field name="display_on_footer"/>
+	            </group>
+            </field>
+        </record> -->
+        <!--	DASHBOARD FOR FINANCE   -->
+	        	        
+        <record id="open_account_journal_dashboard_kanban_billing" model="ir.actions.act_window">
+	        <field name="name">Financial Dashboard</field>
+	        <field name="res_model">account.journal</field>
+	        <field name="view_mode">kanban,form</field>
+        	<field name="view_id" ref="account.account_journal_dashboard_kanban_view"/>
+	        <field name="usage">menu</field>
+	        <field name="context"></field>
+	        <field name="domain">[('type','in',('sale','sale_refund','sale_advance','purchase','purchase_refund','purchase_advance'))]</field>
+	        <field name="help" type="html">
+	            <p>
+	                This is the accounting dashboard. If you have not yet
+	                installed a chart of account, please install one first.
+	               <a type="action" name="%(account.open_account_charts_modules)d">Browse available countries.</a>
+	            </p>
+	        </field>
+	    </record>
+        <!-- <record id="action_refund_supplier_tree1_view1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="account.invoice_supplier_tree"/>
+            <field name="act_window_id" ref="open_account_journal_dashboard_kanban_billing"/>
+        </record>
+
+        <record id="action_refund_supplier_tree1_view2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.invoice_supplier_form"/>
+            <field name="act_window_id" ref="open_account_journal_dashboard_kanban_billing"/>
+        </record> -->
+        
+		<!-- DASHBOARD INVOICING -->        
+        <menuitem id="menu_board_journal_2" name="Dashboard" groups="aos_base_account.group_invoicing_dashboard" 
+        	action="open_account_journal_dashboard_kanban_billing" parent="account.menu_finance" sequence="1"/>
+		
+		<!--	DASHBOARD FOR ACCOUNTING   -->
+        
+	    <record id="account.open_account_journal_dashboard_kanban" model="ir.actions.act_window">
+	        <field name="name">Accounting Overview</field>
+	        <field name="res_model">account.journal</field>
+	        <field name="view_mode">kanban,form</field>
+	        <field name="view_id" ref="account.account_journal_dashboard_kanban_view"/>
+	        <field name="usage">menu</field>
+	        <field name="context">{'search_default_dashboard':1}</field>
+	        <field name="domain">[]</field>
+	        <field name="help" type="html">
+	            <p class="o_view_nocontent_neutral_face">
+	                This is the accounting dashboard
+	            </p><p>
+	                If you have not installed a chart of account, please install one first.<br/>
+	               <a type="action" name="%(account.open_account_charts_modules)d" tabindex="-1">Browse available countries.</a>
+	            </p>
+	        </field>
+	    </record>
+        <!-- <record id="action_refund_supplier_tree1_view1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="account.invoice_supplier_tree"/>
+            <field name="act_window_id" ref="action_refund_tree2"/>
+        </record>
+
+        <record id="action_refund_supplier_tree1_view2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.invoice_supplier_form"/>
+            <field name="act_window_id" ref="action_refund_tree2"/>
+        </record>  -->
+        <!-- DASHBOARD ACCOUNTING -->
+		<menuitem id="account.menu_board_journal_1" name="Dashboard" 
+			groups="aos_base_account.group_accounting_dashboard"
+			action="open_account_journal_dashboard_kanban_billing" parent="menu_accounting_base" sequence="1"/>
+        <!-- <menuitem id="account.menu_board_journal_1" name="Dashboard"
+        		action="account.open_account_journal_dashboard_kanban" parent="account.menu_finance" 
+        		sequence="1" groups="aos_base_account.group_accounting_dashboard"/> -->
+        <!-- <menuitem id="account.menu_board_journal_1" name="Dashboard"
+        		action="account.open_account_journal_dashboard_kanban" parent="account_accountant.menu_accounting" 
+        		sequence="1" groups="aos_base_account.group_accounting_dashboard"/> -->
+		
+		<!-- <record id="view_account_move_filter_aos_account" model="ir.ui.view">
+            <field name="name">account.move.search.aos_account</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_move_filter"/>
+            <field name="arch" type="xml">   	
+            	<field name="name" position="after">
+            		<field name="date_from" string="Date From" filter_domain="[('date','&gt;=', self)]"/>
+            		<field name="date_to" string="Date To" filter_domain="[('date','&lt;=',self)]"/>
+            	</field>
+            </field>
+        </record>
+		<record id="view_account_move_line_filter_aos_account" model="ir.ui.view">
+            <field name="name">account.move.line.search.aos_account</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="arch" type="xml">   	
+            	<field name="name" position="after">
+            		<field name="date_from" string="Date From" filter_domain="[('date','&gt;=', self)]"/>
+            		<field name="date_to" string="Date To" filter_domain="[('date','&lt;=',self)]"/>
+            	</field>
+            </field>
+        </record> -->
+	</data>
+</odoo>
+

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="mrp_workorder.MenuPopup" t-inherit-mode="extension" owl="1">
+        <xpath expr="//button[@name='addByProduct']" position="after">
+            <button t-if="isSystemUsers" class="btn btn-warning btn-primary" t-on-click="() => this.callAction('button_quality_alert')">Quality Alert</button>
+        </xpath>
+    </t>
+</templates>

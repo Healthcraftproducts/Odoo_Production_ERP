@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mrp','product','purchase','timesheet_grid'],
+    'depends': ['base','mrp','product','purchase','timesheet_grid','mrp_workorder'],
 
     # always loaded
     'data': [
@@ -30,8 +30,19 @@
         # 'views/report.xml',
         # 'views/templates.xml',
     ],
+    "application": False,
+    "installable": True,
+    'license': 'LGPL-3',
     # only loaded in demonstration mode
     # 'demo': [
     #     'demo/demo.xml',
     # ],
+
+# 'assets': {
+#     'web.assets_backend': [
+#         'hcp_mrp_module/static/src/**/*.xml',
+#     ],
+# },
+
 }
+

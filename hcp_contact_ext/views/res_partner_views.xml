@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+<!--two fields created in vendor master tree view-->
     <record id="view_partner_tree_id" model="ir.ui.view">
             <field name="name">res.partner.tree</field>
             <field name="model">res.partner</field>
@@ -13,7 +13,7 @@
 
             </field>
     </record>
-
+<!--character field added under in shipping methods menu's form view-->
     <record id="delivery_form_view_id" model="ir.ui.view">
             <field name="name">delivery.carrier.form.inherit2</field>
             <field name="model">delivery.carrier</field>
@@ -25,7 +25,7 @@
             </field>
     </record>
     
-        
+<!--        Two fields added in vendor master form view under sales tab-->
     <record id="partner_description_form_view_id" model="ir.ui.view">
             <field name="name">res.partner.carrier.property.form.inherit</field>
             <field name="model">res.partner</field>
@@ -39,17 +39,15 @@
             </field>
     </record>
 
-
+<!--look at last-->
     <record id="view_partner_property_form_id" model="ir.ui.view">
             <field name="name">res.partner.property.form.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="account.view_partner_property_form"/>
             <field name="arch" type="xml">
-
                   <xpath expr="//group[@name='fiscal_information']" position="replace">
-                    <group string="Fiscal Information" name="fiscal_information" priority="5" groups="           account.group_account_invoice">
+                    <group string="Fiscal Information" name="fiscal_information" priority="5" groups="account.group_account_invoice">
                       <field name="hcp_federal_tax" invisible="1"/>
-
                         <field name="property_account_position_id" options="{'no_create': True, 'no_open': True}"/>
                     </group>
 
@@ -65,9 +63,9 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">                    
-            <xpath expr="//field[@name='type']" position="after">
+            <xpath expr="//span[@name='address_name']" position="before">
                <field name="hcp_customer_id" readonly="1"/>
-               <field name="hcp_vendor_no" string="Vendor ID"/>
+               <field name="hcp_vendor_no" string="Vendor ID" readonly="1"/>
                <field name="hcp_old_customer_id" invisible="1"/>
                <field name="hcp_first_name" attrs="{'invisible': ['|',('company_type','=','company'),('type','in',('invoice','delivery','other','private'))]}" />
                 <field name="hcp_last_name" attrs="{'invisible': ['|',('company_type','=','company'),('type','in',('invoice','delivery','other','private'))]}"/>
@@ -132,18 +130,18 @@
             </xpath>
 
             <xpath expr="//field[@name='website']" position="before">
-                
+
                   <field name="hcp_secondary_email" attrs="{'invisible': [('type','in',('contact','delivery','other','private'))]}"/>
-                
+
             </xpath>
 
             <xpath expr="//field[@name='vat']" position="after">
                 <field name="hcp_taxes_id" widget="many2many_tags" invisible="1"/>
             </xpath>
 
-            <!--<xpath expr="//field[@name='vat']" position="before">
+            <xpath expr="//field[@name='vat']" position="before">
                 <field name="hcp_group_code"/>
-            </xpath>-->
+            </xpath>
 
             <xpath expr="//field[@name='child_ids']" position="replace">
                   <field name="child_ids" mode="kanban" context="{'default_parent_id': active_id, 'default_hcp_customer_id': hcp_customer_id,'default_hcp_is_customer': hcp_is_customer,
@@ -259,10 +257,6 @@
                             </field>
                        
                      </xpath>
-
-
-
-      
         </field>
   </record>
 
@@ -278,7 +272,7 @@
   </record>
 
 
-
+<!--below mentioned are menu items with form and tree view to the respective model created in python file-->
     <record id="displays_healthcraft_tree_view_id" model="ir.ui.view">
             <field name="name">displays.healthcraft.tree</field>
             <field name="model">displays.healthcraft</field>

@@ -24,7 +24,6 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-
         # 'reports/sale_custom_header.xml',
         'reports/all_print_menu.xml',
         'reports/sale_custom_report_inherit.xml',
@@ -35,6 +34,7 @@
         'reports/operator_bom_efficiency_report.xml',
         'reports/operator_bom_efficiency.xml',
         'reports/report_lot_barcode.xml',
+        'reports/lot_serial_number_pdf_inherit.xml',
         'views/sale_views.xml',
         'views/invoice_views.xml',
         'wizard/product_discount_consolidated_wizard_views.xml',
@@ -52,6 +52,9 @@
         
         
     ],
+    "application": False,
+    "installable": True,
+    'license': 'LGPL-3'
     # only loaded in demonstration mode
     # 'demo': [
     #     'demo/demo.xml',

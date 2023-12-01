@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+       <record id="view_account_discount_form" model="ir.ui.view">
+		    <field name="name">account.move.form.discount</field>
+		    <field name="model">account.move</field>
+		    <field name="inherit_id" ref="account.view_move_form"/>
+		    <field name="arch" type="xml">
+	    		<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
+	    			<!-- <field name="source_line_id" optional="show"/> -->
+	    			<field name="price_undiscount_untaxed" optional="hide"/>
+	    			<field name="price_discount_untaxed" optional="hide"/>
+	    			<field name="price_untaxed" optional="hide" groups="aos_base_account.group_show_line_subtotals_tax_basis"/>
+	    			<field name="tax_base_amount" optional="hide" groups="aos_base_account.group_show_line_subtotals_tax_amount"/>
+	    		</xpath>
+	    		<!-- <xpath expr="//field[@name='line_ids']/tree/field[@name='account_internal_type']" position="after">
+	    			<field name="source_line_id" optional="show"/>
+	    		</xpath> -->
+		    </field>
+		</record>
+
+   </data>
+</odoo>
