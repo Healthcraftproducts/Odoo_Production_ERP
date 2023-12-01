@@ -23,6 +23,8 @@ class MrpProduction(models.Model):
         #self.env['procurement.group'].run_scheduler()
         #super(MrpProductionSchedule, self).action_replenish()
 
+    update_backorder = fields.Boolean('Update Backorder')
+    
     def update_workorder_qty1(self):
         for mrp in self:
             for workorder in mrp.workorder_ids:
@@ -46,6 +48,7 @@ class MrpProduction(models.Model):
                     workorder.write({
                         'state': state,
                     })
+                mrp.update_backorder = True
 
     def button_mark_done(self):
         for workorder in self.workorder_ids:
