@@ -80,6 +80,18 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="mrp_production_workorder_tree_editable_view_inherit_custom">
+            <field name="name">mrp.production.work.order.tree.editable.custom</field>
+            <field name="model">mrp.workorder</field>
+            <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='duration']" position="after">
+                    <field name="qty_reported_from_previous_wo" optional="hide" readonly="0"/>
+                </xpath>
+            </field>
+        </record>
+
         <!--        <record id="mrp_production_form_view_inherited" model="ir.ui.view">-->
         <!--            <field name="name">mrp.production.view.inherited</field>-->
         <!--            <field name="model">mrp.production</field>-->
