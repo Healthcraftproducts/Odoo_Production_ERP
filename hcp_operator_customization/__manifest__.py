@@ -6,7 +6,7 @@
     'category': 'Manufacturing',
     'version': '1.0',
     'description': "HCP Operator Role Customization",
-    'depends': ['stock', 'mrp','base','mrp_workorder'],
+    'depends': ['stock', 'mrp','base','mrp_workorder','quality_mrp_workorder','mrp_maintenance'],
     'installable': True,
     'data': [  
         'security/security.xml',
@@ -19,9 +19,9 @@
 
 'assets': {
     'web.assets_backend': [
-        # 'hcp_operator_customization/static/src/components/menuPopup.js',
-        # 'hcp_operator_customization/static/src/**/*.xml',
-        # 'hcp_operator_customization/static/src/components/menupopupA.xml',
+        'hcp_operator_customization/static/src/components/menuPopup.js',
+        'hcp_operator_customization/static/src/**/menuPopup.xml',
+        'hcp_operator_customization/static/src/components/menupopupA.xml',
         # 'hcp_operator_customization/static/src/components/menupopupB.xml',
     ],
 },
