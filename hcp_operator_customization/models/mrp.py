@@ -114,7 +114,7 @@ class MrpProduction(models.Model):
 
     def update_workorder_qty1(self):
         for mrp in self:
-            for workorder in mrp.workorder_ids.filtered(lambda x:x.state != 'cancel'):
+            for workorder in mrp.workorder_ids:
                 backorder_ids = self.procurement_group_id.mrp_production_ids.ids
                 total_qty_produced=0
                 # pdb.set_trace()
