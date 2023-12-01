@@ -276,11 +276,11 @@ class ProductLowStockReport(models.AbstractModel):
         else:
             if not data.get('form'):
                 raise UserError(_("Content is missing, this report cannot be printed."))
-            #self.model = self.env.context.get('active_model')
+            self.model = self.env.context.get('active_model')
             low_product = self.get_low_stock_products(data)
         return {
             'doc_ids': self.ids,
-            'doc_model': 'product.low.stock',
+            'doc_model': self.model,
             'time': time,
             'low_stock': low_product,
         }
@@ -336,7 +336,7 @@ class ProductLowStockReport(models.AbstractModel):
         workbook.save(filename)
         fp = open(filename, "rb")
         file_data = fp.read()
-        out = base64.encodebytes(file_data)
+        out = base64.encodestring(file_data)
         # Files actions
         attach_vals = {
                 'name_data': 'Low Stock Report'+ '.xls',

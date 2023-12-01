@@ -13,7 +13,6 @@
     'depends': ['hr_attendance'],
 
     'data': [
-        'security/ir.model.access.csv',
         'report/hr_attendance_report_view.xml',
         'wizard/hr_attendance_report_wizard.xml',
     ],

@@ -33,8 +33,6 @@ class ProductTemplate(models.Model):
 
 	# xdesc = fields.Char(string="XDesc")
 	# sales = fields.Char(string="Sales(Connect Sage300)")
-	product_variant_id = fields.Many2one('product.product', 'Product', compute='_compute_product_variant_id',
-										 search=True, )
 	cust_fld2 = fields.Char(string="HTS Code")
 	cust_fld3 = fields.Many2one('res.country',string="Origin Of Country")
 	status = fields.Selection([('0','Active'),('1','Inactive'),('2','R&D')],string="Status",default='0')
@@ -46,7 +44,7 @@ class ProductTemplate(models.Model):
 	name = fields.Char('Product Description', index=True, required=True, translate=True)
 	default_code = fields.Char('Item Code', compute='_compute_default_code',inverse='_set_default_code', store=True)
 	fda_listing = fields.Char(string="FDA Listing#")
-	# deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
+	deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
 	usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
 	manufacturer_id = fields.Char('MID')
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
@@ -60,7 +58,8 @@ class ProductTemplate(models.Model):
 		for template in unique_variants:
 			template.default_code = template.product_variant_ids.default_code
 		for template in (self - unique_variants):
-			template.default_code = self.default_code
+			template.default_code = False
+
 
 	def _set_default_code(self):
 		for template in self:
@@ -68,11 +67,15 @@ class ProductTemplate(models.Model):
 				template.product_variant_ids.default_code = template.default_code
 
 
+
 	def active_stage(self):
 		self.write({
 		'status': '0',
 		'active': True,
 			})
+
+
+
 	
 	def inactive_stage(self):
 		self.write({
@@ -80,11 +83,15 @@ class ProductTemplate(models.Model):
 		'active': False,
 			})
 
+
+	
 	def rd_stage(self):
 		self.write({
 		'status': '2',
 		'active': True,
 			})
+
+
 
 class ProductMaster(models.Model):
 	_inherit = 'product.product'
@@ -105,7 +112,7 @@ class ProductMaster(models.Model):
 	fda_listing = fields.Char(string="FDA Listing#")
 	product_sub_categ_id = fields.Many2one('product.sub.category',string="Product Sub Category")
 	obsolute_product = fields.Boolean('Obsolute Product')
-	# deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
+	deringer_uom_id = fields.Many2one('deringer.uom','Deringer UOM')
 	usmca_eligible = fields.Selection([('yes','Yes'),('no','No')],'USMCA Eligible?')
 	manufacturer_id = fields.Char('MID')
 	tarrif_number = fields.Many2many('tariff.number', 'tariff_number_rel', 'product_id', 'tariff_id',string='Tariff Number', copy=False,)
@@ -135,7 +142,7 @@ class ProductMaster(models.Model):
 
 
 class StockLotMaster(models.Model):
-	_inherit = 'stock.lot'
+	_inherit = 'stock.production.lot'
 
 
 	lot_size = fields.Float(string="Lot Size")
@@ -263,14 +270,14 @@ class StockQuant(models.Model):
 				else:
 					rec.min_reorder_quantity = 0.0
 
-	# @api.model
-	# def _get_removal_strategy_order(self, removal_strategy):
-	# 	if removal_strategy == 'fifo':
-	# 	    return 'lot_id ASC NULLS FIRST, id'
-	# 	elif removal_strategy == 'lifo':
-	# 	    return 'lot_id DESC NULLS LAST, id desc'
-	# 	raise UserError(_('Removal strategy %s not implemented.') % (removal_strategy,))
-    # 
+	@api.model
+	def _get_removal_strategy_order(self, removal_strategy):
+		if removal_strategy == 'fifo':
+		    return 'lot_id ASC NULLS FIRST, id'
+		elif removal_strategy == 'lifo':
+		    return 'lot_id DESC NULLS LAST, id desc'
+		raise UserError(_('Removal strategy %s not implemented.') % (removal_strategy,))
+    
 	@api.model
 	def _update_reserved_quantity(self, product_id, location_id, quantity, lot_id=None, package_id=None, owner_id=None, strict=False):
 		""" Increase the reserved quantity, i.e. increase `reserved_quantity` for the set of quants
@@ -354,8 +361,7 @@ class StockQuant(models.Model):
 			if float_is_zero(quantity, precision_rounding=rounding) or float_is_zero(available_quantity, precision_rounding=rounding):
 				break
 		return reserved_quants
-
-
+    
 class Pricelist(models.Model):
 	_inherit = "product.pricelist"
 
@@ -364,8 +370,3 @@ class Pricelist(models.Model):
 		if self.item_ids:
 			for line in self.item_ids:
 				line.unlink()
-
-class StockInventoryAdjustmentNameInherit(models.TransientModel):
-		_inherit = 'stock.inventory.adjustment.name'
-
-		inventory_adjustment_name = fields.Char(default="",required=1)

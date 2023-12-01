@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <record id="view_cancel_multiple_mps_orders_ext" model="ir.ui.view">
+        <record id="view_cancel_multiple_mps_orders" model="ir.ui.view">
             <field name="name">Cancel Orders</field>
             <field name="model">cancel.multi.mps.order.wizard</field>
             <field name="arch" type="xml">
@@ -17,14 +17,15 @@
             </field>
         </record>
 
-        <record model="ir.actions.server" id="action_cancel_orders">
+        <record id="action_view_cancel_multiple_mps_orders" model="ir.actions.act_window">
             <field name="name">Cancel Orders</field>
-            <field name="model_id" ref="mrp.model_mrp_production"/>
-            <field name="binding_model_id" ref="mrp.model_mrp_production"/>
-            <field name="state">code</field>
-            <field name="code">
-                action = records.open_cancel_orders_wizard()
-            </field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cancel.multi.mps.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+<!--             <field name="groups_id" eval="[(4,ref('sales_team.group_sale_salesman'))]"/> -->
+            <!-- TODO: check if we need this -->
+            <field name="binding_model_id" ref="mrp.model_mrp_production" />
         </record>
 
 </odoo>

@@ -97,18 +97,17 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 		sheet.row(0).height = 300
 		sheet.col(0).width = 2000
 		sheet.col(1).width = 10000
-		sheet.col(2).width = 10000
-		sheet.col(3).width = 7000
+		sheet.col(2).width = 7000
+		sheet.col(3).width = 5000
 		sheet.col(4).width = 5000
-		sheet.col(5).width = 5000
-		sheet.col(6).width = 10000
-		sheet.col(7).width = 5000
+		sheet.col(5).width = 10000
+		sheet.col(6).width = 5000
+		sheet.col(7).width = 4000
 		sheet.col(8).width = 4000
 		sheet.col(9).width = 4000
 		sheet.col(10).width = 4000
 		sheet.col(11).width = 4000
 		sheet.col(12).width = 4000
-		sheet.col(13).width = 4000
 
 		field_heading1 = ["S.NO","Inventory","Location Name","Inventory Date",
                         "Item Code", "Product Name", "Lot/Serial No", "OnHand Qty",
@@ -128,35 +127,32 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 		date_to = self.date_to
 		loc_ids = self.loc_ids.ids
 		
-		domain=[('location_id','in',loc_ids),('date','>=',date_from),('date','<=',date_to),('is_inventory','=',True)]
-		stock_inventory = self.env['stock.move'].search(domain)
+		domain=[('location_ids','in',loc_ids),('accounting_date','>=',date_from),('accounting_date','<=',date_to)]
+		stock_inventory = self.env['stock.inventory'].search(domain)
 		row_number = 1
 		s_no = 1
 		#for value in dt:
 		for stock in stock_inventory:
-			#import pdb
-			#pdb.set_trace()
-			for line in stock.move_line_ids:
+			for line in stock.line_ids:
 				sheet.write(row_number,0,s_no)
 				sheet.write(row_number,1,stock.name)
 				sheet.write(row_number,2,line.location_id.complete_name)
-				custm_date = line.date 
+				custm_date = line.inventory_date 
 				#- timedelta(hours=5, minutes=30)
 				user_tz = self.env.user.tz or pytz.utc
 				local_time = pytz.timezone(user_tz)
-				display_date_result = datetime.strftime(pytz.utc.localize(datetime.strptime(str(line.date), DEFAULT_SERVER_DATETIME_FORMAT)).astimezone(local_time),"%d-%m-%Y %H:%M:%S")
+				display_date_result = datetime.strftime(pytz.utc.localize(datetime.strptime(str(line.inventory_date), DEFAULT_SERVER_DATETIME_FORMAT)).astimezone(local_time),"%d-%m-%Y %H:%M:%S")
 				sheet.write(row_number,3,display_date_result,style2)
 				sheet.write(row_number,4,line.product_id.default_code)
 				sheet.write(row_number,5,line.product_id.name)
-				sheet.write(row_number,6,line.lot_id.name)
-				sheet.write(row_number,7,line.qty_done,style1)
-				sheet.write(row_number,8,00)
-				sheet.write(row_number,9,00)
+				sheet.write(row_number,6,line.prod_lot_id.name)
+				sheet.write(row_number,7,line.theoretical_qty,style1)
+				sheet.write(row_number,8,line.product_qty,style1)
+				sheet.write(row_number,9,line.difference_qty,style1)
 				sheet.write(row_number,10,line.product_uom_id.name)
 				sheet.write(row_number,11,line.product_id.standard_price,style3)
 
-				different_price = 0
-				#line.difference_qty*line.product_id.standard_price
+				different_price = line.difference_qty*line.product_id.standard_price
 				sheet.write(row_number,12,different_price,style3)
 				row_number +=1
 				s_no+=1
@@ -171,7 +167,7 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 		workbook.save(filename)
 		fp = open(filename, "rb")
 		file_data = fp.read()
-		out = base64.encodebytes(file_data)
+		out = base64.encodestring(file_data)
 		# Files actions
 		attach_vals = {
 				'inv_rep_data': 'Inventory Cycle Count Report'+ '.xls',

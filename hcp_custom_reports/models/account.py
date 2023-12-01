@@ -35,8 +35,12 @@ class AccountMove(models.Model):
 				'total_amount': amount_tot,
 			})
 
-	
+
+
+
 	total_amount= fields.Float(string="Total Amount",compute='compute_amount_all',store=True)
+
+
 
 
 
@@ -83,10 +87,13 @@ class AccountMoveLine(models.Model):
 	_inherit = "account.move.line"
 
 
+
+
+
+
 	price_tax = fields.Float(string="Total Tax")
 	invoice_ship_method = fields.Boolean(string='Invoice ship',default=False,compute='ship_line_method')
 	inv_line_amount = fields.Float(string="Line Amount",compute='_compute_invoice_line_level_amount',store=True)
-
 
 
 	@api.depends('quantity','price_unit')

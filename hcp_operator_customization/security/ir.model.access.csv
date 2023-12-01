@@ -3,6 +3,7 @@ access_mrp_workcenter_productivity_loss1,mrp.workcenter.productivity.loss1,mrp.m
 access_mrp_workcenter_productivity_loss_type1,mrp.workcenter.productivity.loss.type1,mrp.model_mrp_workcenter_productivity_loss_type,hcp_operator_customization.group_mrp_operator,1,0,0,0
 access_mrp_workcenter_productivity1,mrp.workcenter.productivity1,mrp.model_mrp_workcenter_productivity,hcp_operator_customization.group_mrp_operator,1,1,1,1
 access_mrp_workcenter1,mrp.workcenter1,mrp.model_mrp_workcenter,hcp_operator_customization.group_mrp_operator,1,0,0,0
+access_mrp_routing1,mrp.routing1,mrp.model_mrp_routing,hcp_operator_customization.group_mrp_operator,1,0,0,0
 access_mrp_routing_workcenter1,mrp.routing.workcenter1,mrp.model_mrp_routing_workcenter,hcp_operator_customization.group_mrp_operator,1,0,0,0
 access_mrp_bom1,mrp.bom1,mrp.model_mrp_bom,hcp_operator_customization.group_mrp_operator,1,0,0,0
 access_mrp_bom_line1,mrp.bom.line1,mrp.model_mrp_bom_line,hcp_operator_customization.group_mrp_operator,1,0,0,0
@@ -18,10 +19,12 @@ access_product_template_user1,product.template user1,product.model_product_templ
 access_product_supplierinfo_user1,product.supplierinfo user1,product.model_product_supplierinfo,hcp_operator_customization.group_mrp_operator,1,1,1,1
 access_res_partner1,res.partner1,base.model_res_partner,hcp_operator_customization.group_mrp_operator,1,0,0,0
 access_mrp_workorder_mrp_user1,mrp.workorder.user1,mrp.model_mrp_workorder,hcp_operator_customization.group_mrp_operator,1,1,1,1
+access_mrp_workorder_line_mrp_user1,mrp.workorder.user1,mrp.model_mrp_workorder_line,hcp_operator_customization.group_mrp_operator,1,1,1,1
 access_resource_calendar_leaves_user1,mrp.resource.calendar.leaves.user1,resource.model_resource_calendar_leaves,hcp_operator_customization.group_mrp_operator,1,1,1,1
 access_resource_calendar_attendance_mrp_user1,mrp.resource.calendar.attendance.mrp.user1,resource.model_resource_calendar_attendance,hcp_operator_customization.group_mrp_operator,1,1,1,1
 access_uom_category1,uom.category1,uom.model_uom_category,hcp_operator_customization.group_mrp_operator,1,0,0,0
 access_resource_resource1,resource.resource1,resource.model_resource_resource,hcp_operator_customization.group_mrp_operator,1,0,0,0
+access_stock_production_lot_user1,stock.production.lot1,stock.model_stock_production_lot,hcp_operator_customization.group_mrp_operator,1,1,1,1
 access_stock_warehouse_orderpoint_user1,stock.warehouse.orderpoint1,stock.model_stock_warehouse_orderpoint,hcp_operator_customization.group_mrp_operator,1,0,0,0
 access_resource_calendar_manufacturinguser1,resource.calendar manufacturing.user1,resource.model_resource_calendar,hcp_operator_customization.group_mrp_operator,1,0,0,0
 access_mrp_unbuild1,mrp.unbuild1,mrp.model_mrp_unbuild,hcp_operator_customization.group_mrp_operator,1,1,1,1

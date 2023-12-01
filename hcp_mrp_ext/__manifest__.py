@@ -26,9 +26,6 @@
         'views/mrp_bom_ext.xml',
 		#'views/account_invoice_inherit.xml',
     ],
-    "application": False,
-    "installable": True,
-    'license': 'LGPL-3'
     # only loaded in demonstration mode
     # 'demo': [
     #     'demo/demo.xml',

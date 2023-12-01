@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
     <template id="web_external_layout_inherit_id" inherit_id="web.external_layout_standard">
 
@@ -9,12 +8,12 @@
 
         <xpath expr="//div/div[1]" position="replace">
 
-            <table width="100%" height="100%" style="border-style: hidden;">
+            <table width="100%" height="100%" border="None">
                 <tbody>
-                    <tr style="border:none">
+                    <tr>
 <!--                         style="width: 8%; margin: 1000px;"  -->
-                        <td style="border:none"><br><img t-if="company.logo" style="margin-top:20px;" width="90" height="90" t-att-src="image_data_uri(company.logo)" alt="Logo"/></br></td>
-                        <td style="width: 90%; text-align: left;border:none;">
+                        <td border="None"><br><img t-if="company.logo" style="margin-top:20px;" width="90" height="90" t-att-src="image_data_uri(company.logo)" alt="Logo"/></br></td>
+                        <td style="width: 90%; text-align: left;" border="None">
                            <p>&amp;nbsp;</p>  
                             <strong><span style="font-size:20pt;margin-left:20px;" t-field= "company.partner_id.name"/></strong>
                                 
@@ -55,14 +54,15 @@
 
 <xpath expr="//div[@class='page']" position="before">
     <br/><br/>
-    <table width="100%" style="border-style: hidden;">
+    <table width="100%">
             <tbody>
-            <tr style="border-style: hidden;">
-                <td style="width: 50%; text-align: left;border-style: hidden;"><strong><u>BILL TO:</u></strong></td>
-                <td style="width: 50%; text-align: left;border-style: hidden;"><strong><u>SHIP TO:</u></strong></td>
+
+            <tr>
+                <td style="width: 50%; text-align: left;"><strong><u>BILL TO:</u></strong></td>
+                <td style="width: 50%; text-align: left;"><strong><u>SHIP TO:</u></strong></td>
                 </tr>
                 <tr>
-                <td style="width: 50%; text-align: left;border-style: hidden;">
+                <td style="width: 50%; text-align: left;">
                 <span style="font-size:9pt;" t-field="doc.partner_invoice_id.name"/>
                     <t t-if="doc.partner_invoice_id.street!=False or doc.partner_invoice_id.street2!=False">
                     <br><span style="font-size:9pt;" t-field="doc.partner_invoice_id.street"/><span style="font-size:9pt;" t-field="doc.partner_invoice_id.street2"/></br>
@@ -95,9 +95,9 @@
     </table>
  </xpath>
 
- <xpath expr="//div[@class='row mt-4 mb-4']" position="replace">
+ <xpath expr="//div[@class='row mt32 mb32']" position="replace">
 
-    <div class="row mt-4 mb-4" id="informations">
+    <div class="row mt32 mb32" id="informations">
         
         <div t-if="doc.date_order" class="col-auto mw-100 mb-2">
             <span t-if="doc.state in ['draft','sent']"><strong>Quotation Date:</strong></span>
@@ -130,29 +130,16 @@
             <strong>Terms:</strong>
             <p style="font-size:10pt;" class="m-0" t-field="doc.payment_term_id"/>
         </div>
-        <div t-if="not (env.context.get('proforma', False) or is_pro_forma)" class="col-auto mw-100 mb-2">
-            <strong>Tracking Reference:</strong>
-            <t t-foreach="doc.picking_ids"
-               t-as="lines">
-                    <p style="font-size:10pt;" class="m-0" t-field="lines.carrier_tracking_ref"/>
-            </t>
-        </div>
-        <div  t-if="not (env.context.get('proforma', False) or is_pro_forma)" class="col-auto mw-100 mb-2">
-            <strong>Carrier:</strong>
-            <t t-foreach="doc.picking_ids"
-               t-as="lines">
-                    <p style="font-size:10pt;" class="m-0" t-field="lines.carrier_id"/>
-            </t>
-        </div>
+
                 
                 
     </div>
 
  </xpath>
 
-<xpath expr="//div[@class='page']/h2[@class='mt-4']" position="replace">
+<xpath expr="//div[@class='page']/h2[@class='mt16']" position="replace">
 
-    <h2 class="mt-4">
+    <h2 class="mt16">
         <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
             <span style="font-size:20pt;" t-if="doc.state not in ['draft','sent']">Order # <span style="font-size:20pt;" t-field="doc.name"/></span>
             <span style="font-size:20pt;" t-if="doc.state in ['draft','sent']">Quotation #<span style="font-size:20pt;" t-field="doc.quotation_id"/> </span>
@@ -165,7 +152,7 @@
 
 </xpath>
 
-<xpath expr="//div[@class='page']//table" position="replace">
+<xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
 
         <t t-set="display_discount" t-value="any([l.discount for l in doc.order_line])"/>
 
@@ -176,15 +163,6 @@
                         <th name="th_description" class="text-center">Description</th>
                         <th name="th_quantity" class="text-right">Quantity</th>
                         <th name="th_price" class="text-right">Unit Cost</th>
-                        <th t-if="env.context.get('proforma', False) or is_pro_forma" name="th_hts" class="text-center">
-                            HTS Code
-                        </th>
-                        <th t-if="env.context.get('proforma', False) or is_pro_forma" name="th_origin"
-                            class="text-left">Origin Of Country
-                        </th>
-                        <th t-if="env.context.get('proforma', False) or is_pro_forma" name="th_binding"
-                            class="text-center">Binding Rule
-                        </th>
                         <th name="th_discount" class="text-right">
                             <span>Additional Disc.%</span>
                         </th>
@@ -212,30 +190,7 @@
                                 <td name="td_priceunit" class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.price_unit"/>
                                 </td>
-                                <t t-if="env.context.get('proforma', False) or is_pro_forma"
-                                   t-foreach="line.product_template_id" t-as="tmpl">
-                                    <t t-foreach="line.product_id" t-as="prod">
-                                    <td t-if="prod.cust_fld2" class="text-right">
-                                        <span t-field="prod.cust_fld2"/>
-                                    </td>
-                                        <td t-if="not(prod.cust_fld2)" class="text-right">
-                                        <span t-field="tmpl.cust_fld2"/>
-                                    </td>
-                                    <td t-if="prod.cust_fld3" class="text-right">
-                                        <span t-field="prod.cust_fld3"/>
-                                    </td>
-                                        <td t-if="not(prod.cust_fld3)" class="text-right">
-                                        <span t-field="tmpl.cust_fld3"/>
-                                    </td>
-                                    <td t-if="prod.binding_rule" class="text-right">
-                                        <span t-field="prod.binding_rule"/>
-                                    </td>
-                                        <td t-if="not(prod.binding_rule)" class="text-right">
-                                        <span t-field="tmpl.binding_rule"/>
-                                    </td>
-                                      </t>
-                                </t>
-                                <td class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
+                                <td  class="text-right" style="padding-top: 2%;padding-bottom: 2%;">
                                     <span t-field="line.discount"/>
                                 </td>
                                 <!-- <td name="td_taxes" class="text-right">
@@ -279,59 +234,59 @@
 
     <xpath expr="//div[@class='clearfix']" position="replace">
 
-        <table style="border-style:hidden;" width="100%">
+        <table class="table-sm o_main_table" width="100%">
             <tbody>
-                <tr style="border-style:hidden;">
-                    <td style="width: 50%;border-style:hidden;">&amp;nbsp;</td>
-                    <td style="width: 30%border-style:hidden;text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                <tr>
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
                     <span><strong>Total (before Discount)</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
                     <span style="text-align: right;"><span t-esc="sum([l.line_amount for l in doc.order_line])" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                     </span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 50%;border-style:hidden;">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
                         <span><strong>Additional Product Discount</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
                         <span style="text-align: right;"><span t-esc="-sum([(l.line_amount*l.discount)/100 for l in doc.order_line if l.product_ship_method==False])" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                         </span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 50%;border-style:hidden;">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border-style:hidden;border-style:hidden;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
                         <span><strong>Additional Shipping Discount</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
                         <span style="text-align: right;"><span t-esc="-sum([(l.line_amount*l.discount)/100 for l in doc.order_line if l.product_ship_method==True])" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                         </span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 50%;border-style:hidden;">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;  border: 1px solid black; border-left:none; border-bottom:none; border-right:none;border-style:hidden;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;  border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span><strong>Subtotal</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;border-style:hidden;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span style="text-align: right;"><span t-field="doc.amount_untaxed"/></span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 50%;border-style:hidden;">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;border-style:hidden;">
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span><strong>Tax Rate(<span t-esc="doc.fiscal_position_id.tax_rate"/>)</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;border-style:hidden;">
-                        <span style="text-align: right;border-style:hidden;"><span t-field="doc.amount_tax"/></span>
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
+                        <span style="text-align: right;"><span t-field="doc.amount_tax"/></span>
                     </td>
 
                     </tr>
                     <tr>
-                    <td style="width: 50%;border-style:hidden;">&amp;nbsp;</td>
+                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
                     <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span><strong>Total(<span t-field="doc.currency_id.name"/>)</strong></span>
                     </td>
@@ -352,13 +307,15 @@
         <p style="font-size:10pt;" t-field="doc.note" />
     </xpath>
 
-    <xpath expr="//div[@class='page']//div[3]/p[1]" position="replace">
+    <xpath expr="//p[@t-if='doc.payment_term_id.note']" position="replace">
 
     </xpath>
 
-    <xpath expr="//p[@t-if='doc.fiscal_position_id and not is_html_empty(doc.fiscal_position_id.sudo().note)']" position="replace">
+    <xpath expr="//p[@id='fiscal_position_remark']" position="replace">
 
     </xpath>
+
+
 
 </template>
 

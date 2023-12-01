@@ -23,12 +23,11 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                             </div>
                             <field name="state" invisible="1"/>
                             <field name="company_id" invisible="1"/>
-                            <field name="journal_id" domain="[('id', 'in', suitable_journal_ids)]" widget="selection"/>
-                            <field name="suitable_journal_ids" invisible="1"/>
+                            <field name="journal_id" widget="selection"/>
                         </group>
                         <group>
-                            <field name="date"/>
-                            <field name="ref"/>
+                            <field name="payment_date"/>
+                            <field name="communication"/>
                             <field name="purchase_id" invisible="1"/>
                             <field name="partner_type" invisible="1"/>
                             <field name="payment_method_id" invisible="1"/>
@@ -37,7 +36,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                     </group>
                 </sheet>
                 <footer>
-                    <button string='Make Payment' name="action_post" type="object" class="btn-primary"/>
+                    <button string='Make Payment' name="post" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-default" special="cancel"/>
                 </footer>
             </form>

@@ -61,7 +61,7 @@ class attendanceWizardReport(models.AbstractModel):
                     domain = [('employee_id', '=', employee_id.id), ('request_date_from', '>=', dt1),
                               ('request_date_to', '<=', dt2), ('state', '=', 'validate')]
                     leave_code = self.env['hr.leave'].search(domain).holiday_status_id
-                    status.append(leave_code if leave_code else '')
+                    status.append(leave_code.code if leave_code.code else '')
                 hour.append(0)
                 for attendance in employee_attendance:
                     check_in_date = attendance.check_in.date()

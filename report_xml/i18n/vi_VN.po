@@ -19,38 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: report_xml
-#: model:ir.model,name:report_xml.model_report_report_xml_abstract
-msgid "Abstract XML Report"
-msgstr ""
-
-#. module: report_xml
-#: model:ir.model.fields,help:report_xml.field_ir_actions_report__xml_declaration
-msgid ""
-"Add `<?xml encoding=\"...\" version=\"...\"?>` at the start of final report "
-"file."
-msgstr ""
-
-#. module: report_xml
 #: model:ir.actions.report,name:report_xml.demo_xml_report
 msgid "Demo xml report"
 msgstr ""
 
 #. module: report_xml
-#: model:ir.model.fields,help:report_xml.field_ir_actions_report__xml_encoding
-msgid ""
-"Encoding for XML reports. If nothing is selected, then UTF-8 will be applied."
+#: selection:ir.actions.report,report_type:0
+msgid "HTML"
 msgstr ""
 
 #. module: report_xml
-#: model:ir.model.fields,help:report_xml.field_ir_actions_report__xml_extension
-msgid "Extension for XML Reports, by default is `xml`"
+#: selection:ir.actions.report,report_type:0
+msgid "PDF"
 msgstr ""
 
 #. module: report_xml
-#: model:ir.model.fields,help:report_xml.field_ir_actions_report__xsd_schema
-msgid ""
-"File with XSD Schema for checking content of result report. Can be empty if "
-"validation is not required."
+#: selection:ir.actions.report,report_type:0
+msgid "Py3o"
 msgstr ""
 
 #. module: report_xml
@@ -64,6 +49,11 @@ msgid "Report Type"
 msgstr ""
 
 #. module: report_xml
+#: selection:ir.actions.report,report_type:0
+msgid "Text"
+msgstr ""
+
+#. module: report_xml
 #: model:ir.model.fields,help:report_xml.field_ir_actions_report__report_type
 msgid ""
 "The type of the report that will be rendered, each one having its own "
@@ -73,38 +63,18 @@ msgid ""
 msgstr ""
 
 #. module: report_xml
-#: model:ir.model.fields.selection,name:report_xml.selection__ir_actions_report__xml_encoding__utf-8
-msgid "UTF-8"
+#: selection:ir.actions.report,report_type:0
+msgid "XLSX"
 msgstr ""
 
 #. module: report_xml
-#: model:ir.model.fields.selection,name:report_xml.selection__ir_actions_report__report_type__qweb-xml
+#: selection:ir.actions.report,report_type:0
 msgid "XML"
 msgstr ""
 
 #. module: report_xml
-#: model:ir.model.fields,field_description:report_xml.field_ir_actions_report__xml_declaration
-msgid "XML Declaration"
-msgstr ""
-
-#. module: report_xml
-#: model:ir.model.fields,field_description:report_xml.field_ir_actions_report__xml_encoding
-msgid "XML Encoding"
-msgstr ""
-
-#. module: report_xml
-#: model_terms:ir.ui.view,arch_db:report_xml.ir_actions_report_view_form_report_xml
-msgid "XML Rreport Settings"
-msgstr ""
-
-#. module: report_xml
-#: model:ir.model.fields,field_description:report_xml.field_ir_actions_report__xsd_schema
-msgid "XSD Validation Schema"
-msgstr ""
-
-#. module: report_xml
-#: model:ir.model.fields,field_description:report_xml.field_ir_actions_report__xml_extension
-msgid "Xml Extension"
+#: selection:ir.actions.report,report_type:0
+msgid "csv"
 msgstr ""
 
 #~ msgid "ID"

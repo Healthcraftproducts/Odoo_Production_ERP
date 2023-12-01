@@ -17,16 +17,15 @@
             <field name="dpi">90</field>
         </record>
 
-<!--        <report-->
-<!--            string="Product Stock"-->
-<!--            id="action_report_product_stock"-->
-<!--            model="ir.cron"-->
-<!--            report_type="qweb-pdf"-->
-<!--            name="ip_product_low_stock_notification.report_stock_menu"-->
-<!--            file="ip_product_low_stock_notification.report_stock_menu"-->
-<!--            menu="False"-->
-<!--        />-->
-
+        <report
+            string="Product Stock"
+            id="action_report_product_stock"
+            model="ir.cron"
+            report_type="qweb-pdf"
+            name="ip_product_low_stock_notification.report_stock_menu"
+            file="ip_product_low_stock_notification.report_stock_menu"
+            menu="False"
+        />
         <record id="ip_product_low_stock_notification.action_report_product_stock" model="ir.actions.report">
             <field name="paperformat_id" ref="ip_product_low_stock_notification.paperformat_product_stock"/>
         </record>

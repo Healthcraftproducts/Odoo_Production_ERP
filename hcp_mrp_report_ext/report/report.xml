@@ -1,43 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-                 <report
-                    string="Print Product Label(PDF)"
-                    id="action_report_work_order_finished_product"
-                    model="mrp.workorder"
-                    name="hcp_mrp_report_ext.label_work_order_view_pdf"
-                    file="hcp_mrp_report_ext.label_work_order_view_pdf"
-                    report_type="qweb-pdf"
-                    print_report_name="'Finished products - %s' % object.name"
-                />
-        <report
-                    string="Print Product Label(PDF)"
-                    id="action_report_work_order_finished_product_ext_mo"
-                    model="mrp.production"
-                    name="hcp_mrp_report_ext.label_work_order_view_pdf_mrp"
-                    file="hcp_mrp_report_ext.label_work_order_view_pdf_mrp"
-                    report_type="qweb-pdf"
-                    print_report_name="'Print Product Label(PDF)  - %s' % object.name"
-                />
+    <data>        
          <report
-                    string="Print Product EAN Barcode"
-                    id="action_report_work_order_finished_product_ext_mo_ean"
-                    model="mrp.production"
-                    name="hcp_mrp_report_ext.label_work_order_view_pdf_custom_ext_ean"
-                    file="hcp_mrp_report_ext.label_work_order_view_pdf_custom_ext_ean"
-                    report_type="qweb-pdf"
-                    print_report_name="'Product EAN Barcode - %s' % object.name"
-                />
-  <report
-                    string="Print Product UPC Barcode"
-                    id="action_report_work_order_finished_product_ext_mo_upc"
-                    model="mrp.production"
-                    name="hcp_mrp_report_ext.label_work_order_view_pdf_custom_ext_upc"
-                    file="hcp_mrp_report_ext.label_work_order_view_pdf_custom_ext_upc"
-                    report_type="qweb-pdf"
-                    print_report_name="'Product UPC Barcode - %s' % object.name"
-                />
-
+            string="Print Product Label(PDF)"
+            id="action_report_work_order_finished_product"
+            model="mrp.workorder"
+            name="hcp_mrp_report_ext.label_work_order_view_pdf"
+            file="hcp_mrp_report_ext.label_work_order_view_pdf"
+            report_type="qweb-pdf"
+            print_report_name="'Finished products - %s' % object.name"
+        />
     </data>
-
 </odoo>

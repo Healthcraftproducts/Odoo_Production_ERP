@@ -57,7 +57,7 @@
             <field name="name">Dashboard:BOM Efficiency</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mrp.workcenter.productivity</field>
-            <field name="view_mode">tree,search,pivot,graph</field>
+            <field name="view_mode">tree,search</field>
             <field name="view_id" ref="oee_tree_view_inherit2"/>
             <field name="search_view_id" ref="oee_search_view_filter_new"/>
             <field name="context">{'search_default_group_workcenter_id': 1}</field>

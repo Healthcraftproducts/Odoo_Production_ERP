@@ -46,8 +46,8 @@
                     <field name="name" string="Manufacturing Order" filter_domain="['|', ('name', 'ilike', self), ('origin', 'ilike', self)]"/>
                     <field name="product_id"/>
                     <field name="move_raw_ids" string="Component" filter_domain="[('move_raw_ids.product_id', 'ilike', self)]"/>
-<!--                    <field name="name" string="Work Center" filter_domain="[('routing_id.operation_ids.workcenter_id', 'ilike', self)]"/>-->
-<!--                    <field name="routing_id" groups="mrp.group_mrp_routings"/>-->
+                    <field name="name" string="Work Center" filter_domain="[('routing_id.operation_ids.workcenter_id', 'ilike', self)]"/>
+                    <field name="routing_id" groups="mrp.group_mrp_routings"/>
                     <field name="origin"/>
                     <field name="mo_reference" />
                     <separator/>
@@ -85,7 +85,7 @@
                      <group expand="0" string="Group By...">
                         <filter string="MPS Reference" name="group_mo_reference" domain="[]" context="{'group_by': 'mo_reference'}"/>
                         <filter string="Product" name="product" domain="[]" context="{'group_by': 'product_id'}"/>
-<!--                        <filter string="Routing" name="routing" domain="[]" context="{'group_by': 'routing_id'}" groups="mrp.group_mrp_routings"/>-->
+                        <filter string="Routing" name="routing" domain="[]" context="{'group_by': 'routing_id'}" groups="mrp.group_mrp_routings"/>
                         <filter string="Status" name="status" domain="[]" context="{'group_by': 'state'}"/>
                         <filter string="Material Availability" name="groupby_reservation_state" domain="[]" context="{'group_by': 'reservation_state'}"/>
                         <filter string="Scheduled Date" name="scheduled_date" domain="[]" context="{'group_by': 'date_planned_start'}" help="Scheduled Date by Month"/>

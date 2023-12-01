@@ -104,7 +104,7 @@ class SoInvReport(models.AbstractModel):
         workbook.save(filename)
         fp = open(filename, "rb")
         file_data = fp.read()
-        out = base64.encodebytes(file_data)
+        out = base64.encodestring(file_data)
         # Files actions
         attach_vals = {
                 'name_data': 'Invoice SO Diff Report'+ '.xls',

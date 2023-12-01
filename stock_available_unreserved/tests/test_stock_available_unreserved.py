@@ -3,10 +3,10 @@
 # Copyright 2019 JARSA Sistemas S.A. de C.V.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import SavepointCase
 
 
-class TestStockLogisticsWarehouse(TransactionCase):
+class TestStockLogisticsWarehouse(SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -78,7 +78,7 @@ class TestStockLogisticsWarehouse(TransactionCase):
                 "picking_type_id": cls.env.ref("stock.picking_type_in").id,
                 "location_id": cls.supplier_location.id,
                 "location_dest_id": cls.stock_location.id,
-                "move_ids": [
+                "move_lines": [
                     (
                         0,
                         0,
@@ -101,7 +101,7 @@ class TestStockLogisticsWarehouse(TransactionCase):
                 "picking_type_id": cls.env.ref("stock.picking_type_in").id,
                 "location_id": cls.supplier_location.id,
                 "location_dest_id": cls.stock_location.id,
-                "move_ids": [
+                "move_lines": [
                     (
                         0,
                         0,
@@ -123,8 +123,7 @@ class TestStockLogisticsWarehouse(TransactionCase):
                 "picking_type_id": cls.env.ref("stock.picking_type_out").id,
                 "location_id": cls.stock_location.id,
                 "location_dest_id": cls.customer_location.id,
-                "immediate_transfer": False,
-                "move_ids": [
+                "move_lines": [
                     (
                         0,
                         0,
@@ -156,12 +155,16 @@ class TestStockLogisticsWarehouse(TransactionCase):
         self.compare_qty_available_not_res(self.productA, 0)
         self.compare_qty_available_not_res(self.templateAB, 0)
 
+        self.pickingInA.action_assign()
+        self.compare_qty_available_not_res(self.productA, 0)
+        self.compare_qty_available_not_res(self.templateAB, 0)
+
         self.pickingInA.button_validate()
         self.compare_qty_available_not_res(self.productA, 2)
         self.compare_qty_available_not_res(self.templateAB, 2)
 
-        # will directly trigger button_validate on self.productB
-        self.pickingInB.button_validate()
+        # will directly trigger action_done on self.productB
+        self.pickingInB.action_done()
         self.compare_qty_available_not_res(self.productA, 2)
         self.compare_qty_available_not_res(self.productB, 3)
         self.compare_qty_available_not_res(self.templateAB, 5)
@@ -170,10 +173,14 @@ class TestStockLogisticsWarehouse(TransactionCase):
         self.compare_qty_available_not_res(self.templateAB, 5)
 
         self.pickingOutA.action_confirm()
+        self.compare_qty_available_not_res(self.productB, 3)
+        self.compare_qty_available_not_res(self.templateAB, 5)
+
+        self.pickingOutA.action_assign()
         self.compare_qty_available_not_res(self.productB, 1)
         self.compare_qty_available_not_res(self.templateAB, 3)
 
-        self.pickingOutA.button_validate()
+        self.pickingOutA.action_done()
         self.compare_qty_available_not_res(self.productB, 1)
         self.compare_qty_available_not_res(self.templateAB, 3)
 
@@ -327,7 +334,7 @@ class TestStockLogisticsWarehouse(TransactionCase):
         self.check_template_found_correctly("<=", 0, self.templateAB)
         self.check_template_found_correctly("<=", -1, no_template)
 
-        self.pickingInB.button_validate()
+        self.pickingInB.action_done()
         # product A has 2 unreserved, product B has 3 unreserved and
         # the remaining variant has 0
 

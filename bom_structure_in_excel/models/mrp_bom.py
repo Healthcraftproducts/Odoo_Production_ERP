@@ -7,87 +7,8 @@ import base64
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from odoo.tools import float_round
-import pdb
 
 
-class ReportBomStructureInherit(models.AbstractModel):
-    _inherit = 'report.mrp.report_bom_structure'
-    _description = 'BOM Overview Report'
-    @api.model
-    def _get_bom_array_lines(self, data, level, unfolded_ids, unfolded, parent_unfolded=True):
-        bom_lines = data['components']
-        lines = []
-        for bom_line in bom_lines:
-            line_unfolded = ('bom_' + str(bom_line['index'])) in unfolded_ids
-            line_visible = level == 1 or unfolded or parent_unfolded
-            lines.append({
-                'bom_id': bom_line['bom_id'],
-                'name': bom_line['name'],
-                'type': bom_line['type'],
-                'quantity': bom_line['quantity'],
-                'quantity_available': bom_line['quantity_available'],
-                'quantity_on_hand': bom_line['quantity_on_hand'],
-                'producible_qty': bom_line.get('producible_qty', False),
-                'uom': bom_line['uom_name'],
-                'prod_cost': bom_line['prod_cost'],
-                'bom_cost': bom_line['bom_cost'],
-                'route_name': bom_line['route_name'],
-                'route_detail': bom_line['route_detail'],
-                'lead_time': bom_line['lead_time'],
-                'level': bom_line['level'],
-                'code': bom_line['code'],
-                'availability_state': bom_line['availability_state'],
-                'availability_display': bom_line['availability_display'],
-                'visible': line_visible,
-                'product': bom_line['product'],
-            })
-            if bom_line.get('components'):
-                lines += self._get_bom_array_lines(bom_line, level + 1, unfolded_ids, unfolded, line_visible and line_unfolded)
-
-        if data['operations']:
-            lines.append({
-                'name': _('Operations'),
-                'type': 'operation',
-                'quantity': data['operations_time'],
-                'uom': _('minutes'),
-                'bom_cost': data['operations_cost'],
-                'level': level,
-                'visible': parent_unfolded,
-            })
-            operations_unfolded = unfolded or (parent_unfolded and ('operations_' + str(data['index'])) in unfolded_ids)
-            for operation in data['operations']:
-                lines.append({
-                    'name': operation['name'],
-                    'type': 'operation',
-                    'quantity': operation['quantity'],
-                    'uom': _('minutes'),
-                    'bom_cost': operation['bom_cost'],
-                    'level': level + 1,
-                    'visible': operations_unfolded,
-                })
-        if data['byproducts']:
-            lines.append({
-                'name': _('Byproducts'),
-                'type': 'byproduct',
-                'uom': False,
-                'quantity': data['byproducts_total'],
-                'bom_cost': data['byproducts_cost'],
-                'level': level,
-                'visible': parent_unfolded,
-            })
-            byproducts_unfolded = unfolded or (parent_unfolded and ('byproducts_' + str(data['index'])) in unfolded_ids)
-            for byproduct in data['byproducts']:
-                lines.append({
-                    'name': byproduct['name'],
-                    'type': 'byproduct',
-                    'quantity': byproduct['quantity'],
-                    'uom': byproduct['uom_name'],
-                    'prod_cost': byproduct['prod_cost'],
-                    'bom_cost': byproduct['bom_cost'],
-                    'level': level + 1,
-                    'visible': byproducts_unfolded,
-                })
-        return lines
 class MrpBom(models.Model):
     _inherit = 'mrp.bom'
 
@@ -128,8 +49,7 @@ class MrpBom(models.Model):
         for line in docs:
             if line and line.get('components') or line.get('lines'):
                 sheet.write_merge(row, row + 1, 0, 6, 'BoM Structure & Cost', title_style_comp_left)
-                # checked
-                sheet.write_merge(row + 3, row + 3, 0, 6, line['name'], title_style1_table_head)
+                sheet.write_merge(row + 3, row + 3, 0, 6, line['bom_prod_name'], title_style1_table_head)
                 row += 4
                 if line['bom'].code:
                     sheet.write(row, 0, 'Reference:', title_style1_table_head)
@@ -163,20 +83,17 @@ class MrpBom(models.Model):
                 # print('product', (rec.name for rec in line['product'].product_template_attribute_value_ids))
                 # print('product', line['code'])
                 sheet.write_merge(row, row, 1, 2, product_variant, title_style1_table_value_left)
-                sheet.write(row, 3, line['product'].product_tmpl_id.default_code, title_style1_table_value_left)
-                # checked
-                bom_qty = format(line['quantity'], '.2f')
+                sheet.write(row, 3, line['code'], title_style1_table_value_left)
+                bom_qty = format(line['bom_qty'], '.2f')
                 sheet.write(row, 4, bom_qty, title_style1_table_value_right)
                 sheet.write(row, 5, line['version'], title_style1_table_value_right)
                 sheet.write(row, 6, line['ecos'], title_style1_table_value_right)
                 sheet.write(row, 7, line['bom'].product_uom_id.name, title_style1_table_value_left)
-                # checked.
-                price_unit = format(line['prod_cost'], '.2f')
-                total_price = format(line['bom_cost'], '.2f')
+                price_unit = format(line['price'], '.2f')
+                total_price = format(line['total'], '.2f')
                 if currency_id and currency_id.position == 'after':
                     price_unit = str(price_unit) + ' ' + currency_id.symbol
                     total_price = str(total_price) + ' ' + currency_id.symbol
-                    # checked.
                 if currency_id and currency_id.position == 'before':
                     price_unit = currency_id.symbol + ' ' + str(price_unit)
                     total_price = currency_id.symbol + ' ' + str(total_price)
@@ -191,30 +108,29 @@ class MrpBom(models.Model):
                         space_td = '    '
                     product_name = ''
                     # product_code = ''
-                    ######################################NEW CHANGE
                     if l['type'] == 'bom':
-                        product_name =  l['product'].name
-                        code = l['product'].code
-                        product_code = space_td + ' ' + str(code)
-                    ######################################NEW CHANGE
+                        pr = self.env['product.product'].search([('id', '=', l['prod_id'])])
+                        # print('pr', pr)
+                        # print('3333', pr.name)
+                        # print('44444', pr.code)
+                        product_name = pr.name
+                        code = pr.code
+                        product_code = space_td + ' ' + code
+                        # product_name = space_td + ' ' + product_id
                     else:
                         product_code = space_td + ' ' + l['name']
                     print('l', l)
                     # print('level', l['level'])
                     # print('name', l['name'])
-                    # checked
                     sheet.write(row, 0, product_code, title_style1_table_value_left)
-                    sheet.write(row,1,product_name, title_style1_table_value_left)
+                    sheet.write_merge(row, row, 1, 2, product_name, title_style1_table_value_left)
                     if l.get('code'):
                         sheet.write(row, 3, l['code'], title_style1_table_value_left)
                     quantity = format(l['quantity'], '.2f')
                     sheet.write(row, 4, quantity, title_style1_table_value_right)
                     if self.user_has_groups('uom.group_uom'):
-                        # checked
-                        sheet.write(row, 5, l.get('version', ''), title_style1_table_value_right)
-                        # sheet.write(row, 5, l['version'] if l['version'] else '', title_style1_table_value_right)
-                        sheet.write(row, 6, l.get('ecos', ''), title_style1_table_value_right)
-                        # sheet.write(row, 6, l['ecos'] if l['ecos'] else '', title_style1_table_value_right)
+                        sheet.write(row, 5, l['version'] if l['version'] else '', title_style1_table_value_right)
+                        sheet.write(row, 6, l['ecos'] if l['ecos'] else '', title_style1_table_value_right)
                         sheet.write(row, 7, l['uom'], title_style1_table_value_left)
                     if 'prod_cost' in l:
                         price_unit = format(l['prod_cost'], '.2f')
@@ -234,15 +150,14 @@ class MrpBom(models.Model):
 
                 row += 1
                 sheet.write_merge(row, row, 0, 7, 'Unit Cost', title_style1_table_head_right)
-                # check
-                product_cost_total = line['prod_cost'] / line['quantity']
+                product_cost_total = line['price'] / line['bom_qty']
                 product_cost_total = format(product_cost_total, '.2f')
                 if currency_id and currency_id.position == 'after':
                     product_cost_total = str(product_cost_total) + ' ' + currency_id.symbol
                 if currency_id and currency_id.position == 'before':
                     product_cost_total = currency_id.symbol + ' ' + str(product_cost_total)
                 sheet.write(row, 8, product_cost_total, title_style1_table_value_right)
-                bom_cost_total = line['bom_cost'] / line['quantity']
+                bom_cost_total = line['total'] / line['bom_qty']
                 bom_cost_total = format(bom_cost_total, '.2f')
                 if currency_id and currency_id.position == 'after':
                     bom_cost_total = str(bom_cost_total) + ' ' + currency_id.symbol
@@ -341,7 +256,7 @@ class MrpBom(models.Model):
         stream = io.BytesIO()
         workbook.save(stream)
         attach_id = self.env['custom.mrp.bom.structure.excel'].create(
-            {'name': 'BOM Structure.xls', 'xls_output': base64.encodebytes(stream.getvalue())})
+            {'name': 'BOM Structure.xls', 'xls_output': base64.encodestring(stream.getvalue())})
         return {
             'context': self.env.context,
             'view_type': 'form',

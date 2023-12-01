@@ -1,5 +1,4 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 mrp_workorder_qc_images,mrp_workorder_qc_images_access_right,model_mrp_workorder_qc_images,base.group_user,1,1,1,0
-qc_image_upload_id,qc_image_upload,model_qc_image_upload,base.group_user,1,1,1,0
 
 

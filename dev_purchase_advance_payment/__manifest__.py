@@ -88,7 +88,6 @@ Odoo Purchase payable bill
     'installable': True,
     'application': True,
     'auto_install': False,
-    'license': 'LGPL-3',
     
     # author and support Details =============#
     'author': 'DevIntelle Consulting Service Pvt.Ltd',

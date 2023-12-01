@@ -11,8 +11,5 @@
                 </xpath>
         </field>
     </record>
-    <record id="sale_timesheet.timesheet_report_sale_order" model="ir.actions.report">
-        <field name="binding_model_id"></field>
-    </record>
 
 </odoo>

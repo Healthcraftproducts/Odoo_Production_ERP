@@ -10,24 +10,14 @@
     'website': "http://www.navabrindsol.com",
     'category': 'Uncategorized',
     'version': '0.1',
-    'license': 'LGPL-3',
 
-    'depends': ['base', 'web', 'stock_barcode'],
-    'qweb': [
+    'depends': ['base','web','stock_barcode'],
 
+    'data': [
+        'views/asset.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            '/hcp_barcode_ext/static/src/css/barcode.css',
-            'hcp_barcode_ext/static/src/**/*.js',
-            '/hcp_barcode_ext/static/src/**/*.xml',
-        ],
-
-    "application": False,
-    "installable": True,
-
-
-    },
-
+    'qweb': [
+        "static/src/xml/qweb_templates.xml",
+    ],
 
 }
