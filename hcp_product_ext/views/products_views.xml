@@ -133,6 +133,13 @@
                                options="{'currency_field': 'currency_id', 'field_digits': True}"></field>
                     </li>
                 </ul>
+                <ul>
+                    <li>
+                        <strong>Quantity On Hand:
+                            <field name="qty_available"></field>
+                        </strong>
+                    </li>
+                </ul>
             </xpath>
 
           <!--  <xpath expr='//div[@class="oe_kanban_details"]/div[3]' position="replace">
