@@ -11,7 +11,7 @@
     'installable': True,
     'data': [  
         'security/ir.model.access.csv',
-        'views/view.xml',
+        # 'views/view.xml',
     ],
     "installable": True,
     "application": False,
