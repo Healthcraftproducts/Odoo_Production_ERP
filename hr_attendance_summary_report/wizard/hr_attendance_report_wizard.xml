@@ -29,9 +29,19 @@
             </form>
         </field>
     </record>
-    
-    <menuitem id="hr_attendance_report" name="Reporting" parent="hr_attendance.menu_hr_attendance_report" groups="hr_attendance.group_hr_attendance_user" action="hr_attendance.hr_attendance_action_graph"/>
-  
-    <menuitem id="menu_attendance_report" name="Attendance Report" parent="hr_attendance.menu_hr_attendance_report" action="hr_attendance_report_wizard_action"/>
+
+<!--    <menuitem id="hr_attendance_report" name="Reporting" parent="hr_attendance.menu_hr_attendance_report" groups="hr_attendance.group_hr_attendance_user" action="hr_attendance.hr_attendance_action_graph"/>-->
+    <menuitem id="menu_report_product_all_hr"
+              name="Reporting"
+              action="hr_attendance.hr_attendance_report_action"
+              parent="hr_attendance.menu_hr_attendance_report"
+              sequence="1"/>
+    <menuitem id="menu_attendance_report_ext" name="Attendance Report"
+              action="hr_attendance_report_wizard_action"
+              parent="hr_attendance.menu_hr_attendance_report"
+              sequence="6"/>
+
+
+    <!--    <menuitem id="menu_attendance_report" name="Attendance Report" parent="hr_attendance.menu_hr_attendance_report" action="hr_attendance_report_wizard_action"/>-->
 
 </odoo>

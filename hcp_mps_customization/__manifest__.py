@@ -10,8 +10,10 @@
     'description' : """MPS Customization For Manufacturing Order Creations""",
     'depends': ['base','stock','mrp','mrp_mps','purchase_stock','sale_stock'],
     'data': [ 'views/mrp_views.xml',
+              'security/ir.model.access.csv',
               'data/ir_sequence.xml',
               'wizard/cancel_multi_order_wizard_view.xml'],
+
     'installable': True,
     'application': True,
     'auto_install': False,

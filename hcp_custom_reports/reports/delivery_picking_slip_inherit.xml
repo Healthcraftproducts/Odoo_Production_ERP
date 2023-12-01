@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
 	<template id="delivery_slip_report_inherit_id" inherit_id="stock.report_delivery_document">
 
-        <xpath expr="//t[@t-if='partner']" position="replace">
-            
-            <t t-if="partner" name="partner_header">
+        <xpath expr="//t[@t-set='partner']" position="replace">
+
+            <t t-if="partner_id" name="partner_header">
 
                 <t t-set="address">
                     <br/>
-                    <div t-esc="partner"
+                    <div t-esc="o.partner_id"
                         t-options='{"widget": "contact", "fields": ["address", "name", "phone","email"], "no_marker": True}'/>
-                    <t t-if="partner.hcp_customer_id">
-                        <span><strong>Customer ID:&amp;nbsp;</strong></span><span t-esc="partner.hcp_customer_id"/>
-                    </t>
-               </t>
-
-           
+                </t>
+            </t>
+            <t t-if="o.partner_id">
+                <p style="text-align:right;margin-right:26% !important;">
+                    <span><strong>Customer ID:&amp;nbsp;</strong></span>
+                    <span t-esc="o.partner_id.hcp_customer_id"/>
+                </p>
             </t>
         </xpath>
 
         <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="after">
 
             <t t-set="sale_obj" t-value="request.env['sale.order'].search([('name','=',o.origin)],limit=1)"/>
-            
-            <div t-if="sale_obj.po_number" class="col-auto" name="div_origin">
+
+            <div t-if="sale_obj" class="col-auto" name="div_origin">
                 <strong>PO#</strong>
                 <p t-esc="sale_obj.po_number"/>
             </div>
 
-            <div t-if="sale_obj.ship_via_desc" class="col-auto" name="div_origin">
+            <div t-if="sale_obj" class="col-auto" name="div_origin">
                 <strong>Ship Via Description</strong>
                 <p t-esc="sale_obj.ship_via_desc"/>
             </div>
@@ -44,10 +46,10 @@
                     </div>
                 </div>
         </xpath>
-                    
+
 
         <xpath expr="//table[@class='table table-sm']" position="replace">
-
+            <br/>
             <table class="table table-sm" name="stock_move_table">
                         <thead>
                             <tr>
@@ -58,7 +60,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)"/>
+                            <t t-set="lines" t-value="o.move_ids.filtered(lambda x: x.product_uom_qty)"/>
                             <tr t-foreach="lines" t-as="move">
                                 <td>
                                     <span t-field="move.product_id"/>
@@ -162,7 +164,7 @@
                                     </tr>
                                 </thead>
 
-                            <tbody>   
+                            <tbody>
                             <!-- <t t-foreach="o.move_ids_without_package.sorted(key=lambda m: m.product_id.id)" t-as="move">  -->
                                 <t t-set="lines" t-value="o.move_ids_without_package.sorted(key=lambda m: m.product_id.id)" />
 
@@ -184,7 +186,7 @@
                             </tbody>
                         </table>
 
-               
+
                 </xpath>
 
                 <xpath expr="//div[@class='row mt48 mb32']" position="replace">
@@ -205,7 +207,7 @@
                             <strong>Scheduled Date:</strong>
                             <p t-field="o.scheduled_date"/>
                         </div>
-                        
+
                         <t t-set="sale_obj" t-value="request.env['sale.order'].search([('name','=',o.origin)],limit=1)"/>
 
                         <div t-if="sale_obj.po_number" class="col-auto" name="div_origin">
@@ -217,7 +219,7 @@
                             <strong>Ship Via Description</strong>
                             <p t-esc="sale_obj.ship_via_desc"/>
                         </div>
- 
+
 
                     </div>
 

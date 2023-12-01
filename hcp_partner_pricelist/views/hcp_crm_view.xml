@@ -1,32 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo> 
+<odoo>
+
+    <record id="crm_hcp_lead_view_form" model="ir.ui.view">
+        <field name="name">crm.lead.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='lead']" position="attributes">
+                <attribute name="string">Follow Up</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="group_code_hcp"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="shipment_date"/>
+            </xpath>
+            <xpath expr="//div[@class='o_lead_opportunity_form_inline_fields']" position="replace">
+                <div class="o_lead_opportunity_form_inline_fields">
+                    <field name="date_deadline" nolabel="1" class="oe_inline"/>
+                </div>
+            </xpath>
+            <xpath expr="//div[@class='o_lead_opportunity_form_inline_fields']" position="after">
+                <field name="priority" widget="priority"/>
+            </xpath>
+            <xpath expr="//page[@name='lead']//field[@name='lang_id']" position="replace">
+                <field name="lang_id" options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"/>
+            </xpath>
+
 		
-	<record id="crm_hcp_lead_view_form" model="ir.ui.view">
-		<field name="name">crm.lead.form</field>
-		<field name="model">crm.lead</field>
-		<field name="inherit_id" ref="crm.crm_lead_view_form" />
-		<field name="arch" type="xml">
-			<xpath expr="//field[@name='date_deadline']" position="after">
-			     <field name="shipment_date"/>
-			</xpath>
-			<xpath expr="//field[@name='user_id']" position="after">
-			     <field name="group_code_hcp"/>
-			</xpath>
-		</field>
-	</record>
-	
-	 <record id="view_hcp_crm_case_opportunities_filter" model="ir.ui.view">
-		<field name="name">crm.lead.search.opportunity</field>
-		<field name="model">crm.lead</field>
-		<field name="inherit_id" ref="crm.view_crm_case_opportunities_filter" />
-		<field name="arch" type="xml">
-			<xpath expr="//field[@name='tag_ids']" position="after">
-			     <field name="group_code_hcp"/>
-			</xpath>
-			<xpath expr="//filter[@name='salesperson']" position="after">
-			      <filter name="group_code_hcp" string="Group Code" context="{'group_by': 'group_code_hcp'}"/>
-			</xpath>
-		</field>
-	</record>
+
+        </field>
+    </record>
+
+    <record id="view_hcp_crm_case_opportunities_filter" model="ir.ui.view">
+        <field name="name">crm.lead.search.opportunity</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="group_code_hcp"/>
+            </xpath>
+            <xpath expr="//filter[@name='salesperson']" position="after">
+                <filter name="group_code_hcp" string="Group Code" context="{'group_by': 'group_code_hcp'}"/>
+            </xpath>
+        </field>
+    </record>
 
 </odoo>

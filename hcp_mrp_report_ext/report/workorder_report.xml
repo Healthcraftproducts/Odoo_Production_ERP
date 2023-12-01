@@ -12,7 +12,7 @@
                             <t t-set="move_lines" t-value="move.filtered(lambda x: x.state != 'done' and x.qty_production)"/>
                         </t>
                         <t t-foreach="move_lines" t-as="move_line">
-                            <t t-if="move_line.product_id.uom_id.category_id.measure_type == 'unit'">
+                            <t t-if="move_line.product_id.uom_id.category_id.uom_ids == 'unit'">
                                 <t t-set="qty" t-value="int(move_line.qty_produced)"/>
                             </t>
                             <t t-else="">
@@ -27,7 +27,7 @@
                                                     <span t-esc="move.product_id.display_name"/>
                                                     <br/>
                                                     Quantity:
-                                                    <t t-if="move_line.product_id.uom_id.category_id.measure_type == 'unit'">
+                                                    <t t-if="move_line.product_id.uom_id.category_id.uom_ids == 'unit'">
                                                         <span>1.0</span>
                                                         <span t-field="move_line.product_id.uom_id" groups="uom.group_uom"/>
                                                     </t>
@@ -42,8 +42,9 @@
                                                 <tr>
                                                     <td class="text-center align-middle">
                                                         <t t-if="move_line.finished_lot_id">
-                                                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.finished_lot_id.name, 600, 150)" style="width:100%;height:4rem" alt="Barcode"/>
+                                                            <!-- <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.finished_lot_id.name, 600, 150)" style="width:100%;height:4rem" alt="Barcode"/> -->
                                                             <span t-esc="move_line.finished_lot_id.name"/>
+                                                            <div t-field="move_line.finished_lot_id.name" t-options="{'widget': 'barcode', 'width': 600, 'height': 100}"/>
                                                         </t>
                                                         <t t-else="">
                                                             <span class="text-muted">No barcode available</span>
@@ -55,7 +56,8 @@
                                                 <tr>
                                                     <td class="text-center align-middle" style="height: 6rem;">
                                                         <t t-if="move_line.product_id.barcode">
-                                                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.barcode, 600, 150)" style="width:100%;height:4rem" alt="Barcode"/>
+                                                                <!-- <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.barcode, 600, 150)" style="width:100%;height:4rem" alt="Barcode"/> -->
+                                                                <div t-field="move_line.product_id.barcode" t-options="{'widget': 'barcode', 'width': 600, 'height': 100}"/>
                                                                 <span t-esc="move_line.product_id.barcode"/>
                                                         </t>
                                                         <t t-else="">

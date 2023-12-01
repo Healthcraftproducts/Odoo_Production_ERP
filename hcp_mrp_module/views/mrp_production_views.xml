@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<record id="qc_image_upload_wizard" model="ir.ui.view">
+    <record id="qc_image_upload_wizard" model="ir.ui.view">
         <field name="name">qc.image.upload.wizard</field>
         <field name="model">qc.image.upload</field>
         <field name="arch" type="xml">
-       <form string="Upload QC Images">
+            <form string="Upload QC Images">
                 <group>
                     <field name="upload_image"/>
                 </group>
                 <footer>
                     <button name="upload_qc_image" string="Save" type="object" class="btn-danger text-uppercase"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
-	
-	<record id="qc_image_upload_wizard_action" model="ir.actions.act_window">
+
+    <record id="qc_image_upload_wizard_action" model="ir.actions.act_window">
         <field name="name">QC Images Upload</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">qc.image.upload</field>
@@ -26,26 +26,26 @@
         <field name="target">new</field>
     </record>
 
-<record id="mrp_production_workorder_form_view_inherited" model="ir.ui.view">
+    <record id="mrp_production_workorder_form_view_inherited_ext" model="ir.ui.view">
         <field name="name">mrp.production.workorder.form.view.inherited</field>
         <field name="model">mrp.workorder</field>
-		<field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
         <field name="arch" type="xml">
-		<xpath expr="//page[@name='workorder_page_misc']" position="after">
-		 <page string="QC Images" name="workorder_qc_images">
+            <xpath expr="//page[@name='finished_steps']" position="after">
+                <page string="QC Images" name="workorder_qc_images">
                     <group>
                         <group>
                             <field name="qc_image_ids" readonly="1">
-                        <tree>
-                            <field name="image" widget="image" class="oe_left oe_avatar"/>
-                        </tree>
-                    </field>
+                                <tree>
+                                    <field name="image" widget="image" class="oe_left oe_avatar"/>
+                                </tree>
+                            </field>
                         </group>
                     </group>
                 </page>
-		</xpath>
-		</field>
-		</record>
+            </xpath>
+        </field>
+    </record>
     <!-- Adding Timesheet menu in the manufacturing modules-->
 
     <record id="act_hr_timesheet_manufacturing_line" model="ir.actions.act_window">
@@ -56,42 +56,42 @@
         <field name="domain">[('project_id', '!=', False), ('user_id', '=', uid)]</field>
         <field name="target">new</field>
     </record>
+    <!--commented due to changes in the pattern in odoo16 but this functionality done in menupopup.xml file-->
+    <!-- <record id="mrp_workorder_view_form_tablet_menu_inherit" model="ir.ui.view">-->
+    <!--        <field name="name">mrp.workorder.view.form.tablet.menu</field>-->
+    <!--        <field name="model">mrp.workorder</field>-->
+    <!--		<field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet_menu"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--		<xpath expr="//div[@class='row workorder_menu'][last()]" position="after">-->
+    <!--        <div class="row workorder_menu">-->
+    <!--		<div class="col-3"/>-->
+    <!--		<div class="col-6">-->
+    <!--        <button name="%(hcp_mrp_module.qc_image_upload_wizard_action)d" type="action" context="{'default_workcenter_id': workcenter_id, 'default_workorder_id': id}" class="btn-primary btn-block btn btn-lg" string="Upload QC"/>-->
+    <!--        </div>-->
+    <!--		<div class="col-3"/>-->
+    <!--		</div>-->
+    <!--        </xpath>-->
+    <!--	    </field>-->
+    <!--</record>-->
 
- <record id="mrp_workorder_view_form_tablet_menu_inherit" model="ir.ui.view">
-        <field name="name">mrp.workorder.view.form.tablet.menu</field>
+    <record id="mrp_workorder_inherited3" model="ir.ui.view">
+        <field name="name">mrp.workorder.form.inherited3</field>
         <field name="model">mrp.workorder</field>
-		<field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet_menu"/>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
         <field name="arch" type="xml">
-		<xpath expr="//div[@class='row workorder_menu'][last()]" position="after">
-        <div class="row workorder_menu">
-		<div class="col-3"/>
-		<div class="col-6">
-        <button name="%(hcp_mrp_module.qc_image_upload_wizard_action)d" type="action" context="{'default_workcenter_id': workcenter_id, 'default_workorder_id': id}" class="btn-primary btn-block btn btn-lg" string="Upload QC Image"/>           
-        </div>
-		<div class="col-3"/>
-		</div>
-        </xpath>
-	    </field>
-</record>
-
-     <record id="mrp_workorder_inherited3" model="ir.ui.view">
-            <field name="name">mrp.workorder.form.inherited3</field>
-            <field name="model">mrp.workorder</field>
-            <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
-            <field name="arch" type="xml">
-            <xpath expr="//field[@name='finished_lot_id']" position="after">
-                    <field name="hcp_priority"/>
-                    <field name="workcenter_department"/>
+            <xpath expr="//field[@name='production_id']" position="before">
+                <field name="hcp_priority"/>
+                <field name="workcenter_department"/>
             </xpath>
         </field>
     </record>
 
-    <record id="view_mrp_production_workorder_form_view_filter_inherited2" model="ir.ui.view">
+    <record id="view_mrp_production_workorder_form_view_filter_inherited2_ext" model="ir.ui.view">
         <field name="name">mrp.production.work.order.select.inherited2</field>
         <field name="model">mrp.workorder</field>
         <field name="inherit_id" ref="mrp.view_mrp_production_workorder_form_view_filter"/>
         <field name="arch" type="xml">
-            <xpath expr="//filter[@name='available']" position="after">
+            <xpath expr="//filter[@name='finish']" position="after">
                 <separator/>
                 <filter string="Low Priority" name="hcp_priority" domain="[('hcp_priority', '=', '0')]"/>
                 <filter string="Medium Priority" name="hcp_priority" domain="[('hcp_priority', '=', '1')]"/>
@@ -107,67 +107,70 @@
         <field name="inherit_id" ref="mrp.stock_scrap_view_form2_mrp_inherit_mrp"/>
         <field name="arch" type="xml">
             <field name="owner_id" position="after">
-                <field name="workorder_id" invisible="1" />
-                <field name="production_id" invisible="1" />
-                <field name="production" />
+                <field name="workorder_id" invisible="1"/>
+                <field name="production_id" invisible="1"/>
+                <field name="production"/>
                 <field name="work_order" string="Operation"/>
             </field>
         </field>
     </record>
 
-        <record id="mrp_workcenter_inherited_form2" model="ir.ui.view">
-            <field name="name">mrp.workcenter.form.inherited2</field>
-            <field name="model">mrp.workcenter</field>
-            <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
-            <field name="arch" type="xml">
+    <record id="mrp_workcenter_inherited_form2" model="ir.ui.view">
+        <field name="name">mrp.workcenter.form.inherited2</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
+        <field name="arch" type="xml">
             <xpath expr="//group[@name='capacity']" position="after">
-                <group>
-                     <label for="shiftid" invisible="1"/>
+                <group string="Department Information" name="department">
+                    <label for="department"/>
+                    <div class="o_row">
+                        <field name="department"/>
+                    </div>
+                    <label for="cycle_time" invisible="1"/>
+                    <div invisible="1">
+                        <field name="cycle_time" widget="float_time" class="oe_inline"/>
+                        minutes
+                    </div>
+                    <label for="shiftid" invisible="1"/>
                     <div>
                         <field name="shiftid" class="oe_inline" invisible="1"/>
-                    </div>
-                     <label for="department" />
-                    <div>
-                        <field name="department" class="oe_inline"/>
-                    </div>
-                     <label for="cycle_time" invisible="1"/>
-                    <div invisible="1">
-                        <field name="cycle_time" widget="float_time" class="oe_inline"/> minutes
                     </div>
                 </group>
             </xpath>
         </field>
     </record>
-    
-    <record id="mrp_production_form_view_id" model="ir.ui.view">
-                <field name="name">mrp.production.form</field>
-                <field name="model">mrp.production</field>
-                <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
-                <field name="arch" type="xml">
-                 <xpath expr="//button[@name='post_inventory']"  position='replace'>
-                     <button name="post_inventory" string="Post Inventory" type="object" attrs="{'invisible': [('post_visible', '=', False)]}"/>
-                </xpath>
 
-                <xpath expr="//field[@name='date_deadline']" position="before">
-                    <field name="release_date"/>
-                    <field name="priority"/>
-                </xpath>
+    <record id="mrp_production_form_view_id_ext" model="ir.ui.view">
+        <field name="name">mrp.production.form</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <!--            post_inventory not available in odoo16-->
+            <!--            <xpath expr="//button[@name='post_inventory']" position='replace'>-->
+            <!--                <button name="post_inventory" string="Post Inventory" type="object"-->
+            <!--                        attrs="{'invisible': [('post_visible', '=', False)]}"/>-->
+            <!--            </xpath>-->
 
-                <xpath expr="//form/header" position='inside'>
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="release_date"/>
+                <field name="priority"/>
+            </xpath>
 
-                    <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
+            <xpath expr="//form/header" position='inside'>
 
-                </xpath>
-            
+                <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
+
+            </xpath>
+
         </field>
     </record>
-    
-<record id="mrp_routing_workcenter_tree_view_id" model="ir.ui.view">
-            <field name="name">mrp.routing.workcenter.tree</field>
-            <field name="model">mrp.routing.workcenter</field>
-            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view"/>
-            <field name="arch" type="xml">
-        
+
+    <record id="mrp_routing_workcenter_tree_view_id_ext" model="ir.ui.view">
+        <field name="name">mrp.routing.workcenter.tree</field>
+        <field name="model">mrp.routing.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view"/>
+        <field name="arch" type="xml">
+
             <xpath expr="//field[@name='time_cycle']" position="before">
                 <field name="batch_size"/>
                 <field name="setup_time" widget="float_time" string="Setup Time(minutes)" sum="Total Setup Time"/>
@@ -177,153 +180,155 @@
     </record>
 
 
-<record id="mrp_routing_workcenter_form_view_id" model="ir.ui.view">
-            <field name="name">mrp.routing.workcenter.form</field>
-            <field name="model">mrp.routing.workcenter</field>
-            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
-            <field name="arch" type="xml">
-        
-            <xpath expr="//field[@name='sequence']" position="before">
-                <field name="setup_time" widget="float_time" string="Batch Setup Time(Mins)" />
+    <record id="mrp_routing_workcenter_form_view_id_ext" model="ir.ui.view">
+        <field name="name">mrp.routing.workcenter.form</field>
+        <field name="model">mrp.routing.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='workcenter_id']" position="after">
+                <field name="setup_time" widget="float_time" string="Batch Setup Time(Mins)"/>
                 <field name="custom_batch_size"/>
-		<field name="batch_size"/>
-                <field name="setuptime_per_unit"  widget="float_time"/>
+                <field name="batch_size"/>
+                <field name="setuptime_per_unit" widget="float_time"/>
                 <field name="runtime_per_unit" widget="float_time"/>
-                <field name="total_time" widget="float_time"/>               
+                <field name="total_time" widget="float_time"/>
             </xpath>
-            
-            <xpath expr="//field[@name='sequence']" position="replace">
-            </xpath>
-            
+
+            <!--            <xpath expr="//field[@name='sequence']" position="replace">-->
+            <!--            </xpath>-->
+
             <xpath expr="//field[@name='time_mode']" position="before">
-                <field name="sequence" groups="base.group_no_one"/>           
+                <field name="sequence" groups="base.group_no_one"/>
             </xpath>
-            
+
             <xpath expr="//field[@name='time_mode']" position="before">
                 <field name="done_by" string="Done By" label="Done By"/>
-                <field name="operator" string="Operator" label="Operator" />
+                <field name="operator" string="Operator" label="Operator"/>
             </xpath>
-            
+
             <label for="time_cycle_manual" position="replace">
-                 <label for="time_cycle_manual" attrs="{'invisible': [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}" string="Total Time"/>
+                <label for="time_cycle_manual"
+                       attrs="{'invisible': [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}"
+                       string="Total Time"/>
             </label>
-            
+
 
             <!-- <xpath expr="//field[@name='time_cycle_manual']" position="after">
                            </xpath>
  -->
 
-</field>
-</record>
-<!-- MRP ROUTING WORKCENTER -->
+        </field>
+    </record>
+    <!-- MRP ROUTING WORKCENTER -->
+    <!-- routing_id is not available in odo16 so using that field will not use so its commented-->
 
-      <record id="search_mrp_routing_workcenter_operations" model="ir.ui.view">
-        <field name="name">Routing Operation Search</field>
-        <field name="model">mrp.routing.workcenter</field>
-        <field name="priority" eval="15"/>
-        <field name="arch" type="xml">
-            <search string="Routing Operation Search">
-                <field name="routing_id" string="Routing"/>
-                <separator/>
-                <group expand="0" string="Group By">
-                    <filter string="Routing" name="group_routing_id" domain="[]" context="{'group_by':'routing_id'}"/>
-                </group>
-                </search>
-            </field>
-        </record>
-        
-        <record id="action_mrp_routing_workcenter_operations" model="ir.actions.act_window">
-            <field name="name">Routing Operations</field>
-            <field name="res_model">mrp.routing.workcenter</field>
-            <field name="search_view_id" ref="search_mrp_routing_workcenter_operations"/>
-            <field name="context">{'search_default_group_routing_id': 1 }</field>
-            <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-              <p class="">
-                Add a Routing Operations
-              </p>
-            </field>
-        </record>
-        
-        <menuitem
-            id="menu_mrp_routing_workcenter_operations"
-            action="action_mrp_routing_workcenter_operations"
-            parent="mrp.menu_mrp_configuration"
-            sequence="6"/>
- <!-- MRP ROUTING WORKCENTER -->
-        
-            <record id="view_product_supplier_inherit2" model="ir.ui.view">
-            <field name="name">product.template.supplier.form.inherit3</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>
-            <field name="arch" type="xml">
-                <xpath expr="//page[@name='purchase']/group[2]" position="replace">
-                    <group string="Description for Purchase Department">
-                        <field name="description_purchase" nolabel="1" placeholder="This note will show up on purchase orders."/>
-                    </group>
-               </xpath>
+    <!--      <record id="search_mrp_routing_workcenter_operations" model="ir.ui.view">-->
+    <!--        <field name="name">Routing Operation Search</field>-->
+    <!--        <field name="model">mrp.routing.workcenter</field>-->
+    <!--        <field name="priority" eval="15"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <search string="Routing Operation Search">-->
+    <!--                <field name="routing_id" string="Routing"/>-->
+    <!--                <separator/>-->
+    <!--                <group expand="0" string="Group By">-->
+    <!--                    <filter string="Routing" name="group_routing_id" domain="[]" context="{'group_by':'routing_id'}"/>-->
+    <!--                </group>-->
+    <!--                </search>-->
+    <!--            </field>-->
+    <!--        </record>-->
 
-            </field>
-        </record>
+    <!--        This is the action for above record since it is not needed so its commented-->
 
-
-
+    <!--        <record id="action_mrp_routing_workcenter_operations" model="ir.actions.act_window">-->
+    <!--            <field name="name">Routing Operations</field>-->
+    <!--            <field name="res_model">mrp.routing.workcenter</field>-->
+    <!--            <field name="search_view_id" ref="search_mrp_routing_workcenter_operations"/>-->
+    <!--            <field name="context">{'search_default_group_routing_id': 1 }</field>-->
+    <!--            <field name="view_mode">tree,form</field>-->
+    <!--            <field name="help" type="html">-->
+    <!--              <p class="">-->
+    <!--                Add a Routing Operations-->
+    <!--              </p>-->
+    <!--            </field>-->
+    <!--        </record>-->
+    <!--        This is the menu item for above commented action so it is commented-->
+    <!--        <menuitem-->
+    <!--            id="menu_mrp_routing_workcenter_operations"-->
+    <!--            action="action_mrp_routing_workcenter_operations"-->
+    <!--            parent="mrp.menu_mrp_configuration"-->
+    <!--            sequence="6"/>-->
+    <!-- MRP ROUTING WORKCENTER -->
+    <!--added in below record-->
+    <!--    <record id="view_product_supplier_inherit2" model="ir.ui.view">-->
+    <!--        <field name="name">product.template.supplier.form.inherit3</field>-->
+    <!--        <field name="model">product.template</field>-->
+    <!--        <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <xpath expr="//page[@name='purchase']/group[2]" position="replace">-->
+    <!--                <group string="Description for Purchase Department">-->
+    <!--                    <field name="description_purchase" nolabel="1"-->
+    <!--                           placeholder="This note will show up on purchase orders."/>-->
+    <!--                </group>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
 
 
     <record id="view_product_form_inherit" model="ir.ui.view">
-            <field name="name">product.template.common.form.inherit</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//page[@name='inventory']" position='after'>
-                    <page string='Documents'>
+        <field name="name">product.template.common.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='inventory']" position='after'>
+                <page string='Documents'>
 
-                        <field name="attachments_id" widget="many2many_binary" string="Attach a file" label="Attachments"/>
-                        
-                    </page>
-                </xpath>   
+                    <field name="attachments_id" widget="many2many_binary" string="Attach a file" label="Attachments"/>
 
-               <xpath expr="//form/sheet/notebook/page/group[2]" position='replace'>
+                </page>
+            </xpath>
 
-                   <group string="Description For Sales">
-                                    <field name="description" nolabel="1" placeholder="This note is only for Sales purposes."/>
-                                </group>
-                </xpath>
+            <xpath expr="//form/sheet/notebook/page/group[2]" position='replace'>
+                <group string="Description For Sales">
+                    <field name="description" nolabel="1" colspan="2"
+                           placeholder="This note is only for Sales purposes."/>
+                </group>
+            </xpath>
 
+            <xpath expr="//form/sheet/notebook/page[4]/group[1]/group/group" position="replace">
+                <group string="Description for Purchase Department">
+                    <field name="description_purchase" nolabel="1" colspan="2"
+                           placeholder="This note will show up on purchase orders."/>
+                </group>
+            </xpath>
 
-<!--                 <xpath expr="//form/header" position='inside'>
+            <!-- already it was commented in version13-->
+            <!--                 <xpath expr="//form/header" position='inside'>
+                                <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
+                            </xpath>
+             -->
+        </field>
+    </record>
 
-                    <button name="get_attachment" string="Print QC Inspection Report" type="object"/>
-
-                </xpath>
- -->
-
-
-
-
- 
-    </field>
-        </record>
- 
-     <record id="mrp_bom_form_view_inherited2" model="ir.ui.view">
-            <field name="name">mrp.bom.form.inherited</field>
-            <field name="model">mrp.bom</field>
-            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//form//sheet" position="before">
-                    <header>
-                        <button type="object"
+    <record id="mrp_bom_form_view_inherited2" model="ir.ui.view">
+        <field name="name">mrp.bom.form.inherited</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="before">
+                <header>
+                    <button type="object"
                             name="update_bom"
-                        string="Update UOM"
-                        groups="base.group_user"/>
-                        <button type="object"
+                            string="Update UOM"
+                            groups="base.group_user"/>
+                    <button type="object"
                             name="update_main_bom"
-                        string="Update Main UOM"
-                        groups="base.group_user"/>
-                    </header>
-                </xpath>
-            </field>
-        </record>
+                            string="Update Main UOM"
+                            groups="base.group_user"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
 
     <record id="mrp_production_tree_vie_inherit3" model="ir.ui.view">
         <field name="name">mrp.production.tree.inherit3</field>
@@ -354,5 +359,5 @@
               parent="mrp.menu_mrp_root"
               action="hr_timesheet.act_hr_timesheet_line"
     />
-    
+
 </odoo>

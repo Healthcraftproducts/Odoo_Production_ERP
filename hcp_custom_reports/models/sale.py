@@ -272,7 +272,7 @@ class SaleOrderLine(models.Model):
 
 	product_ship_method = fields.Boolean(string='Product Ship',default=False)
 	line_amount = fields.Float(string="Line Amount",compute='_compute_line_level_amount',store=True)
-
+	
 
 	@api.depends('product_uom_qty','price_unit')
 	def _compute_line_level_amount(self):

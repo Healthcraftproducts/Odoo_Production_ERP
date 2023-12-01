@@ -87,7 +87,7 @@ class RepairOrder(models.Model):
                 'price_unit': price_unit,
                 'picking_type_id': picking.picking_type_id.id,
                 'route_ids': 1 and [
-                    (6, 0, [x.id for x in self.env['stock.location.route'].search([('id', 'in', (2, 3))])])] or [],
+                    (6, 0, [x.id for x in self.env['stock.route'].search([('id', 'in', (2, 3))])])] or [],
                 'warehouse_id': picking.picking_type_id.warehouse_id.id,
             }
             diff_quantity = self.product_qty

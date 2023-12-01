@@ -1,4 +1,5 @@
 <odoo>
+    
 <template id="invoice_custom_report_inherit_template_id" inherit_id="account.report_invoice_document">
 
     <xpath expr="//t[@t-set='address']/address" position="replace">
@@ -10,15 +11,15 @@
     </xpath>
     <xpath expr="//div[@class='page']" position="before">
             <br/><br/>
-            <table width="100%">
+            <table width="100%" style="border-style:hidden;">
                     <tbody>
 
-                    <tr>
-                        <td style="width: 50%; text-align: left;"><strong><u>BILL TO:</u></strong></td>
-                        <td style="width: 50%; text-align: left;"><strong><u>SHIP TO:</u></strong></td>
+                    <tr style="border-style:hidden;">
+                        <td style="width: 50%; text-align: left;border-style:hidden;"><strong><u>BILL TO:</u></strong></td>
+                        <td style="width: 50%; text-align: left;border-style:hidden;"><strong><u>SHIP TO:</u></strong></td>
                         </tr>
-                        <tr>
-                        <td style="width: 50%; text-align: left;">
+                        <tr style="border-style:hidden;">
+                        <td style="width: 50%; text-align: left;border-style:hidden;">
                         <span style="font-size:9pt;" t-field="o.partner_id.name"/>
                             <t t-if="o.partner_id.street!=False or o.partner_id.street2!=False">
                             <br><span style="font-size:9pt;" t-field="o.partner_id.street"/><span style="font-size:9pt;" t-field="o.partner_id.street2"/></br>
@@ -34,7 +35,7 @@
                                 <br><span style="font-size:9pt;">Cust ID:</span><span style="font-size:9pt;" t-field="o.partner_id.hcp_customer_id"/> <span style="font-size:9pt;">Tax ID:</span><span style="font-size:9pt;" t-field="o.partner_id.vat"/></br>
                             </t>
                         </td>
-                        <td style="width: 50%; text-align: left;">
+                        <td style="width: 50%; text-align: left;border-style:hidden;">
                         <span style="font-size:9pt;" t-field="o.partner_shipping_id.name"/>
                             <t t-if="o.partner_shipping_id.street!=False or o.partner_shipping_id.street2!=False">
                             <br><span style="font-size:9pt;" t-field="o.partner_shipping_id.street"/><span style="font-size:9pt;" t-field="o.partner_shipping_id.street2"/></br>
@@ -62,7 +63,7 @@
             <br><span style="font-size:10pt;" class="m-0" t-field="o.invoice_date" t-options='{"format": "MM/dd/yyyy"}'/></br>
         </div>
         
-        <div class="col-auto mw-100 mb-2" t-if="o.invoice_date_due and o.type == 'out_invoice' and o.state == 'posted'" name="due_date">
+        <div class="col-auto mw-100 mb-2" t-if="o.invoice_date_due and o.move_type == 'out_invoice' and o.state == 'posted'" name="due_date">
             <strong>Due Date:</strong>
             <br><span style="font-size:10pt;" class="m-0" t-field="o.invoice_date_due" t-options='{"format": "MM/dd/yyyy"}'/></br>
         </div>
@@ -108,11 +109,13 @@
 
     </xpath>
 
-    <xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
+    <xpath expr="//table[@class='table table-sm o_main_table table-borderless']" position="replace">
 
         <t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>
 
-            <table class="table table-sm o_main_table" width="100%">
+        <br/>
+
+            <table class="table table-sm o_main_table table-borderless" width="100%">
                 <thead>
                     <tr>
                         <th name="th_itemcode" class="text-left">Item Code</th>
@@ -137,7 +140,7 @@
                         <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
 
                         <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
-                        <t t-if="not line.display_type">
+                        <t t-if="line.display_type == 'product'" name="account_invoice_line_accountable">
                                 <td name="td_name" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.default_code"/></td>
                                 <td name="td_name" class="text-center" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.name"/></td>
                                 <td name="td_name" class="text-center" style="padding-top: 2%;padding-bottom: 2%;"><span t-field="line.product_id.cust_fld3.code"/></td>
@@ -191,7 +194,7 @@
     
     </xpath>
 
-    <xpath expr="//div[@id='total']/div/table/tr[@class='border-black o_subtotal']" position="replace">
+<!--     <xpath expr="//div[@id='total']/div/table/tr[@class='border-black o_subtotal']" position="replace">
 
     </xpath>
 
@@ -201,67 +204,67 @@
 
     <xpath expr="//div[@id='total']/div/table/tr[@class='border-black o_total']" position="replace">
 
-    </xpath>
+    </xpath> -->
 
-    <xpath expr="//div[@class='clearfix']" position="before">
+    <xpath expr="//div[@class='clearfix mb-4']" position="before">
 
         <table class="table-sm o_main_table" width="100%">
             <tbody>
                 <tr>
-                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;border-style:hidden;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
                     <span><strong>Total (before Discount)</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
                     <span style="text-align: right;"><span t-esc="sum([l.inv_line_amount for l in o.invoice_line_ids])" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                     </span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;border-style:hidden;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
                         <span><strong>Additional Product Discount</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
                         <span style="text-align: right;"><span t-esc="-sum([(l.inv_line_amount*l.discount)/100 for l in o.invoice_line_ids if l.invoice_ship_method==False])" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                         </span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 50%;border-style:hidden;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
                         <span><strong>Additional Shipping Discount</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%;border-style:hidden;">
                         <span style="text-align: right;"><span t-esc="-sum([(l.inv_line_amount*l.discount)/100 for l in o.invoice_line_ids if l.invoice_ship_method==True])" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                         </span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
+                    <td style="width: 50%;border-style:hidden;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border: 1px solid black; border-left:none; border-bottom:none; border-right:none;border-style:hidden;">
                         <span><strong>Subtotal</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;border-style:hidden;">
                         <span style="text-align: right;"><span t-field="o.amount_untaxed"/></span>
                     </td>
                     </tr>
                     <tr>
-                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
+                    <td style="width: 50%;border-style:hidden;" border="None">&amp;nbsp;</td>
                     <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%;border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
                         <span><strong>Tax Rate(<span t-esc="o.fiscal_position_id.tax_rate"/>)</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;border-style:hidden;">
                         <span style="text-align: right;"><span t-field="o.amount_tax"/></span>
                     </td>
 
                     </tr>
                     <tr>
-                    <td style="width: 50%;" border="None">&amp;nbsp;</td>
-                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
+                    <td style="width: 50%;border-style:hidden;" border="None">&amp;nbsp;</td>
+                    <td style="width: 30%; text-align: left; padding-top: 0%;padding-bottom: 0%; border: 1px solid black;border-style:hidden;">
                         <span><strong>Total&amp;nbsp;(<span t-field="o.currency_id.name"/>)</strong></span>
                     </td>
-                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;">
+                    <td style="width: 20%; text-align: right; padding-top: 0%;padding-bottom: 0%; border: 1px solid black; border-left:none; border-bottom:none; border-right:none;border-style:hidden;">
                         <span style="text-align: right;"><span t-field="o.amount_total"/></span>
                     </td>
                 </tr>
@@ -273,16 +276,18 @@
     <xpath expr="//p[1]" position="replace">
     </xpath>
 
-    <xpath expr="//p[@t-if='o.invoice_payment_term_id']" position="replace">
+<!--     <xpath expr="//p[@t-if='o.invoice_payment_term_id']" position="replace">
+    </xpath> -->
+    <xpath expr="//div[@t-field='o.invoice_payment_term_id.note']" position="replace">
     </xpath>
 
-    <xpath expr="//p[@t-if='o.fiscal_position_id.note']" position="replace">
-    </xpath>
+<!--     <xpath expr="//p[@t-if='o.fiscal_position_id.note']" position="replace">
+    </xpath> -->
 
     <xpath expr="//div[@id='qrcode']" position="replace">
     </xpath>
 
-    <xpath expr="//p[@t-if='o.narration']" position="replace">
+    <xpath expr="//div[@t-if='not is_html_empty(o.narration)']" position="replace">
         <strong><u><span style="font-size:14px;">Terms and Conditions</span></u></strong>
         <p t-if="o.narration" name="comment">
             <span style="font-size:10pt;" t-field="o.narration"/>
@@ -296,22 +301,15 @@
                 <br><strong>GST/HST #:</strong><span t-esc="o.partner_shipping_id.country_id.vat_label"/></br>
                 
         </t>
-
-        <!--<br><strong>GST/HST #:</strong><span t-esc="o.partner_shipping_id.vat"/></br>-->
-
-        
-
     </xpath>
-
-
 
 
 </template>
 
 
-   <template id="sale.report_invoice_document_inherit_sale" inherit_id="account.report_invoice_document">
+<!--    <template id="sale.report_invoice_document_inherit_sale" inherit_id="account.report_invoice_document">
       
-    </template>
+    </template> -->
 
 
 </odoo>

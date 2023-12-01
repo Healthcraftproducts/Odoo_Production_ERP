@@ -34,4 +34,11 @@
     # 'demo': [
     #     'demo/demo.xml',
     # ],
+'assets': {
+    'web.assets_backend': [
+        'hcp_mrp_module/static/src/**/*.xml',
+    ],
+},
+
 }
+
