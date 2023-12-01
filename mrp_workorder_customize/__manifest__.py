@@ -30,6 +30,7 @@
     "license": "Other proprietary",
     'depends' : ['mrp','stock','mrp_workorder','mrp_account'],
     'data' : [
+        'views/mrp_view.xml',
     ],
     'images':['static/description/poster.png'],
     'demo': [],
