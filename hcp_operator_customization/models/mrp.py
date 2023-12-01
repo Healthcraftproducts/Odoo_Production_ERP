@@ -127,6 +127,12 @@ class MrpProduction(models.Model):
                         total_qty_produced += workorder_line1.qty_produced
                 # value = workorder.production_id.original_quantity_production - workorder.production_id.product_uom_qty
                 workorder.write({'qty_reported_from_previous_wo': total_qty_produced})
+                state ='pending':
+                if workorder.qty_remaining ==0:
+                    state = 'cancel'
+                    workorder.write({
+                        'state': state,
+                    })
                     
 class StockScrap(models.Model):
     _inherit="stock.scrap"
