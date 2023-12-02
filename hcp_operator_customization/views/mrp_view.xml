@@ -77,9 +77,12 @@
                 <xpath expr="//field[@name='release_date']" position="after">
                     <field name="update_backorder" invisible="1"/>
                 </xpath>
-                <xpath expr="//form/header" position='inside'>
+<!--                <xpath expr="//form/header" position='inside'>
                     <button name="update_workorder_qty1" string="Update Backorder Qty" type="object" attrs="{'invisible': ['|',('state', 'not in', ('confirmed','progress')),('update_backorder','=',True)]}" class="oe_highlight"/>
-                </xpath>
+                </xpath>-->
+                <div class="o_row">
+                    <button name="update_workorder_qty1" string="Update" type="object" attrs="{'invisible': [('state', 'not in', ('confirmed','progress'))]}" class="oe_highlight"/>
+                </div>
             </field>
         </record>
 
