@@ -38,6 +38,7 @@ class MrpProductionWorkcenterLine(models.Model):
         # pdb.set_trace()
         self.qty_producing_custom = self.qty_remaining
         self.qty_producing = self.qty_remaining
+        self.allow_record_qty=True
         action['context'] = {
             'active_id': self.id,
             # 'qty_producing_custom': self.qty_remaining,
@@ -55,6 +56,7 @@ class MrpProductionWorkcenterLine(models.Model):
     qty_producing_custom = fields.Float(string='Current Quantity', digits='Product Unit of Measure', copy=False)
     record_qty_production = fields.Float(string='Produced', digits='Product Unit of Measure', copy=False)
     record_qty_production1 = fields.Float(string='Produced1', digits='Product Unit of Measure', copy=False)
+    allow_record_qty = fields.Boolean(string="Allow To Record Production Quantity", default=False)
 
     # @api.depends('production_id.qty_producing')
     # def _compute_qty_producing_custom1(self):
@@ -104,12 +106,12 @@ class MrpProductionWorkcenterLine(models.Model):
             if workorder.qty_produced ==0:
                 # value = workorder.production_id.qty_producing or workorder.qty_produced or workorder.qty_producing or workorder.qty_production
                 value = workorder.qty_produced or workorder.qty_producing or workorder.qty_production
-            if workorder.qty_produced >0:
+            if workorder.qty_produced >0 and workorder.qty_producing_custom>0:
                 # value = (workorder.qty_produced + workorder.qty_producing)
                 value = (workorder.qty_produced + workorder.qty_producing_custom)
             vals = {
                 'qty_produced': value,
-                'record_qty_production': value,
+                # 'record_qty_production': value,
                 'state': 'done',
                 'date_finished': end_date,
                 'date_planned_finished': end_date,
@@ -121,6 +123,9 @@ class MrpProductionWorkcenterLine(models.Model):
                 vals['date_start'] = end_date
             if not workorder.date_planned_start or end_date < workorder.date_planned_start:
                 vals['date_planned_start'] = end_date
+            if workorder.allow_record_qty ==True:
+                vals['record_qty_production'] = value
+                vals['allow_record_qty'] = False
             workorder.write(vals)
         return True
 
