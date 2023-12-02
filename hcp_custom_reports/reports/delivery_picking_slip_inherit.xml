@@ -8,8 +8,9 @@
         </xpath>
 
         <xpath expr="//t[@t-set='address']" position="after">
-            <t t-set="address">
+            <t>
                 <br/>
+                <span><strong>Delivery Address:</strong></span>
                 <div t-field="o.partner_id"
                      t-options='{"widget": "contact", "fields": ["address", "name", "phone","email"], "no_marker": True}'/>
             </t>
