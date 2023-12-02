@@ -5,8 +5,7 @@
 
         <xpath expr="//t[@t-set='address']" position="replace">
 
-            <t t-if="o.partner_id" name="partner_header">
-
+            <t>
                 <t t-set="address">
                     <br/>
                     <div t-esc="o.partner_id"
