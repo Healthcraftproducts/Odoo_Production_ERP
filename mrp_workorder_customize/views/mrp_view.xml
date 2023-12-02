@@ -30,7 +30,7 @@
                                 <label for="qty_producing_custom" string=":"/>
                                 <field name="qty_producing" class="oe_inline text-start" attrs="{'readonly': ['|', '|', ('allow_producing_quantity_change', '=', False), ('product_tracking', '=', 'serial'), ('state', 'in', ('done', 'cancel'))]}" required="1" invisible='1'/>
                                 <field name="allow_record_qty" invisible='1'/>
-                                <field name="qty_producing_custom" class="oe_inline text-start" attrs="{'readonly': ['|', '|', ('allow_producing_quantity_change', '=', False), ('product_tracking', '=', 'serial'), ('state', 'in', ('done', 'cancel'))]}" required="1" invisible='0'/>
+                                <field name="qty_producing_custom" class="oe_inline text-start" attrs="{'readonly': ['|',('product_tracking', '=', 'serial'), ('state', 'in', ('done', 'cancel'))]}" required="1" invisible='0'/>
                                 / <field name="qty_remaining" class="oe_inline text-start" attrs="{'invisible': [('state', '=', 'done')]}"/> <field name="qty_production" class="oe_inline text-start" attrs="{'invisible': [('state', '!=', 'done')]}"/>
                                 <label for="product_uom_id" string="" class="oe_inline"/>
                                 <field name="product_uom_id" options="{'no_open': True}" class="oe_inline" readonly="1"/>
