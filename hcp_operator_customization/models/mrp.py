@@ -3,12 +3,24 @@
 
 from collections import defaultdict, namedtuple
 from math import log10
+import json
+import datetime
+import math
+import re
+
+from ast import literal_eval
+from collections import defaultdict
 
 from odoo import api, fields, models, _
 from odoo.tools.date_utils import add, subtract
 from odoo.tools.float_utils import float_round
 from odoo.osv.expression import OR, AND
 from odoo.exceptions  import UserError
+from odoo.tools import float_compare, float_round, float_is_zero, format_datetime
+from odoo.tools.misc import OrderedSet, format_date, groupby as tools_groupby
+from odoo.addons.stock.models.stock_move import PROCUREMENT_PRIORITIES
+
+SIZE_BACK_ORDER_NUMERING = 3
 
 import logging
 import threading
@@ -37,7 +49,7 @@ class MrpProduction(models.Model):
                     mrp_workorder = self.env['mrp.workorder'].sudo().search(domain11)
                     for workorder_line1 in mrp_workorder:
                         # pdb.set_trace()
-                        total_qty_produced += workorder_line1.record_qty_production1
+                        total_qty_produced += workorder_line1.record_qty_production
                 # value = workorder.production_id.original_quantity_production - workorder.production_id.product_uom_qty
                 workorder.write({
                     'qty_reported_from_previous_wo': total_qty_produced,
@@ -49,6 +61,7 @@ class MrpProduction(models.Model):
                         'state': state,
                     })
                 mrp.update_backorder = True
+                
 
     def button_mark_done(self):
         for workorder in self.workorder_ids:

@@ -29,6 +29,7 @@
                                 <field name="product_id" context="{'display_default_code': False}" options="{'no_open': True}" readonly="1"/>
                                 <label for="qty_producing_custom" string=":"/>
                                 <field name="qty_producing" class="oe_inline text-start" attrs="{'readonly': ['|', '|', ('allow_producing_quantity_change', '=', False), ('product_tracking', '=', 'serial'), ('state', 'in', ('done', 'cancel'))]}" required="1" invisible='1'/>
+                                <field name="allow_record_qty" invisible='1'/>
                                 <field name="qty_producing_custom" class="oe_inline text-start" attrs="{'readonly': ['|', '|', ('allow_producing_quantity_change', '=', False), ('product_tracking', '=', 'serial'), ('state', 'in', ('done', 'cancel'))]}" required="1" invisible='0'/>
                                 / <field name="qty_remaining" class="oe_inline text-start" attrs="{'invisible': [('state', '=', 'done')]}"/> <field name="qty_production" class="oe_inline text-start" attrs="{'invisible': [('state', '!=', 'done')]}"/>
                                 <label for="product_uom_id" string="" class="oe_inline"/>
@@ -68,13 +69,13 @@
             </field>
         </record>
 
-        <record id="mrp_workorder_view_form_tablet_inherit_rcp" model="ir.ui.view">
+        <record id="mrp_workorder_view_form_tablet_inherit_rcp2" model="ir.ui.view">
             <field name="name">mrp.workorder.view.inherit.hcp.rcp</field>
             <field name="model">mrp.workorder</field>
             <field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='record_production']" position="replace">
-                     <button name="record_production" type="object" string="Record production" barcode_trigger="record" class="btn-primary"/>
+                   <button name="record_production" type="object" string="Record production" attrs="{'invisible': ['|', ('current_quality_check_id', '!=', False), ('is_last_lot', '=', True)]}" barcode_trigger="record" class="btn-primary"/>
                 </xpath>
                 <xpath expr="//button[@name='do_finish']" position="attributes">
                     <attribute name="groups">mrp.group_mrp_manager</attribute>
