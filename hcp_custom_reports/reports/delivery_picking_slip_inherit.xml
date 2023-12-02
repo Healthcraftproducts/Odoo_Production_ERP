@@ -3,9 +3,9 @@
 <odoo>
 	<template id="delivery_slip_report_inherit_id" inherit_id="stock.report_delivery_document">
 
-        <xpath expr="//t[@t-set='partner']" position="replace">
+        <xpath expr="//t[@t-set='address']" position="replace">
 
-            <t t-if="partner_id" name="partner_header">
+            <t t-if="o.partner_id" name="partner_header">
 
                 <t t-set="address">
                     <br/>
