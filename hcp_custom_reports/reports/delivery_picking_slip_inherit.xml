@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-	<template id="delivery_slip_report_inherit_id" inherit_id="stock.report_delivery_document">
+    <template id="delivery_slip_report_inherit_id" inherit_id="stock.report_delivery_document">
 
-        <xpath expr="//t[@t-set='address']" position="replace">
+        <xpath expr="//t[@t-set='partner']" position="replace">
 
-            <t>
-                <t t-set="address">
-                    <br/>
-                    <div t-esc="o.partner_id"
-                        t-options='{"widget": "contact", "fields": ["address", "name", "phone","email"], "no_marker": True}'/>
-                </t>
+        </xpath>
+
+        <xpath expr="//t[@t-set='address']" position="after">
+            <t t-set="address">
+                <br/>
+                <div t-field="o.partner_id"
+                     t-options='{"widget": "contact", "fields": ["address", "name", "phone","email"], "no_marker": True}'/>
             </t>
             <t t-if="o.partner_id">
                 <p style="text-align:right;margin-right:26% !important;">
-                    <span><strong>Customer ID:&amp;nbsp;</strong></span>
+                    <span>
+                        <strong>Customer ID:&amp;nbsp;</strong>
+                    </span>
                     <span t-esc="o.partner_id.hcp_customer_id"/>
                 </p>
             </t>
         </xpath>
+
+        <xpath expr="//t[@t-set='address']" position="replace">
+
+        </xpath>
+
 
         <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="after">
 
