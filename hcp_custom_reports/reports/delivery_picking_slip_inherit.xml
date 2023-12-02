@@ -19,6 +19,10 @@
                 </p>
             </t>
         </xpath>
+        <xpath expr="//t[@t-set='information_block']">
+
+        </xpath>
+
 
         <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="after">
 
