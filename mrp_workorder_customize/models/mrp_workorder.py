@@ -129,8 +129,11 @@ class MrpProductionWorkcenterLine(models.Model):
             workorder.write(vals)
         return True
 
-
-
+    @api.depends('qty_producing_custom', 'qty_remaining')
+    def _compute_is_last_lot(self):
+        for wo in self:
+            precision = wo.production_id.product_uom_id.rounding
+            wo.is_last_lot = float_compare(wo.qty_producing_custom,wo.qty_remaining, precision_rounding=precision) >= 0
 
 # change in base code by geminatecs
 # file location of change code :-
