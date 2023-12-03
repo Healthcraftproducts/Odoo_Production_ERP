@@ -71,9 +71,9 @@ class MrpProduction(models.Model):
 
     def button_mark_done(self):
         for workorder in self.workorder_ids:
-            workorder.write({'record_qty_production1': workorder.record_qty_production})
-            # if workorder.state != "done":
-            #     raise ValidationError("Some of your work orders are still pending")
+            if workorder.state not in ["progress", "done"]:
+                raise ValidationError("Some of your work orders are Not Yet Started")
+        workorder.write({'record_qty_production1': workorder.record_qty_production})
         self._button_mark_done_sanity_checks()
         if not self.env.context.get('button_mark_done_production_ids'):
             self = self.with_context(button_mark_done_production_ids=self.ids)
