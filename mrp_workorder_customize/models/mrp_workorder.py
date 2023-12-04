@@ -19,14 +19,48 @@
 #
 ##############################################################################
 
-from odoo import api, fields, models, _, SUPERUSER_ID
-from odoo.tools import float_compare
-from odoo.exceptions import UserError
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+from collections import defaultdict
+import json
+
+from odoo import api, fields, models, _, SUPERUSER_ID
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import float_compare, float_round, format_datetime
+from bisect import bisect_left
 import pdb
 
 class MrpProductionWorkcenterLine(models.Model):
     _inherit = 'mrp.workorder'
+
+    def get_summary_data(self):
+        self.ensure_one()
+        # show rainbow man only the first time
+        show_rainbow = any(not t.date_end for t in self.time_ids)
+        self.end_all()
+        if any(step.quality_state == 'none' for step in self.check_ids):
+            raise UserError(_('You still need to do the quality checks!'))
+        last30op = self.env['mrp.workorder'].search_read([
+            ('operation_id', '=', self.operation_id.id),('qty_produced', '>', 0),
+            ('date_finished', '>', fields.datetime.today() - relativedelta(days=30)),
+        ], ['duration', 'qty_produced'])
+        # pdb.set_trace()
+        last30op = sorted([item['duration'] / item['qty_produced'] for item in last30op])
+        # show rainbow man only for the best time in the last 30 days.
+        if last30op:
+            show_rainbow = show_rainbow and float_compare((self.duration / self.qty_producing), last30op[0], precision_digits=2) <= 0
+
+        score = 3
+        if self.check_ids:
+            passed_checks = len(list(check for check in self.check_ids if check.quality_state == 'pass'))
+            score = int(3.0 * passed_checks / len(self.check_ids))
+
+        return {
+            'duration': self.duration,
+            'position': bisect_left(last30op, self.duration), # which position regarded other workorders ranked by duration
+            'quality_score': score,
+            'show_rainbow': show_rainbow,
+        }
 
     def open_tablet_view(self):
         self.ensure_one()
@@ -96,19 +130,25 @@ class MrpProductionWorkcenterLine(models.Model):
                 continue
             workorder.end_all()
             # my_list = []
-            # for line in workorder.production_id.workorder_ids.filtered(lambda x:x.qty_produced > 0):
-            #     my_list.append(line.qty_produced)
+            # for line in workorder.production_id.workorder_ids.filtered(lambda x:x.record_qty_production > 0):
+            #     my_list.append(line.record_qty_production)
+            # pdb.set_trace()
             # if my_list != []:
             #     final_quantity = min(my_list)
             #     workorder.production_id.write({'qty_producing':final_quantity})
             workorder.qty_producing = workorder.qty_producing_custom
             # pdb.set_trace()
-            if workorder.qty_produced ==0:
-                # value = workorder.production_id.qty_producing or workorder.qty_produced or workorder.qty_producing or workorder.qty_production
-                value = workorder.qty_produced or workorder.qty_producing or workorder.qty_production
+            # if workorder.qty_produced ==0:
+            #     # value = workorder.production_id.qty_producing or workorder.qty_produced or workorder.qty_producing or workorder.qty_production
+            #     value = workorder.qty_produced or workorder.qty_producing or workorder.qty_production
             if workorder.qty_produced >0 and workorder.qty_producing_custom>0:
                 # value = (workorder.qty_produced + workorder.qty_producing)
                 value = (workorder.qty_produced + workorder.qty_producing_custom)
+            elif workorder.qty_produced ==0 and workorder.qty_producing_custom>0:
+                value = workorder.qty_producing_custom
+            else:
+                value = workorder.record_qty_production or workorder.qty_produced or workorder.qty_producing or workorder.qty_production
+            # pdb.set_trace()
             vals = {
                 'qty_produced': value,
                 # 'record_qty_production': value,
@@ -126,6 +166,10 @@ class MrpProductionWorkcenterLine(models.Model):
             if workorder.allow_record_qty ==True:
                 vals['record_qty_production'] = value
                 vals['allow_record_qty'] = False
+                # pdb.set_trace()
+                if vals.get('state') != 'done':
+                    vals['state'] = 'progress'
+            print("Test111111", vals)
             workorder.write(vals)
         return True
 
