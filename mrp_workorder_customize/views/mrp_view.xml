@@ -2,6 +2,17 @@
 <odoo>
     <data>
 
+        <record id="mrp_production_workcenter_form_view_pick" model="ir.ui.view">
+            <field name="name">mrp.workcenter.form.pick</field>
+            <field name="model">mrp.workcenter</field>
+            <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group/group/field[@name='resource_calendar_id']"  position="after">
+                    <field name="is_pick_workcenter"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="mrp_workorder.mrp_workorder_view_form_tablet" model="ir.ui.view">
             <field name="name">mrp.workorder.view.form.inherit.quality.tablet.new</field>
             <field name="model">mrp.workorder</field>

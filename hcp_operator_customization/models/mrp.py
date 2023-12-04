@@ -39,41 +39,53 @@ class MrpProduction(models.Model):
     
     def update_workorder_qty1(self):
         for mrp in self:
+            # for workorder in mrp.workorder_ids:
+            #     backorder_ids = self.procurement_group_id.mrp_production_ids.ids
+            #     total_qty_produced=0
+            #     # pdb.set_trace()
+            #     for mrp_line in backorder_ids:
+            #         mrp_production = self.sudo().search([('id', '=', mrp_line)])
+            #         domain11 = [('production_id', '=', mrp_production.id), ('workcenter_id', '=', workorder.id)]
+            #         mrp_workorder = self.env['mrp.workorder'].sudo().search(domain11)
+            #         for workorder_line1 in mrp_workorder:
+            #             # pdb.set_trace()
+            #             total_qty_produced += workorder_line1.record_qty_production
+            #     # value = workorder.production_id.original_quantity_production - workorder.production_id.product_uom_qty
+            #     workorder.write({
+            #         'qty_reported_from_previous_wo': total_qty_produced,
+            #     })
+            #     state ='pending'
+            #     if workorder.qty_remaining ==0:
+            #         state = 'cancel'
+            #         workorder.write({
+            #             'state': state,
+            #         })
+            #     mrp.update_backorder = True
+            for line in self.workorder_ids.filtered(lambda x:x.record_qty_production == 0 and x.state not in ['cancel', 'done']):
+                raise UserError(_("Alert !! Please process Work Order - %s")%line.display_name)
             my_list = []
-            for line in mrp.workorder_ids.filtered(lambda x:x.record_qty_production > 0):
+            for line in mrp.workorder_ids.filtered(lambda x:x.record_qty_production > 0 and x.state not in ['cancel']):
                 my_list.append(line.record_qty_production)
             if my_list != []:
                 final_quantity = min(my_list)
                 mrp.write({'qty_producing':final_quantity})
-            #for workorder in mrp.workorder_ids:
-                #backorder_ids = self.procurement_group_id.mrp_production_ids.ids
-                #total_qty_produced=0
-                ## pdb.set_trace()
-                #for mrp_line in backorder_ids:
-                    #mrp_production = self.sudo().search([('id', '=', mrp_line)])
-                    #domain11 = [('production_id', '=', mrp_production.id), ('workcenter_id', '=', workorder.id)]
-                    #mrp_workorder = self.env['mrp.workorder'].sudo().search(domain11)
-                    #for workorder_line1 in mrp_workorder:
-                        ## pdb.set_trace()
-                        #total_qty_produced += workorder_line1.record_qty_production
-                ## value = workorder.production_id.original_quantity_production - workorder.production_id.product_uom_qty
-                #workorder.write({
-                    #'qty_reported_from_previous_wo': total_qty_produced,
-                #})
-                #state ='pending'
-                #if workorder.qty_remaining ==0:
-                    #state = 'cancel'
-                    #workorder.write({
-                        #'state': state,
-                    #})
-                #mrp.update_backorder = True
                 
 
     def button_mark_done(self):
+        for line in self.workorder_ids.filtered(lambda x:x.record_qty_production == 0 and x.state not in ['cancel', 'done']):
+            raise UserError(_("Alert !! Please process Work Order - %s")%line.display_name)
+        my_list1 = []
+        for line in self.workorder_ids.filtered(lambda x:x.workcenter_id.is_pick_workcenter ==False and x.record_qty_production > 0 and x.state not in ['cancel', 'done']):
+            my_list1.append(line.record_qty_production)
+            if my_list1 != []:
+                min_quantity = min(my_list1)
+                max_quantity = max(my_list1)
+                if round(min_quantity,3) != round(max_quantity,3):
+                    raise UserError(_("You cannot close Manufacturing Order with different produced quantities in different workorders."))
         for workorder in self.workorder_ids:
-            if workorder.state not in ["progress", "done"]:
-                raise ValidationError("Some of your work orders are Not Yet Started")
-        workorder.write({'record_qty_production1': workorder.record_qty_production})
+            workorder.write({'record_qty_production1': workorder.record_qty_production})
+            # if workorder.state != "done":
+            #     raise ValidationError("Some of your work orders are still pending")
         self._button_mark_done_sanity_checks()
         if not self.env.context.get('button_mark_done_production_ids'):
             self = self.with_context(button_mark_done_production_ids=self.ids)
