@@ -109,6 +109,8 @@ class MrpProductionWorkcenterLine(models.Model):
             if workorder.qty_produced >0 and workorder.qty_producing_custom>0:
                 # value = (workorder.qty_produced + workorder.qty_producing)
                 value = (workorder.qty_produced + workorder.qty_producing_custom)
+            else:
+                value = workorder.record_qty_production
             vals = {
                 'qty_produced': value,
                 # 'record_qty_production': value,
