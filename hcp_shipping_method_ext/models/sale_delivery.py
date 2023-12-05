@@ -7,6 +7,13 @@ from odoo.addons import decimal_precision as dp
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    @api.onchange('fiscal_position_id')
+    def _compute_tax_id(self):
+        """
+        Trigger the recompute of the taxes if the fiscal position is changed on the SO.
+        """
+        for order in self:
+            order.order_line._compute_tax_id()
 
     partner_country_name = fields.Char('Partner Country',compute="compute_country_id",store=True)
 
