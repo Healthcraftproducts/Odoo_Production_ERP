@@ -21,12 +21,14 @@
 
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from ast import literal_eval
 from collections import defaultdict
 import json
 
 from odoo import api, fields, models, _, SUPERUSER_ID
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import float_compare, float_round, format_datetime
+from odoo.addons.web.controllers.utils import clean_action
+from odoo.tools import float_compare, float_round, format_datetime,float_is_zero
 from bisect import bisect_left
 import pdb
 
@@ -178,6 +180,156 @@ class MrpProductionWorkcenterLine(models.Model):
         for wo in self:
             precision = wo.production_id.product_uom_id.rounding
             wo.is_last_lot = float_compare(wo.qty_producing_custom,wo.qty_remaining, precision_rounding=precision) >= 0
+
+    def action_back(self):
+        self.ensure_one()
+        if self.is_user_working and self.working_state != 'blocked':
+            self.button_pending()
+        domain = [('state', 'in', ['pending','ready','progress','waiting'])]
+        if self.env.context.get('from_manufacturing_order'):
+            # from workorder on MO
+            action = self.env["ir.actions.actions"]._for_xml_id("mrp_workorder.mrp_workorder_action_tablet")
+            action['domain'] = domain
+            action['context'] = {
+                'no_breadcrumbs': True,
+                'search_default_production_id': self.production_id.id,
+                'from_manufacturing_order': True,
+            }
+        elif self.env.context.get('from_production_order'):
+            # from workorder list view
+            action = self.env["ir.actions.actions"]._for_xml_id("mrp_workorder.mrp_workorder_action_tablet")
+            action['target'] = 'main'
+            action['context'] = dict(literal_eval(action['context']), no_breadcrumbs=True)
+        else:
+            # from workcenter kanban view
+            action = self.env["ir.actions.actions"]._for_xml_id("mrp_workorder.mrp_workorder_action_tablet")
+            action['domain'] = domain
+            action['context'] = {
+                'no_breadcrumbs': True,
+                # 'search_default_workcenter_id': self.workcenter_id.id,
+                'search_default_production_id': self.production_id.id,
+                'from_manufacturing_order': True,
+            }
+        return clean_action(action, self.env)
+
+    class QualityCheckInherit(models.Model):
+        _inherit = "quality.check"
+        @api.depends('workorder_id.state', 'quality_state', 'workorder_id.qty_producing_custom',
+                     'component_tracking', 'test_type', 'component_id', 'move_line_id.lot_id'
+                     )
+        def _compute_component_data(self):
+            self.component_remaining_qty = False
+            self.component_uom_id = False
+            self.qty_done =False
+            for check in self:
+                if check.test_type in ('register_byproducts', 'register_consumed_materials'):
+                    if check.quality_state == 'none':
+                        completed_lines = check.workorder_id.move_line_ids.filtered(lambda l: l.lot_id) if check.component_id.tracking != 'none' else check.workorder_id.move_line_ids
+                        if check.move_id.additional:
+                            qty = check.workorder_id.qty_remaining
+                        else:
+                            qty = check.workorder_id.qty_producing_custom
+                        check.component_remaining_qty = self._prepare_component_quantity(check.move_id, qty) - sum(completed_lines.mapped('qty_done'))
+                        check.qty_done = check.component_remaining_qty
+                    check.component_uom_id = check.move_id.product_uom
+
+        def _get_print_qty(self):
+            if self.product_id.uom_id.category_id == self.env.ref('uom.product_uom_categ_unit'):
+                qty = int(self.workorder_id.qty_producing_custom)
+            else:
+                qty = 1
+            return qty
+
+        @api.model
+        def _prepare_component_quantity(self, move, qty_producing_custom):
+            """ helper that computes quantity to consume (or to create in case of byproduct)
+            depending on the quantity producing and the move's unit factor"""
+            if move.product_id.tracking == 'serial':
+                uom = move.product_id.uom_id
+            else:
+                uom = move.product_uom
+            return move.product_uom._compute_quantity(
+                qty_producing_custom * move.unit_factor,
+                uom,
+                round=False
+            )
+
+        def _next(self, continue_production=False):
+            """ This function:
+
+            - first: fullfill related move line with right lot and validated quantity.
+            - second: Generate new quality check for remaining quantity and link them to the original check.
+            - third: Pass to the next check or return a failure message.
+            """
+            self.ensure_one()
+            rounding = self.workorder_id.product_uom_id.rounding
+            if float_compare(self.workorder_id.qty_producing_custom, 0, precision_rounding=rounding) <= 0:
+                raise UserError(_('Please ensure the quantity to produce is greater than 0.'))
+            elif self.test_type in ('register_byproducts', 'register_consumed_materials'):
+                # Form validation
+                # in case we use continue production instead of validate button.
+                # We would like to consume 0 and leave lot_id blank to close the consumption
+                rounding = self.component_uom_id.rounding
+                if self.component_tracking != 'none' and not self.lot_id and self.qty_done != 0:
+                    raise UserError(_('Please enter a Lot/SN.'))
+                if float_compare(self.qty_done, 0, precision_rounding=rounding) < 0:
+                    raise UserError(_('Please enter a positive quantity.'))
+
+                # Write the lot and qty to the move line
+                if self.move_line_id:
+                    # In case of a tracked component, another SML may already exists for
+                    # the reservation of self.lot_id, so let's try to find and use it
+                    if self.move_line_id.product_id.tracking != 'none':
+                        self.move_line_id = next((sml
+                                                  for sml in self.move_line_id.move_id.move_line_ids
+                                                  if sml.lot_id == self.lot_id and float_is_zero(sml.qty_done, precision_rounding=sml.product_uom_id.rounding)),
+                                                 self.move_line_id)
+                    rounding = self.move_line_id.product_uom_id.rounding
+                    if float_compare(self.qty_done, self.move_line_id.reserved_uom_qty, precision_rounding=rounding) >= 0:
+                        self.move_line_id.write({
+                            'qty_done': self.qty_done,
+                            'lot_id': self.lot_id.id,
+                        })
+                    else:
+                        new_qty_reserved = self.move_line_id.reserved_uom_qty - self.qty_done
+                        default = {
+                            'reserved_uom_qty': new_qty_reserved,
+                            'qty_done': 0,
+                        }
+                        self.move_line_id.copy(default=default)
+                        self.move_line_id.with_context(bypass_reservation_update=True).write({
+                            'reserved_uom_qty': self.qty_done,
+                            'qty_done': self.qty_done,
+                        })
+                        self.move_line_id.lot_id = self.lot_id
+                else:
+                    line = self.env['stock.move.line'].create(self._create_extra_move_lines())
+                    self.move_line_id = line[:1]
+                if continue_production:
+                    self.workorder_id._create_subsequent_checks()
+
+            if self.test_type == 'picture' and not self.picture:
+                raise UserError(_('Please upload a picture.'))
+
+            if self.quality_state == 'none':
+                self.do_pass()
+
+            self.workorder_id._change_quality_check(position='next')
+
+        def _update_component_quantity(self):
+            if self.component_tracking == 'serial':
+                self._origin.qty_done = self.component_id.uom_id._compute_quantity(1, self.component_uom_id, rounding_method='HALF-UP')
+                return
+            move = self.move_id
+            # Compute the new quantity for the current component
+            rounding = move.product_uom.rounding
+            new_qty = self._prepare_component_quantity(move, self.workorder_id.qty_producing_custom)
+            qty_todo = float_round(new_qty, precision_rounding=rounding)
+            qty_todo = qty_todo - move.quantity_done
+            if self.move_line_id and self.move_line_id.lot_id:
+                qty_todo = min(self.move_line_id.reserved_uom_qty, qty_todo)
+            self.qty_done = qty_todo
+
 
 # change in base code by geminatecs
 # file location of change code :-

@@ -28,7 +28,7 @@
     'summary' : 'Partial Independent Work Order Process',
     'description' : """Geminate comes with the features of Partial Independent Work Order Process. By the use of this feature, you can partially do the manufacturing process at work order level without generating a backorder. the beauty of this feature is, it allows you to process any workorder with partial quantity regardless of the sequence of chained work orders based on route or work centers. Now you can partially process work orders without creating backorders, so it will save time and make it easier to process your manufacturing orders.""",
     "license": "Other proprietary",
-    'depends' : ['mrp','stock','mrp_workorder','mrp_account'],
+    'depends' : ['mrp','stock','mrp_workorder','mrp_account','quality_control'],
     'data' : [
         'views/mrp_view.xml',
     ],

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
+        <record id="quality_check_view_form_tablet_inherit" model="ir.ui.view">
+        <field name="name">quality.check.view.form.tablet.new</field>
+        <field name="model">quality.check</field>
+         <field name="inherit_id" ref="mrp_workorder.quality_check_view_form_tablet"/>
+        <field name="priority">200</field>
+        <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_continue'][2]" position="replace">
+
+             </xpath>
+
+        </field>
+        </record>
        <!-- <record id="mrp_workorder_view_form_tablet_inherit_rcp" model="ir.ui.view">
             <field name="name">mrp.workorder.view.inherit.hcp.rcp</field>
             <field name="model">mrp.workorder</field>
