@@ -86,6 +86,7 @@
                                 </h3>
                                 <table class="table table-sm" width="900">
                                     <tr>
+                                        <th style="width: 200px; text-align: left;"><strong>Sequence</strong></th>
                                         <th style="width: 200px; text-align: left;">
                                             <strong>Operation</strong>
                                         </th>
@@ -103,7 +104,11 @@
                                             <strong>Total Exp. Time(Min)</strong>
                                         </th>
                                     </tr>
+                                    <t t-set="sequence" t-value="1"/>
                                     <tr t-foreach="o.workorder_ids" t-as="oper_line_id">
+                                        <td style="width: 200px; text-align: left;">
+                                            <span t-esc="sequence"/>
+                                        </td>
                                         <td style="width: 200px; text-align: left;">
                                             <span t-field="oper_line_id.name"/>
                                         </td>
@@ -121,7 +126,7 @@
                                             <span t-esc="round(oper_line_id.operation_id.cycle_time * o.product_qty,0)"/>
                                         </td>
                                         <!--<td style="width: 100px; text-align: left;"><span t-field="oper_line_id.operator"/></td>-->
-
+                                        <t t-set="sequence" t-value="sequence+1"/>
                                     </tr>
                                 </table>
                             </div>
@@ -155,7 +160,10 @@
                                                 <strong>UOM</strong>
                                             </th>
                                             <th style="width: 100px; text-align: left;">
-                                                <strong>Lot/Serial Number</strong>
+                                                <strong>Components Lot/Serial Number</strong>
+                                            </th>
+                                            <th style="width: 100px; text-align: left;">
+                                                <strong>Components Location</strong>
                                             </th>
                                             <th style="width: 100px; text-align: left;">
                                                 <strong>Finished Lot/Serial Number</strong>
@@ -194,7 +202,9 @@
                                                 <td style="width: 150px; text-align: left;">
                                                     <span t-esc="move_line.lot_id.name"/>
                                                 </td>
-
+                                                <td style="width: 200px; text-align: center;">
+                                                    <span t-field="move_line.location_id.name"/>
+                                                </td>
                                                 <td style="width: 150px; text-align: left;">
                                                     <t t-foreach="o.lot_producing_id" t-as="finished_lot_id">
                                                         <span t-esc="finished_lot_id.name"/>
