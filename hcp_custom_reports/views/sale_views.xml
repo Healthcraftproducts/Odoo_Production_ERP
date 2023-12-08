@@ -97,12 +97,13 @@
                    position="after">
                 <field name="line_amount"/>
             </xpath>
-        </field>
-        <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+             <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
             <attribute name="context">{'default_company_type':'person','default_parent_id': partner_id,'default_type':
                 'other'}
             </attribute>
-        </xpath>
+            </xpath>
+
+        </field>
 
     </record>
 
