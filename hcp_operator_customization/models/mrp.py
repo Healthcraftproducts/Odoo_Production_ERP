@@ -136,6 +136,7 @@ class MrpProduction(models.Model):
                 })
 
         if not backorders:
+            self.workorder_ids.write({'state': 'done'})
             if self.env.context.get('from_workorder'):
                 return {
                     'type': 'ir.actions.act_window',
@@ -174,6 +175,7 @@ class MrpProduction(models.Model):
                 'domain': [('id', 'in', backorders.ids)],
                 'view_mode': 'tree,form',
             })
+        self.workorder_ids.write({'state': 'done'})
         return action
 
      
