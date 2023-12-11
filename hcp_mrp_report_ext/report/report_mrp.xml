@@ -207,12 +207,12 @@
                                                 <t t-if="move_line.product_id.tracking != 'none'">
                                                     <tr>
                                                         <td class="text-center align-middle" style="height: 0.25rem;">
-                                                            <t t-if="move_line.product_id.barcode">
+                                                            <t t-if="move_line.product_id.x_studio_barcode_eu_1">
                                                                 EAN Barcode :
-                                                                <span t-esc="move_line.product_id.x_studio_barcode_eu"/>
+                                                                <span t-esc="move_line.product_id.x_studio_barcode_eu_1"/>
 <!--                                                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', move_line.product_id.x_studio_barcode_eu, 600, 100)"-->
 <!--                                                                     style="width:100%;height:2.75rem" alt="Barcode"/>-->
-                                                                <div t-field="move_line.product_id.x_studio_barcode_eu"
+                                                                <div t-field="move_line.product_id.x_studio_barcode_eu_1"
                                                                      t-options="{'widget': 'barcode', 'width': 600, 'height': 100}"/>
 
                                                             </t>
