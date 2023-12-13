@@ -19,9 +19,9 @@
                             <strong><span style="font-size:20pt;margin-left:20px;" t-field= "company.partner_id.name"/></strong>
                                 
                                 <br><span style="font-size:10pt;margin-left:20px;" t-field= "company.partner_id.street"/>,<span style="font-size:10pt;margin-left:20px;" t-field= "company.partner_id.street2"/> <span style="font-size:10pt;" t-field= "company.partner_id.city"/>, <span style="font-size:10pt;" t-field="company.partner_id.state_id.name"/>, <span style="font-size:10pt;" t-field="company.partner_id.country_id"/>, <span style="font-size:10pt;" t-field= "company.partner_id.zip"/> </br>
-                                <br><span style="font-size:10pt;margin-left:20px;" t-field= "company.partner_id.email"/></br>
-                                <br><span class="row zero_min_height" style="font-size:10pt;margin-left:20px;" t-field= "company.partner_id.phone"/></br>
-                                <br><strong><span style="font-size:10pt;margin-left:20px;color:#875A7B;position: relative;top: -19px;">Worldwide leaders in fall prevention:</span> <span style="font-size:10pt;margin-left:20px;color:#875A7B;position: relative;top: -19px;" t-field= "company.partner_id.website"/></strong></br>
+                                <br><span style="font-size:10pt;margin-left:20px;position: relative;top: -6px;" t-field= "company.partner_id.email"/></br>
+                                <br><span class="row zero_min_height" style="font-size:10pt;margin-left:20px;position: relative;top: -6px;" t-field= "company.partner_id.phone"/></br>
+                                <br><strong><span style="font-size:10pt;margin-left:20px;color:#875A7B;position: relative;top: -33px;">Worldwide leaders in fall prevention:</span> <span style="font-size:10pt;margin-left:20px;color:#875A7B;position: relative;top: -33px;" t-field= "company.partner_id.website"/></strong></br>
                                 
                         </td>
                     </tr>
