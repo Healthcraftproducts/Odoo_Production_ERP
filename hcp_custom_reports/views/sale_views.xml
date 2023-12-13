@@ -1,199 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo> 
+<odoo>
 
 
-<record id="view_order_form_id" model="ir.ui.view">
-            <field name="name">sale.order.form</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form" />
-            <field name="arch" type="xml">
+    <record id="view_order_form_id" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
 
-                <xpath expr="//form/sheet/div[@class='oe_title']/h1/field[@name='name']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('state', 'in', ['draft','sent'])]}</attribute>
-                </xpath>
+            <xpath expr="//form/sheet/div[@class='oe_title']/h1/field[@name='name']" position="attributes">
+                <attribute name="attrs">{'invisible': [('state', 'in', ['draft','sent'])]}</attribute>
+            </xpath>
 
-        <xpath expr="//form/sheet/div[@class='oe_title']/h1" position="inside">
+            <xpath expr="//form/sheet/div[@class='oe_title']/h1" position="inside">
 
-            <field name ="quotation_id" attrs="{'invisible': [('state', 'in',['sale', 'done', 'cancel'])]}"/>
-        </xpath>
+                <field name="quotation_id" attrs="{'invisible': [('state', 'in',['sale', 'done', 'cancel'])]}"/>
+            </xpath>
 
-        <xpath expr="//field[@name='partner_id']" position="after">
-            <field name ="contact_name"/>
-            <field name ="person_name"/>
-            <field name ="email"/>
-            <field name ="phone"/>
-            <field name ="total_amount" invisible="1"/>
-        </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="contact_name"/>
+                <field name="person_name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="total_amount" invisible="1"/>
+            </xpath>
 
-        <xpath expr="//form/sheet/group" position="after">
+            <xpath expr="//form/sheet/group" position="after">
 
-          <group>
-                                <group name="sales_person" string="Sales">
-                                    <field name="user_id"/>
-                                    <field name="team_id" kanban_view_ref="%(sales_team.crm_team_view_kanban)s" options="{'no_create': True}"/>
-                                    <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
-                                    <field name="require_signature"/>
-                                    <field name="require_payment"/>
-                                    <field name="reference" readonly="1" attrs="{'invisible': [('reference', '=', False)]}"/>
-                                    <field name="client_order_ref"/>
-                                    <field name="carrier_id"/>
-                                    <field name="ship_via_desc"/>
-                                </group>
-                                <group name="sale_info" string="Invoicing">
-                                    <field name="fiscal_position_id" options="{'no_create': True}"/>
-                                    <field name="analytic_account_id" context="{'default_partner_id':partner_invoice_id, 'default_name':name}" attrs="{'readonly': [('invoice_count','!=',0),('state','=','sale')]}" groups="analytic.group_analytic_accounting" force_save="1"/>
-                                    <field name="invoice_status" states="sale,done" groups="base.group_no_one"/>
-                                </group>
-          </group>
+                <group>
+                    <group name="sales_person" string="Sales">
+                        <field name="user_id"/>
+                        <field name="team_id" kanban_view_ref="%(sales_team.crm_team_view_kanban)s"
+                               options="{'no_create': True}"/>
+                        <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                        <field name="require_signature"/>
+                        <field name="require_payment"/>
+                        <field name="reference" readonly="1" attrs="{'invisible': [('reference', '=', False)]}"/>
+                        <field name="client_order_ref"/>
+                        <field name="carrier_id"/>
+                        <field name="ship_via_desc"/>
+                    </group>
+                    <group name="sale_info" string="Invoicing">
+                        <field name="fiscal_position_id" options="{'no_create': True}"/>
+                        <field name="analytic_account_id"
+                               context="{'default_partner_id':partner_invoice_id, 'default_name':name}"
+                               attrs="{'readonly': [('invoice_count','!=',0),('state','=','sale')]}"
+                               groups="analytic.group_analytic_accounting" force_save="1"/>
+                        <field name="invoice_status" states="sale,done" groups="base.group_no_one"/>
+                    </group>
+                </group>
 
-          <group>
-                                <group name="sale_shipping" string="Delivery">
-                                    <field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_warehouses" force_save="1"/>
-                                    <field name="incoterm" widget="selection" groups="sale_stock.group_display_incoterm"/>
-                                    <field name="picking_policy" required="True"/>
-                                    <label for="commitment_date" string="Delivery Date"/>
-                                    <div class="o_row">
-                                        <field name="commitment_date"/>
-                                    </div>
-                                    <field name="expected_date" widget="date" string="Expected Date"/>
-                                </group>
-                                <group string="Reporting" name="sale_reporting" groups="base.group_no_one">
-                                    <group name="technical" colspan="2" class="mb-0">
-                                        <field name="origin"/>
-                                    </group>
-                                    <group name="utm_link" colspan="2" class="mt-0">
-                                        <field name="campaign_id"/>
-                                        <field name="medium_id"/>
-                                        <field name="source_id"/>
-                                    </group>
-                                </group>
+                <group>
+                    <group name="sale_shipping" string="Delivery">
+                        <field name="warehouse_id" options="{'no_create': True}"
+                               groups="stock.group_stock_multi_warehouses" force_save="1"/>
+                        <field name="incoterm" widget="selection" groups="sale_stock.group_display_incoterm"/>
+                        <field name="picking_policy" required="True"/>
+                        <label for="commitment_date" string="Delivery Date"/>
+                        <div class="o_row">
+                            <field name="commitment_date"/>
+                        </div>
+                        <field name="expected_date" widget="date" string="Expected Date"/>
+                    </group>
+                    <group string="Reporting" name="sale_reporting" groups="base.group_no_one">
+                        <group name="technical" colspan="2" class="mb-0">
+                            <field name="origin"/>
+                        </group>
+                        <group name="utm_link" colspan="2" class="mt-0">
+                            <field name="campaign_id"/>
+                            <field name="medium_id"/>
+                            <field name="source_id"/>
+                        </group>
+                    </group>
 
-                                <group string="Opportunity" name="opportunity">
+                    <group string="Opportunity" name="opportunity">
 
-                                    <field name="opportunity_id"/>
+                        <field name="opportunity_id"/>
 
-                                </group>
-                            </group>
+                    </group>
+                </group>
 
-        </xpath>
-
-
-
-
-        <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="attributes">
-
-                      <attribute name="invisible">1</attribute>
-
-        </xpath>
-
-        <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='name']" position="after">
-            <field name="product_ship_method" invisible="1"/>
-        </xpath>
-
-        <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
-                <field name="line_amount"/>            
-        </xpath>
-    </field>
-
-</record>
+            </xpath>
 
 
-        <record id="view_account_position_form_id" model="ir.ui.view">
-            <field name="name">account.fiscal.position.form</field>
-            <field name="model">account.fiscal.position</field>
-            <field name="inherit_id" ref="account.view_account_position_form" />
-            <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="attributes">
 
-                <xpath expr="//form/sheet/group/group[2]/field[@name = 'auto_apply']" position="after">
+                <attribute name="invisible">1</attribute>
 
-                    <field name ="tax_rate"/>
-                </xpath>
+            </xpath>
 
-            </field>
-        </record>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='name']" position="after">
+                <field name="product_ship_method" invisible="1"/>
+            </xpath>
 
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
+                   position="after">
+                <field name="line_amount"/>
+            </xpath>
+             <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+            <attribute name="context">{'default_company_type':'person','default_parent_id': partner_id,'default_type':
+                'other'}
+            </attribute>
+            </xpath>
 
-        <record id="view_country_form_id" model="ir.ui.view">
-            <field name="name">res.country.form</field>
-            <field name="model">res.country</field>
-            <field name="inherit_id" ref="base.view_country_form" />
-            <field name="arch" type="xml">
+        </field>
 
-                <xpath expr="//form/sheet/group/group[1]/field[@name = 'code']" position="after">
-
-                    <field name ="remittance_address"/>
-                </xpath>
-
-            </field>
-        </record>
+    </record>
 
 
-        <record id="view_picking_form_inherited3" model="ir.ui.view">
-            <field name="name">stock.picking.inherited.form2</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.view_picking_form" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='date_done']" position="after">
-                    <field name ="shipment_date" readonly="1" attrs="{'invisible': [('state', '!=', 'done')]}"/>
-                </xpath>
+    <record id="view_account_position_form_id" model="ir.ui.view">
+        <field name="name">account.fiscal.position.form</field>
+        <field name="model">account.fiscal.position</field>
+        <field name="inherit_id" ref="account.view_account_position_form"/>
+        <field name="arch" type="xml">
 
-                <xpath expr="//field[@name='move_type']" position="after">
-                    <field name="priority" widget="priority"/>
-                </xpath>
+            <xpath expr="//form/sheet/group/group[2]/field[@name = 'auto_apply']" position="after">
 
-            </field>
-        </record>
+                <field name="tax_rate"/>
+            </xpath>
+
+        </field>
+    </record>
 
 
+    <record id="view_country_form_id" model="ir.ui.view">
+        <field name="name">res.country.form</field>
+        <field name="model">res.country</field>
+        <field name="inherit_id" ref="base.view_country_form"/>
+        <field name="arch" type="xml">
 
-<!-- <menuitem id="sale.menu_sale_order"
-            name="Confirmed SO"
-            action="sale.action_orders"
+            <xpath expr="//form/sheet/group/group[1]/field[@name = 'code']" position="after">
+
+                <field name="remittance_address"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="view_picking_form_inherited3" model="ir.ui.view">
+        <field name="name">stock.picking.inherited.form2</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_done']" position="after">
+                <field name="shipment_date" readonly="1" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='move_type']" position="after">
+                <field name="priority" widget="priority"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- <menuitem id="sale.menu_sale_order"
+                name="Confirmed SO"
+                action="sale.action_orders"
+                parent="sale.sale_order_menu"
+                sequence="2" groups="sales_team.group_sale_salesman"/>
+
+
+            <record id="sale.action_orders" model="ir.actions.act_window">
+                <field name="name">Confirmed SO</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">sale.order</field>
+                <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+                <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+                <field name="context">{}</field>
+                <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
+                <field name="help" type="html">
+                    <p class="o_view_nocontent_smiling_face">
+                        Create a new quotation, the first step of a new sale!
+                    </p><p>
+                        Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                    </p>
+                </field>
+            </record>
+
+
+    <menuitem id="sale.menu_sale_quotations"
+            name="Draft SO"
+            action="sale.action_quotations_with_onboarding"
             parent="sale.sale_order_menu"
-            sequence="2" groups="sales_team.group_sale_salesman"/>
+            sequence="1" groups="sales_team.group_sale_salesman"/>
 
-
-        <record id="sale.action_orders" model="ir.actions.act_window">
-            <field name="name">Confirmed SO</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sale.order</field>
-            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
-            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
-            <field name="context">{}</field>
-            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
+            <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+                <field name="name">Draft SO</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">sale.order</field>
+                <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+                <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+                <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+                <field name="context">{'search_default_my_quotation': 1}</field>
+                <field name="help" type="html">
+                  <p class="o_view_nocontent_smiling_face">
                     Create a new quotation, the first step of a new sale!
-                </p><p>
-                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
-                </p>
-            </field>
-        </record>
-
-
-<menuitem id="sale.menu_sale_quotations"
-        name="Draft SO"
-        action="sale.action_quotations_with_onboarding"
-        parent="sale.sale_order_menu"
-        sequence="1" groups="sales_team.group_sale_salesman"/>
-
-        <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
-            <field name="name">Draft SO</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sale.order</field>
-            <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
-            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
-            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
-            <field name="context">{'search_default_my_quotation': 1}</field>
-            <field name="help" type="html">
-              <p class="o_view_nocontent_smiling_face">
-                Create a new quotation, the first step of a new sale!
-              </p><p>
-                Once the quotation is confirmed by the customer, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
-              </p>
-            </field>
-        </record> -->
-
+                  </p><p>
+                    Once the quotation is confirmed by the customer, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                  </p>
+                </field>
+            </record> -->
 
 
 </odoo>
