@@ -220,7 +220,7 @@ class MrpProductionWorkcenterLine(models.Model):
         def _compute_component_data(self):
             self.component_remaining_qty = False
             self.component_uom_id = False
-            self.qty_done =False
+            # self.qty_done =False
             for check in self:
                 if check.test_type in ('register_byproducts', 'register_consumed_materials'):
                     if check.quality_state == 'none':
@@ -230,7 +230,7 @@ class MrpProductionWorkcenterLine(models.Model):
                         else:
                             qty = check.workorder_id.qty_producing_custom
                         check.component_remaining_qty = self._prepare_component_quantity(check.move_id, qty) - sum(completed_lines.mapped('qty_done'))
-                        check.qty_done = check.component_remaining_qty
+                        # check.qty_done = check.component_remaining_qty
                     check.component_uom_id = check.move_id.product_uom
 
         def _get_print_qty(self):
