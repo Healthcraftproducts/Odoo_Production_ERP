@@ -59,8 +59,8 @@ class ProductTemplate(models.Model):
 		unique_variants = self.filtered(lambda template: len(template.product_variant_ids) == 1)
 		for template in unique_variants:
 			template.default_code = template.product_variant_ids.default_code
-		for template in (self - unique_variants):
-			template.default_code = self.default_code
+		# for template in (self - unique_variants):
+		# 	template.default_code = False
 
 	def _set_default_code(self):
 		for template in self:
