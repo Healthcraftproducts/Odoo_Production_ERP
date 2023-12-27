@@ -38,6 +38,7 @@
                                                         </t>
                                                         <t t-else="">
                                                              <span>1.0</span>
+<!--                                                            /-->
 <!--                                                            <span t-esc="move_line.product_qty"-->
 <!--                                                                  t-if="move_line.state !='done'"/>-->
 <!--                                                            <span t-esc="move_line.product_qty"-->
