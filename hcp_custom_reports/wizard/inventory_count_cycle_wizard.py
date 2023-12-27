@@ -137,29 +137,31 @@ class InventoryCountCycleReportWizard(models.TransientModel):
 			#import pdb
 			#pdb.set_trace()
 			for line in stock.move_line_ids:
-				sheet.write(row_number,0,s_no)
-				sheet.write(row_number,1,stock.name)
-				sheet.write(row_number,2,line.location_id.complete_name)
-				custm_date = line.date 
-				#- timedelta(hours=5, minutes=30)
-				user_tz = self.env.user.tz or pytz.utc
-				local_time = pytz.timezone(user_tz)
-				display_date_result = datetime.strftime(pytz.utc.localize(datetime.strptime(str(line.date), DEFAULT_SERVER_DATETIME_FORMAT)).astimezone(local_time),"%d-%m-%Y %H:%M:%S")
-				sheet.write(row_number,3,display_date_result,style2)
-				sheet.write(row_number,4,line.product_id.default_code)
-				sheet.write(row_number,5,line.product_id.name)
-				sheet.write(row_number,6,line.lot_id.name)
-				sheet.write(row_number,7,line.qty_done,style1)
-				sheet.write(row_number,8,00)
-				sheet.write(row_number,9,00)
-				sheet.write(row_number,10,line.product_uom_id.name)
-				sheet.write(row_number,11,line.product_id.standard_price,style3)
+				for quant in stock.move_line_ids.product_stock_quant_ids:
+					differnce_inventory_quantity = line.qty_done - quant.quantity
+					sheet.write(row_number,0,s_no)
+					sheet.write(row_number,1,stock.name)
+					sheet.write(row_number,2,line.location_id.complete_name)
+					custm_date = line.date
+					#- timedelta(hours=5, minutes=30)
+					user_tz = self.env.user.tz or pytz.utc
+					local_time = pytz.timezone(user_tz)
+					display_date_result = datetime.strftime(pytz.utc.localize(datetime.strptime(str(line.date), DEFAULT_SERVER_DATETIME_FORMAT)).astimezone(local_time),"%d-%m-%Y %H:%M:%S")
+					sheet.write(row_number,3,display_date_result,style2)
+					sheet.write(row_number,4,line.product_id.default_code)
+					sheet.write(row_number,5,line.product_id.name)
+					sheet.write(row_number,6,line.lot_id.name)
+					sheet.write(row_number,7,quant.quantity,style1)
+					sheet.write(row_number,8,line.qty_done,style1)
+					sheet.write(row_number,9,differnce_inventory_quantity,style1)
+					sheet.write(row_number,10,line.product_uom_id.name)
+					sheet.write(row_number,11,line.product_id.standard_price,style3)
 
-				different_price = 0
-				#line.difference_qty*line.product_id.standard_price
-				sheet.write(row_number,12,different_price,style3)
-				row_number +=1
-				s_no+=1
+					different_price = differnce_inventory_quantity*line.product_id.standard_price
+					#line.difference_qty*line.product_id.standard_price
+					sheet.write(row_number,12,different_price,style3)
+					row_number +=1
+					s_no+=1
 
 
 		output = StringIO()
