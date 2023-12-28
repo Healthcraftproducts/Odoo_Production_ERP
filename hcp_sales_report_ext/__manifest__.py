@@ -10,7 +10,7 @@
     'website': "http://www.navabrindsol.com",
     'category': 'Sales',
     'version': '0.1',
-    'depends': ['base','sale'],
+    'depends': ['base','sale','sale_amazon'],
     'data': [
         'views/sales_report.xml',   
     ],
