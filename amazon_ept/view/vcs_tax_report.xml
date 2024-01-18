@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="seq_import_vcs_report_job" model="ir.sequence">
+        <field name="name">import_vcs_report</field>
+        <field name="code">import_vcs_report</field>
+        <field name="padding">5</field>
+        <field name="prefix">VCS</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="amazon_vcs_tax_report_tree_view_ept" model="ir.ui.view">
+        <field name="name">Amazon VCS Report Tree</field>
+        <field name="model">amazon.vcs.tax.report.ept</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0">
+                <field name="name"/>
+                <field name="seller_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name='state'/>
+                <button name="download_report" class="oe_inline" type="object"
+                        help="Click Here To download report" icon="fa-cloud-download fa-lg"
+                        aria-label="Download Report" title="Download Report"
+                        attrs="{'invisible':[('attachment_id','=',False)]}"/>
+                <field name="attachment_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="amazon_vcs_tax_report_form_view_ept" model="ir.ui.view">
+        <field name="name">Amazon VCS Tax Report Form</field>
+        <field name="model">amazon.vcs.tax.report.ept</field>
+        <field name="arch" type="xml">
+            <form string="Amazon VCS Tax Report" create="0" edit="0">
+                <header>
+                    <button name="request_report" string="Request Report"
+                            states="draft"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="get_report_request_list" string="Check Status"
+                            states="_SUBMITTED_,_IN_PROGRESS_,SUBMITTED,IN_PROGRESS,IN_QUEUE"
+                            context="{'amz_report_type': 'vcs_tax_report_spapi'}"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="get_report" string="Get Report"
+                            attrs="{'invisible':['|',('report_document_id','=',False),('attachment_id','!=',False)]}"
+                            class="oe_highlight"
+                            context="{'amz_report_type': 'vcs_tax_report_spapi'}"
+                            type="object"/>
+
+                    <button name="download_report" string="Download Report"
+                            attrs="{'invisible':[('attachment_id','=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="process_vcs_tax_report_file" string="Process File"
+                            attrs="{'invisible':['|',('attachment_id','=',False),('state','not in',('_DONE_','DONE'))]}"
+                            class="oe_highlight"
+                            help="Click Here To process the report file"
+                            type="object"/>
+
+                    <button name="process_vcs_tax_report_file" string="Re-Process File"
+                            attrs="{'invisible':['|',('attachment_id','=',False),('state','not in',['processed', 'partially_processed'])]}"
+                            class="oe_highlight"
+                            help="Click Here To process the report file"
+                            type="object"/>
+
+                    <button name="list_of_logs" string="Mismatch Details"
+                            attrs="{'invisible':[('log_count','=',0)]}"
+                            class="oe_highlight"
+                            help="Click Here To Check Logs"
+                            type="object"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="SUBMITTED,IN_PROGRESS,DONE"/>
+                </header>
+                <sheet>
+                    <div attrs="{'invisible' : [('invoice_count', '=', 0)]}"
+                         class="oe_button_box" name="button_box">
+                        <button name="get_amz_vcs_invoices" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="seller_id"
+                                   attrs="{'readonly':[('state','!=','draft')]}"
+                                   domain="[('is_vcs_activated','=',True)]"
+                                   options="{'no_quick_create': True, 'no_create_edit' : True}"
+                                   required="1"/>                <!-- on_change="on_change_seller_id(seller_id,start_date,end_date)" -->
+
+                        </group>
+                        <group>
+                            <label for="start_date" string="Date"/>
+                            <div>
+                                <field name="start_date" widget="daterange"
+                                       options="{'related_end_date': 'end_date'}"
+                                       attrs="{'readonly':[('state','!=','draft')]}"
+                                       class="oe_inline"/>
+                                to
+                                <field name="end_date" widget="daterange"
+                                       options="{'related_start_date': 'start_date'}"
+                                       attrs="{'readonly':[('state','!=','draft')]}"
+                                       class="oe_inline"/>
+                            </div>
+                            <field name="report_id" readonly="1"/>
+                            <field name="report_document_id" readonly="1"/>
+                            <field name="report_type" readonly="1" invisible="1"/>
+                            <field name="attachment_id" invisible="1"/>
+                            <field name="log_count" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"
+                           groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_amazon_vcs_tax_report_ept" model="ir.actions.act_window">
+        <field name="name">Amazon VCS Tax Reports</field>
+        <field name="res_model">amazon.vcs.tax.report.ept</field>
+        <field name="domain">[]</field>
+        <field name="view_id" ref="amazon_vcs_tax_report_tree_view_ept"/>
+    </record>
+
+    <menuitem id="menu_amazon_vcs_tax_report_ept" name="VAT Calculation Service Reports"
+              parent="amazon_ept.menu_item_parent_amazon_invoices_ept"
+              groups="account.group_account_user,amazon_ept.group_amazon_manager_ept"
+              action="action_amazon_vcs_tax_report_ept" sequence="3"/>
+</odoo>

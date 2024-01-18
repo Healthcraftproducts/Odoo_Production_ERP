@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_search_ept" model="ir.ui.view">
+        <field name="name">stock.move.search</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="return_reason_id"/>
+            </field>
+            <filter name="by_product" position="after">
+                <filter string="Return Reason" name="group_by_return_reason_id" icon="terp-accessories-archiver"
+                        context="{'group_by':'return_reason_id'}"/>
+                <filter string="Detailed Disposition" name="group_by_detailed_disposition" icon="terp-accessories-archiver"
+                        context="{'group_by':'detailed_disposition'}"/>
+                <filter string="Fulfillment Center" name="group_by_fulfillment_center_id" icon="terp-accessories-archiver"
+                        context="{'group_by':'fulfillment_center_id'}"/>
+                <filter string="Warehouse" name="group_by_warehouse_id" icon="terp-accessories-archiver"
+                        context="{'group_by':'warehouse_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_form_stock_move_ept">
+        <field name="name">view.form.stock.move.ept</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='location_dest_id']" position="after">
+                    <field name='seller_id' widget="selection" readonly="1"/>
+                    <field name="amz_shipment_report_id" invisible="1"/>
+                </xpath>
+                <group name="linked_group" position="after">
+                    <group name="amazon_stock_adjustment" string="Stock Adjustment Details" colspan="4">
+                        <group>
+                            <field name="adjusted_date" readonly="1"/>
+                            <field name="transaction_item_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="fulfillment_center_id" readonly="1"/>
+                            <field name="code_id" readonly="1"/>
+                            <field name="code_description" readonly='1'/>
+                        </group>
+                    </group>
+                    <group name="amazon_fba_return_details" string="FBA Return Details" colspan="4" attrs="{'invisible': [('fba_returned_date', '=' , False)]}">
+                        <group>
+                            <field name="fba_returned_date" readonly="1"/>
+                            <field name="return_reason_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="detailed_disposition" readonly="1"/>
+                            <field name="amz_return_report_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group name="order_tracking_details" string="Order Tracking Details" colspan="4" attrs="{'invisible': [('amz_shipment_report_id', '=' , False)]}">
+                        <group>
+                            <field name="tracking_number" readonly="1"/>
+                            <field name="amazon_order_reference" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="amazon_shipment_id" readonly="1"/>
+                            <field name="amazon_shipment_item_id" readonly="1"/>
+                            <field name="amazon_order_item_id" readonly='1'/>
+                        </group>
+                    </group>
+                </group>
+
+            </data>
+        </field>
+    </record>
+
+    <record id="view_amazon_ept_stock_move_tree" model="ir.ui.view">
+        <field name="name">Amazon Stock Move Tree View</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_tree"/>
+        <field name="arch" type="xml">
+            <field name="location_dest_id" position="after">
+                <field name="fulfillment_center_id"/>
+                <field name="warehouse_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_amazon_ept_return_stock_move_tree" model="ir.ui.view">
+        <field name="name">Amazon Stock Move Tree View</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_tree"/>
+        <field name="arch" type="xml">
+            <field name="product_uom_qty" position="before">
+                <field name="fba_returned_date" optional="show"/>
+                <field name="return_reason_id" optional="show"/>
+                <field name="detailed_disposition" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_return_fba_picking_order_ept" model="ir.actions.act_window">
+        <field name="name">FBA Customer Return Moves</field>
+        <field name="res_model">stock.move</field>
+        <field name="domain">[('amazon_order_reference','!=',False),('return_reason_id','!=',False)]</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="amazon_ept.view_amazon_ept_return_stock_move_tree"/>
+        <field name="search_view_id" ref="amazon_ept.view_move_search_ept"/>
+        <field name="help" type="html">
+            <div class="oe_empty_amazon_picking">
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    There is no any Return Delivery Order created for any of Amazon FBA Sale Orders.
+                    If your Amazon Instance's Invoice Policy is set to "Before Delivery", then after Invoice being
+                    totally paid, Delivery order for Amazon will be created automatically and it will be visible
+                    over here.
+                    From here, you can't manually create delivery order for Amazon. It must be created via Sale
+                    Order.
+                </p>
+
+            </div>
+        </field>
+    </record>
+
+    <!-- FBA: Customer Return Stock Moves -->
+    <menuitem id="menu_item_amazon_return_order_return_move_ept" name="Returns Moves"
+              parent="amazon_ept.amazon_sales_fba_orders_menu" sequence="4"
+              action="action_return_fba_picking_order_ept"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <record id="action_move_tree_done_ept" model="ir.actions.act_window">
+        <field name="name">FBA Order Moves</field>
+        <field name="res_model">stock.move</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_amazon_ept_stock_move_tree"/>
+        <field name="domain">[('amazon_order_reference','!=',False),('return_reason_id','=',False),
+            ('state','not in',['waiting'])]</field>
+        <field name="search_view_id" ref="amazon_ept.view_move_search_ept"/>
+        <field name="help" type="html">
+            <div>
+            </div>
+        </field>
+    </record>
+
+    <record id="action_move_tree_waiting_ept" model="ir.actions.act_window">
+        <field name="name">FBA Waiting Availability Moves</field>
+        <field name="res_model">stock.move</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_amazon_ept_stock_move_tree"/>
+        <field name="domain">[('amazon_order_reference','!=',False),('return_reason_id','=',False),('state', '=', 'waiting')]</field>
+        <field name="search_view_id" ref="amazon_ept.view_move_search_ept"/>
+        <field name="help" type="html">
+            <div class="oe_empty_amazon_picking">
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    There is no any Partially Deliver Order created for any of Amazon Sale Orders.
+                    From here, you can't manually create delivery order for Amazon. It must be created via Sale
+                    Order.
+                </p>
+
+            </div>
+        </field>
+    </record>
+    <!-- FBA: Order Stock Move -->
+    <menuitem id="menu_item_amazon_order_stock_move_ept" name="Orders Moves"
+              parent="amazon_ept.amazon_sales_fba_orders_menu"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"
+              action="action_move_tree_done_ept" sequence="3"/>
+
+    <menuitem id="menu_item_amazon_order_waiting_stock_move_ept" name="Waiting Availability Moves"
+              parent="amazon_ept.amazon_sales_fba_orders_menu"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"
+              action="action_move_tree_waiting_ept" sequence="5"/>
+</odoo>

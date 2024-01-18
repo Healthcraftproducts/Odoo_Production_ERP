@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="amazon_fbm_cron_configuration_ept_form_view"
+            model="ir.ui.view">
+        <field name="name">fbm.cron.configuration</field>
+        <field name="model">fbm.cron.configuration</field>
+        <field name="priority">11</field>
+        <field name="arch" type="xml">
+            <form string="Manual Queue Process">
+                <field name="amz_seller_id" invisible="1"/>
+                <div class="row mt16 o_settings_container" name="fbm_auto_import">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="amz_order_auto_import" widget="boolean_toggle" style="margin-left: -10px;"
+                                   help="If Ticked, Order will be automatically Imported by system from Amazon."/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="amz_order_auto_import"/>
+                            <div class="text-muted">
+                                Schedule automized Order import from Amazon
+                            </div>
+                            <div>
+                                <field name="amz_order_import_interval_number"
+                                       attrs="{'required': [('amz_order_auto_import', '=', True)],'invisible': [('amz_order_auto_import', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_order_import_interval_type"
+                                       attrs="{'required': [('amz_order_auto_import', '=', True)],'invisible': [('amz_order_auto_import', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_order_import_next_execution"
+                                       attrs="{'required': [('amz_order_auto_import', '=', True)],'invisible': [('amz_order_auto_import', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_order_import_user_id"
+                                       attrs="{'required': [('amz_order_auto_import', '=', True)],'invisible': [('amz_order_auto_import', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="amz_stock_auto_export" widget="boolean_toggle" style="margin-left: -10px;"
+                                   help="If Ticked, Product stock will be automatically Exported by system to Amazon."/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="amz_stock_auto_export"/>
+                            <div class="text-muted">
+                                Schedule automized amazon stock export
+                            </div>
+                            <div>
+                                <field name="amz_inventory_export_interval_number"
+                                       attrs="{'required': [('amz_stock_auto_export', '=', True), ('amz_seller_id','!=',False)],'invisible': [('amz_stock_auto_export', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_inventory_export_interval_type"
+                                       attrs="{'required': [('amz_stock_auto_export', '=', True), ('amz_seller_id','!=',False)],'invisible': [('amz_stock_auto_export', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_inventory_export_next_execution"
+                                       attrs="{'required': [('amz_stock_auto_export', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_stock_auto_export', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_inventory_export_user_id"
+                                       attrs="{'required': [('amz_stock_auto_export', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_stock_auto_export', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container" name="fbm_update_order_status">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="amz_order_auto_update" widget="boolean_toggle" style="margin-left: -10px;"
+                                   help="If Ticked, Order shipment will be automatically updated by system to Amazon."/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="amz_order_auto_update"/>
+                            <div class="text-muted">
+                                Schedule automized order update tracking
+                            </div>
+                            <div>
+                                <field name="amz_order_update_interval_number"
+                                       attrs="{'required': [('amz_order_auto_update', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_order_auto_update', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2" style="width:10px;"/>
+                                <field name="amz_order_update_interval_type"
+                                       attrs="{'required': [('amz_order_auto_update', '=', True), ('amz_seller_id','!=',False)],'invisible': [('amz_order_auto_update', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_order_update_next_execution"
+                                       attrs="{'required': [('amz_order_auto_update', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_order_auto_update', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_order_update_user_id"
+                                       attrs="{'required': [('amz_order_auto_update', '=', True), ('amz_seller_id','!=',False)],'invisible': [('amz_order_auto_update', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="amz_auto_check_cancel_order" widget="boolean_toggle" style="margin-left: -10px;"
+                                   help="If Ticked, system will check draft FBA orders status in Amazon and if it is canceled in Amazon, then system will automatically canceled in Odoo."/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="amz_auto_check_cancel_order"/>
+                            <div class="text-muted">
+                                Schedule automized canceled FBM Order in Amazon
+                            </div>
+                            <div>
+                                <field name="amz_cancel_order_interval_number"
+                                       attrs="{'required': [('amz_auto_check_cancel_order', '=', True)],
+                                        'invisible': [('amz_auto_check_cancel_order', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_cancel_order_interval_type"
+                                       attrs="{'required': [('amz_auto_check_cancel_order', '=', True)],
+                                            'invisible': [('amz_auto_check_cancel_order', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_cancel_order_next_execution"
+                                       attrs="{'required': [('amz_auto_check_cancel_order', '=', True)],
+                                            'invisible': [('amz_auto_check_cancel_order', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_cancel_order_report_user_id"
+                                       attrs="{'required': [('amz_auto_check_cancel_order', '=', True)],
+                                            'invisible': [('amz_auto_check_cancel_order', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container" name="fbm_auto_shipped_order_import">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="amz_auto_import_shipped_orders" widget="boolean_toggle" style="margin-left: -10px;"
+                                       help="If Ticked, System will import FBM Shipped orders."/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="amz_auto_import_shipped_orders"/>
+                                <div class="text-muted">
+                                    Schedule automized to import FBM Shipped Orders
+                                </div>
+                                <div>
+                                    <field name="auto_import_fbm_shipped_interval_number"
+                                           attrs="{'required': [('amz_auto_import_shipped_orders', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_shipped_orders', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="auto_import_fbm_shipped_interval_type"
+                                           attrs="{'required': [('amz_auto_import_shipped_orders', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_shipped_orders', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="auto_import_fbm_shipped_next_execution"
+                                           attrs="{'required': [('amz_auto_import_shipped_orders', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_shipped_orders', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="auto_import_fbm_shipped_user_id"
+                                           attrs="{'required': [('amz_auto_import_shipped_orders', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_shipped_orders', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <footer>
+                    <button string="Save Cron Configuration"
+                            class="oe_highlight" type="object" name="save_cron_configuration"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wizard_fbm_cron_configuration_ept" model="ir.actions.act_window">
+        <field name="name">Scheduled Actions Configuration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fbm.cron.configuration</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

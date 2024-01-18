@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+
+<t t-extend="graph_dashboard_ept">
+    <t t-jquery="#sort_order_data" t-operation="before">
+        <t t-if="widget.match_key == 'amazon_order_data'">
+            <select class="border-0 h7 position-absolute" id="sort_order_data_amazone">
+                <option value="FBA"
+                        t-att-selected="widget.graph_data.fulfillment_by == 'FBA' ? 'selected' : undefined">
+                    Fulfillment By FBA
+                </option>
+                <option value="FBM"
+                        t-att-selected="widget.graph_data.fulfillment_by == 'FBM' ? 'selected' : undefined">
+                        Fulfillment By FBM
+                </option>
+                <option value="Both"
+                        t-att-selected="widget.graph_data.fulfillment_by == 'Both' ? 'selected' : undefined">
+                        Fulfillment By Both
+                </option>
+            </select>
+        </t>
+    </t>
+
+    <t t-jquery="t[t-if='widget.graph_data.total_sales and widget.graph_data.order_data.order_count']"
+       t-operation="replace">
+        <t t-if="widget.match_key == 'amazon_order_data'">
+            <t t-if="widget.graph_data.fulfillment_by == 'FBA'">
+                <t t-if="widget.graph_data.total_sales and widget.graph_data.fba_order_data.order_count">
+                    <t t-if="widget.graph_data.fba_order_data.order_count != 0">
+                        <t
+                                t-esc="widget.graph_data.currency_symbol + Math.round(widget.graph_data.total_sales / widget.graph_data.fba_order_data.order_count)"/>
+                    </t>
+                    <t t-else="">
+                        <t t-esc="widget.graph_data.currency_symbol"/>0
+                    </t>
+            </t>
+                <t t-else="">
+                        <t t-esc="widget.graph_data.currency_symbol"/>0
+                    </t>
+            </t>
+
+            <t t-if="widget.graph_data.fulfillment_by == 'FBM'">
+                <t t-if="widget.graph_data.total_sales and widget.graph_data.fbm_order_data.order_count">
+                    <t t-if="widget.graph_data.fbm_order_data.order_count != 0">
+                        <t
+                                t-esc="widget.graph_data.currency_symbol + Math.round(widget.graph_data.total_sales / widget.graph_data.fbm_order_data.order_count)"/>
+                    </t>
+                    <t t-else="">
+                        <t t-esc="widget.graph_data.currency_symbol"/>0
+                </t>
+            </t>
+                <t t-else="">
+                        <t t-esc="widget.graph_data.currency_symbol"/>0
+                </t>
+            </t>
+
+            <t t-if="widget.graph_data.fulfillment_by == 'Both'">
+                <t t-if="widget.graph_data.total_sales and widget.graph_data.fbm_order_data.order_count or widget.graph_data.fba_order_data.order_count">
+                    <t t-if="widget.graph_data.fbm_order_data.order_count != 0 or widget.graph_data.fba_order_data.order_count != 0">
+                        <t
+                                t-esc="widget.graph_data.currency_symbol + Math.round(widget.graph_data.total_sales / (widget.graph_data.fba_order_data.order_count + widget.graph_data.fbm_order_data.order_count))"/>
+                    </t>
+                    <t t-else="">
+                        <t t-esc="widget.graph_data.currency_symbol"/>0
+                </t>
+            </t>
+                <t t-else="">
+                        <t t-esc="widget.graph_data.currency_symbol"/>0
+                </t>
+            </t>
+        </t>
+        <t t-else="">
+            <t t-if="widget.graph_data.total_sales and widget.graph_data.order_data.order_count">
+                                <t t-if="widget.graph_data.order_data.order_count != 0">
+                                    <t t-esc="widget.graph_data.currency_symbol + Math.round(widget.graph_data.total_sales / widget.graph_data.order_data.order_count)"/>
+                                </t>
+                <t t-else="">
+                    <t t-esc="widget.graph_data.currency_symbol">0</t>
+                                </t>
+                            </t>
+        </t>
+    </t>
+
+    <t t-jquery="#instance_customer" t-operation="replace">
+        <t t-if="widget.match_key != 'amazon_order_data'">
+            <a id="instance_customer" class="ep-bg-1">
+                <t t-if="widget.graph_data.customer_data">
+                    <p class="text-center mb0 font-weight-bold">
+                        <t t-esc="widget.graph_data.customer_data.customer_count"/>
+                    </p>
+                </t>
+                <p class="text-center mb0">Customers</p>
+            </a>
+        </t>
+    </t>
+    <t t-jquery="#instance_order" t-operation="replace">
+        <t t-if="widget.match_key == 'amazon_order_data'">
+            <a id="instance_fbm_order" class="ep-bg-4">
+                <t t-if="widget.graph_data.fbm_order_data">
+                        <p class="text-center mb0 font-weight-bold">
+                            <t t-esc="widget.graph_data.fbm_order_data.order_count"/>
+                        </p>
+                    </t>
+                <p class="text-center mb0">FBM Orders</p>
+            </a>
+
+            <a id="instance_fba_order" class="ep-bg-4">
+                    <t t-if="widget.graph_data.fba_order_data">
+                        <p class="text-center mb0 font-weight-bold">
+                            <t t-esc="widget.graph_data.fba_order_data.order_count"/>
+                        </p>
+                    </t>
+                <p class="text-center mb0">FBA Orders</p>
+            </a>
+        </t>
+        <t t-else="">
+             <a id="instance_order" class="ep-bg-4">
+                 <t t-if="widget.graph_data.order_data">
+                        <p class="text-center mb0 font-weight-bold">
+                            <t t-if="widget.graph_data.order_data">
+                                <t t-esc="widget.graph_data.order_data.order_count"/>
+                            </t>
+                            <t t-else="">
+                                0
+                            </t>
+
+                        </p>
+                    </t>
+                 <p class="text-center mb0">Orders</p>
+            </a>
+        </t>
+    </t>
+    <t t-jquery="#instance_order_shipped" t-operation="replace">
+        <t t-if="widget.match_key != 'amazon_order_data'">
+            <a id="instance_order_shipped" class="ep-bg-5">
+                    <t t-if="widget.graph_data.order_shipped">
+                        <p class="text-center mb0 font-weight-bold">
+                            <t t-esc="widget.graph_data.order_shipped.order_count"/>
+                        </p>
+                    </t>
+                <p class="text-center mb0">Order Shipped</p>
+                </a>
+        </t>
+    </t>
+
+    <t t-jquery="#instance_refund" t-operation="replace">
+        <t t-if="widget.match_key != 'amazon_order_data'">
+             <a id="instance_refund" class="ep-bg-7">
+                    <t t-if="widget.graph_data.refund_data">
+                        <p class="text-center mb0 font-weight-bold">
+                            <t t-esc="widget.graph_data.refund_data.refund_count"/>
+                        </p>
+                    </t>
+                 <p class="text-center mb0">Refund</p>
+                </a>
+        </t>
+    </t>
+
+    <t t-jquery="#shopify_left" t-operation="replace">
+        <t t-if="widget.match_key != 'amazon_order_data'">
+            <div id="shopify_left" class="float-left o_kanban_top_left">
+                    <div id="perform_operation" class="o_kanban_record_headings">
+                        <button class="btn btn-primary ep-btn-primary">
+                            <span>Perform Operation</span>
+                        </button>
+                    </div>
+                </div>
+        </t>
+    </t>
+
+    <t t-jquery="#instance_log" t-operation="replace">
+        <t t-if="widget.match_key != 'amazon_order_data'">
+        <a id="instance_log">
+                            <span class="mr4">
+                                <img class="img img-responsive m-auto"
+                                     src="/common_connector_library/static/src/img/log.svg"
+                                     style="width: 16px;display: inline-block;"/>
+                            </span>
+            <span class=" font-weight-bold">Logs</span>
+                        </a>
+        </t>
+    </t>
+
+    <t t-jquery="#instance_report" t-operation="replace">
+        <t t-if="widget.match_key != 'amazon_order_data'">
+        <a id="instance_report">
+            <span class="mr4">
+                <img class="img img-responsive m-auto"
+                     src="/common_connector_library/static/src/img/report.svg"
+                     style="width: 16px;display: inline-block;"/>
+            </span>
+            <span class=" font-weight-bold">Report</span>
+        </a>
+        </t>
+    </t>
+
+</t>
+</template>

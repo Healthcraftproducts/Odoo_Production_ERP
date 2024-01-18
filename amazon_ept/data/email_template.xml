@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<odoo noupdate="1">
+    <record id="email_template_amazon_stock_adjustment_email_ept" model="mail.template">
+                <field name="name">Send Email of Stock adjustment Unprocess lines</field>
+                <field name="email_from">{{object.company_id.partner_id.email or ''}}</field>
+                <field name="subject">Stock Adjustment Report (Ref {{object.name  or ''}})</field>
+                <field name="model_id" ref="amazon_ept.model_amazon_stock_adjustment_report_history"/>
+                <field name="auto_delete" eval="True"/>
+                <field name="body_html" type="html">
+                    <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+                        <div style="width: 347px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;">
+                            <h3 style="margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;">
+                                <strong t-out="object.company_id.name or ''"/>
+                            </h3>
+                        </div>
+                        <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+                            <span style="color: #222; margin-bottom: 5px; display: block; ">
+                                <t t-if="object.company_id.street">
+                                    <t t-out="object.company_id.street or ''"/>,
+                                </t>
+                                <br/>
+                                <t t-if="object.company_id.street2">
+                                    <t t-out="object.company_id.street2 or ''"/>,
+                                </t>
+                                <br/>
+                                <t t-if="object.company_id.city or object.company_id.zip">
+                                    <t t-out="object.company_id.city or ''"/>,
+                                    <t t-if="object.company_id.state_id">
+                                        <t t-out="object.company_id.state_id.code or ''"/>
+                                    </t>
+                                    <t t-out="object.company_id.zip or ''"/>
+                                </t>
+                                <br/>
+                                <t t-if="object.company_id.country_id">
+                                    <t t-out="object.company_id.country_id.name or ''"/>
+                                </t>
+                                <br/>
+                            </span>
+                            <t t-if="object.company_id.phone">
+                                <div style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; ">
+                                    Phone:<t t-out="object.company_id.phone or ''"/>
+                                </div>
+                            </t>
+                            <t t-if="object.company_id.website">
+                                <div>
+                                    Web:<a href="{{object.company_id.website}}">
+                                    <t t-out="object.company_id.website or ''"/></a>
+                                </div>
+                            </t>
+                            <p/>
+                        </div>
+                    </div>
+                </field>
+                <field name="lang">{{object.company_id.partner_id.lang}}</field>
+                <field name="report_name">{{(object.name or '').replace('/','_')}}_{{object.state == 'draft' and 'draft' or ''}}</field>
+    </record>
+</odoo>

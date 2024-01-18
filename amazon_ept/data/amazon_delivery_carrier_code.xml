@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="amz_carrier_usps" model="amazon.delivery.carrier.code.ept">
+        <field name="name">USPS</field>
+    </record>
+
+    <record id="amz_carrier_ups" model="amazon.delivery.carrier.code.ept">
+        <field name="name">UPS</field>
+    </record>
+
+    <record id="amz_carrier_upsmi" model="amazon.delivery.carrier.code.ept">
+        <field name="name">UPSMI</field>
+    </record>
+
+    <record id="amz_carrier_fedex" model="amazon.delivery.carrier.code.ept">
+        <field name="name">FedEx</field>
+    </record>
+
+    <record id="amz_carrier_dhl" model="amazon.delivery.carrier.code.ept">
+        <field name="name">DHL</field>
+    </record>
+
+    <record id="amz_carrier_fastway" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Fastway</field>
+    </record>
+
+    <record id="amz_carrier_gls" model="amazon.delivery.carrier.code.ept">
+        <field name="name">GLS</field>
+    </record>
+
+    <record id="amz_carrier_go" model="amazon.delivery.carrier.code.ept">
+        <field name="name">GO!</field>
+    </record>
+
+    <record id="amz_carrier_hermer_logistik_gruppe" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Hermes Logistik Gruppe</field>
+    </record>
+
+    <record id="amz_carrier_royal_mail" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Royal Mail</field>
+    </record>
+
+    <record id="amz_carrier_parcel_force" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Parcelforce</field>
+    </record>
+
+    <record id="amz_carrier_city_link" model="amazon.delivery.carrier.code.ept">
+        <field name="name">City Link</field>
+    </record>
+
+    <record id="amz_carrier_tnt" model="amazon.delivery.carrier.code.ept">
+        <field name="name">TNT</field>
+    </record>
+
+    <record id="amz_carrier_Target" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Target</field>
+    </record>
+
+    <record id="amz_carrier_sagawa_express" model="amazon.delivery.carrier.code.ept">
+        <field name="name">SagawaExpress</field>
+    </record>
+
+    <record id="amz_carrier_nippon_express" model="amazon.delivery.carrier.code.ept">
+        <field name="name">NipponExpress</field>
+    </record>
+
+    <record id="amz_carrier_yamato_transport" model="amazon.delivery.carrier.code.ept">
+        <field name="name">YamatoTransport</field>
+    </record>
+
+    <record id="amz_carrier_dhl_global_mail" model="amazon.delivery.carrier.code.ept">
+        <field name="name">DHL Global Mail</field>
+    </record>
+
+    <record id="amz_carrier_ups_mail_innovations" model="amazon.delivery.carrier.code.ept">
+        <field name="name">UPS Mail Innovations</field>
+    </record>
+
+    <record id="amz_carrier_fedex_smartpost" model="amazon.delivery.carrier.code.ept">
+        <field name="name">FedEx SmartPost</field>
+    </record>
+
+    <record id="amz_carrier_osm" model="amazon.delivery.carrier.code.ept">
+        <field name="name">OSM</field>
+    </record>
+
+    <record id="amz_carrier_ontrac" model="amazon.delivery.carrier.code.ept">
+        <field name="name">OnTrac</field>
+    </record>
+
+    <record id="amz_carrier_streamlite" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Streamlite</field>
+    </record>
+
+    <record id="amz_carrier_newgistics" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Newgistics</field>
+    </record>
+
+    <record id="amz_carrier_canada_post" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Canada Post</field>
+    </record>
+
+    <record id="amz_carrier_blue_package" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Blue Package</field>
+    </record>
+
+    <record id="amz_carrier_chronopost" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Chronopost</field>
+    </record>
+
+    <record id="amz_carrier_deutsche_post" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Deutsche Post</field>
+    </record>
+
+    <record id="amz_carrier_dpd" model="amazon.delivery.carrier.code.ept">
+        <field name="name">DPD</field>
+    </record>
+
+    <record id="amz_carrier_la_poste" model="amazon.delivery.carrier.code.ept">
+        <field name="name">La Poste</field>
+    </record>
+
+    <record id="amz_carrier_parcelnet" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Parcelnet</field>
+    </record>
+
+    <record id="amz_carrier_poste_italiane" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Poste Italiane</field>
+    </record>
+
+    <record id="amz_carrier_sda" model="amazon.delivery.carrier.code.ept">
+        <field name="name">SDA</field>
+    </record>
+
+    <record id="amz_carrier_smartmail" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Smartmail</field>
+    </record>
+
+    <record id="amz_carrier_fedex_jp" model="amazon.delivery.carrier.code.ept">
+        <field name="name">FEDEX_JP</field>
+    </record>
+
+    <record id="amz_carrier_jp_express" model="amazon.delivery.carrier.code.ept">
+        <field name="name">JP_EXPRESS</field>
+    </record>
+
+    <record id="amz_carrier_nittsu" model="amazon.delivery.carrier.code.ept">
+        <field name="name">NITTSU</field>
+    </record>
+
+    <record id="amz_carrier_sagawa" model="amazon.delivery.carrier.code.ept">
+        <field name="name">SAGAWA</field>
+    </record>
+
+    <record id="amz_carrier_yamato" model="amazon.delivery.carrier.code.ept">
+        <field name="name">YAMATO</field>
+    </record>
+
+    <record id="amz_carrier_bluedart" model="amazon.delivery.carrier.code.ept">
+        <field name="name">BlueDart</field>
+    </record>
+
+    <record id="amz_carrier_afl_fedex" model="amazon.delivery.carrier.code.ept">
+        <field name="name">AFL/Fedex</field>
+    </record>
+
+    <record id="amz_carrier_aramex" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Aramex</field>
+    </record>
+
+    <record id="amz_carrier_india_post" model="amazon.delivery.carrier.code.ept">
+        <field name="name">India Post</field>
+    </record>
+
+    <record id="amz_carrier_professional" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Professional</field>
+    </record>
+
+    <record id="amz_carrier_dtdc" model="amazon.delivery.carrier.code.ept">
+        <field name="name">DTDC</field>
+    </record>
+
+    <record id="amz_carrier_overnite_express" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Overnite Express</field>
+    </record>
+
+    <record id="amz_carrier_first_flight" model="amazon.delivery.carrier.code.ept">
+        <field name="name">First Flight</field>
+    </record>
+
+    <record id="amz_carrier_delhivery" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Delhivery</field>
+    </record>
+
+    <record id="amz_carrier_lasership" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Lasership</field>
+    </record>
+
+    <record id="amz_carrier_yodel" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Yodel</field>
+    </record>
+
+    <record id="amz_carrier_other" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Other</field>
+    </record>
+
+    <record id="amz_carrier_amazon_shipping" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Amazon Shipping</field>
+    </record>
+
+    <record id="amz_carrier_seur" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Seur</field>
+    </record>
+
+    <record id="amz_carrier_correos" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Correos</field>
+    </record>
+
+    <record id="amz_carrier_mrw" model="amazon.delivery.carrier.code.ept">
+        <field name="name">MRW</field>
+    </record>
+
+    <record id="amz_carrier_endopack" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Endopack</field>
+    </record>
+
+    <record id="amz_carrier_chrono_express" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Chrono Express</field>
+    </record>
+
+    <record id="amz_carrier_nacex" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Nacex</field>
+    </record>
+
+    <record id="amz_carrier_otro" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Otro</field>
+    </record>
+
+    <record id="amz_carrier_correios" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Correios</field>
+    </record>
+
+    <record id="amz_carrier_toll_global_express" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Toll Global Express</field>
+    </record>
+
+    <record id="amz_carrier_china_post" model="amazon.delivery.carrier.code.ept">
+        <field name="name">China Post</field>
+    </record>
+
+    <record id="amz_carrier_aussie_post" model="amazon.delivery.carrier.code.ept">
+        <field name="name">AUSSIE_POST</field>
+    </record>
+
+    <record id="amz_carrier_eub" model="amazon.delivery.carrier.code.ept">
+        <field name="name">EUB</field>
+    </record>
+
+    <record id="amz_carrier_australia_post" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Australia Post</field>
+    </record>
+
+    <record id="amz_carrier_yun_express" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Yun Express</field>
+    </record>
+
+    <record id="amz_carrier_fastway" model="amazon.delivery.carrier.code.ept">
+        <field name="name">Fastway</field>
+    </record>
+
+    <record id="amz_carrier_4px" model="amazon.delivery.carrier.code.ept">
+        <field name="name">4PX</field>
+    </record>
+
+    <record id="amz_carrier_yanwen" model="amazon.delivery.carrier.code.ept">
+        <field name="name">YANWEN</field>
+    </record>
+
+    <record id="amz_carrier_sf_express" model="amazon.delivery.carrier.code.ept">
+        <field name="name">SF Express</field>
+    </record>
+</odoo>

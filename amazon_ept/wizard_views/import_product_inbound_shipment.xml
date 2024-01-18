@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_inbound_product_import_wizard" model="ir.ui.view">
+        <field name="name">Inbound Shipment - Import Product Wizard</field>
+        <field name="model">import.product.inbound.shipment</field>
+        <field name="arch" type="xml">
+            <form string="Import Product" version="7">
+                <field name="shipment_id" invisible="True"/>
+                <group string="Configuration to import products">
+                    <group>
+                        <field name="choose_file" filename="file_name" string="Select file to import product"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="update_existing"/>
+                        <field name="replace_product_qty" widget="boolean_toggle" attrs="{'invisible' : [('update_existing','!=',True)]}"/>
+                    </group>
+                </group>
+                <group string="Required Fields">
+                    <h3>default_code, quantity, quantity_in_case are required fields for Inbound Shipment.</h3>
+                    <!--Download Sample File button added by Keyur-->
+                    <button name="download_sample_product_csv" string="Download Sample File" type="object"
+                            class="oe_highlight capitalize"/>
+                </group>
+
+                <footer>
+                    <button name="import_shipment_line" string="Import Product" type="object" class="oe_highlight"/>
+                    or
+                    <button string="_Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

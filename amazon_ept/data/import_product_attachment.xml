@@ -1,0 +1,36 @@
+<odoo>
+    <record id="ir_attachment_import_product_template_epts" model="ir.attachment">
+        <field name="name">import_product_sample.csv</field>
+        <field name="datas" type="base64" file="amazon_ept/data/import_product_sample.csv"/>
+        <field name="res_model">amazon.process.import.export</field>
+        <field name="public">True</field>
+    </record>
+
+    <record id="ir_attachment_import_product_template_epts_xls" model="ir.attachment">
+        <field name="name">import_product_sample.xlsx</field>
+        <field name="datas" type="base64" file="amazon_ept/data/import_product_sample.xlsx"/>
+        <field name="res_model">amazon.process.import.export</field>
+        <field name="public">True</field>
+    </record>
+
+    <record id="ir_attachment_import_inbound_shipment_product_ept" model="ir.attachment">
+        <field name="name">inbound_shipment_plan_sample.csv</field>
+        <field name="datas" type="base64" file="amazon_ept/data/inbound_shipment_plan_sample.csv"/>
+        <field name="res_model">import.product.inbound.shipment</field>
+        <field name="public">True</field>
+    </record>
+
+    <record id="ir_attachment_amazon_inbound_shipment_box_content" model="ir.attachment">
+        <field name="name">amazon_inbound_shipment_box_content.csv</field>
+        <field name="datas" type="base64" file="amazon_ept/data/amazon_inbound_shipment_box_content.csv"/>
+        <field name="res_model">amazon.inbound.shipment.wizard</field>
+        <field name="public">True</field>
+    </record>
+
+    <record id="ir_attachment_amazon_us_tax_calculations_python_tax_module" model="ir.attachment">
+        <field name="name">account_tax_python_ept.zip</field>
+        <field name="datas" type="base64" file="amazon_ept/data/account_tax_python_ept.zip"/>
+        <field name="res_model">res.config</field>
+        <field name="public">True</field>
+    </record>
+</odoo>

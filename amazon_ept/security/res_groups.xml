@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="ir.module.category" id="module_category_amazon">
+        <field name="name">Amazon</field>
+        <field name="sequence">1000</field>
+    </record>
+    <record model="res.groups" id="group_amazon_user_ept">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_category_amazon"/>
+        <field name="implied_ids"
+               eval="[(4,ref('sales_team.group_sale_salesman_all_leads'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+    </record>
+    <record model="res.groups" id="group_amazon_manager_ept">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_amazon"/>
+        <field name="implied_ids"
+               eval="[(4,ref('amazon_ept.group_amazon_user_ept')),(4,ref('stock.group_stock_manager')),(4,ref('sales_team.group_sale_manager'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- Amazon selling  -->
+    <record model="ir.module.category" id="module_category_amazon_selling">
+        <field name="name">Amazon Selling</field>
+        <field name="sequence">1200</field>
+    </record>
+    <record model="res.groups" id="group_amazon_fbm_ept">
+        <field name="name">FBM</field>
+        <field name="category_id" ref="module_category_amazon_selling"/>
+        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+    </record>
+    <record model="res.groups" id="group_amazon_fba_ept">
+        <field name="name">FBA</field>
+        <field name="category_id" ref="module_category_amazon_selling"/>
+        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+    </record>
+    <record model="res.groups" id="group_amazon_fba_and_fbm_ept">
+        <field name="name">FBM &amp; FBA</field>
+        <field name="category_id" ref="module_category_amazon_selling"/>
+        <field name="implied_ids"
+               eval="[(4,ref('amazon_ept.group_amazon_fbm_ept')),(4,ref('amazon_ept.group_amazon_fba_ept'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <record model="ir.rule" id="amazon_Sale_order_report_multi_company">
+        <field name="name">Sale Order Report multi-company</field>
+        <field name="model_id" ref="model_fbm_sale_order_report_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_shipment_report_multi_company">
+        <field name="name">Shipment Report multi-company</field>
+        <field name="model_id" ref="model_shipping_report_request_history"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_customer_return_report_multi_company">
+        <field name="name">Customer Return Report multi-company</field>
+        <field name="model_id" ref="model_sale_order_return_report"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_removal_order_multi_company">
+        <field name="name">Removal Order multi-company</field>
+        <field name="model_id" ref="model_amazon_removal_order_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_removal_order_report_multi_company">
+        <field name="name">Removal Order Report multi-company</field>
+        <field name="model_id" ref="model_amazon_removal_order_report_history"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_live_stock_report_multi_company">
+        <field name="name">Amazon Live Stock Report multi-company</field>
+        <field name="model_id" ref="model_amazon_fba_live_stock_report_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_stock_adjustment_report_multi_company">
+        <field name="name">Amazon Stock Adjustment Report multi-company</field>
+        <field name="model_id" ref="model_amazon_stock_adjustment_report_history"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_active_product_multi_company">
+        <field name="name">Amazon Stock Adjustment Report multi-company</field>
+        <field name="model_id" ref="model_active_product_listing_report_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_product_ept_multi_company">
+        <field name="name">Amazon Product multi-company</field>
+        <field name="model_id" ref="model_amazon_product_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="FBM_shipped_order_data_queue_multi_company">
+        <field name="name">FBM shipped data queue multi-company</field>
+        <field name="model_id" ref="model_shipped_order_data_queue_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_settlement_report_ept_multi_company">
+        <field name="name">Amazon Settlement statement multi-company</field>
+        <field name="model_id" ref="model_settlement_report_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_instance_ept_multi_company">
+        <field name="name">Amazon Instances multi-company</field>
+        <field name="model_id" ref="model_amazon_instance_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_seller_ept_multi_company">
+        <field name="name">Amazon Seller multi-company</field>
+        <field name="model_id" ref="model_amazon_seller_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="amazon_inbound_shipment_plan_ept_multi_company">
+        <field name="name">Amazon Inbound Shipment Plan multi-company</field>
+        <field name="model_id" ref="model_inbound_shipment_plan_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="amazon_inbound_shipment_ept_multi_company">
+        <field name="name">Amazon Inbound Shipment multi-company</field>
+        <field name="model_id" ref="model_amazon_inbound_shipment_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="vat_config_multi_company" model="ir.rule">
+        <field name="name">VAT Configuration multi-company</field>
+        <field name="model_id" ref="model_vat_config_ept"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--Rule for Hide PII Data Scheduler -->
+    <record model="ir.rule" id="amz_ept_no_edit_delete_cron">
+        <field name="name">Amazon: No Edit or Delete Amazon Cron</field>
+        <field name="model_id" ref="model_ir_cron"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force" eval="[('id', '!=', ref('amazon_ept.auto_delete_amazon_customer_details'))]"/>
+        <field eval="1" name="perm_read"/>
+        <field eval="0" name="perm_create"/>
+        <field eval="0" name="perm_write"/>
+        <field eval="0" name="perm_unlink"/>
+    </record>
+</odoo>

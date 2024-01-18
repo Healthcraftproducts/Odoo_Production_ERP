@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="amazon_inbound_shipment_print_shipment_label_wizard_form_view"
+        model="ir.ui.view">
+        <field name="name">Inbound Shipment Labels</field>
+        <field name="model">amazon.shipment.label.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Get Label">
+                <header class="mb-0">
+                    <button name="download_labels_video" icon="fa-youtube-play"
+                            string="Know more about downloading label"
+                            class="oe_highlight capitalize" type="object"/>
+                </header>
+                <group string='Shipment Packing'>
+                    <group>
+                        <field name="number_of_box" class="oe_inline" readonly="context.get('box_readonly',False)"/>
+                    </group>
+                    <group>
+                        <field name="page_type" class="oe_inline" />
+                    </group>
+                    <group>
+                        <field name="number_of_package" readonly="1" invisible="context.get('shipping_type')=='sp'" class="oe_inline" />
+                    </group>
+                </group>
+                <newline />
+                <hr/>
+                <div class="alert alert-warning" role="alert">
+                    <div invisible="context.get('shipping_type')=='sp'" class="mt-2">
+                        <p>
+                            <ul>
+                                <li>Place labels so they don't cover box seams.</li>
+                                <li>Stack boxes on standard EPAL pallets (800mm x 1,200 mm).</li>
+                                <li>Pallets must not be stacked more than 170 cm high,
+                                    including the pallet.</li>
+                                <li>Total weight of the pallet must not exceed 1,000 kg.</li>
+                                <li>Securely stretch-wrap each pallet.</li>
+                            </ul>
+                        </p>
+                    </div>
+
+                    <div invisible="context.get('shipping_type')=='ltl'" class="mt-2 row">
+                            <div class="col-6">
+                            <h3>Packing your Boxes</h3>
+                             <ul>
+                                <li><b>Packing slips are no longer required.</b></li>
+                                <li>Single cartons must not exceed 30 kg. Cartons weighing between 15 kg and 30 kg must have "Heavy Package" labels prominently displayed.</li>
+                                <li>Use only approved packing material</li>
+                                <li>Please note that the Partner Carrier Program cannot be used for transporting hazardous (HAZMAT) products</li>
+                            </ul>
+                            </div>
+                            <div class="col-6">
+                            <h3>Labelling your boxes</h3>
+                            <ul>
+                                <li><b>Print the full set of labels. Each label is unique: do not photocopy, reuse or modify labels for use on additional boxes.</b></li>
+                                <li>The shipping label should be affixed to the outside of your sealed box, in addition to the carrier label.</li>
+                                <li>Place labels so they don't cover box seams.</li>
+                            </ul>
+                            </div>
+                    </div>
+                    <table style="width:60% border: 1px solid black; border-collapse: collapse;">
+                      <tr>
+                        <th colspan="2"
+                            style="border: 1px solid black; border-collapse: collapse; text-align: center;"><h6>Package Type Description</h6></th>
+                      </tr>
+                      <tr>
+                      <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_2
+                        </td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Two labels per US Letter label sheet. This is the only valid value for Amazon-partnered shipments in the US that use United Parcel Service (UPS) as the carrier. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                      <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_4
+                        </td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Four labels per US Letter label sheet. This is the only valid value for non-Amazon-partnered shipments in the US. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Six labels per US Letter label sheet. This is the only valid value for non-Amazon-partnered shipments in the US. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_A4_2</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Two labels per A4 label sheet.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_A4_4</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Four labels per A4 label sheet .</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">One label per sheet of US Letter paper. Only for non-Amazon-partnered shipments.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6_CarrierLeft</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6_CarrierLeft</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper_CarrierBottom</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper_CarrierBottom</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports Amazon-partnered shipments with UPS.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_Unified</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports shipments with ATS.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_NonPCP</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports non-Amazon-partnered shipments.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_No_Carrier_Rotation</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports Amazon-partnered shipments with DHL.</td>
+                      </tr>
+                    </table>
+                </div>
+                <footer>
+                    <button name="get_labels" string="Print Box Labels"
+                        type="object" class="oe_highlight" />
+                    <button string="Cancel" class="oe_highlight" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="amazon_inbound_shipment_print_delivery_label_wizard_form_view"
+        model="ir.ui.view">
+        <field name="name">Inbound Shipment Labels</field>
+        <field name="model">amazon.shipment.label.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Get Label">
+                <header class="mb-0">
+                    <button name="download_labels_video" icon="fa-youtube-play"
+                            string="Know more about downloading label"
+                            class="oe_highlight capitalize" type="object"/>
+                </header>
+                <group string='Delivery Packing'>
+                    <group>
+                        <div class="o_td_label">
+                            <label for="number_of_package" string='Number of Pallets'/>
+                        </div>
+                        <div>
+                            <field name="number_of_package" class="oe_inline" /> <b>* 4</b>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="page_type" class="oe_inline" />
+                    </group>
+                </group>
+                <newline />
+                <hr/>
+                <div class="alert alert-warning" role="alert">
+                    <div>
+                        <p>
+                            <ul>
+                                <li>Pallet labels must be affixed to the top-centre of all four sides of each stretch-wrapped pallet.</li>
+                            </ul>
+                        </p>
+                    </div>
+                    <table style="width:60% border: 1px solid black; border-collapse: collapse;">
+                      <tr>
+                        <th colspan="2" style="border: 1px solid black; border-collapse: collapse; text-align: center;"><h6>Package Type Description</h6></th>
+                      </tr>
+                      <tr>
+                      <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_2
+                        </td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Two labels per US Letter label sheet. This is the only valid value for Amazon-partnered shipments in the US that use United Parcel Service (UPS) as the carrier. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                      <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_4
+                        </td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Four labels per US Letter label sheet. This is the only valid value for non-Amazon-partnered shipments in the US. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Six labels per US Letter label sheet. This is the only valid value for non-Amazon-partnered shipments in the US. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_A4_2</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Two labels per A4 label sheet.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_A4_4</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Four labels per A4 label sheet .</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">One label per sheet of US Letter paper. Only for non-Amazon-partnered shipments.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6_CarrierLeft</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6_CarrierLeft</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper_CarrierBottom</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper_CarrierBottom</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports Amazon-partnered shipments with UPS.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_Unified</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports shipments with ATS.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_NonPCP</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports non-Amazon-partnered shipments.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_No_Carrier_Rotation</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports Amazon-partnered shipments with DHL.</td>
+                      </tr>
+                    </table>
+                </div>
+                <footer>
+                    <button name="get_labels" string="Print Pallet Labels"
+                        type="object" class="oe_highlight" />
+                    <button string="Cancel" class="oe_highlight" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>       
+
+    <record id="amazon_inbound_shipment_print_unique_label_wizard_form_view"
+        model="ir.ui.view">
+        <field name="name">Inbound Shipment Labels</field>
+        <field name="model">amazon.shipment.label.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Get Label">
+                <header class="mb-0">
+                    <button name="download_labels_video" icon="fa-youtube-play"
+                            string="Know more about downloading label"
+                            class="oe_highlight capitalize" type="object"/>
+                </header>
+                <group string='Delivery Packing'>
+                    <field name="page_type" class="oe_inline" />
+                </group>
+                <newline />
+                <hr/>
+                <div class="alert alert-warning" role="alert">
+                    <div>
+                        <p>
+                            <ul>
+                                <li>GetUniquelabels from amazon, your box-no must be same as carton exported box-no.</li>
+                            </ul>
+                        </p>
+                    </div>
+                    <table style="width:60% border: 1px solid black; border-collapse: collapse;">
+                      <tr>
+                        <th colspan="2" style="border: 1px solid black; border-collapse: collapse; text-align: center;"><h6>Package Type Description</h6></th>
+                      </tr>
+                      <tr>
+                      <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_2
+                        </td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Two labels per US Letter label sheet. This is the only valid value for Amazon-partnered shipments in the US that use United Parcel Service (UPS) as the carrier. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                      <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_4
+                        </td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Four labels per US Letter label sheet. This is the only valid value for non-Amazon-partnered shipments in the US. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Six labels per US Letter label sheet. This is the only valid value for non-Amazon-partnered shipments in the US. Supported in Canada and the US.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_A4_2</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Two labels per A4 label sheet.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_A4_4</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">Four labels per A4 label sheet .</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">One label per sheet of US Letter paper. Only for non-Amazon-partnered shipments.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6_CarrierLeft</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Letter_6_CarrierLeft</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper_CarrierBottom</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Plain_Paper_CarrierBottom</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports Amazon-partnered shipments with UPS.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_Unified</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports shipments with ATS.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_NonPCP</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports non-Amazon-partnered shipments.</td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">PackageLabel_Thermal_No_Carrier_Rotation</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding:8px">For use of a thermal printer. Supports Amazon-partnered shipments with DHL.</td>
+                      </tr>
+                    </table>
+                </div>
+                <footer>
+                    <button name="get_labels" string="Print Unique Labels"
+                        type="object" class="oe_highlight" />
+                    <button string="Cancel" class="oe_highlight" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

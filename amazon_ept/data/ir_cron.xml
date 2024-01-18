@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="ir_cron_import_amazon_orders" model="ir.cron">
+        <field name="name">Import Amazon Order Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_sale_order_ept()</field>
+    </record>
+    <record id="ir_cron_process_amazon_unshipped_orders" model="ir.cron">
+        <field name="name">Process Amazon Unshipped Orders(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_unshipped_sale_order_ept()</field>
+    </record>
+    <record id="ir_cron_auto_update_order_status" model="ir.cron">
+        <field name="name">Update Order Status(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_update_order_status_ept()</field>
+    </record>
+
+    <record id="ir_cron_auto_export_inventory" model="ir.cron">
+        <field name="name">Auto Export Inventory(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_export_inventory_ept()</field>
+    </record>
+    <record id="ir_cron_import_amazon_fba_pending_order" model="ir.cron">
+        <field name="name">Import Amazon Pending Order And Check Cancel In Amazon(Do Not
+            Delete)
+        </field>
+
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_fba_pending_sale_order_ept()</field>
+    </record>
+    <record id="ir_cron_auto_check_canceled_fbm_order_in_amazon" model="ir.cron">
+        <field name="name">Auto Check Canceled Order(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.fbm_auto_check_cancel_order_in_amazon()</field>
+    </record>
+    <record id="ir_cron_import_amazon_fba_shipment_report" model="ir.cron">
+        <field name="name">FBA Import Shipment Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_shipping_report_request_history" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_shipment_report()</field>
+    </record>
+    <record id="ir_cron_process_amazon_fba_shipment_report" model="ir.cron">
+        <field name="name">FBA Process Shipment Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_shipping_report_request_history" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_shipment_report()</field>
+    </record>
+    <record id="ir_cron_create_fba_removal_order_report" model="ir.cron">
+        <field name="name">FBA Removal Order Report(Do Not Delete)</field>
+        <field name="active" eval="False"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="state">code</field>
+        <field name="model_id" ref="model_amazon_removal_order_report_history"/>
+        <field name="code">model.auto_import_removal_order_report()</field>
+    </record>
+    <record id="ir_cron_process_fba_removal_order_report" model="ir.cron">
+        <field name="name">FBA Removal Order Report Process(Do Not Delete)</field>
+        <field name="active" eval="False"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="state">code</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_amazon_removal_order_report_history"/>
+        <field name="code">model.auto_process_removal_order_report()</field>
+    </record>
+    <record id="ir_cron_auto_import_customer_return_report" model="ir.cron">
+        <field name="name">Auto Import Customer Return Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_sale_order_return_report" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_return_report()</field>
+    </record>
+    <record id="ir_cron_auto_process_customer_return_report" model="ir.cron">
+        <field name="name">Auto Process Customer Return Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_sale_order_return_report" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_return_order_report()</field>
+    </record>
+    <record id="ir_cron_import_stock_from_amazon_fba_live_report" model="ir.cron">
+        <field name="name">Import Amazon FBA Live Stock Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_fba_live_stock_report_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_amazon_fba_live_stock_report()</field>
+    </record>
+    <record id="ir_cron_process_fba_live_stock_report" model='ir.cron'>
+        <field name="name">Process Amazon FBA Live Stock Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_fba_live_stock_report_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_amazon_fba_live_stock_report()</field>
+    </record>
+    <record id="ir_cron_create_fba_stock_adjustment_report" model="ir.cron">
+        <field name="name">FBA Stock Adjustment Report(Do Not Delete)</field>
+        <field name="active" eval="False"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_amazon_stock_adjustment_report_history"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_stock_adjustment_report()</field>
+    </record>
+    <record id="ir_cron_process_fba_stock_adjustment_report" model="ir.cron">
+        <field name="name">FBA Stock Adjustment Report Process(Do Not Delete)</field>
+        <field name="active" eval="False"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_amazon_stock_adjustment_report_history"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_stock_adjustment_report()</field>
+    </record>
+    <record id="ir_cron_inbound_shipment_check_status" model="ir.cron">
+        <field name="name">Amazon Inbound shipment check status (Do Not Delete)</field>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_fba_shipment_status_ept()
+        </field>
+    </record>
+    <record id="ir_cron_auto_all_inbound_shipment_check_status" model="ir.cron">
+        <field name="name">Auto all inbound shipment check status (Do Not Delete)</field>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_all_inbound_shipment_check_status_ept()
+        </field>
+    </record>
+    <record id="ir_cron_auto_import_vcs_tax_report" model="ir.cron">
+        <field name="name">Auto Import VCS Tax Report(Do Not Delete)</field>
+        <field ref="model_amazon_vcs_tax_report_ept" name="model_id"/>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_vcs_tax_report()</field>
+    </record>
+    <record id="ir_cron_auto_process_vcs_tax_report" model="ir.cron">
+        <field name="name">Auto Process VCS Tax Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_vcs_tax_report_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_vcs_tax_report()</field>
+    </record>
+
+    <record id="ir_cron_auto_invoices_upload_to_amazon" model="ir.cron">
+        <field name="name">Auto Process Invoices Upload To Amazon(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_account_move" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.upload_odoo_invoice_to_amazon()</field>
+    </record>
+
+    <record id="ir_cron_auto_import_settlement_report" model="ir.cron">
+        <field name="name">Auto Import Settlement Report(Do Not Delete)</field>
+        <field ref="model_settlement_report_ept" name="model_id"/>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_settlement_report()</field>
+    </record>
+    <record id="ir_cron_auto_process_settlement_report" model="ir.cron">
+        <field name="name">Auto Process Settlement Report(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_settlement_report_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_settlement_report()</field>
+
+    </record>
+    <!--This is used for process the shipped order queue data line "Child Cron".-->
+    <record id="ir_cron_child_to_process_shipped_order_queue_line" model="ir.cron">
+        <field name="name">Amazon Child Cron of Shipped Order Queue Data Process(Do Not Delete)</field>
+        <field name="model_id" ref="model_shipped_order_data_queue_ept"/>
+        <field name="state">code</field>
+        <field name="code">model.process_orders()</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">50</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <!--This is used for Import the Missing Un-shipped orders "Child Cron".-->
+    <record id="ir_cron_import_missing_unshipped_orders" model="ir.cron">
+        <field name="name">Amazon Import Missing Unshipped Orders(Do Not Delete)</field>
+        <field name="model_id" ref="model_amazon_seller_ept"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_missing_unshipped_sale_order_ept()</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">8</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <!--This crone used for import amazon rating.-->
+    <record id="ir_cron_rating_request_report" model="ir.cron">
+        <field name="name">Rating Report(Do Not Delete)</field>
+        <field name="active" eval="False"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_rating_report_history"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_import_rating_report()</field>
+    </record>
+    <!--This crone used for Process amazon rating.-->
+    <record id="ir_cron_process_rating_request_report" model="ir.cron">
+        <field name="name">Rating Report Process(Do Not Delete)</field>
+        <field name="active" eval="False"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_rating_report_history"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_rating_report()</field>
+    </record>
+    <!--This Cron used for get Feed Submission History Results-->
+    <record id="ir_cron_get_feed_submission_result" model="ir.cron">
+        <field name="name">Amazon: Get Feed Submission History Results(Do Not Delete)</field>
+        <field name="model_id" ref="model_feed_submission_history"/>
+        <field name="state">code</field>
+        <field name="code">model.update_tracking_number_feed_cron()</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">3</field>
+    </record>
+    <record id="auto_create_outbound_order" model="ir.cron">
+        <field name="name">Amazon:Auto Create Outbound Orders(Do Not Delete)</field>
+        <field name="active" eval="False"/>
+        <field name="model_id" ref="model_amazon_outbound_order_wizard"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_create_outbound_orders()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <!--This Cron will be used for remove 30 days Old Customer PII Information also this cron is read only-->
+    <record id="auto_delete_amazon_customer_details" model="ir.cron">
+        <field name="name">Amazon:Auto Delete Customer PII Details(Do Not Delete)</field>
+        <field name="active" eval="True"/>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_delete_customer_pii_details()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <!-- Added Cron : Auto Process FBM Shipped Orders -->
+    <record id="ir_cron_auto_import_amazon_fbm_shipped_orders" model="ir.cron">
+        <field name="name">Process Amazon Shipped Orders(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_process_shipped_sale_order_ept()</field>
+    </record>
+
+    <!-- Added Cron : Auto Sync Fulfillment Centers From IAP -->
+    <record id="ir_cron_auto_import_amazon_fulfillment_centers" model="ir.cron">
+        <field name="name">Auto Sync Amazon Fulfillment Centers(Do Not Delete)</field>
+        <field eval="False" name="active"/>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+        <field ref="model_amazon_seller_ept" name="model_id"/>
+        <field name="state">code</field>
+        <field name="code">model.auto_sync_amazon_fulfillment_center_ept()</field>
+    </record>
+
+</odoo>

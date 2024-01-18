@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_amazon_export_products_ept" model="ir.ui.view">
+        <field name="name">Export product</field>
+        <field name="model">amazon.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export Product In Amazon">
+                <footer>
+                    <button name="export_product_in_amazon" string="Export" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_amazon_update_stock_ept" model="ir.ui.view">
+        <field name="name">Update Stock In Amazon</field>
+        <field name="model">amazon.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Stock In Amazon">
+                <separator colspan="4" string="Update Stock In Amazon"/>
+                <footer>
+                    <button name="update_stock_ept" string="Update Stock" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_amazon_update_price_ept" model="ir.ui.view">
+        <field name="name">Update Price In Amazon</field>
+        <field name="model">amazon.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Price In Amazon">
+                <separator colspan="4" string="Update Price In Amazon"/>
+                <footer>
+                    <button name="update_price" string="Update Price" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_amazon_update_image_ept" model="ir.ui.view">
+        <field name="name">Update Image In Amazon</field>
+        <field name="model">amazon.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Image In Amazon">
+                <separator colspan="4" string="Update Image In Amazon"/>
+                <footer>
+                    <button name="update_image" string="Update Image" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+     <record id="action_export_selective_products_ept" model="ir.actions.act_window">
+        <field name="name">Export/update Products In Amazon</field>
+        <field name="res_model">amazon.product.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'key':'export_selective_products_in_amazon'}</field>
+        <field name="view_id" ref="view_amazon_export_products_ept"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="amazon_ept.model_amazon_product_ept" />
+        <field name="binding_view_types">list</field>
+    </record>
+
+     <record id="action_update_amazon_selective_stock_ept" model="ir.actions.act_window">
+        <field name="name">Update Stock In Amazon</field>
+        <field name="res_model">amazon.product.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'key':'update_selective_stock'}</field>
+        <field name="view_id" ref="view_amazon_update_stock_ept"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="amazon_ept.model_amazon_product_ept" />
+        <field name="binding_view_types">list</field>
+    </record>
+
+     <record id="action_update_selective_price_ept" model="ir.actions.act_window">
+        <field name="name">Update Price In Amazon</field>
+        <field name="res_model">amazon.product.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'key':'update_selective_price'}</field>
+        <field name="view_id" ref="view_amazon_update_price_ept"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="amazon_ept.model_amazon_product_ept" />
+        <field name="binding_view_types">list</field>
+    </record>
+
+<!--     <record id="action_update_selective_image_ept" model="ir.actions.act_window">-->
+<!--        <field name="name">Update Image In Amazon</field>-->
+<!--        <field name="res_model">amazon.product.wizard</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="context">{'key':'update_selective_image'}</field>-->
+<!--        <field name="view_id" ref="view_amazon_update_image_ept"/>-->
+<!--        <field name="target">new</field>-->
+<!--        <field name="binding_model_id" ref="amazon_ept.model_amazon_product_ept" />-->
+<!--        <field name="binding_view_types">list</field>-->
+<!--    </record>-->
+
+</odoo>

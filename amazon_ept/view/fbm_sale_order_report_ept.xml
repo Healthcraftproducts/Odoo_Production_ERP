@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="amazon_sale_order_report_ept_tree_view" model="ir.ui.view">
+        <field name="name">Amazon Sale Order Report Tree</field>
+        <field name="model">fbm.sale.order.report.ept</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="name"/>
+                <field name="seller_id" optional="show"/>
+                <field name="requested_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="amazon_sale_order_report_ept_form_view" model="ir.ui.view">
+        <field name="name">Amazon Sale Order Report Form</field>
+        <field name="model">fbm.sale.order.report.ept</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Sale Order Report(FBM)" create='0'>
+                <header>
+                    <button name="request_report" string="Request Report"
+                            states="draft"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="get_report_request_list" string="Check Status"
+                            states="_SUBMITTED_,_IN_PROGRESS_,SUBMITTED,IN_PROGRESS,IN_QUEUE"
+                            context="{'amz_report_type': 'fbm_report_spapi'}"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="get_report" string="Get Report"
+                            context="{'amz_report_type': 'fbm_report_spapi'}"
+                            attrs="{'invisible':['|',('report_document_id','=',False),('attachment_id','!=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="download_report" string="Download Report"
+                            attrs="{'invisible':[('attachment_id','=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="process_fbm_sale_order_file" string="Process File"
+                            attrs="{'invisible':['|',('attachment_id','=',False),('state','not in',('_DONE_', 'DONE'))]}"
+                            class="oe_highlight"
+                            help="Click Here To process the report file"
+                            type="object"/>
+
+                    <button name="process_fbm_sale_order_file" string="Re-process File"
+                            attrs="{'invisible':['|','|',('attachment_id','=',False),('state','not in',['processed', 'partially_processed']), ('mismatch_details', '=', False)]}"
+                            class="oe_highlight" help="Click Here To process the report file"
+                            type="object"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="SUBMITTED,IN_PROGRESS,DONE"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_sales_order"
+                                icon="fa-truck" attrs="{'invisible':[('sales_order_count','=',0)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="sales_order_count"/>
+                                </span>
+                                <span class="o_stat_text">Sale Orders</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="report_type" required="1" invisible="1"/>
+                            <field name="seller_id" required="1"
+                                   attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="attachment_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="report_document_id" readonly="1"/>
+                            <field name="report_id" readonly="1"/>
+                            <field name="user_id" readonly="1" invisible="1"/>
+                            <field name="company_id" readonly="1" invisible="1"/>
+                            <field name="mismatch_details" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="amazon_sale_order_report_ept_search_view"
+            model="ir.ui.view">
+        <field name="name">Amazon Sale Order Report Search</field>
+        <field name="model">fbm.sale.order.report.ept</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Amazon Sale Order Report">
+                <field name="name"/>
+                <field name="report_document_id"/>
+                <field name="report_id"/>
+                <field name="report_type"/>
+                <field name="state"/>
+                <field name="seller_id"/>
+                <group expand="0" string="Group By...">
+                    <filter name="seller" string="Seller" context="{'group_by':'seller_id'}"/>
+                    <filter name="report_status" string="Report Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_amazon_sale_order_report_ept" model="ir.actions.act_window">
+        <field name="name">Amazon Sale Order Report</field>
+        <field name="res_model">fbm.sale.order.report.ept</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_item_parent_amazon_fbm" name="FBM"
+              parent="amazon_ept.amazon_instance_menu_item" sequence="5"
+              groups="amazon_ept.group_amazon_fbm_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <menuitem id="menu_amazon_fbm_sale_order_report_ept" name="Sale Order Reports"
+              parent="menu_item_parent_amazon_fbm" sequence="6"
+              action="action_amazon_sale_order_report_ept" 
+              groups="amazon_ept.group_amazon_manager_ept"/>
+</odoo>

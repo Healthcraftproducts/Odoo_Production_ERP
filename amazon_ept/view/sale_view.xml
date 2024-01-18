@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="amazon_sale_order_search_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Sale Order Search View</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <filter name="my_sale_orders_filter" position="after">
+                <filter name="Not Updated in Amazon"
+                        domain="[('updated_in_amazon','=',False)]" groups="amazon_ept.group_amazon_user_ept"/>
+                <filter name="Business Order" domain="[('is_business_order','=',True)]" groups="amazon_ept.group_amazon_user_ept"/>
+                <filter name="Prime Order" domain="[('is_prime_order','=',True)]" groups="amazon_ept.group_amazon_user_ept"/>
+                <field name="amz_order_reference" groups="amazon_ept.group_amazon_user_ept"/>
+                <group expand="0" string="Group By..." groups="amazon_ept.group_amazon_user_ept">
+                    <filter name="group_by_instance" string="Marketplace" domain="[]"
+                            icon="terp-personal"
+                            context="{'group_by':'amz_instance_id'}"/>
+                    <filter name="group_by_amz_seller_id" string="Amazon Seller" domain="[]"
+                            icon="terp-personal"
+                            context="{'group_by':'amz_seller_id'}"/>
+                    <filter name="order_date" string="Order Date" icon="terp-personal"
+                            context="{'group_by':'date_order'}"/>
+                    <filter name="status" string="Status" icon="terp-personal"
+                            context="{'group_by':'state'}"/>
+                </group>
+            </filter>
+        </field>
+    </record>
+    <record id="sale.action_orders" model="ir.actions.act_window">
+        <field name="name">Sales Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+        <field name="context">
+            {}
+        </field>
+        <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+            </p>
+            <p>
+                Once the quotation is confirmed, it becomes a sales order.
+                <br/>
+                You will be able to create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+
+    <record id="amazon_sales_order_form_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Information</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_subtotal']"
+                   position="after">
+                <field name="warehouse_id_ept" string="Warehouse" optional="hide"/>
+            </xpath>
+            <button name="action_quotation_send" position="before">
+                <field name="warehouse_id" invisible="1"/>
+            </button>
+            <button name="action_confirm" position="after">
+                <button name="create_outbound_shipment" string="Create Outbound Shipment"
+                        type="object"
+                        attrs="{'invisible':['|','|','|',('state', 'not in', ['sale', 'done']),('order_has_fba_warehouse','=',False),('amz_is_outbound_order','=',True),('is_fba_pending_order','=',True)]}"/>
+            </button>
+            <field name="warehouse_id" position="after">
+                <field name="amz_is_outbound_order" invisible="1"/>
+                <field name="order_has_fba_warehouse" invisible="1"/>
+                <field name="is_fba_pending_order" invisible="1"/>
+                <field name="buyer_requested_cancellation" invisible="1"/>
+            </field>
+            <xpath expr="//div[hasclass('o_td_label')]" position="attributes">
+                <attribute name="groups" />
+            </xpath>
+            <xpath expr="//field[@name='date_order']" position="attributes">
+              <attribute name="groups" />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="after">
+                <div class="badge-pill badge-danger float-right"
+                   attrs="{'invisible':[('buyer_requested_cancellation', '=', False)]}">Buyer Requested Cancellation</div>
+                <br/>
+                <br/>
+                <div class="badge text-bg-info float-right"
+                attrs="{'invisible':['|', ('buyer_requested_cancellation', '=', False), ('buyer_cancellation_reason', 'in', (False, ''))]}">
+                    <field name="buyer_cancellation_reason" readonly="1"/>
+                </div>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="cancel_order_in_amazon" string="Cancel Order In Amazon"
+                        type="object"
+                        attrs="{'invisible':['|','|','|',('amz_instance_id','=',False),('amz_fulfillment_by','!=','FBM'),('state','not in',['cancel']),('is_amazon_canceled','=',True)]}"
+                        class="oe_highlight"/>
+            </xpath>
+            <xpath expr="//page[@name='other_information']" position="after">
+                <page string="Amazon Information"
+                      attrs="{'invisible':[('amz_instance_id','=',False)]}">
+                    <group>
+                        <group>
+                            <field name="amz_seller_id" readonly="1"/>
+                            <field name="amz_instance_id" readonly="1"/>
+                            <field name="amz_fulfillment_by" readonly="1"/>
+                            <field name="amz_shipment_report_id" readonly="1"/>
+                            <field name="amz_shipment_service_level_category" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="amz_sales_order_report_id" readonly="1"/>
+                            <field name="amz_order_reference" readonly="1"/>
+                            <field name="is_amazon_canceled" widget="boolean_toggle" readonly="1"/>
+                            <field name="is_business_order" widget="boolean_toggle" readonly="1"/>
+                            <field name="is_prime_order" widget="boolean_toggle" readonly="1"/>
+                            <field name="amz_instance_country_code" invisible="1"/>
+                        </group>
+                    </group>
+                    <group attrs="{'invisible':[('amz_is_outbound_order','=',False)]}">
+                        <group>
+                            <field name="amz_fulfillment_action"
+                                   attrs="{'readonly': [('state', '!=','draft')],'required':[('amz_is_outbound_order','=',True)]}"
+                                   readonly="1"/>
+                            <field name="amz_fulfillment_policy"
+                                   attrs="{'required':[('amz_is_outbound_order','=',True)],'readonly': [('state', '!=','draft')]}"
+                                   readonly="1"/>
+                            <field name="amz_fulfullment_order_status"
+                                   string="Fulfillment Order Status"
+                                   readonly="1"/>
+                            <field name="exported_in_amazon" readonly="1"/>
+                            <field name="amz_is_outbound_order" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="amz_displayable_date_time"
+                                   attrs="{'required':[('amz_is_outbound_order','=',True)],'readonly': [('state', '!=','draft')]}"
+                                   readonly="1"/>
+                            <field name="amz_shipment_service_level_category"
+                                   attrs="{'required':[('amz_is_outbound_order','=',True)],'readonly': [('state', '!=','draft')]}"
+                                   readonly="1"/>
+                            <field name="notify_by_email"
+                                   attrs="{'readonly': [('state', '!=','draft')]}"
+                                   readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="amz_delivery_start_time" readonly="1"/>
+                            <field name="amz_delivery_end_time" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="amazon_sale_order_fbm_tree_vew_ept" model="ir.ui.view">
+        <field name="name">Amazon Sale Order Tree View</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <tree create="0"
+                  decoration-info="state=='done'"
+                  decoration-primary="state=='sale'"
+                  decoration-danger="state=='cancel'"
+                  decoration-success="updated_in_amazon==True">
+                <field name="updated_in_amazon" invisible="1"/>
+                <field name="name"/>
+                <field name="date_order"/>
+                <field name="partner_id"/>
+                <field name="partner_shipping_id"/>
+                <field name="amount_total" sum="Total Tax Included"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_amazon_fba_sales_order_ept" model="ir.actions.act_window">
+        <field name="name">Amazon FBA Sales Order</field>
+        <field name="res_model">sale.order</field>
+        <field name="domain">
+            [('amz_instance_id','!=',False),('amz_fulfillment_by','=','FBA'),('is_fba_pending_order','=',False)]
+        </field>
+        <field name="view_id" ref="amazon_ept.amazon_sale_order_fbm_tree_vew_ept"/>
+        <field name="help" type="html">
+            <div class="oe_empty_amazon_sale_order">
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    <b>There is no any Sale Order synchronised from any of your Amazon
+                        Instance yet.
+                    </b>
+                </p>
+                <p>
+                    You can't create Sale Order manually and push it to Amazon. Through
+                    only import Sale Order from
+                    any of your Amazon Instance, you can see your Orders here.Import Sale
+                    Order can be performed by 2 ways.
+                </p>
+                <p>
+                    <b>1.</b>
+                    Via automatic jobs to import Sale Orders at frequent amount of
+                    time.
+                    <br/>
+                    Go to menu Settings >> Technical >> Automation >> Schedule Actions
+                    and activate automatic Job for Import Order from Amazon.
+                    However from Amazon settings you can set your preferred timings for auto
+                    import Sale Order from Amazon.
+                </p>
+                <p>
+                    <b>2.</b>
+                    Manually Import Orders at any time
+                    <br/>
+                    Go to menu Amazon >> Processes >> Amazon Operations and select
+                    your instances and option "Sale order(Only Pending Orders)".
+                    Clicking on "OK" button will import all
+                    <b>Pending</b>
+                    orders from Amazon to Odoo.
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="action_amazon_fba_pending_orders_ept" model="ir.actions.act_window">
+        <field name="name">Amazon FBA Pending Order</field>
+        <field name="res_model">sale.order</field>
+        <field name="domain">
+            [('amz_instance_id','!=',False),('amz_fulfillment_by','=','FBA'),('is_fba_pending_order','=',True)]
+        </field>
+        <field name="view_id" ref="amazon_ept.amazon_sale_order_fbm_tree_vew_ept"/>
+        <field name="help" type="html">
+            <div class="oe_empty_amazon_sale_order">
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    <b>There is no any Sale Order synchronised from any of your Amazon
+                        Instance yet.
+                    </b>
+                </p>
+                <p>
+                    You can't create Sale Order manually and push it to Amazon. Through
+                    only import Sale Order from
+                    any of your Amazon Instance, you can see your Orders here.Import Sale
+                    Order can be performed by 2 ways.
+                </p>
+                <p>
+                    <b>1.</b>
+                    Via automatic jobs to import Sale Orders at frequent amount of
+                    time.
+                    <br/>
+                    Go to menu Settings >> Technical >> Automation >> Schedule Actions
+                    and activate automatic Job for Import Order from Amazon.
+                    However from Amazon settings you can set your preferred timings for auto
+                    import Sale Order from Amazon.
+                </p>
+                <p>
+                    <b>2.</b>
+                    Manually Import Orders at any time
+                    <br/>
+                    Go to menu Amazon >> Processes >> Amazon Operations and select
+                    your instances and option "Sale order(Only Pending Orders)".
+                    Clicking on "OK" button will import all
+                    <b>Pending</b>
+                    orders from Amazon to Odoo.
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="amazon_fba_sale_order_tree_view_ept" model="ir.ui.view">
+        <field name="name">Amazon FBA Sale Order Tree View</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="partner_shipping_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_amazon_fbm_sales_order_ept" model="ir.actions.act_window">
+        <field name="name">Amazon FBM Sales Order</field>
+        <field name="res_model">sale.order</field>
+        <field name="domain">
+            [('amz_instance_id','!=',False),('amz_fulfillment_by','=','FBM'),('amz_is_outbound_order','=',False),
+            ('state','not in',('draft','sent','cancel'))]
+        </field>
+        <field name="view_id" ref="amazon_fba_sale_order_tree_view_ept"/>
+        <field name="context">{'show_sale': True,'create':0}</field>
+        <field name="help" type="html">
+            <div class="oe_empty_amazon_sale_order">
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    <b>There is no any Sale Order synchronised from any of your Amazon Instance
+                        yet.
+                    </b>
+                </p>
+                <p>
+                    You can't create Sale Order manually and push it to Amazon. Through only
+                    import Sale Order from
+                    any of your Amazon Instance, you can see your Orders here.Import Sale Order
+                    can be performed by
+                    2 ways.
+                </p>
+                <p>
+                    <b>1.</b>
+                    Via automatic jobs to import Sale Orders at frequent amount of time.
+                    <br/>
+                    Go to menu Settings >> Technical >> Automation >> Schedule Actions and
+                    activate automatic Job
+                    for Import Order from Amazon.
+                    However from Amazon settings you can set your preferred timings for auto
+                    import Sale Order from
+                    Amazon.
+                </p>
+                <p>
+                    <b>2.</b>
+                    Manually Import Orders at any time
+                    <br/>
+                    Go to menu Amazon >> Processes >> Amazon Operations and select your
+                    instances and option "Import
+                    Sale Order".
+                    Clicking on "OK" button will import all <b>Unshipped/Partial Shipped</b> orders
+                    from Amazon to
+                    Odoo.
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="action_amazon_fbm_draft_sales_order_ept" model="ir.actions.act_window">
+        <field name="name">Amazon FBM Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="domain">
+            [('amz_instance_id','!=',False),('amz_fulfillment_by','=','FBM'),('amz_is_outbound_order','=',False),
+            ('state', 'in', ('draft', 'cancel'))]
+        </field>
+        <field name="view_id" ref="amazon_fba_sale_order_tree_view_ept"/>
+        <field name="context">{'show_sale': True,'create':0}</field>
+        <field name="help" type="html">
+            <div class="oe_empty_amazon_sale_order">
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    <b>There is no any Sale Order synchronised from any of your Amazon Instance
+                        yet.
+                    </b>
+                </p>
+                <p>
+                    You can't create Sale Order manually and push it to Amazon. Through only
+                    import Sale Order from
+                    any of your Amazon Instance, you can see your Orders here.Import Sale Order
+                    can be performed by
+                    2 ways.
+                </p>
+                <p>
+                    <b>1.</b>
+                    Via automatic jobs to import Sale Orders at frequent amount of time.
+                    <br/>
+                    Go to menu Settings >> Technical >> Automation >> Schedule Actions and
+                    activate automatic Job
+                    for Import Order from Amazon.
+                    However from Amazon settings you can set your preferred timings for auto
+                    import Sale Order from
+                    Amazon.
+                </p>
+                <p>
+                    <b>2.</b>
+                    Manually Import Orders at any time
+                    <br/>
+                    Go to menu Amazon >> Processes >> Amazon Operations and select your
+                    instances and option "Import
+                    Sale Order".
+                    Clicking on "OK" button will import all <b>Unshipped/Partial Shipped</b> orders
+                    from Amazon to
+                    Odoo.
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="amazon_sale_order_outbound_tree_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Sale Order Tree View</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <tree create='false'>
+                <field name="name"/>
+                <field name="date_order"/>
+                <field name="partner_id"/>
+                <field name="partner_shipping_id"/>
+                <field name="amount_untaxed" sum="Total amount Untaxed"/>
+                <field name="amount_total" sum="Total Tax Included"/>
+                <field name="amz_fulfillment_action"/>
+                <field name="amz_fulfillment_policy"/>
+                <field name="amz_fulfullment_order_status"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_amazon_instance_fba_sales_order_only" model="ir.actions.act_window">
+        <field name="name">Amazon FBA Sales Order</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">
+            [('amz_instance_id','=',active_id),('amz_fulfillment_by','=','FBA'),
+            ('state','not in',('draft','sent','cancel'))]
+        </field>
+        <field name="view_id" ref="amazon_ept.amazon_fba_sale_order_tree_view_ept"/>
+    </record>
+
+    <record id="action_amazon_instance_sales_order_only" model="ir.actions.act_window">
+        <field name="name">Amazon Sales Order</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="amazon_sale_order_fbm_tree_vew_ept"/>
+        <field name="domain">[('state','not in',('draft','sent','cancel')),
+            ('amz_instance_id','=',active_id),('amz_fulfillment_by','=','FBM')]
+        </field>
+    </record>
+
+
+    <record id="action_view_sales_order_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="amazon_fba_sale_order_tree_view_ept"/>
+        <field name="act_window_id" ref="action_amazon_fbm_sales_order_ept"/>
+    </record>
+
+    <record id="action_view_sales_order_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="amazon_sales_order_form_view_ept"/>
+        <field name="act_window_id" ref="action_amazon_fbm_sales_order_ept"/>
+    </record>
+
+    <record id="action_view_fba_sales_order_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="amazon_fba_sale_order_tree_view_ept"/>
+        <field name="act_window_id" ref="action_amazon_fba_sales_order_ept"/>
+    </record>
+
+    <record id="action_view_fba_sales_order_form" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="amazon_ept.amazon_sales_order_form_view_ept"/>
+        <field name="act_window_id" ref="action_amazon_fba_sales_order_ept"/>
+    </record>
+
+    <record id="action_amazon_sales_order_outbound_ept" model="ir.actions.act_window">
+        <field name="name">Amazon Sales Outbound Order</field>
+        <field name="res_model">sale.order</field>
+        <field name="domain">[('amz_is_outbound_order','=',True)]</field>
+        <field name="view_id" ref="amazon_sale_order_outbound_tree_view_ept"/>
+    </record>
+
+    <record id="action_view_sales_outbound_order_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="amazon_sale_order_outbound_tree_view_ept"/>
+        <field name="act_window_id" ref="action_amazon_sales_order_outbound_ept"/>
+    </record>
+
+    <record id="action_view_sales_order_outbound_form" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="amazon_sales_order_form_view_ept"/>
+        <field name="act_window_id" ref="action_amazon_sales_order_outbound_ept"/>
+    </record>
+
+    <menuitem id="menu_item_parent_amazon_sales_ept" name="Sales"
+              parent="amazon_ept.amazon_instance_menu_item" sequence="3"/>
+
+    <!-- Sales: FBA Child Menu -->
+    <menuitem id="menu_amazon_sales_fbm_orders"
+              name="FBM" parent="amazon_ept.menu_item_parent_amazon_sales_ept" sequence="1"
+              groups="amazon_ept.group_amazon_fbm_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <!-- Orders: Child Menu Sales Orders (FBM) -->
+    <menuitem id="menu_item_amazon_sales_order_ept" name="Orders"
+              parent="amazon_ept.menu_amazon_sales_fbm_orders" sequence="2"
+              action="action_amazon_fbm_sales_order_ept"
+              groups="amazon_ept.group_amazon_fbm_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <menuitem id="menu_item_amazon_fbm_draft_sales_order_ept" name="Quotations"
+              parent="amazon_ept.menu_amazon_sales_fbm_orders" sequence="1"
+              action="action_amazon_fbm_draft_sales_order_ept"
+              groups="amazon_ept.group_amazon_fbm_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <!-- Sales: FBA Child Menu -->
+    <menuitem id="amazon_sales_fba_orders_menu"
+              name="FBA" parent="amazon_ept.menu_item_parent_amazon_sales_ept" sequence="2"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <!-- Orders: Child Menu Sales Orders (FBA) -->
+    <menuitem id="menu_item_amazon_fba_sales_order_ept" name="Orders"
+              parent="amazon_ept.amazon_sales_fba_orders_menu" sequence="2"
+              action="action_amazon_fba_sales_order_ept"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <!-- Orders: Amazon Pending Orders (FBA) -->
+    <menuitem id="menu_item_amazon_fba_pending_order_ept" name="Quotations"
+              parent="amazon_ept.amazon_sales_fba_orders_menu" sequence="1"
+              action="action_amazon_fba_pending_orders_ept"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <!--Outbound Orders View-->
+    <menuitem id="amazon_outbound_order_menu" name="Outbound Orders"
+              parent="amazon_ept.amazon_outbound_menu_core" sequence="1"
+              action="action_amazon_sales_order_outbound_ept"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+</odoo>

@@ -1,0 +1,134 @@
+<odoo>
+
+    <record id="inbound_shipment_plan_search_view" model="ir.ui.view">
+        <field name="name">inbound.shipment.plan.search.view</field>
+        <field name="model">inbound.shipment.plan.ept</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Inbound Shipment Plan">
+                <field name="name"/>
+                <field name="instance_id"/>
+                <field name="warehouse_id"/>
+                <field name="state"/>
+                <field name="ship_from_address_id"/>
+                <field name="ship_to_country"/>
+                <group expand="0" string="Group By...">
+                    <filter name="instance" string="Marketplace" context="{'group_by':'instance_id'}"/>
+                    <filter name="warehouse" string="Warehouse" context="{'group_by':'warehouse_id'}"/>
+                    <filter name="ship_from_address" string="Ship From Address" context="{'group_by':'ship_from_address_id'}"/>
+                    <filter name="ship_to_country" string="Ship To Country" context="{'group_by':'ship_to_country'}"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="inbound_shipment_plan_tree_view" model="ir.ui.view">
+        <field name="name">inbound.shipment.plan.tree.view</field>
+        <field name="model">inbound.shipment.plan.ept</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="instance_id"/>
+                <field name="warehouse_id"/>
+                <field name="ship_from_address_id"/>
+                <field name="ship_to_country"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+     <record id="inbound_shipment_plan_form_view" model="ir.ui.view">
+        <field name="name">inbound.shipment.plan.form.view</field>
+        <field name="model">inbound.shipment.plan.ept</field>
+        <field name="arch" type="xml">
+
+            <form string="Inbound Shipment Plan">
+                <header>
+                    <button name="create_inbound_shipment_plan" states="draft" string="Create Shipment Plan" class="oe_highlight" type="object"/>
+                    <button name="set_to_draft_ept" states="cancel" string="Reset To Draft" class="oe_highlight" type="object"/>
+                    <button name="import_product_for_inbound_shipment" states="draft" string="Import Product(CSV)" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,plan_approved" />
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_inbound_shipment" type="object" class="oe_stat_button" icon="fa-truck"
+                                attrs="{'invisible': [('count_odoo_shipment', '=', 0)]}">
+                            <field name="count_odoo_shipment" widget="statinfo" string="Inbound Shipment"/>
+                        </button>
+                    </div>
+                    <h1>
+                        <field name="name" class="oe_inline" readonly="1"/>
+                    </h1>
+
+                    <group>
+                        <group>
+                            <field name="instance_id" widget="selection"/>
+                            <field name="warehouse_id" required="1" widget="selection" domain="[('is_fba_warehouse','=',False)]"/>
+                            <field name="label_preference"/>
+                        </group>
+                        <group>
+                            <field name="ship_from_address_id" required="1"/>
+                            <field name="ship_to_country"/>
+                            <field name="company_id" widget="selection" groups="base.group_multi_company"/>
+                            <field name="is_are_cases_required" widget="boolean_toggle" />
+                            <field name="intended_box_contents_source"/>
+                        </group>
+                        <group>
+                            <field name="is_partnered" widget="boolean_toggle"/>
+                            <field name="shipping_type"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products">
+                            <field name="shipment_line_ids" nolabel="1" colspan="4" >
+                                <tree editable="bottom">
+                                    <field name="amazon_product_id"
+                                            required="1" domain="[('fulfillment_by','=','FBA'),('instance_id','=',parent.instance_id)]"
+                                           options="{'no_create': True, 'no_create_edit':True}"/>
+                                    <field name="odoo_product_id"/>
+                                    <field name="quantity" required="1"/>
+                                    <field name="seller_sku"/>
+                                    <field name="fn_sku" string='FBA(FN) SKU'/>
+                                    <field name="quantity_in_case" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string='Ship To Addresses' attrs="{'invisible': [('ship_to_address_ids','=',False)]}">
+                            <field name="ship_to_address_ids" nolabel="1" colspan="4" />
+                        </page>
+
+                        <page string="Error Log">
+                            <field name="log_ids" readonly="1" nolabel="1">
+                                <tree>
+                                    <field name="message"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inbound_shipment_plan" model="ir.actions.act_window">
+        <field name="name">Inbound Shipment Plan</field>
+        <field name="res_model">inbound.shipment.plan.ept</field>
+        <field name="view_id" ref="inbound_shipment_plan_tree_view"/>
+    </record>
+
+    <menuitem id="amazon_inbound_menu_core" name="Inbound"
+              parent="amazon_ept.amazon_fba_menu_core" sequence="2"
+              groups="amazon_ept.group_amazon_manager_ept"/>
+
+    <menuitem id="amazon_inbound_shipment_plan_menu" name="Inbound Shipment Plans"
+              parent="amazon_ept.amazon_inbound_menu_core" sequence="1" action="action_inbound_shipment_plan"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+</odoo>

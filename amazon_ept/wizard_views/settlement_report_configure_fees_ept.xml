@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_configure_settlement_report_fees_ept" model="ir.ui.view">
+        <field name="name">Settlement Report Configure Fees EPT</field>
+        <field name="model">settlement.report.configure.fees.ept</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Amazon Settlement Report - Configure Fees">
+                <field name="settlement_report_configure_line_ids" nolabel="1">
+                    <tree editable="top" delete='false' create='false'>
+                        <field name="amazon_code"/>
+                        <field name="account_id" required="True"/>
+                        <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
+                        <field name="tax_id" domain="[('price_include','=',True)]"/>
+                        <field name="is_reimbursement" widget="boolean_toggle"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button string="Configure Fees" class="oe_highlight" type="object"
+                            name="configure_settlement_report_fees"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

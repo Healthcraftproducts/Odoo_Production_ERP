@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="amazon_invoice_tree_ept" model="ir.ui.view">
+        <field name="name">account.invoice.tree</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" create="false">
+                <field name="partner_id" groups="base.group_user" string="Customer"/>
+                <field name="commercial_partner_id" invisible="1"/>
+                <field name="ref" invisible="1"/>
+                <field name="name" invisible="1"/>
+                <field name="journal_id" invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                <field name="amount_total_signed"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="amz_fulfillment_by"/>
+                <field name="amazon_instance_id"/>
+                <field name="move_type" invisible="context.get('type',True)"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_account_invoice_filter_ept" model="ir.ui.view">
+        <field name="name">account.invoice.select</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <filter name="salesperson" position="after">
+                <filter name="amazon_instance_id" string="Marketplace" context="{'group_by':'amazon_instance_id'}" groups="amazon_ept.group_amazon_user_ept"/>
+                <filter name="group_by_fulfillment_by" string="Fulfillment By" context="{'group_by':'amz_fulfillment_by'}" groups="amazon_ept.group_amazon_user_ept"/>
+            </filter>
+            <filter name="closed" position="after">
+                <filter name="FBM" string="FBM" domain="[('amz_fulfillment_by','=', 'FBM')]" groups="amazon_ept.group_amazon_user_ept"/>
+                <filter icon="terp-check" name="FBA" string="FBA" domain="[('amz_fulfillment_by','=', 'FBA')]" groups="amazon_ept.group_amazon_user_ept"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="account_move_form_inherit_ept" model="ir.ui.view">
+        <field name="name">account.move.form.ept</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='other_info']/group/group[@name='sale_info_group']"
+                   position="inside">
+                <field name="invoice_url" readonly="1"/>
+                <field name="vcs_invoice_number" readonly="1"/>
+            </xpath>
+            <xpath expr="//page[@name='other_info']" position="after">
+                <page string="Amazon Information" attrs="{'invisible':[('amazon_instance_id', '=', False)]}" modifiers="{'invisible':[('amazon_instance_id', '=', False)]}">
+                    <group id="amazon_information">
+                        <field name="amazon_instance_id" invisible="1"/>
+                        <group string="Shipping Information">
+                            <field name="ship_city" readonly="1"/>
+                            <field name="ship_state_id" readonly="1"/>
+                            <field name="ship_country_id" readonly="1"/>
+                            <field name="ship_postal_code" readonly="1"/>
+                        </group>
+                        <group string="Billing Information">
+                            <field name="bill_city" readonly="1"/>
+                            <field name="bill_state_id" readonly="1"/>
+                            <field name="bill_country_id" readonly="1"/>
+                            <field name="bill_postal_code" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_invoice_tree_amazon_invoices" model="ir.actions.act_window">
+        <field name="name">Amazon Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="domain">[('move_type','=','out_invoice'),('amazon_instance_id','!=',False)]</field>
+        <field name="context">{'default_type':'out_invoice', 'move_type':'out_invoice', 'journal_type': 'sale'}</field>
+        <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        <field name="view_id" ref="amazon_ept.amazon_invoice_tree_ept"/>
+        <field name="help" type="html">
+            <div class="oe_empty_amazon_invoice">
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    <b>There is no any Invoice created for any of your Amazon Sale Orders.</b>
+                    <p>
+                    </p>
+                    If your Amazon Instance's Invoice Policy is set to "Before Delivery", then invoice will be
+                    created immediately after
+                    validation of Order.If your Amazon Instance's Invoice Policy is set to "After Delivery", then
+                    once your shipping order completed, you can make Invoice from Delivery Order. You can't create
+                    Amazon Invoice manually from here. However, you can make manually invoice from Amazon Sale
+                    Order.
+                </p>
+            </div>
+        </field>
+    </record>
+
+    <record id="action_amazon_instance_fba_invoices_instance" model="ir.actions.act_window">
+        <field name="name">Amazon Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="amazon_invoice_tree_ept"/>
+        <field name="domain">[('move_type','=','out_invoice'),('amazon_instance_id','=',active_id),('amz_fulfillment_by','=','FBA')]</field>
+        <field name="context">{'default_type':'out_invoice', 'move_type':'out_invoice', 'journal_type': 'sale'}</field>
+    </record>
+    <record id="action_amazon_instance_fbm_invoices_instance" model="ir.actions.act_window">
+        <field name="name">Amazon Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="amazon_invoice_tree_ept"/>
+        <field name="domain">[('move_type','=','out_invoice'),('amazon_instance_id','=',active_id),('amz_fulfillment_by','=','FBM')]</field>
+        <field name="context">{'default_type':'out_invoice', 'move_type':'out_invoice', 'journal_type': 'sale'}</field>
+    </record>
+
+    <!-- Sales: Child Menu Invoices -->
+    <menuitem id="menu_item_parent_amazon_invoices_ept" name="Invoices &amp; Settlement"
+              parent="amazon_ept.menu_item_parent_amazon_sales_ept" sequence="4"/>
+
+    <!-- Invoices: Child Menu Orders Invoices -->
+    <menuitem id="menu_item_amazon_invoice_ept" name="Invoices"
+              parent="menu_item_parent_amazon_invoices_ept" 
+              action="action_invoice_tree_amazon_invoices"
+              sequence="1"/>
+</odoo>

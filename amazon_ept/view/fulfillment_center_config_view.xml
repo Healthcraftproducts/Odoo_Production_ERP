@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="amazon_fulfillment_center_config_tree_ept" model="ir.ui.view">
+        <field name="name">Amazon Fulfillment Center Config</field>
+        <field name="model">amazon.fulfillment.center</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="center_code" required="1"/>
+                <field name="warehouse_id" required="1"/>
+                <field name="seller_id" required="1"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_amazon_fulfillment_center_config_ept" model="ir.actions.act_window">
+        <field name="name">Amazon Fulfillment Center Configuration</field>
+        <field name="res_model">amazon.fulfillment.center</field>
+        <field name="view_id" ref="amazon_fulfillment_center_config_tree_ept"/>
+    </record>
+    <menuitem id="menu_amazon_fulfillment_center_configuration" name="Fulfillment Centers"
+              parent="amazon_ept.menu_configuration_ept"
+              groups="amazon_ept.group_amazon_manager_ept"
+              sequence="103" action="amazon_ept.action_amazon_fulfillment_center_config_ept"/>
+</odoo>

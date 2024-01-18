@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="unshipped_orders_tree_view_amazon_ept" model="ir.ui.view">
+        <field name="name">unshipped.orders.tree.view.amazon.ept</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <tree create="false" decoration-muted="state=='cancel'" decoration-info="state == 'draft'"
+                  decoration-danger="state not in ('cancel','done') and scheduled_date &lt; current_date">
+                <field name="updated_in_amazon" invisible="1"/>
+                <field name="picking_type_code" invisible="1"/>
+                <field name="seller_id" invisible="1"/>
+                <field name="name"/>
+                <field name="location_dest_id"/>
+                <field name="partner_id"/>
+                <field name="date"/>
+                <field name="scheduled_date" invisible="1"/>
+                <field name="origin"/>
+                <field name="group_id" invisible="1"/>
+                <field name="backorder_id"/>
+                <field name="state"/>
+                <field name="priority" invisible="1"/>
+                <field name="picking_type_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_unshipped_orders_tree_ept" model="ir.actions.act_window">
+        <field name="name">Delivery Orders</field>
+        <field name="res_model">stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('seller_id','!=',False)]</field>
+        <field name="view_id" ref="amazon_ept.unshipped_orders_tree_view_amazon_ept"/>
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="help" type="html">
+            <div>
+            </div>
+        </field>
+    </record>
+    <!--Delivery Orders FBM-->
+    <menuitem id="menu_item_amazon_unshipped_orders_ept" name="Delivery Orders"
+              parent="amazon_ept.menu_amazon_sales_fbm_orders" action="action_unshipped_orders_tree_ept"
+              sequence="2"
+              groups="amazon_ept.group_amazon_fbm_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+</odoo>

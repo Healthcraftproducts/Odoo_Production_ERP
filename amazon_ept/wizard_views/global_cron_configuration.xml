@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--This is a common view for cron configuration wizard -->
+    <record id="amazon_global_cron_configuration_ept_form_view"
+            model="ir.ui.view">
+        <field name="name">global.cron.configuration</field>
+        <field name="model">global.cron.configuration</field>
+        <field name="priority">11</field>
+        <field name="arch" type="xml">
+            <form string="Manual Queue Process">
+                <field name="amz_seller_id" invisible="1"/>
+                <field name="amazon_selling" invisible="1"/>
+                <div class="row mt16 o_settings_container" name="auto_payment_report_and_rating_report"
+                         attrs="{'invisible': [('amz_seller_id', '=', False)]}">
+
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="amz_settlement_report_auto_create" widget="boolean_toggle" style="margin-left: -10px;"
+                                       help="If Ticked, System will import settlement report from amazon."/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="amz_settlement_report_auto_create"
+                                       string="Auto Request and Process Settlement Report ?"/>
+                                <div class="text-muted">
+                                    Schedule automized request and process settlement report
+                                </div>
+                                <div>
+                                <field name="amz_settlement_report_create_interval_number"
+                                       attrs="{'required': [('amz_settlement_report_auto_create', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_settlement_report_auto_create', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_settlement_report_create_interval_type"
+                                       attrs="{'required': [('amz_settlement_report_auto_create', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_settlement_report_auto_create', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_settlement_report_create_next_execution"
+                                       attrs="{'required': [('amz_settlement_report_auto_create', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_settlement_report_auto_create', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                                <field name="amz_settlement_report_create_user_id"
+                                       attrs="{'required': [('amz_settlement_report_auto_create', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_settlement_report_auto_create', '=', False)]}"
+                                       class="oe_inline border border-primary rounded oe_left m-2"/>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="amz_auto_import_rating_report" widget="boolean_toggle" style="margin-left: -10px;"
+                                       help="If Ticked, System will import and process rating report from amazon."/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="amz_auto_import_rating_report"
+                                       string="Auto Request and Process Rating Report ?"/>
+                                <div class="text-muted">
+                                    Schedule automized Request and Process Rating Report
+                                </div>
+                                <div>
+                                    <field name="amz_rating_report_import_interval_number"
+                                           attrs="{'required': [('amz_auto_import_rating_report', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_rating_report', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_rating_report_import_interval_type"
+                                           attrs="{'required': [('amz_auto_import_rating_report', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_rating_report', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_rating_report_import_next_execution"
+                                           attrs="{'required': [('amz_auto_import_rating_report', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_rating_report', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_rating_report_import_user_id"
+                                           attrs="{'required': [('amz_auto_import_rating_report', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_rating_report', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="row mt16 o_settings_container" name="auto_vcs_tax_report_and_invoice_upload">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="amz_auto_import_vcs_tax_report" widget="boolean_toggle" style="margin-left: -10px;"
+                                       help="If Ticked, System will import and process vcs tax report if it is activated."/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="amz_auto_import_vcs_tax_report"
+                                       string="Auto Request and Process VCS Tax Report ?"/>
+                                <div class="text-muted">
+                                    Schedule automized Request and Process VCS Tax Report
+                                </div>
+                                <div>
+                                    <field name="amz_vcs_report_import_interval_number"
+                                           attrs="{'required': [('amz_auto_import_vcs_tax_report', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_vcs_tax_report', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_vcs_report_import_interval_type"
+                                           attrs="{'required': [('amz_auto_import_vcs_tax_report', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_vcs_tax_report', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_vcs_report_import_next_execution"
+                                           attrs="{'required': [('amz_auto_import_vcs_tax_report', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_vcs_tax_report', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_vcs_report_import_user_id"
+                                           attrs="{'required': [('amz_auto_import_vcs_tax_report', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_import_vcs_tax_report', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="amz_auto_upload_tax_invoices" widget="boolean_toggle" style="margin-left: -10px;"
+                                       help="If Ticked, System will Upload tax Invoices to Amazon."/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="amz_auto_upload_tax_invoices"
+                                       string="Auto Upload invoices from Odoo to Amazon ?"/>
+                                <div class="text-muted">
+                                    Choose this setting as per your Amazon Invoices Configuration.
+                                </div>
+                                <div>
+                                    <field name="amz_auto_upload_tax_invoices_interval_number"
+                                           attrs="{'required': [('amz_auto_upload_tax_invoices', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_upload_tax_invoices', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_auto_upload_tax_invoices_interval_type"
+                                           attrs="{'required': [('amz_auto_upload_tax_invoices', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_upload_tax_invoices', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_auto_upload_tax_invoices_next_execution"
+                                           attrs="{'required': [('amz_auto_upload_tax_invoices', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_upload_tax_invoices', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                    <field name="amz_auto_upload_tax_invoices_user_id"
+                                           attrs="{'required': [('amz_auto_upload_tax_invoices', '=', True),('amz_seller_id','!=',False)],'invisible': [('amz_auto_upload_tax_invoices', '=', False)]}"
+                                           class="oe_inline border border-primary rounded oe_left m-2"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <footer>
+                    <button string="Save Cron Configuration"
+                            class="oe_highlight" type="object" name="save_cron_configuration"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wizard_global_cron_configuration_ept" model="ir.actions.act_window">
+        <field name="name">Global Scheduled Actions Configuration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">global.cron.configuration</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

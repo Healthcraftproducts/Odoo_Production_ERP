@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_amazon_iap_seller_databases" model="ir.ui.view">
+        <field name="name">Databases</field>
+        <field name="model">amazon.seller.iap.database</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="alert alert-warning" role="alert">
+                    <h6>NOTE:</h6>
+                    <p>- You can only Activate/Deactivate your staging databases from here.</p>
+                    <p>- Please contact Emipro Technologies, If you want to change your production database</p>
+                </div>
+                <field name="iap_database_line_ids">
+                    <tree editable="top" create="0">
+                        <field name="name" readonly="True"/>
+                        <field name="db_uid" readonly="True"/>
+                        <field name="account_type" readonly="True"/>
+                        <field name="is_db_active" widget="boolean_toggle"
+                               attrs="{'invisible':[('account_type','=','production')]}"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button name="update_database_status" string="Update" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

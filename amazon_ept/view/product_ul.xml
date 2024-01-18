@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_ul_form_view" model="ir.ui.view">
+        <field name="name">product.ul.form.view</field>
+        <field name="model">product.ul.ept</field>
+        <field name="arch" type="xml">
+            <form string="Logistic Units">
+                <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="dimension_unit"/>
+                </group>
+                <group>
+                    <field name="height"/>
+                    <field name="width"/>
+                    <field name="length"/>
+                    <field name="weight"/>
+                </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="product_ul_tree" model="ir.ui.view">
+        <field name="name">product.ul.tree</field>
+        <field name="model">product.ul.ept</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+    <record id="product_ul_form_action" model="ir.actions.act_window">
+        <field name="name">Logistic Units</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.ul.ept</field>
+
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a new Logistic Unit
+          </p><p>
+            The logistic unit defines the container used for the package.  
+            It has a type (e.g. pallet, box, ...) and you can specify its 
+            size. 
+          </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo noupdate="1">
+    <record id="amazon_return_reason_apparel_style" model="amazon.return.reason.ept">
+        <field name="name">APPAREL_STYLE</field>
+        <field name="is_reimbursed">False</field>  <!-- True -->
+    </record>
+    <record id="amazon_return_reason_apparel_too_large" model="amazon.return.reason.ept">
+        <field name="name">APPAREL_TOO_LARGE</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_apparel_too_small" model="amazon.return.reason.ept">
+        <field name="name">APPAREL_TOO_SMALL</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_damaged_by_carrier" model="amazon.return.reason.ept">
+        <field name="name">DAMAGED_BY_CARRIER</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_damaged_by_fc" model="amazon.return.reason.ept">
+        <field name="name">DAMAGED_BY_FC</field>
+        <field name="is_reimbursed">True</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_defective" model="amazon.return.reason.ept">
+        <field name="name">DEFECTIVE</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_excessive_installation" model="amazon.return.reason.ept">
+        <field name="name">EXCESSIVE_INSTALLATION</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_extra_item" model="amazon.return.reason.ept">
+        <field name="name">EXTRA_ITEM</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_found_better_price" model="amazon.return.reason.ept">
+        <field name="name">FOUND_BETTER_PRICE</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_jewelry_bad_clasp" model="amazon.return.reason.ept">
+        <field name="name">JEWELRY_BAD_CLASP</field>
+        <field name="is_reimbursed">False</field>
+    </record>
+    <record id="amazon_return_reason_jewelry_tarnished" model="amazon.return.reason.ept">
+        <field name="name">JEWELRY_TARNISHED</field>
+        <field name="is_reimbursed">False</field>
+    </record>
+    <record id="amazon_return_reason_jewelry_too_large" model="amazon.return.reason.ept">
+        <field name="name">JEWELRY_TOO_LARGE</field>
+        <field name="is_reimbursed">False</field>
+    </record>
+    <record id="amazon_return_reason_misordered" model="amazon.return.reason.ept">
+        <field name="name">MISORDERED</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_missed_estimated_delivery"
+            model="amazon.return.reason.ept">
+        <field name="name">MISSED_ESTIMATED_DELIVERY</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_missing_parts" model="amazon.return.reason.ept">
+        <field name="name">MISSING_PARTS</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_never_arrived" model="amazon.return.reason.ept">
+        <field name="name">NEVER_ARRIVED</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_no_reason_given" model="amazon.return.reason.ept">
+        <field name="name">NO_REASON_GIVEN</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_not_as_described" model="amazon.return.reason.ept">
+        <field name="name">NOT_AS_DESCRIBED</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_not_compatible" model="amazon.return.reason.ept">
+        <field name="name">NOT_COMPATIBLE</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_ordered_wrong_item" model="amazon.return.reason.ept">
+        <field name="name">ORDERED_WRONG_ITEM</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_part_not_compatible" model="amazon.return.reason.ept">
+        <field name="name">PART_NOT_COMPATIBLE</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_product_not_italian" model="amazon.return.reason.ept">
+        <field name="name">PRODUCT_NOT_ITALIAN</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_product_not_spanish" model="amazon.return.reason.ept">
+        <field name="name">PRODUCT_NOT_SPANISH</field>
+        <field name="is_reimbursed">False</field>
+    </record>
+    <record id="amazon_return_reason_quality_unacceptable" model="amazon.return.reason.ept">
+        <field name="name">QUALITY_UNACCEPTABLE</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_switcheroo" model="amazon.return.reason.ept">
+        <field name="name">SWITCHEROO</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_unauthorized_purchase" model="amazon.return.reason.ept">
+        <field name="name">UNAUTHORIZED_PURCHASE</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_undeliverable_carrier_miss_sorted"
+            model="amazon.return.reason.ept">
+        <field name="name">UNDELIVERABLE_CARRIER_MISS_SORTED</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_undeliverable_failed_delivery_attempts"
+            model="amazon.return.reason.ept">
+        <field name="name">UNDELIVERABLE_FAILED_DELIVERY_ATTEMPTS</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_undeliverable_insufficient_address"
+            model="amazon.return.reason.ept">
+        <field name="name">UNDELIVERABLE_INSUFFICIENT_ADDRESS</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_undeliverable_missing_label"
+            model="amazon.return.reason.ept">
+        <field name="name">UNDELIVERABLE_MISSING_LABEL</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_undeliverable_refused" model="amazon.return.reason.ept">
+        <field name="name">UNDELIVERABLE_REFUSED</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_undeliverable_unclaimed" model="amazon.return.reason.ept">
+        <field name="name">UNDELIVERABLE_UNCLAIMED</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_undeliverable_unknown" model="amazon.return.reason.ept">
+        <field name="name">UNDELIVERABLE_UNKNOWN</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+    <record id="amazon_return_reason_unwanted_item" model="amazon.return.reason.ept">
+        <field name="name">UNWANTED_ITEM</field>
+        <field name="is_reimbursed">False</field><!-- True -->
+    </record>
+</odoo>

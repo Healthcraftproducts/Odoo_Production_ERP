@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="seq_inbound_shipment_plan" model="ir.sequence">
+        <field name="name">Inbound Shipment Plan</field>
+        <field name="code">inbound.shipment.plan.ept</field>
+        <field name="prefix">ISP</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_inbound_shipments" model="ir.sequence">
+        <field name="name">Inbound Shipments</field>
+        <field name="code">inbound.shipment</field>
+        <field name="prefix">IS</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_removal_order_plan" model="ir.sequence">
+        <field name="name">Removal Order Plan</field>
+        <field name="code">removal.order.plan.ept</field>
+        <field name="prefix">RMO</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_import_shipping_report_job" model="ir.sequence">
+        <field name="name">import_shipping_report</field>
+        <field name="code">import_shipping_report_sequence</field>
+        <field name="padding">5</field>
+        <field name="prefix">IS</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_import_customer_return_report_job" model="ir.sequence">
+        <field name="name">import_customer_return_report</field>
+        <field name="code">import_customer_return_report</field>
+        <field name="padding">5</field>
+        <field name="prefix">RET</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+   <record id="seq_fbm_sale_order_report_ept" model="ir.sequence">
+        <field name="name">fbm_sale_order_report_ept</field>
+        <field name="code">fbm_sale_order_report_ept_sequence</field>
+        <field name="padding">5</field>
+        <field name="prefix">SO-R</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+   <record id="seq_fbm_unshipped_sale_order_report_ept" model="ir.sequence">
+        <field name="name">fbm_sale_order_report_ept</field>
+        <field name="code">fbm_shipped_sale_order_report_ept_sequence</field>
+        <field name="padding">5</field>
+        <field name="prefix">USO-R</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_import_settlement_report_job" model="ir.sequence">
+        <field name="name">import_settlement_report</field>
+        <field name="code">import_settlement_report</field>
+        <field name="padding">5</field>
+        <field name="prefix">STR</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_removal_order_report_job" model="ir.sequence">
+        <field name="name">import_removal_order</field>
+        <field name="code">import_removal_order_sequence</field>
+        <field name="padding">5</field>
+        <field name="prefix">RM-O</field>
+        <field name="company_id" eval="False"/>
+    </record>
+   <record id="seq_fbm_shipped_order_data_queue_report_ept" model="ir.sequence">
+        <field name="name">fbm_order_data_queue_ept</field>
+        <field name="code">fbm_shipped_order_data_queue_ept_sequence</field>
+        <field name="padding">5</field>
+        <field name="prefix">DQ</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_import_live_stock_report_job" model="ir.sequence">
+        <field name="name">import_live_stock_report_history</field>
+        <field name="code">fba_live_stock_report</field>
+        <field name="padding">5</field>
+        <field name="prefix">STK</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_active_product_list" model="ir.sequence">
+        <field name="name">active_product_list</field>
+        <field name="code">active_product_list_sequence</field>
+        <field name="padding">5</field>
+        <field name="prefix">AP</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

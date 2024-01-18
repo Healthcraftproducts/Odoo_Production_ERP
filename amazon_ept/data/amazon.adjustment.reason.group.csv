@@ -1,0 +1,8 @@
+id,name
+amazon_damaged_inventory_ept,Damaged Inventory
+amazon_unrecoverable_inventory_ept,Unrecoverable Inventory
+amazon_inbound_shipement_receive_adjustment_ept,Inbound Shipment Receive Adjustments
+amazon_software_corrections_ept,Software Corrections
+amazon_transferring_ownership_ept,Transferring ownership
+amazon_catalogue_management_ept,Catalogue Management
+amazon_misplaced_and_found_ept,Misplaced and Found

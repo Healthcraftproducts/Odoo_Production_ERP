@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<odoo>
+    
+      <record id="amazon_stock_adjustment_config_tree_ept" model="ir.ui.view">
+          <field name="name">Amazon Stock Adjustment Config</field>
+          <field name="model">amazon.stock.adjustment.config</field>
+          <field name="type">tree</field>
+          <field name="arch" type="xml">
+              <tree editable="top">
+                  <field name="seller_id" required="1" width="10px"/>
+                  <field name="group_id" required="1" width="10px"/>
+                  <field name="is_send_email" widget="boolean_toggle" width="10px"/>
+                  <field name="email_template_id"
+                         attrs="{'required':[('is_send_email','=',True)],'invisible':[('is_send_email','!=',True)]}"
+                         width="10px"/>
+                  <field name="location_id"
+                         attrs="{'required':[('is_send_email','!=',True)],'invisible':[('is_send_email','=',True)]}"
+                         width="10px"/>
+              </tree>
+          </field>
+      </record>
+      <record id="action_stock_adjustment_config_ept" model="ir.actions.act_window">
+          <field name="name">FBA Stock Adjustment Configuration</field>
+          <field name="res_model">amazon.stock.adjustment.config</field>
+          <field name="view_id" ref="amazon_stock_adjustment_config_tree_ept"/>
+      </record>
+
+      <menuitem id="menu_amazon_stock_adjustment_config_ept" name="FBA Stock Adjustment"
+                parent="amazon_ept.menu_configuration_ept"
+                groups="amazon_ept.group_amazon_manager_ept"
+                sequence="5"
+                action="action_stock_adjustment_config_ept"/>
+</odoo>
