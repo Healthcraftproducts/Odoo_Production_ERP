@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+"access_ir_actions_act_window_system_manager_mrp","ir_actions_act_window_system_manager","model_ir_actions_act_window","mrp.group_mrp_manager",1,1,1,1
+"access_ir_actions_act_window_system_manager_stock","ir_actions_act_window_system_manager","model_ir_actions_act_window","stock.group_stock_manager",1,1,1,1
+"access_ir_actions_act_window_close_group_system_manager_mrp","ir_actions_act_window_close_group_system_manager","model_ir_actions_act_window_close","mrp.group_mrp_manager",1,1,1,1
+"access_ir_actions_act_window_close_group_system_manager_stock","ir_actions_act_window_close_group_system_manager","model_ir_actions_act_window_close","stock.group_stock_manager",1,1,1,1
+"access_ir_actions_act_window_view_group_system_manager_mrp","ir_actions_act_window_view_group_system_manager","model_ir_actions_act_window_view","mrp.group_mrp_manager",1,1,1,1
+"access_ir_actions_act_window_view_group_system_manager_stock","ir_actions_act_window_view_group_system_manager","model_ir_actions_act_window_view","stock.group_stock_manager",1,1,1,1
