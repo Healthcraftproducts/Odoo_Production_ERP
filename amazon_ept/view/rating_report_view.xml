@@ -1,0 +1,157 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="seq_rating_report_job" model="ir.sequence">
+        <field name="name">import_rating</field>
+        <field name="code">import_rating_sequence</field>
+        <field name="padding">5</field>
+        <field name="prefix">RATING-</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="amazon_rating_tree_report_ept" model="ir.ui.view">
+        <field name="name">Amazon Rating Report</field>
+        <field name="model">rating.report.history</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="state in ('_CANCELLED_','CANCELLED')"
+                  decoration-warning="state in ('_SUBMITTED_','SUBMITTED')"
+                  decoration-info="state in ('_DONE_','DONE')" decoration-success="state=='processed'">
+                <field name="name"/>
+                <field name="requested_date"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="seller_id"/>
+                <field name="state"/>
+                <field name="attachment_id" invisible="1"/>
+                <button name="download_report" type="object" help="Click Here To download report"
+                        icon="fa-cloud-download" aria-label="Download Report" title="Download Report"
+                        attrs="{'invisible':[('attachment_id','=',False)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="amazon_rating_report_request_history_search_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Rating Report Search</field>
+        <field name="model">rating.report.history</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Report Request History">
+                <field name="name"/>
+                <field name="report_document_id"/>
+                <field name="report_id"/>
+                <field name="report_type"/>
+                <field name="state"/>
+                <field name="seller_id"/>
+                <group expand="0" string="Group By...">
+                    <filter name="seller" string="Seller" context="{'group_by':'seller_id'}"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="amazon_rating_report_request_history_form_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Rating Report Form</field>
+        <field name="model">rating.report.history</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Report Request History">
+                <header>
+                    <button name="request_report" string="Request Report"
+                            states="draft"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="get_report_request_list" string="Check Status"
+                            states="_SUBMITTED_,_IN_PROGRESS_,SUBMITTED,IN_PROGRESS,IN_QUEUE"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="get_report" string="Get Report"
+                            attrs="{'invisible':['|',('report_document_id','=',False),('attachment_id','!=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="download_report" string="Download Report"
+                            attrs="{'invisible':[('attachment_id','=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="process_rating_report" string="Process File"
+                            attrs="{'invisible':['|',('attachment_id','=',False),('state','not in',['_DONE_','DONE'])]}"
+                            class="oe_highlight"
+                            help="Click Here To process the report file"
+                            type="object"/>
+                    <button name="process_rating_report" string="Re-Process File" type="object"
+                            attrs="{'invisible':['|',('attachment_id','=',False),('state','!=','processed')]}"
+                            class="oe_highlight" help="Click Here To process the report file"/>
+
+                    <button name="list_of_process_logs" string="Mismatch Details"
+                            attrs="{'invisible':[('log_count','=',0)]}"
+                            class="oe_highlight"
+                            help="Click Here To Check Logs"
+                            type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="SUBMITTED,IN_PROGRESS,DONE"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" position="inside" name="button_box">
+                        <button class="oe_stat_button" name="list_of_rating" type="object" icon="fa-cubes"
+                                attrs="{'invisible': ['|' ,('state', '!=', 'processed'),('rating_count','=',0)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field nolabel="1" name="rating_count" widget="statinfo" class="mr4"/>
+                                </span>
+                                <span class="o_stat_value">Ratings</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="seller_id" attrs="{'readonly':[('state','!=','draft')]}" required="1"
+                                   on_change="on_change_seller_id(seller_id,start_date,end_date)"/>
+
+                        </group>
+                        <group>
+                            <label for="start_date" string="Date"/>
+                            <div>
+                                <field name="start_date" widget="daterange"
+                                       options="{'related_end_date': 'end_date'}"
+                                       attrs="{'readonly':[('state','!=','draft')]}" class="oe_inline"/>
+                                to
+                                <field name="end_date" widget="daterange"
+                                       options="{'related_start_date': 'start_date'}"
+                                       attrs="{'readonly':[('state','!=','draft')]}" class="oe_inline"/>
+                            </div>
+                            <field name="report_id" readonly="1"/>
+                            <field name="report_document_id" readonly="1"/>
+                            <field name="user_id" readonly="1" invisible="1"/>
+                            <field name="report_type" readonly="1" invisible="1"/>
+                            <field name="attachment_id" invisible="1"/>
+                            <field name="log_count" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_rating_amazon_report_request_history_ept" model="ir.actions.act_window">
+        <field name="name">Seller Ratings</field>
+        <field name="res_model">rating.report.history</field>
+        <field name="view_id" ref="amazon_rating_tree_report_ept"/>
+    </record>
+    <menuitem id="menu_amazon_rating" name="Seller Ratings"
+              parent="amazon_ept.menu_item_parent_amazon_sales_ept" groups="amazon_ept.group_amazon_manager_ept"
+              sequence="15"/>
+
+    <menuitem id="menu_amazon_rating_report" name="Rating Reports"
+              parent="amazon_ept.menu_amazon_rating"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"
+              sequence="16"
+              action="action_rating_amazon_report_request_history_ept"/>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="inherited_account_fiscal_position_form" model="ir.ui.view">
+        <field name="name">inherited.account.fiscal.position.form</field>
+        <field name="model">account.fiscal.position</field>
+        <field name="inherit_id" ref="account.view_account_position_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="vat_config_id" attrs="{'invisible':[('vat_config_id','=',False)]}"/>
+                <field name="is_amazon_fpos" widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+</odoo>

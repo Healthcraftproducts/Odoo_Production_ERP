@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_configure_shipment_report_fulfillment_center_ept" model="ir.ui.view">
+        <field name="name">Shipment Report Configure Fullfillment Center EPT</field>
+        <field name="model">shipment.report.configure.fulfillment.center.ept</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Amazon Shipment Report - Configure Missing Fulfillment Center">
+                    <field name="shipment_report_configure_line_ids" nolabel="1">
+                    <tree editable="top" delete='false' create='false'>
+                        <field name="fulfillment_center"/>
+                        <field name="country_id" required="True"
+                               domain="[('id','in',country_ids)]"
+                               options="{'no_create_edit':True}"/>
+                        <field name="country_ids" invisible="1"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button string="Configure Fulfillment Center" class="oe_highlight"
+                            type="object"
+                            name="configure_shipment_fulfillment_center"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

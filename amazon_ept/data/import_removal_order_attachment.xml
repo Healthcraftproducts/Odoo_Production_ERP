@@ -1,0 +1,8 @@
+<odoo noupdate="1">
+    <record id="ir_attachment_import_import_removal_order" model="ir.attachment">
+    <field name="name">import_removal_order.csv</field>
+    <field name="datas" type="base64" file="amazon_ept/data/import_removal_order.csv"></field>
+    <field name="res_model">import.product.removal.order.wizard</field>
+    <field name="public">True</field>
+    </record>
+</odoo>

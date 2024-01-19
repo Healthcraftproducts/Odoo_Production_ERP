@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="amazon_cancel_fulfillment_form_view" model="ir.ui.view">
+        <field name="name">Cancel Order Fulfillment</field>
+        <field name="model">amazon.outbound.order.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Fulfillment Orders">
+                <div class="oe_empty_amazon_sale_order">
+                    <h4 style="font-weight:bold">Note:
+                        This Operation will Cancel Outbound Shipments on Amazon.
+                    </h4>
+                    <p>Orders with Draft and Cancelled State only will be Processed.</p>
+                </div>
+                <footer>
+                    <button name="cancel_fulfillment" string="Cancel Fulfillment" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="amazon_create_fulfillment_form_view" model="ir.ui.view">
+        <field name="name">Create Order Fulfillment</field>
+        <field name="model">amazon.outbound.order.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Fulfillment Orders">
+                <div class="oe_empty_amazon_sale_order">
+                    <h4 style="font-weight:bold">Note:
+                        This Operation will Create Outbound Shipments from Odoo to Amazon.
+                    </h4>
+                </div>
+                <footer>
+                    <button name="create_fulfillment" string="Create Fulfillment" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="amazon_update_fulfillment_form_view" model="ir.ui.view">
+        <field name="name">Create Update Fulfillment</field>
+        <field name="model">amazon.outbound.order.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Fulfillment Orders">
+                <div class="oe_empty_amazon_sale_order">
+                    <h4 style="font-weight:bold">Note:
+                        This Operation will Update Outbound Shipment data from Odoo to Amazon.
+                    </h4>
+                </div>
+                <footer>
+                    <button name="update_fulfillment" string="Update Fulfillment" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="amazon_outbound_order_wizard" model="ir.ui.view">
+        <field name="name">Create Outbound Orders</field>
+        <field name="model">amazon.outbound.order.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Outbound Orders">
+                <group>
+                    <group>
+                        <field name="instance_id" required="1" domain="[('fba_warehouse_id','!=',False)]"/>
+                        <field name="fulfillment_action" required="1"/>
+                    </group>
+                    <group>
+                        <field name="delivery_start_time" attrs="{'required':[('shipment_service_level_category','=','ScheduledDelivery')]}"/>
+                        <field name="delivery_end_time" attrs="{'required':[('shipment_service_level_category','=','ScheduledDelivery')]}"/>
+                        <field name="fba_warehouse_id" invisible="1"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="shipment_service_level_category" required="1"/>
+                        <field name="notify_by_email"/>
+                    </group>
+                    <group>
+                        <field name="fulfillment_policy" required="1"/>
+                        <field name="displayable_date_time" required="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="create_outbound_order" string="Create Order" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_amazon_outbound_order_wizard" model="ir.actions.act_window">
+        <field name="name">Amazon Outbound Orders</field>
+        <field name="res_model">amazon.outbound.order.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="amazon_outbound_menu_core" name="Outbound"
+              parent="amazon_ept.amazon_fba_menu_core" sequence="4"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+
+    <record id="action_form_view_amazon_outbound_order_wizard" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="amazon_outbound_order_wizard"/>
+        <field name="act_window_id" ref="action_amazon_outbound_order_wizard"/>
+    </record>
+
+    <record id="action_order_create_fulfillment_ept" model="ir.actions.act_window">
+        <field name="name">Create Outbound Shipment</field>
+        <field name="res_model">amazon.outbound.order.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="amazon_create_fulfillment_form_view"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_sale_order" />
+   </record>
+
+    <record id="action_order_update_fulfillment_ept" model="ir.actions.act_window">
+        <field name="name">Update Outbound Shipment</field>
+        <field name="res_model">amazon.outbound.order.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="amazon_update_fulfillment_form_view"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_sale_order" />
+   </record>
+
+    <record id="action_order_cancel_fulfillment_ept" model="ir.actions.act_window">
+        <field name="name">Cancel Outbound Shipment</field>
+        <field name="res_model">amazon.outbound.order.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="amazon_cancel_fulfillment_form_view"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_sale_order" />
+   </record>
+</odoo>

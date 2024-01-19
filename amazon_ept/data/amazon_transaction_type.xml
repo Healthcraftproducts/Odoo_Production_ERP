@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo noupdate="1">
+    <record id="Amazon_Commission" model="amazon.transaction.type">
+        <field name="name">Amazon Commission</field>
+        <field name="amazon_code">Commission</field>
+    </record>
+    <record id="Shipping_Chargeback" model="amazon.transaction.type">
+        <field name="name">Shipping Chargeback</field>
+        <field name="amazon_code">ShippingChargeback</field>
+    </record>
+    <record id="Disposal_Complete" model="amazon.transaction.type">
+        <field name="name">Disposal Complete</field>
+        <field name="amazon_code">DisposalComplete</field>
+    </record>
+    <record id="Subscription_Fee" model="amazon.transaction.type">
+        <field name="name">Subscription Fee</field>
+        <field name="amazon_code">Subscription Fee</field>
+    </record>
+    <record id="Current_Reserve_Amount" model="amazon.transaction.type">
+        <field name="name">Current Reserve Amount</field>
+        <field name="amazon_code">Current Reserve Amount</field>
+    </record>
+    <record id="Previous_Reserve_Amount_Balance" model="amazon.transaction.type">
+        <field name="name">Previous Reserve Amount Balance</field>
+        <field name="amazon_code">Previous Reserve Amount Balance</field>
+    </record>
+    <record id="Amazon_Refund_Commission" model="amazon.transaction.type">
+        <field name="name">Amazon Refund Commission</field>
+        <field name="amazon_code">RefundCommission</field>
+    </record>
+    <record id="Giftwrap_Chargeback" model="amazon.transaction.type">
+        <field name="name">Giftwrap Chargeback</field>
+        <field name="amazon_code">GiftwrapChargeback</field>
+    </record>
+    <record id="Amazon_Commission_on_Shipping" model="amazon.transaction.type">
+        <field name="name">Amazon Commission on Shipping</field>
+        <field name="amazon_code">ShippingHB</field>
+    </record>
+    <record id="Balance_Adjustment" model="amazon.transaction.type">
+        <field name="name">Balance Adjustment</field>
+        <field name="amazon_code">BalanceAdjustment</field>
+    </record>
+    <record id="Coupon_Clip_Fee" model="amazon.transaction.type">
+        <field name="name">Coupon Clip Fee</field>
+        <field name="amazon_code">CouponClipFee</field>
+    </record>
+    <record id="Coupon_Redemption_Fee" model="amazon.transaction.type">
+        <field name="name">Coupon Redemption Fee</field>
+        <field name="amazon_code">CouponRedemptionFee</field>
+    </record>
+    <record id="Fixed_Closing_Fee" model="amazon.transaction.type">
+        <field name="name">Fixed Closing Fee</field>
+        <field name="amazon_code">FixedClosingFee</field>
+    </record>
+    <record id="FreshInbound_Transportation_Fee" model="amazon.transaction.type">
+        <field name="name">FreshInbound Transportation Fee</field>
+        <field name="amazon_code">FreshInboundTransportationFee</field>
+    </record>
+    <record id="High_Volume_Listing_Fee" model="amazon.transaction.type">
+        <field name="name">High Volume Listing Fee</field>
+        <field name="amazon_code">HighVolumeListingFee</field>
+    </record>
+    <record id="Imaging_Services_Fee" model="amazon.transaction.type">
+        <field name="name">Imaging Services Fee</field>
+        <field name="amazon_code">ImagingServicesFee</field>
+    </record>
+    <record id="MFN_Postage_Fee" model="amazon.transaction.type">
+        <field name="name">MFN Postage Fee</field>
+        <field name="amazon_code">MFNPostageFee</field>
+    </record>
+    <record id="Referral_Fee" model="amazon.transaction.type">
+        <field name="name">Referral Fee</field>
+        <field name="amazon_code">ReferralFee</field>
+    </record>
+    <record id="Sales_Tax_Collection_Fee" model="amazon.transaction.type">
+        <field name="name">Sales Tax Collection Fee</field>
+        <field name="amazon_code">SalesTaxCollectionFee</field>
+    </record>
+    <record id="Subscription" model="amazon.transaction.type">
+        <field name="name">Subscription</field>
+        <field name="amazon_code">Subscription</field>
+    </record>
+    <record id="Textbook_Rental_Buyout_Fee" model="amazon.transaction.type">
+        <field name="name">Textbook Rental Buyout Fee</field>
+        <field name="amazon_code">TextbookRentalBuyoutFee</field>
+    </record>
+    <record id="Textbook_Rental_Extension_Fee" model="amazon.transaction.type">
+        <field name="name">Textbook Rental Extension Fee</field>
+        <field name="amazon_code">TextbookRentalExtensionFee</field>
+    </record>
+    <record id="Textbook_Rental_Service_Fee" model="amazon.transaction.type">
+        <field name="name">Textbook Rental Service Fee</field>
+        <field name="amazon_code">TextbookRentalServiceFee</field>
+    </record>
+    <record id="VariableClosing_Fee" model="amazon.transaction.type">
+        <field name="name">Variable Closing Fee</field>
+        <field name="amazon_code">VariableClosingFee</field>
+    </record>
+
+    <record id="FBA_per_Unit_Fulfillment_Fee" model="amazon.transaction.type">
+        <field name="name">FBA per Unit Fulfillment Fee</field>
+        <field name="amazon_code">FBAPerUnitFulfillmentFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Weight_based_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Weight based Fee</field>
+        <field name="amazon_code">FBAWeightBasedFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Removal_Complete" model="amazon.transaction.type">
+        <field name="name">Removal Complete</field>
+        <field name="amazon_code">RemovalComplete</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Reversal_Reimbursement" model="amazon.transaction.type">
+        <field name="name">Reversal Reimbursement</field>
+        <field name="amazon_code">REVERSAL_REIMBURSEMENT</field>
+        <field name="is_reimbursement">True</field>
+    </record>
+    <record id="Liquidations" model="amazon.transaction.type">
+        <field name="name">Liquidations</field>
+        <field name="amazon_code">Liquidations</field>
+        <field name="is_reimbursement">True</field>
+    </record>
+    <record id="Compensated_Clawback" model="amazon.transaction.type">
+        <field name="name">Compensated Clawback</field>
+        <field name="amazon_code">COMPENSATED_CLAWBACK</field>
+        <field name="is_reimbursement">True</field>
+    </record>
+    <record id="Missing_From_Inbound_Clawback" model="amazon.transaction.type">
+        <field name="name">Missing From Inbound Clawback</field>
+        <field name="amazon_code">MISSING_FROM_INBOUND_CLAWBACK</field>
+        <field name="is_reimbursement">True</field>
+    </record>
+    <record id="Warehouse_Lost_Manual" model="amazon.transaction.type">
+        <field name="name">Warehouse Lost Manual</field>
+        <field name="amazon_code">WAREHOUSE_LOST_MANUAL</field>
+        <field name="is_reimbursement">True</field>
+    </record>
+    <record id="Warehouse_Damage" model="amazon.transaction.type">
+        <field name="name">Warehouse Damage</field>
+        <field name="amazon_code">WAREHOUSE_DAMAGE</field>
+        <field name="is_reimbursement">True</field>
+    </record>
+    <record id="Missing_from_Inbound_Reimbursement" model="amazon.transaction.type">
+        <field name="name">Missing from Inbound Reimbursement</field>
+        <field name="amazon_code">MISSING_FROM_INBOUND</field>
+        <field name="is_reimbursement">True</field>
+    </record>
+    <record id="StorageRenewalBilling" model="amazon.transaction.type">
+        <field name="name">StorageRenewalBilling</field>
+        <field name="amazon_code">StorageRenewalBilling</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Transportation_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Transportation Fee</field>
+        <field name="amazon_code">FBATransportationFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBAPerOrderFulfillmentFee" model="amazon.transaction.type">
+        <field name="name">FBAPerOrderFulfillmentFee</field>
+        <field name="amazon_code">FBAPerOrderFulfillmentFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Warehouse_Damage_Exception" model="amazon.transaction.type">
+        <field name="name">Warehouse Damage Exception</field>
+        <field name="amazon_code">WAREHOUSE_DAMAGE_EXCEPTION</field>
+        <field name="is_reimbursement">True</field>
+    </record>
+
+    <!-- Fees added by Dhruvi [13-11-2018] -->
+    <record id="Bubblewrap_Fee" model="amazon.transaction.type">
+        <field name="name">Bubblewrap Fee</field>
+        <field name="amazon_code">BubblewrapFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_CustomerReturn_PerOrder_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Customer Return PerOrder Fee</field>
+        <field name="amazon_code">FBACustomerReturnPerOrderFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_CustomerReturn_PerUnit_Fee" model="amazon.transaction.type">
+        <field name="name">FBA CustomerReturn PerUnit Fee</field>
+        <field name="amazon_code">FBACustomerReturnPerUnitFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_CustomerReturn_WeightBased_Fee" model="amazon.transaction.type">
+        <field name="name">FBA CustomerReturn WeightBased Fee</field>
+        <field name="amazon_code">FBACustomerReturnWeightBasedFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Disposal_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Disposal Fee</field>
+        <field name="amazon_code">FBADisposalFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Fulfillment_COD_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Fulfillment COD Fee</field>
+        <field name="amazon_code">FBAFulfillmentCODFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Inbound_Convenience_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Inbound Convenience Fee</field>
+        <field name="amazon_code">FBAInboundConvenienceFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Inbound_Defect_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Inbound Defect Fee</field>
+        <field name="amazon_code">FBAInboundDefectFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Inbound_Transportation_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Inbound Transportation Fee</field>
+        <field name="amazon_code">FBAInboundTransportationFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Inbound_TransportationProgram_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Inbound TransportationProgram Fee</field>
+        <field name="amazon_code">FBAInboundTransportationProgramFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_LongTermStorage_Fee" model="amazon.transaction.type">
+        <field name="name">FBA LongTermStorage Fee</field>
+        <field name="amazon_code">FBALongTermStorageFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Removal_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Removal Fee</field>
+        <field name="amazon_code">FBARemovalFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="FBA_Storage_Fee" model="amazon.transaction.type">
+        <field name="name">FBA Storage Fee</field>
+        <field name="amazon_code">FBAStorageFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Fulfillment_Fee" model="amazon.transaction.type">
+        <field name="name">Fulfillment Fee</field>
+        <field name="amazon_code">FulfillmentFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Fulfillment_Network_Fee" model="amazon.transaction.type">
+        <field name="name">Fulfillment Network Fee</field>
+        <field name="amazon_code">FulfillmentNetworkFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Labeling_Fee" model="amazon.transaction.type">
+        <field name="name">Labeling Fee</field>
+        <field name="amazon_code">LabelingFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Opaque_Bagging_Fee" model="amazon.transaction.type">
+        <field name="name">Opaque Bagging Fee</field>
+        <field name="amazon_code">OpaqueBaggingFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Polybagging_Fee" model="amazon.transaction.type">
+        <field name="name">Polybagging Fee</field>
+        <field name="amazon_code">PolybaggingFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="SSOF_Fulfillment_Fee" model="amazon.transaction.type">
+        <field name="name">SSOF Fulfillment Fee</field>
+        <field name="amazon_code">SSOFFulfillmentFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+    <record id="Taping_Fee" model="amazon.transaction.type">
+        <field name="name">Taping Fee</field>
+        <field name="amazon_code">TapingFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+     <record id="UnitFulfillment_Fee" model="amazon.transaction.type">
+        <field name="name">UnitFulfillment Fee</field>
+        <field name="amazon_code">UnitFulfillmentFee</field>
+        <field name="is_reimbursement">False</field>
+    </record>
+</odoo>

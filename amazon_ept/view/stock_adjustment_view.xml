@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="seq_inv_adjustment_report_job" model="ir.sequence">
+        <field name="name">import_inv_adjustment</field>
+        <field name="code">import_inv_adjustment_sequence</field>
+        <field name="padding">5</field>
+        <field name="prefix">INV-ADJUST</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="amazon_stock_adjustment_tree_report_ept" model="ir.ui.view">
+        <field name="name">Amazon Stock Adjustment Report</field>
+        <field name="model">amazon.stock.adjustment.report.history</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="name"/>
+                <field name="requested_date"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="seller_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="amazon_stock_adjustment_report_request_history_search_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Stock Adjustment Report Search</field>
+        <field name="model">amazon.stock.adjustment.report.history</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Report Request History">
+                <field name="name"/>
+                <field name="report_document_id"/>
+                <field name="report_id"/>
+                <field name="report_type"/>
+                <field name="state"/>
+                <field name="seller_id"/>
+                <group expand="0" string="Group By...">
+                    <filter name="seller" string="Seller" context="{'group_by':'seller_id'}"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="amazon_stock_adjustment_report_request_history_form_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Stock Adjustment Report Form</field>
+        <field name="model">amazon.stock.adjustment.report.history</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Report Request History" create='0'>
+                <header>
+                    <button name="request_report" string="Request Report"
+                            states="draft"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="get_report_request_list" string="Check Status"
+                            states="_SUBMITTED_,_IN_PROGRESS_,SUBMITTED,IN_PROGRESS,IN_QUEUE"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="get_report" string="Get Report"
+                            attrs="{'invisible':['|',('report_document_id','=',False),('attachment_id','!=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="download_report" string="Download Report"
+                            attrs="{'invisible':[('attachment_id','=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="process_stock_adjustment_report" string="Process File"
+                            attrs="{'invisible':['|',('attachment_id','=',False),('state','not in',('_DONE_','DONE'))]}"
+                            class="oe_highlight"
+                            help="Click Here To process the report file"
+                            type="object"/>
+                    <button name="process_stock_adjustment_report" string="Re-Process File" type="object"
+                            attrs="{'invisible':['|','|',('attachment_id','=',False),('state','not in',['processed', 'partially_processed']), ('mismatch_details', '=', False)]}"
+                            class="oe_highlight" help="Click Here To process the report file"/>
+
+                    <button name="list_of_process_logs" string="Mismatch Details"
+                            attrs="{'invisible':[('log_count','=',0)]}"
+                            class="oe_highlight"
+                            help="Click Here To Check Logs"
+                            type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="SUBMITTED,IN_PROGRESS,DONE"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="list_of_stock_moves" class="oe_stat_button" icon="fa-truck"
+                                attrs="{'invisible': ['|' ,('state', 'not in', ['processed', 'partially_processed']),('moves_count','=',0)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="moves_count"/></span>
+                                <span class="o_stat_text">Stock Moves</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="seller_id" attrs="{'readonly':[('state','!=','draft')]}" required="1"
+                                   on_change="on_change_seller_id(seller_id,start_date,end_date)"/>
+
+                        </group>
+                        <group>
+                            <label for="start_date" string="Date"/>
+                            <div>
+                                <field name="start_date" widget="daterange"
+                                       options="{'related_end_date': 'end_date'}"
+                                       attrs="{'readonly':[('state','!=','draft')]}" class="oe_inline"/>
+                                to
+                                <field name="end_date" widget="daterange"
+                                       options="{'related_start_date': 'start_date'}"
+                                       attrs="{'readonly':[('state','!=','draft')]}" class="oe_inline"/>
+                            </div>
+                            <field name="report_id" readonly="1"/>
+                            <field name="report_document_id" readonly="1"/>
+                            <field name="report_type" readonly="1" invisible="1"/>
+                            <field name="attachment_id" invisible="1"/>
+                            <field name="log_count" invisible="1"/>
+                            <field name="moves_count" invisible="1"/>
+                            <field name="mismatch_details" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_adjustment_amazon_report_request_history_ept" model="ir.actions.act_window">
+        <field name="name">Amazon Stock Adjustment</field>
+        <field name="res_model">amazon.stock.adjustment.report.history</field>
+        <field name="view_id" ref="amazon_stock_adjustment_tree_report_ept"/>
+    </record>
+
+    <menuitem id="menu_amazon_stock_adjustment_report" name="Stock Adjustment"
+              parent="amazon_ept.amazon_fba_child_inventory_menu"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"
+              sequence="16"
+              action="action_stock_adjustment_amazon_report_request_history_ept"/>
+</odoo>

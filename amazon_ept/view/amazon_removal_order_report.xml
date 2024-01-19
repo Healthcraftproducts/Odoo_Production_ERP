@@ -1,0 +1,155 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="amazon_removal_order_report_ept_tree_view" model="ir.ui.view">
+        <field name="name">Amazon Removal Order Report</field>
+        <field name="model">amazon.removal.order.report.history</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="name"/>
+                <field name="requested_date"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state"/>
+                <field name="seller_id"/>
+                <field name="attachment_id" invisible="1"/>
+                <button name="download_report" type="object" help="Click Here To download report"
+                        icon="fa-cloud-download fa-lg" aria-label="Download Report" title="Download Report"
+                        attrs="{'invisible':[('attachment_id','=',False)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="amazon_removal_order_report_request_history_search_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Removal Order Report Search</field>
+        <field name="model">amazon.removal.order.report.history</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Report Request History">
+                <field name="name"/>
+                <field name="report_document_id"/>
+                <field name="report_id"/>
+                <field name="report_type"/>
+                <field name="state"/>
+                <field name="seller_id"/>
+                <group expand="0" string="Group By...">
+                    <filter name="seller" string="Seller" context="{'group_by':'seller_id'}"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="amazon_removal_order_report_request_history_form_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Removal Order Report Form</field>
+        <field name="model">amazon.removal.order.report.history</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Report Request History" create='0'>
+                <header>
+                    <button name="request_report" string="Request Report"
+                            states="draft"
+                            class="oe_highlight"
+                            type="object"/>
+
+                    <button name="get_report_request_list" string="Check Status"
+                            states="_SUBMITTED_,_IN_PROGRESS_,SUBMITTED,IN_PROGRESS,IN_QUEUE"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="get_report" string="Get Report"
+                            attrs="{'invisible':['|',('report_document_id','=',False),('attachment_id','!=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="download_report" string="Download Report"
+                            attrs="{'invisible':[('attachment_id','=',False)]}"
+                            class="oe_highlight"
+                            type="object"/>
+                    <button name="process_removal_order_report" string="Process File"
+                            attrs="{'invisible':['|',('attachment_id','=',False),('state','not in',('_DONE_','DONE'))]}"
+                            class="oe_highlight"
+                            help="Click Here To process the report file"
+                            type="object"/>
+
+                    <button name="process_removal_order_report" string="Re-process File"
+                            type="object"
+                            attrs="{'invisible':['|','|', ('attachment_id', '=', False),
+                             ('state', 'not in', ['processed', 'partially_processed']), ('mismatch_details','=',False)]}"
+                            class="oe_highlight" help="Click Here To process the report file"/>
+
+                    <button name="list_of_logs" string="Mismatch Details"
+                            attrs="{'invisible':[('log_count','=',0)]}"
+                            class="oe_highlight"
+                            help="Click Here To Check Logs"
+                            type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="SUBMITTED,IN_PROGRESS,DONE"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" position="inside" name="button_box">
+                        <button name="list_of_removal_pickings"
+                                attrs="{'invisible': ['|',('state', 'not in', ['processed', 'partially_processed']), ('removal_count', '=', 0)]}"
+                                class="oe_stat_button" icon="fa-truck" type="object">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="removal_count"/>
+                                    Pickings
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+
+                        <group>
+                            <field name="seller_id" attrs="{'readonly':[('state','!=','draft')]}" required="1"/>
+                        </group>
+                        <group>
+                            <label for="start_date" string="Date"/>
+                            <div>
+                                <field name="start_date" widget="daterange"
+                                       attrs="{'readonly':[('state','!=','draft')]}"
+                                       options="{'related_end_date': 'end_date'}" class="oe_inline"/>
+                                to
+                                <field name="end_date" widget="daterange"
+                                       attrs="{'readonly':[('state','!=','draft')]}"
+                                       options="{'related_start_date': 'start_date'}" class="oe_inline"/>
+                            </div>
+                            <field name="report_id" readonly="1"/>
+                            <field name="report_document_id" readonly="1"/>
+                            <field name="report_type" readonly="1" invisible="1"/>
+                            <field name="attachment_id" invisible="1"/>
+                            <field name="log_count" invisible="1"/>
+                            <field name="mismatch_details" invisible="1"/>
+                        </group>
+                    </group>
+                    <div style="color:red" attrs="{'invisible':[('state','!=','processed')]}">
+                        Note : It will process for removal which order status is COMPLETED, PENDING and
+                        CANCELLED.<br />
+                        It will process to create an removal order which order status
+                        is COMPLETED or PENDING and It will cancel the removal order's picking which order
+                        status is CANCELLED
+                    </div>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_removal_order_amazon_report_request_history_ept" model="ir.actions.act_window">
+        <field name="name">Amazon Removal Order Reports</field>
+        <field name="res_model">amazon.removal.order.report.history</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="amazon_removal_order_report_ept_tree_view"/>
+    </record>
+    <menuitem id="menu_amazon_removal_order_report" name="Removal Order Reports"
+              parent="amazon_ept.amazon_removal_order_menu_core"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"
+              sequence="2"
+              action="action_removal_order_amazon_report_request_history_ept"/>
+
+</odoo>

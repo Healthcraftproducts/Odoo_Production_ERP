@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<odoo>
+      <record id="amazon_removal_order_config_tree_ept" model="ir.ui.view">
+          <field name="name">Amazon Removal Order Config</field>
+          <field name="model">removal.order.config.ept</field>
+          <field name="type">tree</field>
+          <field name="arch" type="xml">
+              <tree create="0" delete="0" editable="top">
+                  <field name="instance_id" readonly="1"/>
+                  <field name="removal_disposition" required="1"/>
+                  <field name="picking_type_id"
+                         attrs="{'required':[('removal_disposition','!=','Return')],'invisible':[('removal_disposition','=','Return')]}"/>
+                  <field name="location_id"
+                         attrs="{'required':[('removal_disposition','!=','Return')],'invisible':[('removal_disposition','=','Return')]}"/>
+                  <field name="unsellable_route_id"
+                         attrs="{'required':[('removal_disposition','=','Return')],'invisible':[('removal_disposition','!=','Return')]}"
+                         domain="[('is_removal_order','=',True)]"/>
+                  <field name="sellable_route_id"
+                         attrs="{'required':[('removal_disposition','=','Return')],'invisible':[('removal_disposition','!=','Return')]}"
+                         domain="[('is_removal_order','=',True)]"/>
+              </tree>
+          </field>
+      </record>
+      <record id="action_amazon_removal_order_config_ept" model="ir.actions.act_window">
+          <field name="name">Amazon Removal Order Configurations</field>
+          <field name="res_model">removal.order.config.ept</field>
+          <field name="view_id" ref="amazon_removal_order_config_tree_ept"/>
+      </record>
+
+      <menuitem id="menu_amazon_removal_order_config_ept" name="Removal Orders"
+                parent="amazon_ept.menu_configuration_ept"
+                groups="amazon_ept.group_amazon_manager_ept"
+                sequence="20"
+                action="amazon_ept.action_amazon_removal_order_config_ept"/>
+</odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="view_vat_config_ept_form" model="ir.ui.view">
+        <field name="name">vat.config.ept.form</field>
+        <field name="model">vat.config.ept</field>
+        <field name="arch" type="xml">
+            <form delete="0" duplicate="0">
+                <sheet>
+                    <group>
+                        <field name="company_id"
+                               options="{'no_create':True,'no_create_edit':True}"/>
+                    </group>
+                    <field name="vat_config_line_ids" nolabel="1">
+                        <tree editable="1">
+                            <field name="country_id" required="1"
+                                   options="{'no_create':True,'no_create_edit':True}"/>
+                            <field name="vat" required="1"/>
+                        </tree>
+                    </field>
+                     <div>
+                        <p class="alert alert-info" role="alert">Go to the Configuration link if you are enrolled
+                            in the OSS program. Through this configuration, Odoo will create or update fiscal positions
+                            and tax mappings.
+                            <button type="object" name="action_eu_tax_mapping" icon="fa-refresh"
+                                    string="Click Here" class="btn-link"/>
+                        </p>
+                    </div>
+                     <div>
+                        <p class="alert alert-info" role="alert">Click on the link if you are not enrolled in the OSS
+                            program. Through this configuration, Odoo will create or update fiscal position and tax
+                            mappings based on VAT registered countries.
+                            <button type="object" name="amazon_eu_tax_mapping" icon="fa-refresh"
+                                    string="Refresh tax mapping" class="btn-link"/>
+                        </p>
+                    </div>
+                     <div>
+                        <p class="alert alert-warning" role="alert">Note: If you have not yet registered with this OSS
+                            program, and in the future register for this OSS program, choose the first option again and
+                            the system will automatically create or update necessary fiscal positions, taxes. According
+                            to the above configurations, the system will not create a duplicate tax or financial position.
+                        </p>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_vat_config_ept_tree" model="ir.ui.view">
+        <field name="name">vat.config.ept.tree</field>
+        <field name="model">vat.config.ept</field>
+        <field name="arch" type="xml">
+            <tree delete="0">
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_vat_config_ept" model="ir.actions.act_window">
+        <field name="name">VAT Configuration</field>
+        <field name="res_model">vat.config.ept</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

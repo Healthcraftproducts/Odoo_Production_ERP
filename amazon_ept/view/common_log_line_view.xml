@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="log_line_search_view_inherit" model="ir.ui.view">
+        <field name="name">Amazon Common Line Search View</field>
+        <field name="model">common.log.lines.ept</field>
+        <field name="inherit_id" ref="common_connector_library.common_log_line_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="filter_write_date" position="after">
+                <filter name="mismatch_details" string="Mismatch Lines" domain="[('mismatch_details','=', True)]"/>
+                <filter name="groupby_amz_instance" string="Amazon Instance" context="{'group_by': 'amz_instance_ept'}"/>
+                <filter name="groupby_amz_seller" string="Amazon Seller" context="{'group_by': 'amz_seller_ept'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="log_line_form_view_inherit" model="ir.ui.view">
+        <field name="name">Amazon Common Line Form View</field>
+        <field name="model">common.log.lines.ept</field>
+        <field name="inherit_id" ref="common_connector_library.common_log_line_view_form"/>
+        <field name="arch" type="xml">
+            <field name="default_code" position="after">
+                <field name="amz_instance_ept"/>
+                <field name="amz_seller_ept"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="log_line_tree_view_inherit" model="ir.ui.view">
+        <field name="name">Amazon Common Line Tree View</field>
+        <field name="model">common.log.lines.ept</field>
+        <field name="inherit_id" ref="common_connector_library.common_log_line_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="message" position="after">
+                <field name="mismatch_details"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_amz_common_log_lines_ept" model="ir.actions.act_window">
+        <field name="name">Common Log Lines</field>
+        <field name="res_model">common.log.lines.ept</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="amazon_ept.log_line_tree_view_inherit"/>
+        <field name="domain">[('module','=','amazon_ept')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No mismatch log lines are there!
+            </p>
+            <p>If any import/export/update process has got issue, log lines will be shown here.</p>
+        </field>
+    </record>
+
+    <menuitem id="mainmenu_common_log_books" name="Logs"
+              parent="amazon_ept.amazon_instance_menu_item" groups="amazon_ept.group_amazon_manager_ept"
+              sequence="30"/>
+
+    <menuitem id="common_log_book_line_menu_ept"
+              name="Log Lines"
+              action="action_amz_common_log_lines_ept"
+              parent="amazon_ept.mainmenu_common_log_books"
+              groups="amazon_ept.group_amazon_manager_ept"
+              sequence="2"/>
+
+</odoo>

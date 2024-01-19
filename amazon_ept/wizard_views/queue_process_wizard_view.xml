@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--This is a comman view for queue process wizard-->
+    <record id="view_queue_process_action" model="ir.ui.view">
+        <field name="name">Queue Process Action</field>
+        <field name="model">amazon.queue.process.wizard.ept</field>
+        <field name="priority">11</field>
+        <field name="arch" type="xml">
+            <form string="Manually Queue Process">
+                <sheet>
+                    <footer>
+                        <button string="Process Orders Queues Manually" class="oe_highlight"
+                            type="object" name="process_orders_queue_manually"
+                            invisible="context.get('queue_process','') not in ['process_queue_manually']" />
+                        <button string="Cancel" class="oe_highlight" special="cancel" />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--This action used for sync product queue data manually Haresh @ Emipro
+        on date 30/10/2019, updated by twinkalc as act window deprecated-->
+
+     <record id="action_sync_product_queue_data" model="ir.actions.act_window">
+        <field name="name">Process Queue Manually</field>
+        <field name="res_model">amazon.queue.process.wizard.ept</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'queue_process':'process_queue_manually'}</field>
+        <field name="view_id" ref="view_queue_process_action"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="amazon_ept.model_shipped_order_data_queue_ept" />
+    </record>
+</odoo>

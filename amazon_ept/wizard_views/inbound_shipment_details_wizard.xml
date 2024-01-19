@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inbound_shipment_details_wizard" model="ir.ui.view">
+        <field name="name">Inbound Shipment Details</field>
+        <field name="model">inbound.shipment.details</field>
+        <field name="arch" type="xml">
+            <form string="Inbound Shipment Details">
+                <field name="inbound_shipment_details_line_ids" nolabel="1" readonly="1">
+                    <tree>
+                        <field name="shipment_id"/>
+                        <field name="product_id"/>
+                        <field name="quantity"/>
+                        <field name="fulfill_center_id"/>
+                    </tree>
+                </field>
+                <footer>                    
+                    <button name="create_shipment" string="Create Shipment" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel" />
+                </footer>
+               </form>
+            </field>
+        </record>
+</odoo>

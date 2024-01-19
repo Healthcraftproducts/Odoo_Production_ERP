@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="shipped_order_queue_data_tree_view_ept" model="ir.ui.view">
+        <field name="name">Shipped Order Queue Data Tree View</field>
+        <field name="model">shipped.order.data.queue.ept</field>
+        <field name="arch" type="xml">
+            <tree create="0" delete="0">
+                <field name="name"/>
+                <field name="amz_seller_id"/>
+                <field name="create_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="shipped_order_queue_data_search_view_ept"
+            model="ir.ui.view">
+        <field name="name">Shipped Order Queue Data Search View</field>
+        <field name="model">shipped.order.data.queue.ept</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Shipped Order Queue Data">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="amz_seller_id"/>
+                <field name="shipped_order_data_queue_lines" string="Order ID"
+                           filter_domain="[('shipped_order_data_queue_lines.order_id', 'ilike', self)]"/>
+                <group expand="0" string="Group By...">
+                    <filter name="seller" string="Seller" context="{'group_by':'amz_seller_id'}"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="shipped_order_data_form_view_ept" model="ir.ui.view">
+        <field name="name">Shipped Order Queue Data Form View</field>
+        <field name="model">shipped.order.data.queue.ept</field>
+        <field name="arch" type="xml">
+            <form string="Shipped Order Data" create="0" delete="0">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="process_orders" string="Process Orders" type="object" class="oe_highlight"/>
+                </header>
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;">
+                    <strong>
+                        If you tracing products with Lot / Serial numbers in your warehouse then make sure you have
+                        available stock in the Stock Location otherwise you will not allowed to import the order
+                        successfully.
+                    </strong>
+                </div>
+                <sheet>
+                    <div class="oe_button_box" position="inside" name="button_box">
+                        <button id="total_record_count" class="oe_stat_button" disabled="1"
+                                icon="fa-database">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="queue_line_total_record"/>
+                                </span>
+                                <span class="o_stat_text">Records</span>
+                            </div>
+                        </button>
+                        <button id="draft_state_count" class="oe_stat_button" disabled="1"
+                                icon="fa-info">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="queue_line_draft_record"/>
+                                </span>
+                                <span class="o_stat_text">Draft Records</span>
+                            </div>
+                        </button>
+                        <button id="fail_state_count" class="oe_stat_button" disabled="1"
+                                icon="fa-times">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="queue_line_fail_record"/>
+                                </span>
+                                <span class="o_stat_text">Fail Records</span>
+                            </div>
+                        </button>
+                        <button id="done_state_count" class="oe_stat_button" disabled="1"
+                                icon="fa-check">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="queue_line_done_record"/>
+                                </span>
+                                <span class="o_stat_text">Done Records</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name" string="Name"/>
+                        <h1>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group name="amz_insatnce_id">
+                        <group>
+                            <field name="amz_seller_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                            <field name="log_count" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Shipped Order Data Line">
+                            <field name="shipped_order_data_queue_lines">
+                                <tree create="false" editable="bottom">
+                                    <field name="order_id" readonly="1"/>
+                                    <field name="order_data_id" readonly="1"/>
+                                    <field name="amz_instance_id" readonly="1"/>
+                                    <field name="last_process_date" readonly="1"/>
+                                    <field name="state" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Log Lines">
+                            <field name="log_lines">
+                                <tree create="false" editable="bottom">
+                                    <field name="order_ref" readonly="1"/>
+                                    <field name="default_code" readonly="1"/>
+                                    <field name="message" readonly="1"/>
+                                    <field name="order_queue_data_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"
+                           groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_shipped_order_product_data_queue" model="ir.actions.act_window">
+        <field name="name">Order Queue Data</field>
+        <field name="res_model">shipped.order.data.queue.ept</field>
+        <field name="view_id" ref="shipped_order_queue_data_tree_view_ept"/>
+    </record>
+    <menuitem id="amz_data_menu" name="Order Data Queues"
+              parent="amazon_ept.menu_item_parent_amazon_fbm" sequence="7"
+              groups="amazon_ept.group_amazon_fbm_ept,amazon_ept.group_amazon_fba_and_fbm_ept"
+              action="action_shipped_order_product_data_queue"/>
+</odoo>

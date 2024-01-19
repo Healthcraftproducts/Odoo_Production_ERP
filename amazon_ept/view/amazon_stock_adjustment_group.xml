@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<odoo>
+    
+    <record id="amazon_stock_adjustment_group_tree_ept" model="ir.ui.view">
+        <field name="name">Amazon Stock Adjustment Reason Group</field>
+        <field name="model">amazon.adjustment.reason.group</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id="amazon_stock_adjustment_reason_group_form_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Stock Adjustment Reason Group</field>
+        <field name="model">amazon.adjustment.reason.group</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Report Request History">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <field name="reason_code_ids" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_adjustment_reason_group_ept" model="ir.actions.act_window">
+        <field name="name">FBA Stock Adjustment Reasons</field>
+        <field name="res_model">amazon.adjustment.reason.group</field>
+        <field name="view_id" ref="amazon_stock_adjustment_group_tree_ept"/>
+    </record>
+
+    <menuitem id="menu_amazon_stock_adjustment_reason_group" name="FBA Stock Adjustment Reasons"
+              parent="amazon_ept.menu_configuration_ept"
+              groups="amazon_ept.group_amazon_manager_ept"
+              sequence="6"
+              action="action_stock_adjustment_reason_group_ept"/>
+</odoo>

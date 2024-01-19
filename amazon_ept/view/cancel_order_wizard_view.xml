@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_amazon_cancel_order_wizard" model="ir.ui.view">
+        <field name="name">Cancel Amazon Order</field>
+        <field name="model">amazon.cancel.order.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Amazon Order">
+                <group string="Cancel Lines" >
+                    <field name="amazon_cancel_order_line_ids" nolabel="1">
+                        <tree editable="top" delete='false' create='false'>
+                            <field name="product_id" readonly="1"/>
+                            <field name="ordered_qty" required="1"/>
+                            <field name="message" required="1" />
+                            <field name="sale_line_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </group>
+                <footer>                    
+                    <button name="cancel_in_amazon" string="Cancel Order" type="object" class="oe_highlight"/>
+
+                    <button string="Close" class="oe_highlight" special="cancel" />
+                </footer>
+           </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,75 @@
+@charset "UTF-8";
+.openerp .oe_view_nocontent .oe_empty_amazon_instance {
+  background: transparent url(/amazon_ept/static/src/img/amazon.jpg) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.openerp .oe_view_nocontent .oe_empty_amazon_sale_order {
+  background: transparent url(/amazon_ept/static/src/img/cart.png) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.openerp .oe_view_nocontent .oe_empty_amazon_products {
+  background: transparent url(/amazon_ept/static/src/img/product.jpg) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+
+
+.openerp .oe_view_nocontent .oe_empty_amazon_refund {
+  background: transparent url(/amazon_ept/static/src/img/refund.png) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.openerp .oe_view_nocontent .oe_empty_amazon_picking {
+  background: transparent url(/amazon_ept/static/src/img/picking.png) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+
+.openerp .oe_view_nocontent .oe_empty_amazon_invoice {
+  background: transparent url(/amazon_ept/static/src/img/invoice.jpg) no-repeat 0 0;
+  margin-top: -15px;
+  padding: 100px 0 0 137px;
+  min-height: 327px;
+  margin-left: -15px;
+}
+.openerp .oe_kanban_view .oe_kanban_amazon_operations_type {
+    width: 345px;
+    cursor: default;
+    min-height: 245px !important;
+}
+.openerp .oe_kanban_image_emipro {
+  display: block;
+  vertical-align: middle;
+  width: 100px;
+  height: 100px;
+  margin : 0px auto;
+
+}
+.openerp .oe_ept_center {
+	padding-top:15px;
+	display : block;
+	width : 100%;
+	margin : 0px auto;
+}
+
+
+
+
+
+

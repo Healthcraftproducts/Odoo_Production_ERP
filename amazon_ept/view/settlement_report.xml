@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="amazon_settlement_report_search_view_ept"
+        model="ir.ui.view">
+        <field name="name">Amazon Settlement Report Search</field>
+        <field name="model">settlement.report.ept</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Settlement Report">
+                <field name="name" />
+                <field name="report_document_id"/>
+                <field name="report_id" />
+                <field name="report_type" invisible="1"/>
+                <field name="state" />
+                <field name="seller_id" />
+                <group expand="0" string="Group By...">
+                    <filter name="instance" string="Marketplace" context="{'group_by':'instance_id'}" />
+                    <filter name="seller" string="Seller" context="{'group_by':'seller_id'}" />
+                    <filter name="status" string="Status" context="{'group_by':'state'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="amazon_settlement_report_tree_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Settlement Report Tree</field>
+        <field name="model">settlement.report.ept</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree create="false" decoration-muted="state in ('_SUBMITTED_','SUBMITTED')"  decoration-success="state == 'confirm'" decoration-info="state in ('_DONE_','processed','partially_processed','imported')" decoration-danger="state == '_CANCELLED_'">
+                <field name="name" />
+                <field name="requested_date" />
+                <field name="start_date" />
+                <field name="end_date" />
+                <field name="instance_id"/>
+                <field name="seller_id" />
+                <field name="state" />
+                <field name="attachment_id" invisible="1"/>
+                <button name="download_report" type="object" help="Click Here To download report" icon="fa-cloud-download" aria-label="Download Report" title="Download Report"  attrs="{'invisible':[('attachment_id','=',False)]}"/>
+            </tree>
+        </field>
+    </record>
+    <record id="amazon_settlement_report_form_view_ept"
+        model="ir.ui.view">
+        <field name="name">Amazon Settlement Report Form</field>
+        <field name="model">settlement.report.ept</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Settlement Report" create="false">
+                <header>
+                    <button name="get_report" string="Get Report"
+                        attrs="{'invisible':['|',('report_document_id','=',False),('attachment_id','!=',False)]}"
+                        class="oe_highlight" context="{'emipro_api':'get_report_document_sp_api'}"
+                        type="object" />
+                    <button name="download_report" string="Download Report"
+                        attrs="{'invisible':[('attachment_id','=',False)]}"
+                        class="oe_highlight"
+                        type="object" />
+                    <button name="view_bank_statement" string="View Statement"
+                        attrs="{'invisible':[('statement_id','=',False)]}"
+                        class="oe_highlight"
+                        type="object" />
+                    <button name="reconcile_remaining_transactions" string="Reconcile"
+                        attrs="{'invisible':[('state','not in',['imported','partially_processed'])]}"
+                        class="oe_highlight"
+                        type="object"
+                        />
+<!--                    ('all_lines_reconciled', '=', True)-->
+                    <button name="process_settlement_report_file" string="Process Statement"
+                        attrs="{'invisible':['|',('attachment_id','=',False),('state','not in',('_DONE_', 'DONE'))]}"
+                        class="oe_highlight"
+                        help="Click Here To process the report file"
+                        type="object" />
+
+                     <button string="Configure Missing Fees"
+                             name="configure_statement_missing_fees"
+                             attrs="{'invisible':['|',('is_fees','!=',True),('statement_id','=',False)]}"
+                             type="object"
+                             class="oe_highlight"/>
+
+                    <button name="validate_statement" string="Validate"
+                        attrs="{'invisible':[('state', '!=', 'processed')]}"
+                        class="oe_highlight"
+                        type="object" />
+                    <field name="state" widget="statusbar" statusbar_visible="SUBMITTED,IN_PROGRESS,_DONE_" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_inline oe_stat_button" name="list_of_reimbursement_invoices" type="object" icon="fa-pencil-square-o" attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                               <field string="Reimbursement Invoices" name="invoice_count" widget="statinfo"/>
+                         </button>
+                    </div>
+                    <div class="oe_title" style="width: 500px;">
+                        <h1>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <label for="start_date" string="Date"/>
+                            <div>
+                                <field name="start_date" attrs="{'readonly':[('state','!=','draft')]}" class="oe_inline"/>
+                                to <field name="end_date" attrs="{'readonly':[('state','!=','draft')]}" class="oe_inline"/>
+                            </div>
+                            <field name="instance_id" attrs="{'invisible':[('state','not in',['_DONE_','DONE','processed'])]}" domain="[('seller_id','=',seller_id)]" /> <!-- attrs="{'invisible':[('state','not in',['_DONE_','processed'])]}" -->
+                            <field name="currency_id"  attrs="{'invisible':[('state','not in',['_DONE_','DONE','processed'])]}"/>
+                        </group>
+                        <group>
+                            <field name="seller_id" required="1"  attrs="{'readonly':[('state','!=','draft')]}" />          <!-- on_change="on_change_seller_id(seller_id,start_date,end_date)" -->
+                            <field name="report_id" readonly="1"/>
+                            <field name="report_document_id" readonly="1"/>
+                            <field name="report_type" readonly="1" invisible="1"/>
+                            <field name="attachment_id" invisible="1"/>
+                            <field name="statement_id" invisible="1" />
+                            <field name="user_id" readonly="1" invisible="1"/>
+                            <field name="already_processed_report_id" readonly="1"
+                                   attrs="{'invisible':[('state','!=','duplicate')]}"/>
+                            <field name="is_fees" invisible="1"/>
+<!--                            <field name="all_lines_reconciled" invisible="1"/>-->
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_amazon_settlement_report_ept" model="ir.actions.act_window">
+        <field name="name">Amazon Settlement Reports</field>
+        <field name="res_model">settlement.report.ept</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="amazon_settlement_report_tree_view_ept" />
+    </record>
+
+    <menuitem id="menu_amazon_settlement_report_ept" name="Settlement Reports"
+        parent="amazon_ept.menu_item_parent_amazon_invoices_ept"
+        groups="account.group_account_readonly"
+        action="action_amazon_settlement_report_ept" sequence="2"/>
+</odoo>

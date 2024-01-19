@@ -1,0 +1,1534 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Connect Seller View-->
+    <record id="view_form_res_config_amazon_seller" model="ir.ui.view">
+        <field name="name">Configure Seller</field>
+        <field name="model">res.config.amazon.seller</field>
+        <field name="groups_id" eval="[(6,0, [ref('base.group_multi_company')])]"/>
+        <field name="arch" type="xml">
+            <form string="Configure Seller" class="oe_form_configuration">
+                <group string="Seller Information">
+                    <group>
+                        <field name="name" required="1"/>
+                        <field name="merchant_id" required="1" string="Merchant Token"/>
+                        <field name="amazon_selling" required="1"/>
+                    </group>
+                    <group>
+                        <field name="country_id"
+                               domain="[('amazon_marketplace_code','!=',False)]"
+                               widget="selection" required="1"/>
+                        <field name="company_id" widget="selection"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Create" type="object" name="test_amazon_connection"
+                            class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <!--Connect Seller View Over-->
+
+    <record id="view_form_res_config_amazon_marketplace" model="ir.ui.view">
+        <field name="name">view.form.res.config.amazon.marketplace</field>
+        <field name="model">res.config.amazon.marketplace</field>
+        <field name="groups_id" eval="[(6,0, [ref('base.group_multi_company')])]"/>
+        <field name="arch" type="xml">
+            <form string="Configure Amazon Marketplaces" class="oe_form_configuration">
+                <div>
+                    <p class="alert alert-info" role="alert">Note: Please be careful while selecting the Fulfilment
+                        program as it will have an impact on several operations. You may contact
+                        <a href="https://www.emiprotechnologies.com/emipro-support-desk"
+                           style="text-decoration:none; color: #454748;">Emipro support team</a>, incase you are not
+                        sure about your applicable program.
+                    </p>
+                </div>
+                <div class="alert alert-warning" role="alert" >
+                    <p attrs="{'invisible':[('amazon_program','!=','pan_eu')]}">
+                        <strong>Note:</strong>
+                        <br/>
+                        <li> UK is no longer part
+                        of PAN EU Program of Amazon, if you are selling on Amazon.co.uk
+                        marketplace, you can simply select the marketplace from the list
+                        below</li>
+                        <button icon="fa-youtube-play" string="Watch Video Tutorial" name="document_open"
+                                            type="object" context="{'document_to_open': 'pan_eu_video'}"/>
+                        <button icon="fa-file-text" string="Read Documentation" name="document_open"
+                                            type="object" context="{'document_to_open': 'amazon_program_document'}"/>
+                    </p>
+                    <p attrs="{'invisible':[('amazon_program','!=', 'efn+mci')]}">
+                        <strong>Note:</strong>
+                        <br/>
+                        <li>If the user will select a UK marketplace then
+                        the system will auto create an FBA warehouse for the UK marketplace.</li>
+                        <button icon="fa-file-text" string="Read Documentation" name="document_open"
+                                            type="object" context="{'document_to_open': 'amazon_program_document'}"/>
+                    </p>
+                    <p attrs="{'invisible':[('amazon_program','!=', 'cep')]}">
+<!--                        <strong>Note:</strong>-->
+                        <br/>
+<!--                        <li>To Be added</li>-->
+                       <button icon="fa-youtube-play" string="Watch Video Tutorial" name="document_open"
+                                            type="object" context="{'document_to_open': 'cep_video'}"/>
+                        <button icon="fa-file-text" string="Read Documentation" name="document_open"
+                                            type="object" context="{'document_to_open': 'amazon_program_document'}"/>
+                    </p>
+                    <p attrs="{'invisible':[('amazon_program','!=', 'mci')]}">
+<!--                        <strong>Note:</strong>-->
+                        <br/>
+<!--                        <li>To Be added.</li>-->
+                        <button icon="fa-youtube-play" string="Watch Video Tutorial" name="document_open"
+                                            type="object" context="{'document_to_open': 'mci_video'}"/>
+                        <button icon="fa-file-text" string="Read Documentation" name="document_open"
+                                            type="object" context="{'document_to_open': 'amazon_program_document'}"/>
+                    </p>
+                    <p attrs="{'invisible':[('amazon_program','!=', 'efn')]}">
+                        <strong>Note:</strong>
+                        <br/>
+                        <li>If the user will select a UK marketplace then
+                        the system will auto create an FBA warehouse for the UK marketplace.</li>
+                        <li>Store inventory is required if you select any marketplace other than UK</li>
+                        <button icon="fa-youtube-play" string="Watch Video Tutorial" name="document_open"
+                                            type="object" context="{'document_to_open': 'efn_video'}"/>
+                        <button icon="fa-file-text" string="Read Documentation" name="document_open"
+                                            type="object" context="{'document_to_open': 'amazon_program_document'}"/>
+                    </p>
+                    <p attrs="{'invisible':[('amz_fba_us_program','!=', 'narf')]}">
+<!--                        <strong>Note:</strong>-->
+                        <br/>
+<!--                        <li>To Be added</li>-->
+                        <button icon="fa-youtube-play" string="Watch Video Tutorial" name="document_open"
+                                            type="object" context="{'document_to_open': 'narf_video'}"/>
+                        <button icon="fa-file-text" string="Read Documentation" name="document_open"
+                                            type="object" context="{'document_to_open': 'amazon_program_document'}"/>
+                    </p>
+                </div>
+                <group>
+                    <field name="seller_id" widget="selection" class="oe_inline" readonly="1"
+                           force_save="1"/>
+                    <field name="is_mkt_created_via_program" invisible="1"/>
+                    <field name="is_european_region" invisible="1"/>
+                    <field name="is_north_america_region" invisible="1"/>
+                    <field name="amazon_selling"
+                           invisible="not context.get('switch_fulfillment',False)"/>
+                </group>
+                <group>
+
+                    <group>
+                        <field name="amazon_program"
+                               attrs="{'invisible':['|',('is_european_region','=',False),('amazon_selling','=','FBM')],'readonly':[('is_mkt_created_via_program','=',True)]}"
+                               force_save="1"/>
+                        <field name="amz_fba_us_program"
+                               attrs="{'invisible':['|','|',('is_european_region','=',True), ('is_north_america_region','=', False), ('amazon_selling','=','FBM')],'readonly':[('is_mkt_created_via_program','=',True)]}"
+                               force_save="1" string="Amazon USA Program"/>
+                    </group>
+                    <group attrs="{'invisible':[('amazon_program','!=','efn')]}">
+                        <field name="store_inv_wh_efn"
+                               domain="[('code','in',['FR','DE','PL','ES','CZ','IT'])]"/>
+                    </group>
+                </group>
+                <group>
+
+                    <group string="Active Listing Marketplace"
+                           attrs="{'invisible':[('is_european_region','=',True),('amazon_selling','!=','FBM')]}">
+
+                        <field name="marketplace_ids" widget="many2many_checkboxes" nolabel="1"
+                               domain="[('seller_id','=',seller_id)]"/>
+
+                    </group>
+                    <group string="Active Listing Marketplace"
+                           attrs="{'invisible':[('amazon_program','!=','pan_eu')]}">
+                        <field name="pan_eu_marketplace_ids" widget='many2many_checkboxes'
+                               force_save="1" nolabel="1"
+                               attrs="{'readonly':[('amazon_program','=','pan_eu')]}"
+                               domain="[('seller_id','=',seller_id)]"/>
+                    </group>
+                    <group attrs="{'invisible':[('amazon_program','!=','pan_eu')]}"
+                           string="Other PAN European Country">
+
+                        <field name="other_pan_europe_country" widget="many2many_checkboxes"
+                               nolabel="1" domain="[('code','in',['CZ'])]"/>
+
+                    </group>
+
+                    <group string="Active Listing Marketplace"
+                           attrs="{'invisible':[('amazon_program','!=','efn')]}">
+                        <field name="efn_marketplace_ids" widget="many2many_checkboxes"
+                               nolabel="1"
+                               domain="[('market_place_id','in',['A13V1IB3VIYZZH',
+                                   'A1F83G8C2ARO7P','A1RKKUPIHCS9HS','APJ6JRA9NG5V4',
+                                   'A1PA6795UKMFR9']),('seller_id','=',seller_id)]"/>
+                    </group>
+
+                    <group string="Active Listing Marketplace"
+                           attrs="{'invisible':[('amazon_program','!=','mci')]}">
+                        <field name="mci_marketplace_ids" widget="many2many_checkboxes"
+                               nolabel="1"
+                               domain="[('market_place_id','in',['A13V1IB3VIYZZH',
+                                   'A1F83G8C2ARO7P','A1RKKUPIHCS9HS','APJ6JRA9NG5V4',
+                                   'A1PA6795UKMFR9']),('seller_id','=',seller_id)]"/>
+                    </group>
+                    <group string="Store Inventory Country"
+                           attrs="{'invisible':[('amazon_program','!=','mci')]}">
+                        <field name="store_inv_wh_mci" widget="many2many_checkboxes"
+                               nolabel="1"
+                               domain="[('code','in',['PL', 'CZ','DE','FR','GB','IT','ES'])]"/>
+                    </group>
+
+                    <group string="Active Listing Marketplace"
+                           attrs="{'invisible':[('amazon_program','!=','cep')]}">
+                        <field name="cep_marketplace_ids" widget="many2many_checkboxes"
+                               nolabel="1"
+                               domain="[('market_place_id','in',['A13V1IB3VIYZZH',
+                                   'A1F83G8C2ARO7P','A1RKKUPIHCS9HS','APJ6JRA9NG5V4',
+                                   'A1PA6795UKMFR9']),('seller_id','=',seller_id)]"/>
+                        <field name="store_inv_wh_cep" invisible="1"
+                               widget="many2many_checkboxes" domain="[('code','in',['DE',
+                                   'PL','CZ'])]"/>
+                    </group>
+
+                    <group string="Active Listing Marketplace"
+                           attrs="{'invisible':[('amazon_program','!=','efn+mci')]}">
+                        <field name="mci_efn_marketplace_ids" widget="many2many_checkboxes"
+                               nolabel="1"
+                               domain="[('market_place_id','in',['A13V1IB3VIYZZH',
+                                   'A1F83G8C2ARO7P','A1RKKUPIHCS9HS','APJ6JRA9NG5V4',
+                                   'A1PA6795UKMFR9']),('seller_id','=',seller_id)]"/>
+
+                    </group>
+                    <group string="Store Inventory Country"
+                           attrs="{'invisible':[('amazon_program','!=','efn+mci')]}">
+                        <field name="store_inv_wh_mci_efn" widget="many2many_checkboxes"
+                               domain="[('code','in',['FR','ES','IT','GB','DE','PL','CZ'])]"
+                               nolabel="1"/>
+                    </group>
+                </group>
+
+                <group string="Other Marketplaces" attrs="{'invisible':[('amazon_program','not in',['pan_eu','efn'])]}">
+                    <field name="other_marketplace_ids" widget="many2many_checkboxes"
+                           nolabel="1"
+                           domain="[('market_place_id', 'in', ['A1F83G8C2ARO7P']), ('seller_id','=',seller_id)]"/>
+                </group>
+                <footer>
+                    <button string=" Create Marketplace" type="object"
+                            name="create_amazon_marketplace" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="res_config_action_amazon_seller" model="ir.actions.act_window">
+        <field name="name">Seller</field>
+        <field name="res_model">res.config.amazon.seller</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_form_res_config_amazon_seller"/>
+    </record>
+
+    <record id="res_config_action_amazon_marketplace" model="ir.actions.act_window">
+        <field name="name">Amazon Marketplaces</field>
+        <field name="res_model">res.config.amazon.marketplace</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_form_res_config_amazon_marketplace"/>
+    </record>
+
+    <record id="view_config_amazon_transaction_type" model="ir.ui.view">
+        <field name="name">Configure Amazon Seller Transaction Type</field>
+        <field name="model">amazon.transaction.line.ept</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree editable="top" multi_edit="1">
+                <field name='transaction_type_id' required="1"/>
+                <field name='account_id' required="1"/>
+                <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
+                <field name="tax_id" domain="[('price_include','=',True)]"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="res_config_action_amazon_transaction_type" model="ir.actions.act_window">
+        <field name="name">Amazon Transaction Type</field>
+        <field name="res_model">amazon.transaction.line.ept</field>
+        <field name="view_id" ref="amazon_ept.view_config_amazon_transaction_type"/>
+    </record>
+
+    <record id="view_config_amazon_tax_configuration" model="ir.ui.view">
+        <field name="name">Configure Amazon VCS Tax</field>
+        <field name="model">amazon.seller.ept</field>
+        <field name="priority">1000</field>
+        <field name="arch" type="xml">
+            <form string="Configure Amazon VCS Tax">
+                <separator string='B2B Tax And Outside EU Tax'/>
+                <field name="b2b_amazon_tax_ids">
+                    <tree editable="top">
+                        <field name="seller_id"/>
+                        <field name="jurisdiction_country_id"
+                               domain="[('vcs_tax_code','!=',False)]"
+                               options="{'no_quick_create': True,'no_create_edit': True,}"/>
+                        <field name="tax_id"
+                               domain="[('type_tax_use','=','sale'),('amount','=',0.0)]"
+                               options="{'no_quick_create': True,'no_create_edit': True,}"/>
+                        <field name="is_outside_eu"/>
+                    </tree>
+                </field>
+                <h6>Note : VCS tax code should be set in country otherwise country will
+                    not be visible in configuration
+
+                </h6>
+            </form>
+        </field>
+    </record>
+
+    <record id="res_config_action_amazon_tax_configuration" model="ir.actions.act_window">
+        <field name="name">Amazon VCS Tax</field>
+        <field name="res_model">amazon.seller.ept</field>
+        <field name="view_id" ref="amazon_ept.view_config_amazon_tax_configuration"/>
+    </record>
+
+    <record id="view_amazon_config_settings" model="ir.ui.view">
+        <field name="name">Amazon Settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Amazon Seller" string="Amazon Seller" data-key="amazon_ept">
+
+                    <div name="seller_config">
+                        <h2 style="font-size:25px;background-color:rgb(245,255,250);">Amazon
+                            Seller - Setup &amp;
+                            Configuration
+                        </h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 mb-0 pb-0 o_setting_box">
+                                <h4 style="margin-left:-7px; margin-bottom:0; line-height: 1;">
+                                    <button style="font-size: 1.40833333rem; margin-bottom:0; line-height: 1;"
+                                            string="1) Register Your Seller ID"
+                                            name="register_seller" type="object"
+                                            class="font-weight-bold oe_link"/>
+                                </h4>
+                                <p class="text-muted" style="margin-left:2rem; margin-bottom:0; line-height: 1.2;">
+                                    This will allow you to register your seller account with Emipro. This is one time process per seller account.<br/>
+                                    <button string="Watch Video Tutorial" icon="fa-youtube-play"
+                                            name="open_operations_tutorial" type="object"
+                                            context="{'tutorial_type': 'Register Your Seller ID'}"/>
+                                    <button icon="fa-file-text" string="READ DOCUMENTATION" name="document_open"
+                                            type="object" context="{'document_to_open': 'register_seller'}"/>
+                                </p>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box mt-0 mb-0 pb-0 pt-0 lh-1">
+                                <!--      Dummy for proper alignment        -->
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box mt-0 mb-0 pb-0 pt-0 lh-1">
+                                <h4 style="margin-left:-7px; margin-bottom:0; line-height: 1;">
+                                    <button style="font-size: 1.40833333rem; margin-bottom:0; line-height: 1;"
+                                            string="2) Connect Your Seller Central Account"
+                                            name="%(res_config_action_amazon_seller)d"
+                                            type="action"
+                                            class="font-weight-bold oe_link"/>
+                                </h4>
+                                <p class="text-muted" style="margin-left:2rem; margin-bottom:0; line-height: 1.2;">
+                                    This will allow you to connect your seller account with Odoo database. This needs to be done for each of your databases which a user intends to use this solution for. <br/>
+                                    <button string="Watch Video Tutorial" icon="fa-youtube-play"
+                                            name="open_operations_tutorial" type="object"
+                                            context="{'tutorial_type': 'Connect Your Seller Central Account'}"/>
+                                    <button icon="fa-file-text" string="READ DOCUMENTATION" name="document_open"
+                                            type="object" context="{'document_to_open': 'connect_your_seller'}"/>
+                                </p>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box mt-0 mb-0 pb-0 pt-0 lh-1">
+                            <!--     Dummy for proper alignment         -->
+                            </div>
+                            <field name="is_any_european_seller" invisible="1"/>
+                            <div class="col-xs-12 col-md-6 o_setting_box mt-0 mb-0"
+                                 attrs="{'invisible':[('is_any_european_seller','=',False)]}">
+                                <h4 style="margin-left:-7px; margin-bottom:0; line-height: 1;">
+                                    <button style="font-size: 1.40833333rem; margin-bottom:0; line-height: 1;"
+                                            string="3) VAT Number Configuration"
+                                            name="%(action_vat_config_ept)d"
+                                            type="action"
+                                            class="font-weight-bold oe_link"/>
+                                </h4>
+                                <p class="text-muted" style="margin-left:2rem; margin-bottom:0; line-height: 1.2;">
+                                    Register each of the VAT numbers that a seller possesses based on which system will create fiscal positions in Odoo.<br/>
+                                    <button icon="fa-file-text" string="READ DOCUMENTATION" name="document_open"
+                                            type="object" context="{'document_to_open': 'vat_number_configuration'}"/>
+                                </p>
+                            </div>
+                            <div class="col-xs-12 col-md-12 o_setting_box">
+                                <hr style="border-top: 1px dotted rgba(68, 67, 67, 0.77);"/>
+                                <h3 style="margin-left:21px;">
+                                    <label for="amz_seller_id" string="Select Seller" style="font-weight: 500"/>
+                                    <field name="amz_seller_id" widget="selection"
+                                           class="oe_inline"/>
+                                </h3>
+                                <span style="margin-left:-7px">
+                                    <button string="Add More Marketplace to Integrate"
+                                            name="create_more_amazon_marketplace" type="object"
+                                            class="oe_link"
+                                            context="{'default_amz_seller_id':amz_seller_id}"
+                                            attrs="{'invisible':[('amz_seller_id','=',False)]}"/>
+
+                                </span>
+
+                            </div>
+                            <div class="col-xs-12 col-md-12 o_setting_box mt-0">
+                                <span style="margin-left:-7px">
+                                    <button string="Switch Amazon fulfillment by"
+                                            name="switch_amazon_fulfillment_by"
+                                            type="object" class="oe_link"
+                                            context="{'default_amz_seller_id':amz_seller_id,'switch_fulfillment':True}"
+                                            attrs="{'invisible':[('amz_seller_id','=',False)]}"/>
+                                </span>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <group>
+                                    <field name="amazon_selling"
+                                           attrs="{'invisible':[('amz_seller_id','=',False)], 'required': [('amz_seller_id', '!=', False)]}"
+                                           readonly="1" force_save="1"/>
+                                </group>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="fbm"
+                         attrs="{'invisible': ['|',  ('amz_seller_id', '=', False), ('amazon_selling', '=', 'FBA')]}">
+                        <center>
+                            <h1 style="margin-bottom: 0;
+                            padding: 0.25rem 16px;
+                            background-color: #dee2e6;
+                            font-size: 25px;
+                            font-weight: bold;
+                            color:#444;
+                            font-family:arial;
+                            text-shadow:
+                            1px 0px 1px #ccc, 0px 1px 1px #eee,
+                            2px 1px 1px #ccc, 1px 2px 1px #eee,
+                            3px 2px 1px #ccc, 2px 3px 1px #eee,
+                            4px 3px 1px #ccc, 3px 4px 1px #eee,
+                            5px 4px 1px #ccc, 4px 5px 1px #eee,
+                            6px 5px 1px #ccc, 5px 6px 1px #eee,
+                            7px 6px 1px #ccc;">
+                                FBM
+                            </h1>
+                        </center>
+                    </div>
+
+                    <div name="fbm_orders"
+                         attrs="{'invisible': ['|', ('amz_seller_id', '=', False),('amazon_selling', '=', 'FBA')]}">
+                        <h2>FBM Orders</h2>
+                        <div name="fbm_orders_returns">
+                            <div class="row mt16 o_settings_container" name="returns">
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_left_pane mr-auto">
+                                        <field name="is_default_odoo_sequence_in_sales_order_fbm" class="oe_inline"/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="is_default_odoo_sequence_in_sales_order_fbm"/>
+                                        <div class="text-muted">
+                                            Set Order Number based on default Sale Order
+                                            Sequence
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <div attrs="{'invisible': [('is_default_odoo_sequence_in_sales_order_fbm', '=',True)]}">
+                                            <label for="amz_order_prefix"/>
+                                            <field name="amz_order_prefix" class="oe_inline"/>
+                                            <div class="text-muted">
+                                                Prefix to add to Amazon Order Number
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_auto_workflow_id"
+                                               string="Auto Workflow"/>
+                                        <field name="amz_auto_workflow_id"
+                                               attrs="{'required':['&amp;',('amz_seller_id','!=',False),('amazon_selling', '=', 'FBM')]}"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Automized order flow for Fullfillment by
+                                            Merchant orders
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="inventory"
+                         attrs="{'invisible': ['|', ('amz_seller_id', '=', False), ('amazon_selling', '=', 'FBA')]}">
+                        <h2>Inventory</h2>
+                        <div name="fbm_inventory">
+                            <div class="row mt16 o_settings_container" name="returns">
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_fulfillment_latency"/>
+                                        <field name="amz_fulfillment_latency"
+                                               attrs="{'required':[('amz_seller_id','!=',False)]}"
+                                               class="oe_inline"/>
+                                        <b>Days</b>
+                                        <div class="text-muted">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="fba"
+                         attrs="{'invisible': ['|',  ('amz_seller_id', '=', False), ('amazon_selling', '=', 'FBM')]}">
+                        <center>
+                            <h1 style="margin-bottom: 0;
+                            padding: 0.25rem 16px;
+                            background-color: #dee2e6;
+                            font-size: 25px;
+                            font-weight: bold;
+                            color:#444;
+                            font-family:arial;
+                            text-shadow:
+                            1px 0px 1px #ccc, 0px 1px 1px #eee,
+                            2px 1px 1px #ccc, 1px 2px 1px #eee,
+                            3px 2px 1px #ccc, 2px 3px 1px #eee,
+                            4px 3px 1px #ccc, 3px 4px 1px #eee,
+                            5px 4px 1px #ccc, 4px 5px 1px #eee,
+                            6px 5px 1px #ccc, 5px 6px 1px #eee,
+                            7px 6px 1px #ccc;">
+                                FBA
+                            </h1>
+                        </center>
+                    </div>
+
+                    <div name="fba_orders"
+                         attrs="{'invisible': ['|' ,('amz_seller_id', '=', False), ('amazon_selling', '=', 'FBM')]}">
+                        <h2>FBA Orders</h2>
+                        <div name="fbm_orders_and_config">
+                            <div class="row mt16 o_settings_container" name="FBA">
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_left_pane">
+                                        <field name="amz_is_another_soft_create_fba_shipment" class="oe_inline"/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_is_another_soft_create_fba_shipment"/>
+                                        <div class="text-muted">
+                                            If true then system will not request new shipment
+                                            reports, but get reports
+                                            which was requested by another system or software.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_def_fba_partner_id"/>
+                                        <field name="amz_def_fba_partner_id"
+                                               attrs="{'required':['&amp;', ('amz_seller_id','!=',False), ('amazon_selling', '!=', 'FBM')]}"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Customer to be set in quotation for FBA pending
+                                            orders
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_fba_auto_workflow_id"
+                                               string="Auto Workflow"/>
+                                        <field name="amz_fba_auto_workflow_id"
+                                               class="oe_inline"
+                                               attrs="{'required': ['&amp;',('amz_seller_id', '!=', False),('amazon_selling', '=', 'FBA')]}"/>
+                                        <div class="text-muted">
+                                            Automized order flow for Fullfillment by Amazon
+                                            orders
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_left_pane">
+                                        <field name="amz_is_default_odoo_sequence_in_sales_order_fba" class="oe_inline"/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_is_default_odoo_sequence_in_sales_order_fba"/>
+                                        <div class="text-muted">
+                                            Set Order Number based on default Sale Order
+                                            Sequence
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <div attrs="{'invisible': [('amz_is_default_odoo_sequence_in_sales_order_fba', '=',True)]}">
+                                            <label for="amz_fba_order_prefix"/>
+                                            <field name="amz_fba_order_prefix"
+                                                   class="oe_inline"/>
+                                            <div class="text-muted">
+                                                Prefix to add to Amazon Order Number
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_left_pane">
+                                        <field name="is_fulfilment_center_configured" class="oe_inline"/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="is_fulfilment_center_configured"/>
+                                        <div style="color:red">
+                                            If True, then Orders will not be imported if the fulfillment center
+                                            is not configured in an appropriate warehouse.
+                                        </div>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <div class="text-muted">
+                                            <button name="sync_fba_fulfilment_centers" icon="fa-refresh" type="object"
+                                                    string="Sync Fulfilment Centers" class="btn-link"
+                                                    attrs="{'invisible':[('is_fulfilment_center_configured','=',False)]}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="inventory"
+                         attrs="{'invisible': ['|', ('amz_seller_id', '=', False), ('amazon_selling', '=', 'FBM')]}">
+                        <h2>Inventory</h2>
+                        <div name="fba_inventory">
+                            <div class="row mt16 o_settings_container" name="fbm_inv">
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_left_pane">
+                                        <field name="amz_validate_stock_inventory_for_report" class="oe_inline"
+                                               help="If Ticked, Product Stock will be automatically validated by system."/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_validate_stock_inventory_for_report"/>
+                                        <div class="text-muted">
+                                            Adjust stock in Odoo based on Live Inventory Report
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-6 o_setting_box"
+                                     attrs="{'invisible': [('amazon_selling', '=', 'FBM')]}">
+                                    <div class="o_setting_left_pane">
+                                        <field name="amz_is_reserved_qty_included_inventory_report" class="oe_inline"
+                                               help="If Ticked, Reserved Quantity will be added to the fulfillment Quantity."/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_is_reserved_qty_included_inventory_report"
+                                               string="Is Reserved Quantity to be included in FBA Live Inventory Report?"/>
+                                        <div class="text-muted">
+                                            If true them system will include FBA reserve stock
+                                            into real stock.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_left_pane">
+                                        <field name="amz_is_another_soft_create_fba_inventory" class="oe_inline"/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_is_another_soft_create_fba_inventory"/>
+                                        <div class="text-muted">
+                                            If true then system will not request new Inventory
+                                            reports, but get
+                                            reports which was requested by another system or
+                                            software.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="removal_order_for_seller"
+                         attrs="{'invisible': ['|' ,('amz_seller_id', '=', False), ('amazon_selling', '=', 'FBM')]}">
+                        <h2>Removal Order</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="is_allow_to_create_removal_order" class="oe_inline"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="is_allow_to_create_removal_order"/>
+                                    <div class="text-muted">
+                                        If true then you have to set warehouse, and you can
+                                        select warehouse for
+                                        only
+                                        one instance.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('is_allow_to_create_removal_order','=',False)]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_instance_removal_order"/>
+                                    <field name="amz_instance_removal_order" class="oe_inline"
+                                           attrs="{'required':[('is_allow_to_create_removal_order','=',True)]}"
+                                           domain="[('seller_id','=',amz_seller_id)]"/>
+                                    <div class="text-muted">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': ['|', '|',
+                                 ('amz_seller_id', '=', False),
+                                 ('amz_instance_removal_order', '=', False),
+                                 ('is_allow_to_create_removal_order','=',False)]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="removal_warehouse_id"/>
+                                    <field name="removal_warehouse_id" class="oe_inline"
+                                           attrs="{'required':[('is_allow_to_create_removal_order','=',True)]}"
+                                           domain="[('is_fba_warehouse','=',False)]"/>
+                                    <div class="text-muted">
+                                        Warehouse in which amazon shipment will be received
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('is_allow_to_create_removal_order','=',False)]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_fba_liquidation_partner"/>
+                                    <field name="amz_fba_liquidation_partner" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        If you are participated for FBA Liquidation,
+                                        All deliveries will be sent to this customer for Liquidation removal orders.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('is_allow_to_create_removal_order','=',False)]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="removal_order_report_days"/>
+                                    <field name="removal_order_report_days" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="allow_auto_outbound_shipment"
+                         attrs="{'invisible': ['|' ,('amz_seller_id', '=', False), ('amazon_selling', '=', 'FBM')]}">
+                        <h2>Outbound Shipment</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="allow_auto_create_outbound_orders" class="oe_inline"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="allow_auto_create_outbound_orders"/>
+                                <div style="color:red">
+                                    If Allow this configuration, System will Auto Start Scheduler for Create
+                                    Outbound Orders from Odoo to Amazon.
+                                </div>
+                            </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('allow_auto_create_outbound_orders', '=', False)]}">
+                                <div class="o_setting_left_pane">
+                                    <field name="amz_create_outbound_on_confirmation" class="oe_inline"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_create_outbound_on_confirmation"/>
+                                    <div style="color:red">
+                                        If Allow this configuration, System will Auto create Outbound Orders from
+                                        Odoo to Amazon when a Sale order is confirmed.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('allow_auto_create_outbound_orders', '=', False)]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="fulfillment_policy"/>
+                                    <field name="fulfillment_policy" class="oe_inline"
+                                           attrs="{'required': [('allow_auto_create_outbound_orders', '=', True)]}"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="fulfillment_action"/>
+                                    <field name="fulfillment_action" class="oe_inline"
+                                           attrs="{'required': [('allow_auto_create_outbound_orders', '=', True)]}"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="shipment_category"/>
+                                    <field name="shipment_category" class="oe_inline"
+                                           attrs="{'required': [('allow_auto_create_outbound_orders', '=', True)]}"/>
+                                    <div class="text-muted">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('allow_auto_create_outbound_orders', '=', False)]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_default_outbound_instance"/>
+                                    <field name="amz_default_outbound_instance" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        When an outbound order is created, this instance will be set as default in that.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="settlement_report"
+                         attrs="{'invisible': [('amz_seller_id', '=', False)]}">
+                        <h2>Settlement Report</h2>
+                        <div name="fba_settlement_report">
+                            <div class="row mt16 o_settings_container" name="returns">
+                                <div class="col-xs-12 col-md-6 o_setting_box"
+                                     attrs="{'invisible': [('amazon_selling', '=', 'FBM')]}">
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_reimbursement_customer_id"
+                                               string="Reimbursement Customer"/>
+                                        <field name="amz_reimbursement_customer_id"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box"
+                                     attrs="{'invisible': [('amazon_selling', '=', 'FBM')]}">
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_sales_journal_id"
+                                               string="Reimbursement Sales Journal"/>
+                                        <field name="amz_sales_journal_id"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box"
+                                     attrs="{'invisible': [('amazon_selling', '=', 'FBM')]}">
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_reimbursement_product_id"
+                                               string="Reimbursement Product"/>
+                                        <field name="amz_reimbursement_product_id"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span>
+                                            <button string="Configure Amazon Seller Transaction Type"
+                                                    name="create_amazon_seller_transaction_type"
+                                                    type="object"
+                                                    class="oe_link"
+                                                    context="{'default_amz_seller_id':amz_seller_id}"
+                                                    attrs="{'invisible':[('amz_seller_id','=',False)]}"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="shipment_fee"
+                         attrs="{'invisible': [('amz_seller_id', '=', False)]}">
+                        <h2>Shipment and Other Fees</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="amz_shipment_charge_product_id"/>
+                                        <field name="amz_shipment_charge_product_id"
+                                               class="oe_inline"
+                                               attrs="{'required':[('amz_seller_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Product to be select for Shipment Fee Order
+                                            Line in an Order
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="amz_gift_wrapper_product_id"/>
+                                        <field name="amz_gift_wrapper_product_id"
+                                               class="oe_inline"
+                                               attrs="{'required':[('amz_seller_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Product to be select for Gift Wrapper Fee
+                                            Order Line in an Order
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="amz_promotion_discount_product_id"/>
+                                        <field name="amz_promotion_discount_product_id"
+                                               class="oe_inline"
+                                               attrs="{'required':[('amz_seller_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Product to be select for Promotion Discount
+                                            Order Line in an Order
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="amz_ship_discount_product_id"/>
+                                        <field name="amz_ship_discount_product_id"
+                                               class="oe_inline"
+                                               attrs="{'required':[('amz_seller_id','!=',False)]}"/>
+                                        <div class="text-muted">
+                                            Product to be select for Shipment Discount
+                                            Order Line in an Order
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="products" attrs="{'invisible': [('amz_seller_id', '=', False)]}">
+                        <h2>Products and Other Configurations</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="amz_create_new_product"
+                                           help="If true then system will allow to create new product if not found in odoo"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_create_new_product"
+                                           string="Allow to Create New Product if not found in Odoo ?"/>
+                                    <div class="text-muted">
+                                        If true then system will auto create product while
+                                        importing orders.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="amz_payment_term_id"/>
+                                        <field name="amz_payment_term_id"
+                                               attrs="{'required':[('amz_seller_id','!=',False)]}"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Payment term to be select in order
+                                        </div>
+                                    </div>
+                                    <div invisible="1">
+                                        <label for="company_for_amazon_id"/>
+                                        <field name="company_for_amazon_id"
+                                               widget="selection"
+                                               class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="allow_create_schedule_activity_for_missing_products"
+                         attrs="{'invisible': [('amz_seller_id', '=', False)]}">
+                        <h2>Scheduled Activity for Missing Products</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="is_amz_create_schedule_activity" class="oe_inline"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="is_amz_create_schedule_activity"/>
+                                    <div>
+                                        If Allow this configuration, System will create scheduled activity for missing
+                                        products.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('is_amz_create_schedule_activity', '=', False)]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_activity_type_id" string="Activity Type"/>
+                                    <div class="text-muted">
+                                        Select Schedule Activity Type
+                                        <div>
+                                            <field name="amz_activity_type_id"
+                                                   class="oe_inline"
+                                                   attrs="{'required': [('is_amz_create_schedule_activity', '=', True)]}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('is_amz_create_schedule_activity', '=', False)]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_activity_user_ids"/>
+                                    <div class="text-muted">
+                                        Select Responsible User for activity
+                                        <div>
+                                            <field name="amz_activity_user_ids" widget="many2many_tags"
+                                                   class="oe_inline"
+                                                   attrs="{'required': [('is_amz_create_schedule_activity', '=', True)]}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('is_amz_create_schedule_activity', '=', False)]}">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_activity_date_deadline" string="Deadline Lead Days"/>
+                                    <div class="text-muted">
+                                        Enter Lead Days For Deadline Date Of Schedule
+                                        Activity
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="mt16">
+                                            <field name="amz_activity_date_deadline"
+                                                   class="o_light_label"
+                                                   attrs="{'required': [('is_amz_create_schedule_activity', '=', True)]}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div name="amz_seller_analytic_account" attrs="{'invisible': [('amz_seller_id', '=', False)]}" groups="analytic.group_analytic_accounting">
+                        <h2>Analytics</h2>
+                        <div class="row mt16 o_settings_container" name="amz_seller_analytic">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="amz_seller_analytic_account_id"
+                                               string="Seller Analytic Account"/>
+                                        <field name="amz_seller_analytic_account_id"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Configure Seller Analytic Account
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box" groups="analytic.group_analytic_accounting">
+                                <div class="o_setting_right_pane" attrs="{'invisible': [('amazon_selling', '=', 'FBM')]}">
+                                    <div>
+                                        <label for="fba_analytic_account_id"
+                                               string="FBA Analytic Account"/>
+                                        <field name="fba_analytic_account_id"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Configure FBA Analytic Account
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box" groups="analytic.group_analytic_accounting">
+                                <div class="o_setting_right_pane" attrs="{'invisible': [('amazon_selling', '=', 'FBA')]}">
+                                    <div>
+                                        <label for="fbm_analytic_account_id"
+                                               string="FBM Analytic Account"/>
+                                        <field name="fbm_analytic_account_id"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Configure FBM Analytic Account
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="invoice_upload_to_amazon"
+                         attrs="{'invisible':['|',('amz_seller_id','=',False),('is_european_region','=',False)]}">
+                        <h2>Invoice Upload to Amazon</h2>
+                        <field name="is_european_region" invisible="1"/>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <label for="invoice_upload_policy"/>
+                                    <field name="invoice_upload_policy"/>
+                                    <div class="text-muted"
+                                         attrs="{'invisible':[('invoice_upload_policy', '=', 'custom')]}">
+                                        Select carefully as per your Amazon Configurations.
+                                    </div>
+                                    <div attrs="{'invisible':[('invoice_upload_policy', '!=', 'custom')]}">
+                                        <label for="amz_invoice_report"/>
+                                        <field name="amz_invoice_report"
+                                               domain="[('model','=','account.move'),('report_type','=','qweb-pdf')]"/>
+                                    </div>
+                                    <div style="color:red"
+                                         attrs="{'invisible':[('invoice_upload_policy', '!=', 'custom')]}">
+                                        Choose Invoice Report Format wisely, we will export invoices with this selected
+                                        format.
+                                        If not selected then we will export invoice with default invoice format.
+                                    </div>
+                                </div>
+                                <div attrs="{'invisible':[('invoice_upload_policy', '!=', 'custom')]}">
+                                    <div class="o_setting_left_pane">
+                                        <field name="amz_upload_refund_invoice"/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="amz_upload_refund_invoice"/>
+                                        <div class="text-muted">
+                                            If True, then System will export refund Invoices to Amazon.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box" invisible="1">
+                                <div class="o_setting_right_pane">
+                                    <span>
+                                        <button string="Configure VCS Tax"
+                                                name="create_vcs_tax"
+                                                type="object"
+                                                class="oe_link"
+                                                context="{'default_amz_seller_id':amz_seller_id}"
+                                        />
+                                        <div class="text-muted"
+                                             attrs="{'invisible':[('invoice_upload_policy', '=', False)]}">
+                                            If you configure VCS Report process,
+                                            then System will not create and validate invoices while
+                                            processing Shipment Report
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_amazon_instance_config_settings" model="ir.ui.view">
+        <field name="name">Amazon Settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block " data-string="Amazon Marketplace" string="Amazon Marketplace" data-key="amazon_ept_instance">
+
+                    <div name="seller_config">
+                        <h2 style="font-size:25px;background-color:rgb(245,255,250);">Amazon
+                            Seller
+                        </h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <label for="amz_seller_id"
+                                       string="Select Seller"/>
+                                <field name="amz_seller_id" widget="selection"
+                                       class="oe_inline"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div name="amazon_instance"
+                         attrs="{'invisible': [('amz_seller_id', '=', False)]}">
+                        <h2 style="font-size:25px;background-color:rgb(245,255,250);">Amazon
+                            Marketplace
+                        </h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <label for="amz_instance_id" string="Select Marketplace"/>
+                                <field name="amz_instance_id" widget="selection"
+                                       domain="[('seller_id','=',amz_seller_id)]"
+                                       class="oe_inline"/>
+                                <field name="amz_is_usa_marketplace" invisible="1"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="amazon_instance_congif"
+                         attrs="{'invisible': [('amz_instance_id', '=', False)]}">
+                        <h2 style="font-size:21px;background-color:rgb(245,255,250);">
+                            Marketplace Configuration
+                        </h2>
+                    </div>
+
+                    <div name="inventory_instance"
+                         attrs="{'invisible': [('amz_instance_id', '=', False)]}">
+                        <h2>Inventory</h2>
+                        <div name="inv" class="row mt16 o_settings_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="amz_instance_stock_field"/>
+                                        <field name="amz_instance_stock_field"
+                                               attrs="{'required':[('amz_instance_id','!=',False)]}"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Updates Stock based on Stock On Hand or
+                                            Forecast Quantity.
+                                            Recommended Free Quantity
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="payment_instance"
+                         attrs="{'invisible': [('amz_instance_id', '=', False)]}">
+                        <h2>Settlement Report</h2>
+                        <div class="row mt16 o_settings_container" name="payment">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="amz_instance_settlement_report_journal_id"/>
+                                        <field name="amz_instance_settlement_report_journal_id"
+                                               class="oe_inline"
+                                               domain="[('company_id','=',company_for_amazon_id),('type','in',['cash','bank'])]"/>
+                                        <div class="text-muted">
+                                            Creates Bank Statement using this journal
+                                            while process Settlement
+                                            Report
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="amz_instance_ending_balance_account_id"/>
+                                        <field name="amz_instance_ending_balance_account_id"
+                                               class="oe_inline"
+                                               domain="[('company_id','=',company_for_amazon_id)]"/>
+                                        <div class="text-muted">
+                                            Account to be used for transfer from Amazon to
+                                            Bank account.
+                                        </div>
+                                    </div>
+                                    <div attrs="{'invisible':[('amz_instance_ending_balance_account_id','=',False)]}">
+                                        <label for="amz_instance_ending_balance_description"/>
+                                        <field name="amz_instance_ending_balance_description"
+                                               class="oe_inline"
+                                               attrs="{'required':[('amz_instance_ending_balance_account_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="amz_marketplace_analytic_account"
+                         attrs="{'invisible': [('amz_instance_id', '=', False)]}" groups="analytic.group_analytic_accounting">
+                        <h2>Analytics</h2>
+                        <div class="row mt16 o_settings_container" name="analytic">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="analytic_account_id"
+                                               string="Marketplace Analytic Account"/>
+                                        <field name="analytic_account_id"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Configure Analytic Account
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div name="order_fulfillment"
+                         attrs="{'invisible': [('amz_instance_id', '=', False)]}">
+                        <h2>Orders</h2>
+                        <div class="row mt16 o_settings_container" name="order">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div name="miscellaneous_instance">
+                                        <div>
+                                            <label for="amz_lang_id"/>
+                                            <field name="amz_lang_id" widget="selection"
+                                                   attrs="{'required':[('amz_instance_id','!=',False)]}"
+                                                   class="oe_inline"/>
+                                            <div class="text-muted">
+                                                Language to be set on Amazon customer to send
+                                                document in their
+                                                local language
+                                            </div>
+                                        </div>
+                                        <div name="amazon_us_tax_config"
+                                             attrs="{'invisible':[('amz_is_usa_marketplace','=',False)]}">
+                                            <label for="amz_tax_id" string="Amazon Tax"/>
+                                            <field name="amz_tax_id" class="oe_inline"
+                                                   domain="[('amount_type','=','code')]"/>
+                                            <button string="Download Tax Calculation Module"
+                                                    name="download_attached_module" type="object"
+                                                    class="btn-link"
+                                                    help="Install this module if you are USA Seller."/>
+                                            <div class="text-muted">
+                                                This Module is only needed if you are selling on US
+                                                Marketplace.
+                                                Download the module on click of above link and
+                                                install it.
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label for="amazon_property_account_payable_id"/>
+                                            <field name="amazon_property_account_payable_id"
+                                                   class="oe_inline"/>
+                                            <div class="text-muted">
+                                                Set the payable account for current partner
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="amz_instance_pricelist_id"/>
+                                        <field name="amz_instance_pricelist_id"
+                                               attrs="{'required':[('amz_instance_id','!=',False)]}"
+                                               class="oe_inline"/>
+                                        <div class="text-muted">
+                                            Will be used to update price for product on
+                                            Amazon and Creates
+                                            Order in Pricelist Currency
+                                        </div>
+                                    </div>
+                                    <div invisible="1">
+                                        <label for="amz_partner_id"/>
+                                        <field name="amz_partner_id" class="oe_inline"/>
+                                    </div>
+                                    <div>
+                                        <label for="amz_team_id"/>
+                                        <field name="amz_team_id" widget="selection"
+                                               class="oe_inline"/>
+                                    </div>
+                                    <div>
+                                        <label for="amazon_property_account_receivable_id"/>
+                                        <field name="amazon_property_account_receivable_id"
+                                               class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('amazon_selling', '=', 'FBA')] }">
+                                <div class="o_setting_right_pane">
+
+                                    <div>
+                                        <label for="amz_warehouse_id" string="FBM Warehouse"/>
+                                        <field name="amz_warehouse_id" widget="selection"
+                                               attrs="{'required':[('amz_instance_id','!=',False)]}"
+                                               class="oe_inline"
+                                               domain="[('company_id','=',company_for_amazon_id)]"/>
+                                        <div class="text-muted">
+                                            ToolTip: Default Fulfillment Warehouse for FBM Orders,
+                                            FBM Delivery Orders will be created in this warehouse.
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <field name="amz_country_id" invisible="1"
+                                               class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('amazon_selling', '=', 'FBM')]}">
+                                <div class="o_setting_right_pane">
+                                    <label for="amz_fba_warehouse_id" string="FBA Warehouse"/>
+                                    <field name="amz_fba_warehouse_id"
+                                           domain="[('company_id','=',company_for_amazon_id),('is_fba_warehouse','=',True),('seller_id','=', amz_seller_id)]"
+                                           attrs="{'required':['&amp;', ('amz_instance_id','!=',False), ('amazon_selling', '!=', 'FBM')]}"
+                                           class="oe_inline"
+                                           options="{'no_create': True, 'no_create_edit':True}"/>
+                                    <div class="text-muted">
+                                        Process FBA Orders in this warehouse if fulfillment
+                                        center not found
+                                    </div>
+                                    <div invisible="1">
+                                        <label for="company_for_amazon_id"/>
+                                        <field name="company_for_amazon_id" widget="selection"
+                                               class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-6 o_setting_box"
+                                 attrs="{'invisible': [('amazon_selling', '=', 'FBA')] }">
+                                <div class="o_setting_right_pane">
+                                    <div>
+                                        <label for="stock_update_warehouse_ids"
+                                               string="FBM Warehouse(s)"/>
+                                        <field name="stock_update_warehouse_ids"
+                                               widget="many2many_tags"
+                                               class="oe_inline"
+                                               domain="[('company_id','=',company_for_amazon_id),('is_fba_warehouse','=',False)]"/>
+                                        <div class="text-muted">
+                                            Tooltip: Calculate total stock for FBM products to update from Odoo to
+                                            Amazon.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_amazon_instance_config" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
+
+    <!--    Archive Seller Confirmation View-->
+    <record id="archive_seller_confirmation_view" model="ir.ui.view">
+        <field name="name">Archive Seller</field>
+        <field name="model">res.config.amazon.seller</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <h6>NOTE: By clicking on 'Confirm', the system will perform the following operations-</h6>
+                        <p>- Archive the seller Account</p>
+                        <p>- Archive FBA Warehouse connected to the selected Seller Account</p>
+                        <p>- Archive Schedulers activated for the selected Seller Account</p>
+                        <p>- Archive Marketplaces connected to the selected Seller Account</p>
+                        <p>- Remove Fulfillment Centers connected to the selected Seller Account</p>
+                        <p>- Remove Amazon Products mapping connected to the selected Seller Account</p>
+                    </div>
+                </sheet>
+                <footer>
+                    <button string="Cancel" class="btn-info" special="cancel"/>
+                    <button name="confirm_archive_un_archive" string="Confirm" class="btn-danger" type="object"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--    Archive Seller Confirmation Action-->
+    <record id="action_archive_seller_confirmation" model="ir.actions.act_window">
+        <field name="name">Archive Seller</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.amazon.seller</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="archive_seller_confirmation_view"/>
+    </record>
+
+    <!--    Un-Archive Seller Confirmation View-->
+    <record id="un_archive_seller_confirmation_view" model="ir.ui.view">
+        <field name="name">Un-Archive Seller</field>
+        <field name="model">res.config.amazon.seller</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <h6>NOTE: By clicking on 'Confirm', the system will perform the following operations-</h6>
+                        <br/>
+                        <hr/>
+                        <p>- Un-Archive the seller Account</p>
+                        <p>- Un-Archive FBA Warehouse connected to the selected Seller Account</p>
+                        <p>- Sync the fulfillment centers to the related FBA warehouse.</p>
+                        <p>- Link the instance(marketplace) to the related Seller Account.</p>
+                        <br/>
+                        <hr/>
+                        <p>Operations that require manual actions:</p>
+                        <p>- Verify the fulfillment centers and sync missing fulfillment centers if any.</p>
+                        <p>- Map Amazon Products for the selected seller account.</p>
+                    </div>
+                </sheet>
+                <footer>
+                    <button string="Cancel" class="btn-info" special="cancel"/>
+                    <button name="confirm_archive_un_archive" string="Confirm" class="btn-danger" type="object"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--    Un-Archive Seller Confirmation Action-->
+    <record id="action_un_archive_seller_confirmation" model="ir.actions.act_window">
+        <field name="name">Un-Archive Seller</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.amazon.seller</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="un_archive_seller_confirmation_view"/>
+    </record>
+
+        <!--    Video Tutorial View-->
+    <record id="amz_video_tutorial_view" model="ir.ui.view">
+        <field name="name">Amz-Video-Tutorial</field>
+        <field name="model">res.config.amazon.seller</field>
+        <field name="arch" type="xml">
+            <form style="padding:2px">
+                <sheet>
+                    <div class="o_video_container" align="center">
+                        <field name="amz_video_url" readonly="1" widget="video_preview"/>
+                    </div>
+                    <footer>
+                        <div align="center"><button style="width:100%" string="Close" class="oe_highlight"
+                                                       special="cancel" /></div>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_amz_video_tutorial" model="ir.actions.act_window">
+        <field name="name">Video Tutorial</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.amazon.seller</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+        <field name="view_id" ref="amz_video_tutorial_view"/>
+    </record>
+
+    <menuitem id="amazon_instance_menu_item" name="Amazon"
+              web_icon="amazon_ept,static/description/icon.png"
+              groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fbm_ept,amazon_ept.group_amazon_fba_and_fbm_ept"
+              sequence="495"/>
+
+    <menuitem id="menu_configuration_ept" parent="amazon_instance_menu_item"
+              sequence="40" name="Configuration" groups="amazon_ept.group_amazon_manager_ept"/>
+
+
+    <record id="action_amazon_configuration" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_amazon_config_settings"/>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'amazon_ept'}</field>
+    </record>
+
+    <menuitem id="menu_config_amazon_setting" sequence="1"
+              name="Settings" parent="amazon_ept.menu_configuration_ept"
+              action="action_amazon_configuration" groups="base.group_system"/>
+<!--    groups="amazon_ept.group_amazon_user_ept"-->
+
+    <!--IAP Menu Start-->
+    <record model="ir.actions.server" id="action_buy_pack">
+        <field name="name">Buy IAP Pack</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="base_setup.model_res_config_settings"/>
+        <field name="state">code</field>
+        <field name="code">action = env['res.config.settings'].generate_buy_pack_url()</field>
+    </record>
+
+    <menuitem id="menu_buy_iap_pack" sequence="210"
+              name="Buy IAP Pack" parent="amazon_instance_menu_item"
+              action="action_buy_pack" groups="base.group_system"/>
+    <!--IAP Menu End-->
+</odoo>

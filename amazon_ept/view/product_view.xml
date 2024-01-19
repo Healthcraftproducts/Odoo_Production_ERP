@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="product_form_view_amazon_product_ept">
+        <field name="name">amazon.product.ept</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <field name="is_mapped_with_amz" invisible="1"/>
+                <button string="Amazon Product" type="object"
+                        attrs="{'invisible':[('is_mapped_with_amz', '=', False)]}"
+                        name= "action_view_amazon_product_ept" class="oe_stat_button" icon="fa-exchange"/>
+            </div>
+        </field>
+    </record>
+    <!--Amazon Product Tree View-->
+    <record id="amazon_product_tree_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Product Tree View</field>
+        <field name="model">amazon.product.ept</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="name"/>
+                <field name="seller_sku"/>
+                <field name="instance_id"/>
+                <field name="fulfillment_by"/>
+            </tree>
+        </field>
+    </record>
+    <!--Amazon Product Tree View End-->
+    <!--Amazon Product Form View-->
+    <record id="amazon_product_form_view_ept" model="ir.ui.view">
+        <field name="name">Amazon Product Form View</field>
+        <field name="model">amazon.product.ept</field>
+        <field name="arch" type="xml">
+            <form string="Amazon Product Form View" create='0'>
+                <div class="alert alert-danger" role="alert" style="margin-bottom:0px;"
+                     attrs="{'invisible': [('condition', '!=', 'New')]}">
+                    <center><b>New</b> is DEPRECATED use <b>NewItem</b> Instead,
+                        found under <b>Product Listing Elements</b> --> <b>Condition</b>
+                    </center>
+                </div>
+                <sheet>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name" string="Product Name"/>
+                        <h1>
+                            <field name="name" class="oe_inline" required="1"/>
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page string="Product Info">
+                            <group>
+                                <group>
+                                    <field name="seller_sku" required="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="fix_stock_type"/>
+                                    <field name="fix_stock_value"/>
+                                    <field name="fulfillment_latency"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Amazon Info">
+                            <group>
+                                <group>
+                                    <field name="exported_to_amazon" widget="boolean_toggle"/>
+                                    <field name="instance_id"
+                                           attrs="{'readonly': [('exported_to_amazon','=',True)]}"/>
+                                    <field name="fulfillment_by" required="1"
+                                           attrs="{'readonly': [('exported_to_amazon','=',True)]}"/>
+
+                                </group>
+                                <group>
+                                    <field name="launch_date"/>
+                                    <field name="release_date"/>
+                                    <field name="discontinue_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Product Listing Elements">
+                            <group>
+                                <group>
+                                    <field name="name" invisible="1"/>
+                                    <field name="designer"/>
+                                </group>
+<!--                                <group>-->
+<!--                                    <field name="brand"/>-->
+<!--                                    <field name="manufacturer"/>-->
+<!--                                </group>-->
+                                <group invisible="1">
+                                    <field name="related_product_type"/>
+                                    <field name="related_product_value"
+                                           attrs="{'required':[('related_product_type','!=',False)]}"/>
+                                </group>
+                                <group>
+                                    <field name="condition"/>
+                                    <field name="standard_product_id_type" required="1"/>
+                                    <field name="gtin_exemption_reason"
+                                           attrs="{'invisible':[('standard_product_id_type','!=','GTIN')],'required':[('standard_product_id_type','=','GTIN')]}"/>
+                                    <field name="product_upc"
+                                           attrs="{'invisible':[('standard_product_id_type','!=','UPC')],'required':[('standard_product_id_type','=','UPC')]}"/>
+                                    <field name="barcode"
+                                           attrs="{'invisible':[('standard_product_id_type','!=','EAN')],'required':[('standard_product_id_type','=','EAN')]}"/>
+                                    <field name="product_asin"
+                                           attrs="{'invisible':[('standard_product_id_type','!=','ASIN')],'required':[('standard_product_id_type','=','ASIN')]}"/>
+                                </group>
+                                <group>
+                                    <field name="package_weight_uom"/>
+                                    <field name="package_weight"/>
+                                    <field name="shipping_weight_uom"/>
+                                    <field name="shipping_weight"/>
+
+                                </group>
+                                <group>
+                                    <field name="item_dimensions_uom"/>
+                                    <field name="item_height"/>
+                                    <field name="item_length"/>
+                                    <field name="item_width"/>
+
+                                </group>
+                                <group>
+                                    <field name="package_dimensions_uom"/>
+                                    <field name="package_height"/>
+                                    <field name="package_length"/>
+                                    <field name="package_width"/>
+                                </group>
+                                <group>
+                                    <field name="allow_package_qty"/>
+                                    <field name="asin_qty" attrs="{'invisible':[('allow_package_qty', '=', False)]}"/>
+                                </group>
+                                <group>
+                                    <field name="max_order_quantity"/>
+                                    <field name="item_package_qty"/>
+                                </group>
+                                <group>
+                                    <field name="is_gift_wrap_available"/>
+                                    <field name="is_gift_message_available"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Features &amp; Search Terms">
+                            <field name="search_term_ids" nolabel="1" string="Max 5 Search Terms !">
+                                <tree editable="top">
+                                    <field name="name" required='1'/>
+                                </tree>
+                            </field>
+                            <field name="bullet_point_ids" nolabel="1" string="Max 5 Bullet Terms !">
+                                <tree editable="top">
+                                    <field name="name" required='1'/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Description &amp; Disclaimer">
+                            <group>
+                                <group colspan="4" string="Description">
+                                    <field name="long_description" placeholder="Add Product Description"
+                                           nolabel="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--Amazon Product Form View End-->
+
+    <!--Amazon Product Search View-->
+    <record model="ir.ui.view" id="amazon_product_search_view_ept">
+        <field name="name">amazon.product.ept</field>
+        <field name="model">amazon.product.ept</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Amazon Products">
+                <field name="name"/>
+                <field name="product_asin"/>
+                <field name="fulfillment_by"/>
+                <field name="product_id" string="Odoo Product"/>
+                <field name="seller_sku" string="Seller SKU"/>
+                <group expand="0" string="Group By">
+                    <filter name="instance" string="Marketplace" domain="[]"
+                            context="{'group_by':'instance_id'}"/>
+                    <filter name="fulfillment_by" string="Fulfillment By" domain="[]"
+                            context="{'group_by':'fulfillment_by'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!--Amazon Product Search View End-->
+    <!--Amazon Product Action-->
+    <record id="action_amazon_product_ept" model="ir.actions.act_window">
+        <field name="name">Amazon Product</field>
+        <field name="res_model">amazon.product.ept</field>
+        <field name="context">{'do_not_allow_update_amazon_operations':True}</field>
+        <field name="view_id" ref="amazon_product_tree_view_ept"/>
+        <field name="help" type="html">
+            <div class="oe_empty_amazon_products">
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    <b>There is no any Amazon Product Created yet</b>
+                </p>
+                <p>
+                    You can't create Amazon products directly from here. In order to
+                    create products for Amazon,
+                    You need to go to menu
+                    <b>Sales >> Products >> Products</b>
+                    and in list view of Product, select one or more products which you
+                    want to export to Amazon.
+                    At the top side, under the "More" section, you will find an option
+                    <b>"Prepare Product for Export"</b>
+                    .
+                    Clicking on that option, you will be asked to select Amazon Instance.After
+                    those products successfully prepared for Amazon, you can see all
+                    of them over here in this menu.
+                    However here you can open those products and add more Amazon specific
+                    attribute values to products. Once all products are well
+                    configured with proper values, you can export
+                    them to Amazon.
+                </p>
+            </div>
+        </field>
+    </record>
+    <!--Amazon Product Action End-->
+    <menuitem id="menu_item_parent_amazon_products_ept" name="Products"
+              parent="amazon_ept.amazon_instance_menu_item" sequence="2"/>
+
+    <menuitem id="menu_item_amazon_products_ept" name="Product Variants"
+              parent="menu_item_parent_amazon_products_ept" sequence="4"
+              action="action_amazon_product_ept"/>
+</odoo>

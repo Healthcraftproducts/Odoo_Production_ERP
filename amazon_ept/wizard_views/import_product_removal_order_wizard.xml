@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_import_product_removal_wizard" model="ir.ui.view">
+        <field name="name">Inbound Product Removal Wizard</field>
+        <field name="model">import.product.removal.order.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Product" version="7">
+                <group>
+                    <h4>Note:- Choose file for import Removal order line.</h4>
+                </group>
+                <field name="removal_order_id" invisible="True"/>
+                <group string="Configuration to import products">
+                    <group>
+                        <field name="choose_file" filename="file_name" string="Select file to import product"
+                               widget="binary"/>
+                        <field name="file_name" string="File Name" invisible="1"/>
+                        <field name="update_existing"/>
+                        <field name="replace_product_qty" widget="boolean_toggle" attrs="{'invisible' : [('update_existing','!=',True)]}"/>
+                        <field name="delimiter" required="1"/>
+                    </group>
+                </group>
+                <group string="Format" class="oe_highlight">
+                    <h4>default_code,unsellable_quantity,sellable_quantity.</h4>
+                </group>
+                <group>
+                    <button string="Download Sample Removal order Attachment" name="download_sample_attachment"
+                            type="object" class="oe_highlight"/>
+                </group>
+                <footer>
+                    <button name="import_removal_line" string="Import Product" type="object" class="oe_highlight"/>
+                    or
+                    <button string="_Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

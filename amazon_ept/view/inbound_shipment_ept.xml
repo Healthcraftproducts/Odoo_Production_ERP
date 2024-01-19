@@ -1,0 +1,496 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <record id="amazon_inbound_shipment_search_view" model="ir.ui.view">
+        <field name="name">Amazon inbound shipment Search</field>
+        <field name="model">amazon.inbound.shipment.ept</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Inbound Shipment">
+                <field name="name" />
+                <field name="address_id"/>
+                <field name="shipment_id"/>
+                <field name="shipment_plan_id"/>
+                <field name="fulfill_center_id" />
+                <field name="instance_id_ept" attrs="{'invisible':[('is_manually_created','=',False)]}"/>
+                <field name="from_warehouse_id" attrs="{'invisible':[('is_manually_created','=',False)]}"/>
+                <field name="is_manually_created" invisible="1"/>
+                <field name="state"/>
+                <field name="transport_state"/>
+                <group expand="0" string="Group By...">
+                    <filter name="ship_to_address" string="Ship To Address" context="{'group_by':'address_id'}" />
+                    <filter name="shipment_status" string="Shipment Status" context="{'group_by':'state'}" />
+                    <filter name="transport_status" string="Transport Status" context="{'group_by':'transport_state'}" />
+                    <filter name="fullfillment_center" string="Fullfillment Center" context="{'group_by':'fulfill_center_id'}"/>
+                    <filter name="shipment_plan" string="Shipment Plan" context="{'group_by':'shipment_plan_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="amazon_inbound_shipment_tree_view" model="ir.ui.view">
+        <field name="name">amazon.inbound.shipment.tree.view</field>
+        <field name="model">amazon.inbound.shipment.ept</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="name" />
+                <field name="shipment_plan_id"/>
+                <field name="shipment_id" />
+                <field name="address_id" />
+                <field name="fulfill_center_id" />
+                <field name="label_prep_type" />
+                <field name="state"/>
+                <field name="transport_state" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="amazon_inbound_shipment_form_view" model="ir.ui.view">
+        <field name="name">amazon.inbound.shipment.form.view</field>
+        <field name="model">amazon.inbound.shipment.ept</field>
+        <field name="arch" type="xml">
+            <form string="Shipment" create="false">
+                <header>
+                    <button name="check_status"
+                            string="Check Status" class="oe_highlight capitalize" type="object"
+                    />
+
+                    <button name="get_package_labels"
+                            string="Get Package Labels"
+                            context="{'label_type':'shipment'}"
+                            class="oe_highlight capitalize" type="object"
+                            attrs="{'invisible':['|',('shipping_type','=','ltl'),
+                                         '|',('is_partnered','=',True),
+                                         '|',('is_carton_content_updated', '=', False),
+                                         '|',('transport_content_exported','=',False),
+                                         '|',('is_manually_created', '=', True),
+                                         ('state','in',['CLOSED','CANCELLED','DELETED'])]}"/>
+
+                    <button name="get_unique_package_labels" string="Get Unique Package Labels"
+                            class="oe_highlight" type="object"
+                            attrs="{'invisible':['|',('transport_state','!=','CONFIRMED'),
+                                                 '|',('is_partnered','=',False),
+                                                 '|',('is_manually_created', '=', True),
+                                                 ('state','in',['CLOSED','CANCELLED','DELETED'])]}"/>
+
+                    <button name="create_shipment_picking" string="Create Shipment Picking"
+                            class="oe_highlight capitalize" type="object"
+                            attrs="{'invisible': ['|', ('is_picking', '!=', False),
+                            ('odoo_shipment_line_ids', '=', []),
+                            ('are_all_pickings_cancelled', '=', False)]}"/>
+
+                    <button name="get_package_labels" string="Get Pallet labels"
+                            attrs="{'invisible':['|',('is_carton_content_updated', '=',False),
+                                         '|',('transport_content_exported','=',False),
+                                         '|',('is_manually_created', '=', True),
+                                         '|',('state','in',['CLOSED','CANCELLED','DELETED']),
+                                         '|',('shipping_type', '!=', 'ltl'),
+                                         '|',('transport_type', '!=', 'partnered_ltl_data'),
+                                         '|',('is_partnered', '!=', True),
+                                         ('transport_state', '!=', 'CONFIRMED'),]}"
+                            context="{'label_type':'delivery'}"
+                            class="oe_highlight capitalize" type="object"
+                    />
+
+                    <button name="export_non_partnered_small_parcel_tracking"
+                            attrs="{'invisible':['|',('updated_in_amazon','=',True),
+                                         '|',('transport_type','!=','non_partnered_small_parcel_data'),
+                                         '|',('state','in',['CLOSED','CANCELLED','DELETED']),
+                                         '|',('is_carton_content_updated','=',False),
+                                         '|',('is_manually_created', '=', True),
+                                         ('transport_content_exported','=',True)]}"
+                            string="Update Tracking Number"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="export_non_partnered_ltl_parcel_tracking"
+                            attrs="{'invisible':['|',('updated_in_amazon','=',True),
+                                         '|',('transport_type','!=','non_partnered_ltl_data'),
+                                         '|',('state','in',['CLOSED','CANCELLED','DELETED']),
+                                         '|',('is_carton_content_updated','=',False),
+                                         '|',('transport_content_exported','=',True),
+                                         '|',('is_manually_created', '=', True),
+                                         ('pro_number','=',False)]}"
+                            string="Update Pro Number and Carrier"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="export_partnered_small_parcel"
+                            attrs="{'invisible': ['|',('is_carton_content_updated','=',False),
+                                          '|',('is_update_inbound_carton_contents','=',False),
+                                          '|',('transport_content_exported','=',True),
+                                          '|',('transport_type','!=','partnered_small_parcel_data'),
+                                          '|',('is_manually_created', '=', True),
+                                          ('state','in',['CLOSED','CANCELLED','DELETED'])]}"
+                            string="Update Transport Information"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="create_carton_contents_requests"
+                            attrs="{'invisible':['|',('is_update_inbound_carton_contents','=',True),
+                                         '|',('state','in',['CLOSED','CANCELLED','DELETED']),
+                                         '|',('is_picking', '=', False),
+                                         '|',('is_manually_created', '=', True),
+                                         '|','&amp;',('transport_type', 'in', ['partnered_small_parcel_data', 'non_partnered_small_parcel_data', 'non_partnered_ltl_data']),('partnered_small_parcel_ids', '=', []),'&amp;',('transport_type', '=', 'partnered_ltl_data'),('partnered_ltl_ids', '=', [])]}"
+                            string="Update Carton Content Information"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="get_carton_content_result"
+                            attrs="{'invisible': ['|',('is_update_inbound_carton_contents','=',False),
+                                          '|',('is_carton_content_updated','=',True),
+                                          '|',('is_manually_created', '=', True),
+                                          ('state','in',['CLOSED','CANCELLED','DELETED'])]}"
+                            string="Get Carton Content Result"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="export_partnered_ltl_parcel"
+                            attrs="{'invisible': ['|',('is_carton_content_updated','=',False),
+                                          '|',('is_update_inbound_carton_contents','=',False),
+                                          '|',('transport_content_exported','=',True),
+                                          '|',('transport_type','!=','partnered_ltl_data'),
+                                          '|',('is_manually_created', '=', True),
+                                          ('state','in',['CLOSED','CANCELLED','DELETED'])]}"
+                            string="Update Transport Information"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="estimate_transport_request"
+                            attrs="{'invisible':['|',('transport_content_exported','=',False),
+                                         '|',('is_partnered','=',False),
+                                         '|',('transport_state','not in',['WORKING','ERROR_ON_ESTIMATING']),
+                                         '|',('is_manually_created', '=', True),
+                                         ('state','in',['CLOSED','CANCELLED','DELETED'])]}"
+                            string="Estimate Transport Request" class="oe_highlight capitalize" type="object"/>
+
+                    <button name="get_transport_content"
+                            attrs="{'invisible': ['|',('shipment_id','=',False),
+                                          '|',('is_partnered','=',False),
+                                          '|',('transport_state','not in',['ESTIMATING','ESTIMATED','CONFIRMING','VOIDING','ERROR_IN_VOIDING','ERROR_ON_CONFIRMING']),
+                                          '|',('is_manually_created', '=', True),
+                                          ('state','in',['CLOSED','CANCELLED','DELETED'])]}"
+                            string="Get Transport Content"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="confirm_transport_request"
+                            attrs="{'invisible': ['|',('is_partnered','=',False),
+                                          '|',('transport_state','not in',['ESTIMATED','ERROR_ON_CONFIRMING']),
+                                          '|',('is_manually_created', '=', True),
+                                          ('state','in',['CLOSED','CANCELLED','DELETED'])]}"
+                            string="Confirm Transport Request"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="void_transport_request"
+                            attrs="{'invisible': ['|',('transport_state','not in',['CONFIRMED','CONFIRMING', 'ERROR_IN_VOIDING']),
+                                          '|',('is_partnered','=',False),
+                                          '|',('is_manually_created', '=', True),
+                                          ('state','in',['CLOSED','CANCELLED','DELETED'])]}"
+                            string="Void Transport Request"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="get_bill_of_lading"
+                            attrs="{'invisible': ['|',('is_billof_lading_available','=',False),
+                                        '|',('is_manually_created', '=', True),
+                                        '|',('state','in',['CLOSED','CANCELLED','DELETED']),
+                                        '|',('transport_type','!=','partnered_ltl_data'),
+                                        '|',('is_partnered','!=',True),
+                                        '|',('shipping_type','!=','ltl'),
+                                        ('transport_state','!=','CONFIRMED')]}"
+                            string="Get Bill Of Lading"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="cancel_shipment_in_amazon_via_shipment_lines"
+                            attrs="{'invisible': ['|',('state','!=','WORKING'),
+                                          '|',('transport_state','in',['CONFIRMED','CONFIRMING']),
+                                          ('is_manually_created', '=', True)]}"
+                            string="Cancel Shipment In Amazon"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="open_import_inbound_shipment_report_wizard"
+                            string="Import Box Content Info"
+                            attrs="{'invisible': ['|',('is_update_inbound_carton_contents','=',True),
+                                          '|',('is_picking','=',False),
+                                          '|',('is_manually_created', '=', True),
+                                          '|',('state','!=','WORKING'),
+                                          '|','&amp;',('transport_type', 'in', ['partnered_small_parcel_data', 'non_partnered_small_parcel_data', 'non_partnered_ltl_data']),('partnered_small_parcel_ids', '!=', []),'&amp;',('transport_type', '=', 'partnered_ltl_data'),('partnered_ltl_ids', '!=', [])]}"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <button name="update_inbound_shipment_qty"
+                            string="Update Shipment QTY"
+                            attrs="{'invisible': ['|',('is_update_inbound_carton_contents','=',True),
+                                          '|',('state','!=','WORKING'),
+                                          ('is_manually_created', '=', True)]}"
+                            class="oe_highlight capitalize" type="object"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="WORKING,READY_TO_SHIP,SHIPPED,CLOSED" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_pickings" type="object" class="oe_stat_button" icon="fa-truck"
+                                attrs="{'invisible': [('count_pickings', '=', 0)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="count_pickings"/>
+                                    Pickings
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" class="oe_inline" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="fulfill_center_id" />
+                            <field name="shipment_plan_id" readonly="1"/>
+                            <field name="intended_box_contents_source" readonly="1"/>
+                            <field name="label_prep_type" />
+                            <field name="updated_in_amazon" invisible="1"/>
+                            <field name="transport_content_exported" invisible="1"/>
+                            <field name="is_billof_lading_available" invisible="1"/>
+                            <field name="is_picking" invisible="1"/>
+                            <field name="is_carton_content_updated" invisible="1"/>
+                            <field name="is_update_inbound_carton_contents" invisible="1"/>
+                            <field name="is_manually_created" invisible="1"/>
+                            <field name="are_all_pickings_cancelled" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="shipment_id" readonly="1"/>
+                            <field name="amazon_reference_id" readonly="1"
+                                   attrs="{'invisible': ['|',('amazon_reference_id','=',False),
+                                                             ('transport_type','!=','partnered_ltl_data')]}"/>
+                            <field name="address_id" readonly="1"/>
+                            <field name="are_cases_required" readonly="1"/>
+                            <field name="amz_inbound_create_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products">
+                            <separator string='Shipment Items' colspan="4" />
+                            <field name="odoo_shipment_line_ids" nolabel="1"
+                                   colspan="4" >
+                                <form string="Shipment Item">
+                                    <group>
+                                        <group>
+                                            <field name="amazon_product_id" />
+                                            <field name="seller_sku" />
+                                        </group>
+                                        <group>
+                                            <field name="fn_sku" />
+                                            <field name="quantity" />
+                                            <field name="received_qty" />
+                                            <field name="difference_qty" />
+                                            <field name="is_extra_line" />
+                                        </group>
+                                    </group>
+                                </form>
+                                <tree delete="0" create="0" editable="top"
+                                      decoration-success="is_extra_line==True" decoration-danger="difference_qty!=0">
+                                    <field name="amazon_product_id"   readonly="1" />
+                                    <field name="quantity"/>
+                                    <field name="received_qty" readonly="1"/>
+                                    <field name="difference_qty" readonly="1"/>
+                                    <field name="seller_sku" readonly="1"/>
+                                    <field name="fn_sku" string='FBA(FN) SKU' readonly="1"/>
+                                    <field name="is_extra_line" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string='Transport Information'>
+                            <group>
+                                <group>
+                                    <field name="shipping_type" required="1" attrs="{'readonly': ['|',('transport_content_exported','=',True),('transport_state','!=','draft')]}"/>
+                                    <field name="transport_type"/>
+                                    <field name="carrier_id" attrs="{'invisible': [('transport_type','not in',['non_partnered_ltl_data','partnered_small_parcel_data'])],
+                                                                    'readonly': ['|',('transport_content_exported','=',True),('transport_state','!=','draft')]}"/>
+                                </group>
+                                <group>
+                                    <field name="is_partnered" widget="boolean_toggle" attrs="{'readonly': ['|',('transport_content_exported','=',True),('transport_state','!=','draft')]}"/>
+                                    <field name="transport_state" attrs="{'invisible':[('is_partnered','=',False)]}" readonly="1"/>
+                                    <field name="pro_number" attrs="{'invisible': [('transport_type','!=','non_partnered_ltl_data')],
+                                                                    'readonly': ['|',('transport_content_exported','=',True),('transport_state','!=','draft')],
+                                                                    }"/>
+                                </group>
+                            </group>
+                            <group string='LTL/FTL Info'
+                                   attrs="{'invisible': [('transport_type','!=','partnered_ltl_data')]}">
+                                <group>
+                                    <field name="partnered_ltl_id" attrs="{'required': [('transport_type','=','partnered_ltl_data')],
+                                                                                    'readonly': ['|',('transport_content_exported','=',True),('transport_state','!=','draft')]}"/>
+                                    <field name="seller_freight_class" attrs="{'readonly': ['|',('transport_content_exported','=',True),('transport_state','!=','draft')]}"/>
+                                    <field name="amazon_shipment_weight_unit" />
+                                </group>
+                                <group>
+                                    <field name="box_count" invisible="1"/>
+                                    <field name="freight_ready_date" attrs="{'required': [('transport_type','=','partnered_ltl_data')]}"/>
+                                    <field name="amazon_shipment_weight" />
+                                </group>
+                                <group>
+                                    <field name="suggest_seller_declared_value"  attrs="{'invisible': [('state','!=','WORKING')]}"/>
+                                </group>
+                                <group>
+                                    <field name="seller_declared_value"/>
+                                </group>
+                                <group>
+                                    <field name="declared_value_currency_id" />
+                                </group>
+                            </group>
+                            <group string="Estimate" attrs="{'invisible': [('transport_state','in',['draft','WORKING','ERROR_ON_ESTIMATING','ESTIMATING'])]}">
+                                <group>
+                                    <field name="estimate_amount" readonly="1" />
+                                    <field name="currency_id" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="confirm_deadline_date" readonly="1" />
+                                    <field name="void_deadline_date" readonly="1" />
+                                </group>
+                            </group>
+                            <div attrs="{'invisible': ['|',('is_update_inbound_carton_contents','=',False),('is_carton_content_updated','=',True)]}">
+                                <h1>
+                                    You must wait 120 seconds for Get Carton Content Result.
+                                </h1>
+
+                            </div>
+                            <field name="partnered_small_parcel_ids" context="{'inbound_shipment': id}"
+                                   nolabel="1" colspan="4"
+                                   attrs="{'required': [('transport_type','=','partnered_small_parcel_data')],
+                                            'invisible':[('transport_type','=','partnered_ltl_data')],
+                                           'readonly': ['|',('transport_content_exported','=',True),('transport_state','!=','draft')]}">
+                                <tree>
+                                    <field name="ul_id" string='Dimension' required="1" />
+                                    <field name="weight_unit" string='Weight Unit'/>
+                                    <field name="weight_value" string='Weight Value'/>
+                                </tree>
+                                <form string="Small Parcel">
+                                    <group>
+                                        <group>
+                                            <field name="ul_id" required="1" class="oe_inline" />
+                                        </group>
+                                        <group name='weight'>
+                                            <field name="weight_value" required="1" class="oe_inline" />
+                                            <field name="weight_unit" required="1" class="oe_inline" />
+                                        </group>
+                                        <group>
+                                            <field name="box_no" required="1" class="oe_inline"/>
+                                        </group>
+                                        <group>
+                                            <field name="box_expiration_date" class="oe_inline"/>
+                                        </group>
+                                    </group>
+                                    <div string="Carton Details">
+                                        <field name="is_update_inbound_carton_contents" invisible="1"/>
+                                        <field name="amazon_product_ids" invisible="1"/>
+                                        <field name="carton_info_ids"   nolabel="1"
+                                               attrs="{'readonly':[('is_update_inbound_carton_contents','=',True)]}">
+                                            <tree editable="top">
+                                                <field name="amazon_product_id"  options="{'no_create_edit': True}"
+                                                       domain="[('id', 'in', parent.amazon_product_ids)]"
+                                                       required="1"  /><!-- on_change
+                                                       ="on_change_product_id(parent)" -->
+                                                <field name="seller_sku"/>
+                                                <field name="quantity" required="1" string="Qty"/>
+                                            </tree>
+                                        </field>
+                                    </div>
+                                </form>
+                            </field>
+
+                            <field name="partnered_ltl_ids" context="{'inbound_shipment': id}"
+                                   nolabel="1" colspan="4"
+                                   attrs="{'invisible': [('transport_type','!=','partnered_ltl_data')],
+                                        'readonly': ['|',('transport_content_exported','=',True),('transport_state','!=','draft')]}">
+                                <tree>
+                                    <field name="ul_id" string='Dimension' required="1" />
+                                    <field name="weight_unit" string='Weight Unit'/>
+                                    <field name="weight_value" string='Weight Value'/>
+                                    <field name="is_stacked" />
+                                </tree>
+                                <form string="LTL/FTL Parcel">
+                                    <group>
+                                        <group>
+                                            <field name="ul_id" required="1" class="oe_inline" />
+                                        </group>
+                                        <group name='weight'>
+                                            <field name="weight_value" required="1" class="oe_inline" />
+                                            <field name="weight_unit" required="1" class="oe_inline" />
+                                        </group>
+                                        <group>
+                                            <field name="is_stacked" />
+                                        </group>
+                                        <group>
+                                            <field name="box_no" required="1" class="oe_inline"/>
+                                        </group>
+                                        <group>
+                                            <field name="box_expiration_date" class="oe_inline"/>
+                                        </group>
+                                    </group>
+                                    <div string="Carton Details">
+                                        <field name="is_update_inbound_carton_contents" invisible="1"/>
+                                        <field name="amazon_product_ids" invisible="1"/>
+                                        <field name="carton_info_ids"
+                                                 nolabel="1" attrs="{'readonly':[('is_update_inbound_carton_contents','=',True)]}">
+                                            <tree editable="top">
+                                                <field name="amazon_product_id"
+                                                       options="{'no_create_edit': True}"
+                                                       domain="[('id', 'in', parent.amazon_product_ids)]"
+                                                       required="1"  /> <!-- on_change
+                                                           ="on_change_product_id(parent)" -->
+                                                <field name="seller_sku"/>
+                                                <field name="quantity" required="1" string="Qty"/>
+                                            </tree>
+                                        </field>
+                                    </div>
+                                </form>
+                            </field>
+                        </page>
+                        <page string='Pickings' attrs="{'invisible': [('picking_ids','=',[])]}">
+                            <field name="picking_ids" readonly="1" nolabel="1"
+                                   colspan="4">
+                                <tree>
+                                    <field name="is_fba_wh_picking" invisible="1" />
+                                    <field name="name" />
+                                    <field name="partner_id" />
+                                    <field name="amazon_shipment_id" />
+                                    <field name="fulfill_center" />
+                                    <field name="ship_label_preference" />
+                                    <field name="state"/>
+                                    <field name="total_shipped_qty"/>
+                                    <field name="total_received_qty"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Error Log">
+                            <field name="log_ids" readonly="1" nolabel="1">
+                                <tree>
+                                    <field name="message"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_amazon_inbound_shipment_ept" model="ir.actions.act_window">
+        <field name="name">Inbound Shipments</field>
+        <field name="res_model">amazon.inbound.shipment.ept</field>
+        <field name="type">ir.actions.act_window</field>
+
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="amazon_inbound_shipment_search_view" />
+        <field name="help" type="html">
+            <p>
+                Inbound Shipments are prepared automatically by Inbound Shipment
+                Plan.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="amazon_inbound_shipments_menu" name="Inbound Shipments"
+              parent="amazon_ept.amazon_inbound_menu_core" sequence="2"
+              action="action_amazon_inbound_shipment_ept"
+              groups="amazon_ept.group_amazon_fba_ept"/>
+</odoo>

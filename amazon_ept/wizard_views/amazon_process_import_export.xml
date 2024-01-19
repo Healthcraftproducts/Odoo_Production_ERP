@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_amazon_process_import_export_ept" model="ir.ui.view">
+        <field name="name">Process Import/Export</field>
+        <field name="model">amazon.process.import.export</field>
+        <field name="arch" type="xml">
+            <form string="Import/Export">
+                <group>
+                    <group>
+                        <field name="amazon_selling" invisible="1" readonly="1"/>
+                        <field name="seller_id" required="1"
+                               options="{'no_create':True,'no_create_edit': True}"/>
+                        <field name="selling_on"
+                               attrs="{'invisible':[('seller_id','=',False)]}"/>
+                        <field name="operations"
+                               attrs="{'invisible':['|',('selling_on','!=','FBM'), ('amazon_selling', 'not in', ['FBM', 'Both'])]}"/>
+                        <field name="fba_operations"
+                               attrs="{'invisible':['|',('selling_on','!=','FBA'), ('amazon_selling', 'not in', ['FBA', 'Both'])]}"/>
+                        <field name="both_operations"
+                               attrs="{'invisible':[('selling_on','!=','fba_fbm')]}"/>
+                    </group>
+                    <group>
+                        <field name="amazon_program" invisible="1"/>
+                        <field name="us_amazon_program" invisible="1"/>
+                        <field name="country_code" invisible="1"/>
+                        <field name="is_another_soft_create_fba_inventory" invisible="1"/>
+                        <field name='instance_ids' widget="many2many_tags"
+                               options="{'no_create':True,'no_create_edit': True}"
+                               domain="[('seller_id','=',seller_id)]"
+                               attrs="{'invisible':[('fba_operations','not in',('amz_import_fba_pending_orders')),
+                               ('operations','not in',('amz_fbm_export_stock_from_odoo_to_amazon', 'amz_import_fbm_shipped_orders', 'amz_import_fbm_missing_unshipped_orders',)),
+                               ('both_operations','not in',('amz_export_price_from_odoo_to_amazon'))]}"/>
+
+                        <field name='instance_id'
+                               options="{'no_create':True,'no_create_edit': True}"
+                               domain="[('seller_id','=',seller_id)]"
+                               attrs="{'invisible':[('fba_operations','not in',('amz_create_inbound_shipment_plan','amz_import_inbound_shipment')),
+                               ('both_operations','not in',('amz_sync_active_products','amz_manually_create_settlement_report'))],
+                               'required':['|',('fba_operations','in',('amz_create_inbound_shipment_plan','amz_import_inbound_shipment')),
+                               ('both_operations','in',('amz_sync_active_products','amz_manually_create_settlement_report'))]}"/>
+                        <field name='pan_eu_instance_id'
+                               groups="amazon_ept.group_amazon_fba_ept"
+                               options="{'no_create':True,'no_create_edit': True}"
+                               domain="[('seller_id','=',seller_id), ('market_place_id', '=', 'A1F83G8C2ARO7P')]"
+                               attrs="{'invisible':['|', ('fba_operations','!=', 'amz_fba_live_inventory_report'), ('amazon_program', 'not in', ('pan_eu'))]}"/>
+                        <field name='efn_eu_instance_id'
+                               groups="amazon_ept.group_amazon_fba_ept"
+                               options="{'no_create':True,'no_create_edit': True}"
+                               domain="[('seller_id','=',seller_id), ('market_place_id', '=', 'A1F83G8C2ARO7P')]"
+                               attrs="{'invisible':['|', ('fba_operations','!=', 'amz_fba_live_inventory_report'), ('amazon_program', 'not in', ('efn'))]}"/>
+                        <field name="us_region_instance_id"
+                               groups="amazon_ept.group_amazon_fba_ept"
+                               options="{'no_create':True,'no_create_edit': True}"
+                               domain="[('seller_id','=',seller_id)]"
+                               attrs="{'invisible':['|','|','|', ('fba_operations','!=', 'amz_fba_live_inventory_report'), ('country_code', 'not in', ['CA', 'BR', 'MX', 'US', 'SG', 'AU', 'JP', 'AE', 'EG', 'IN', 'SA', 'TR', 'ZA']), ('us_amazon_program', '!=', False), ('amazon_program', '!=', False)],
+                               'required': [('fba_operations','=', 'amz_fba_live_inventory_report'), ('country_code', 'in', ['CA', 'BR', 'MX', 'US', 'SG', 'AU', 'JP', 'AE', 'EG', 'IN', 'SA', 'TR', 'ZA']), ('us_amazon_program', '=', False), ('amazon_program', '=', False)]}"/>
+                        <field name="mci_efn_instance_id" options="{'no_create':True,'no_create_edit': True}"
+                               groups="amazon_ept.group_amazon_fba_ept"
+                               domain="[('seller_id','=',seller_id)]"
+                               attrs="{'invisible':['|', ('fba_operations','!=', 'amz_fba_live_inventory_report'), ('amazon_program', 'not in', ['mci', 'efn+mci'])],
+                               'required': [('fba_operations','=', 'amz_fba_live_inventory_report'), ('amazon_program', 'in', ['mci', 'efn+mci'])]}"/>
+                        <field name='order_removal_instance_id'
+                               groups="amazon_ept.group_amazon_fba_ept"
+                               options="{'no_create':True,'no_create_edit': True}"
+                               domain="[('seller_id','=',seller_id),('is_allow_to_create_removal_order','=',True)]"
+                               attrs="{'invisible':[('fba_operations','!=','amz_removal_order_request')]}"/>
+                    </group>
+                </group>
+                <div>
+                    <p style="color: red; font-weight:600;">
+                        <field name="user_warning"
+                               attrs="{'invisible':[('user_warning','=',False)]}" readonly="1"/>
+                    </p>
+                </div>
+                <group>
+                    <group attrs="{'invisible':[('both_operations','!=','amz_list_settlement_report')]}">
+                        <field name="report_start_date" widget="daterange"
+                               options="{'related_end_date': 'report_end_date'}"
+                               attrs="{'invisible':[('both_operations','!=','amz_list_settlement_report')]}"/>
+                        <field name="report_end_date"
+                               widget="daterange"
+                               options="{'related_start_date': 'report_start_date'}"
+                               attrs="{'invisible':[('both_operations','!=','amz_list_settlement_report')]}"/>
+                    </group>
+
+                    <group attrs="{'invisible':[('both_operations','!=','amz_request_rating_report')]}"
+                           class="w-100">
+                        <label for="report_start_date" string="Date"/>
+                        <div class="d-inline-block">
+                            <field name="report_start_date" widget="daterange"
+                                   options="{'related_end_date': 'report_end_date'}" class="oe_inline"/>
+                            To
+                            <field name="report_end_date" widget="daterange"
+                                   options="{'related_start_date': 'report_start_date'}" class="oe_inline"/>
+                        </div>
+                    </group>
+
+                    <group attrs="{'invisible':[('both_operations','!=','amz_vcs_tax_report')]}"
+                           class="w-100">
+                        <label for="report_start_date" string="Date"/>
+                        <div class="d-inline-block">
+                            <field name="report_start_date" widget="daterange"
+                                   options="{'related_end_date': 'report_end_date'}" class="oe_inline"/>
+                            To
+                            <field name="report_end_date" widget="daterange"
+                                   options="{'related_start_date': 'report_start_date'}" class="oe_inline"/>
+                        </div>
+                    </group>
+
+                    <group attrs="{'invisible':[('both_operations','!=','amz_sync_active_products')]}">
+                        <field name="auto_create_product" widget="boolean_toggle"/>
+                        <field name="update_price_in_pricelist" widget="boolean_toggle"/>
+                    </group>
+                    <group attrs="{'invisible':[('both_operations','!=','amz_import_products')]}">
+                        <field name="choose_file" widget="binary" string="File Upload"
+                               filename="file_name"
+                               placeholder="File Upload"/>
+                        <field name="file_name" string="File Name" invisible="1"/>
+                        <field name="auto_create_product" widget="boolean_toggle" string="Allow to create auto product if not found?"/>
+                    </group>
+                    <group attrs="{'invisible':[('both_operations','!=','amz_manually_create_settlement_report')]}">
+                        <field name="choose_file" widget="binary" string="File Upload"
+                               filename="file_name"
+                               placeholder="File Upload"/>
+                        <field name="file_name" string="File Name" invisible="1"/>
+                    </group>
+
+                    <group attrs="{'invisible':[('operations','!=','amz_fbm_update_track_number_and_ship_status')]}"
+                           groups="amazon_ept.group_amazon_fbm_ept">
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fbm_ept"
+                           attrs="{'invisible':[('operations','not in',['amz_import_fbm_shipped_orders', 'amz_import_fbm_missing_unshipped_orders'])]}">
+                        <field name="fbm_order_updated_after_date" autocomplete="off"/>
+                        <field name="fbm_order_updated_before_date" autocomplete="off"
+                               attrs="{'invisible':['|',('operations','not in',['amz_import_fbm_shipped_orders']),
+                               ('fbm_order_updated_after_date', '=', False)]}"/>
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fbm_ept"
+                           attrs="{'invisible':[('operations','!=','amz_fbm_export_stock_from_odoo_to_amazon')]}">
+
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fbm_ept"
+                           attrs="{'invisible':[('both_operations','!=','amz_export_price_from_odoo_to_amazon')]}">
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fba_ept"
+                           attrs="{'invisible':[('fba_operations','!=','amz_import_fba_pending_orders')]}">
+                        <field name="updated_after_date"/>
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fba_ept"
+                           attrs="{'invisible':[('fba_operations','!=','amz_shipment_report')]}"
+                           class="w-100">
+                        <label for="report_start_date" string="Date"/>
+                        <div class="d-inline-block">
+                            <field name="report_start_date" widget="daterange"
+                                   options="{'related_end_date': 'report_end_date'}"
+                                   class="oe_inline"/>
+                            To
+                            <field name="report_end_date" widget="daterange"
+                                   options="{'related_start_date': 'report_start_date'}"
+                                   class="oe_inline"/>
+                        </div>
+                        <field name="is_split_report" invisible="1"/>
+                        <field name="split_report_by_days"
+                               attrs="{'invisible':[('is_split_report','=',False)]}"/>
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fba_ept"
+                           attrs="{'invisible':[('fba_operations','!=','amz_stock_adjustment_report')]}"
+                           class="w-100">
+                        <label for="report_start_date" string="Date"/>
+                        <div class="d-inline-block">
+                            <field name="report_start_date" widget="daterange"
+                                   options="{'related_end_date': 'report_end_date'}"
+                                   class="oe_inline"/>
+                            To
+                            <field name="report_end_date" widget="daterange"
+                                   options="{'related_start_date': 'report_start_date'}"
+                                   class="oe_inline"/>
+                        </div>
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fba_ept"
+                           attrs="{'invisible':[('fba_operations','!=','amz_removal_order_report')]}"
+                           class="w-100">
+                        <label for="report_start_date" string="Date"/>
+                        <div class="d-inline-block">
+                            <field name="report_start_date" widget="daterange"
+                                   options="{'related_end_date': 'report_end_date'}"
+                                   class="oe_inline"/>
+                            To
+                            <field name="report_end_date" widget="daterange"
+                                   options="{'related_start_date': 'report_start_date'}"
+                                   class="oe_inline"/>
+                        </div>
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fba_ept"
+                           attrs="{'invisible':[('fba_operations','!=','amz_customer_return_report')]}"
+                           class="w-100">
+                        <label for="report_start_date" string="Date"/>
+                        <div class="d-inline-block">
+                            <field name="report_start_date" widget="daterange"
+                                   options="{'related_end_date': 'report_end_date'}"
+                                   class="oe_inline"/>
+                            To
+                            <field name="report_end_date" widget="daterange"
+                                   options="{'related_start_date': 'report_start_date'}"
+                                   class="oe_inline"/>
+                        </div>
+                    </group>
+                    <group groups="amazon_ept.group_amazon_fba_ept"
+                           attrs="{'invisible':[('fba_operations','!=','amz_import_inbound_shipment')]}"
+                           class="w-100">
+                        <group class="col-md-12">
+                            <group class="col-md-6" style="width:100%;">
+                                <field name="shipment_id"
+                                       attrs="{'required':[('fba_operations','=','amz_import_inbound_shipment')]}"/>
+                                <field name="from_warehouse_id"
+                                       attrs="{'required':[('fba_operations','=','amz_import_inbound_shipment')]}"
+                                       domain="[('is_fba_warehouse','=',False)]"/>
+                                <field name="ship_to_address"
+                                       attrs="{'required':[('fba_operations','=','amz_import_inbound_shipment')]}"/>
+                            </group>
+                        </group>
+                    </group>
+                </group>
+                <div style="margin-top:1rem" class="alert alert-warning" role="alert"
+                     attrs="{'invisible': [('both_operations', 'not in',
+                       ['amz_sync_active_products', 'amz_export_price_from_odoo_to_amazon', 'amz_list_settlement_report', 'amz_import_products']),
+                       ('operations', 'not in', ['amz_import_fbm_unshipped_orders', 'amz_check_cancel_orders_fbm',
+                       'amz_fbm_update_track_number_and_ship_status', 'amz_fbm_export_stock_from_odoo_to_amazon', 'amz_import_fbm_shipped_orders']),
+                       ('fba_operations', 'not in', ['amz_removal_order_request', 'amz_customer_return_report',
+                       'amz_removal_order_report', 'amz_stock_adjustment_report', 'amz_import_fba_pending_orders',
+                       'amz_fba_live_inventory_report', 'amz_create_inbound_shipment_plan', 'amz_import_inbound_shipment', 'amz_shipment_report'])]}">
+                    <div class="row">
+                        <div class="col-6">
+                            <p role="status" colspan="2">
+                                <b>
+                                    <h3 style="font-weight:bold; color:#7D5A29">
+                                        <u>Note :</u>
+                                        <br/>
+                                    </h3>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('both_operations','!=','amz_sync_active_products')]}">
+                                        <ol>
+                                            <li>This operation will import active product list report from Amazon
+                                                and sync the products with Odoo products.
+                                            </li>
+                                            <li>This can be used when Odoo's product identifier is the same as
+                                                Amazon seller SKU.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/product-sync-import.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('both_operations','!=','amz_export_price_from_odoo_to_amazon')]}">
+                                        <ol>
+                                            <li>Based on the pricelist configured in the Amazon Marketplace
+                                                configuration, price will be exported to Amazon from Odoo.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/update-in-amazon-image-price-stock.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('fba_operations','!=','amz_import_fba_pending_orders')]}">
+                                        <ol>
+                                            <li>Import FBA Pending orders which are yet not shipped by
+                                                Amazon.
+                                            </li>
+                                            <li>This operation will import orders in the quotation state with
+                                                limited order details like product name and quantity and order
+                                                reference number.
+                                            </li>
+                                            <li>System will check the orders status in Amazon for the selected seller
+                                                and
+                                                instances and if order is canceled in Amazon, then system will cancel
+                                                that
+                                                order is Odoo too.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/import-fba-pending-orders.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('fba_operations','!=','amz_fba_live_inventory_report')]}">
+                                        <ol>
+                                            <li>This report will import FBA Live stock in Odoo for each of your
+                                                FBA warehouse.
+                                            </li>
+                                            <li attrs="{'invisible': [('amazon_program', 'not in', ('pan_eu'))]}">
+                                                Live inventory report for UK is
+                                                generated only If the instance UK is selected. If instance
+                                                field is empty, system
+                                                will request FBA inventory report only for PAN EU countries.
+                                            </li>
+                                            <li attrs="{'invisible': [('amazon_program', 'not in', ('efn'))]}">
+                                                Live inventory report for UK is
+                                                generated only If the instance UK is selected. If instance
+                                                field is empty, system
+                                                will request FBA inventory report only for EFN countries.
+                                            </li>
+                                            <li attrs="{'invisible':['|', '|', ('fba_operations','!=', 'amz_fba_live_inventory_report'), ('amazon_program', '!=', False), ('us_amazon_program', '!=', False)]}">
+                                                To prevent report cancellation from Amazon, select an instance to import
+                                                a Live Inventory Report
+                                                into a
+                                                particular instance.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/fba-live-inventory-report.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('operations','!=','amz_fbm_export_stock_from_odoo_to_amazon')]}">
+                                        <ol>
+                                            <li>Stock from FBM warehouse set in the marketplace configuration will
+                                                be exported to Amazon.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/update-in-amazon-image-price-stock.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('operations','!=','amz_fbm_update_track_number_and_ship_status')]}">
+                                        <ol>
+                                            <li>Tracking details set in the FBM delivery orders will be sent to
+                                                Amazon.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/export-shipping-details-with-the-package-tracking-number-to-amazon.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('operations','!=','amz_check_cancel_orders_fbm')]}">
+                                        <ol>
+                                            <li>Cancel orders from Amazon will be imported in Odoo and accordingly
+                                                FBM unshipped order along with Delivery order will be cancelled in
+                                                Odoo.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/cancel-orders.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('operations','!=','amz_import_fbm_unshipped_orders')]}">
+                                        <ol>
+                                            <li>Import FBM unshipped orders in Odoo.</li>
+                                            <li>You can only request an Unshipped Orders report once every 4 hours.</li>
+                                            <li>If you still find any missing unshipped orders, you can import it
+                                                through 'Import missing unshipped orders' operation.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/orders.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('fba_operations', '!=', 'amz_removal_order_request')]}">
+                                        <ol>
+                                            <li>This Operation will create Removal Order from odoo to amazon with the
+                                                selected Removal Marketplace.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/amazon-removal-order.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('fba_operations', '!=', 'amz_customer_return_report')]}">
+                                        <ol>
+                                            <li>This report contains customer returned items received at an Amazon
+                                                fulfillment center, including Return Reason and Disposition.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/process-customer-returns.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('fba_operations', '!=', 'amz_removal_order_report')]}">
+                                        <ol>
+                                            <li>This report contains all the removal orders, including the items in each
+                                                removal order, placed during any given time period.
+                                            </li>
+                                            <li>This can be used to help reconcile the total number of items requested
+                                                to be removed from an Amazon fulfillment center with the actual number
+                                                of items removed, along with the status of each item in the removal
+                                                order.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/amazon-removal-order.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold"
+                                        attrs="{'invisible': [('fba_operations', '!=', 'amz_stock_adjustment_report')]}">
+                                        <ol>
+                                            <li>Detailed View to analyze your inventory movements to and from Amazon
+                                                fulfillment centers, including products that are sold, returned,
+                                                removed/disposed, damaged, lost, and found.
+                                            </li>
+                                            <li>To learn more about this Operation, <a
+                                                    href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/amazon-stock-adjustments.html"
+                                                    target="_blank">Click Here</a>.
+                                            </li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold;" class="alert alert-warning" role="alert"
+                                        attrs="{'invisible': [('operations','!=','amz_import_fbm_shipped_orders')]}">
+                                        <ol>
+                                            <li>Historical orders can be imported through this operation.</li>
+                                            <li>Please be cautious while importing historical FBM shipped orders
+                                                if your inventory valuation method is 'Automated' and 'Real time'
+                                                as it will have impact on inventory levels and accounting
+                                                entries.</li>
+                                            <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/orders.html" target="_blank">Click Here</a>.</li>
+                                        </ol>
+                                    </h5>
+                                    <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('fba_operations','!=','amz_shipment_report')]}">
+                                <ol>
+                                    <li>Shipment report will import all the orders shipped by Amazon from
+                                        your FBA stock.</li>
+                                    <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/process-shipment-report.html" target="_blank">Click Here</a>.</li>
+                                </ol>
+                            </h5>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('fba_operations','!=','amz_import_inbound_shipment')]}">
+                                <ol>
+                                    <li>You can add multiple Shipment IDs linked with the same fulfillment center mentioned in the field "Ship To Address".</li>
+                                    <li>Partner for the fulfillment center code needs to be created if it is not available in the given list.</li>
+                                    <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/inbound-shipment.html" target="_blank">Click Here</a>. </li>
+                                </ol>
+                            </h5>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('fba_operations','!=','amz_create_inbound_shipment_plan')]}">
+                                <ol>
+                                    <li>This operation will allow you to create Inbound shipment plan from Odoo to Amazon, according to it you can ship your shipments to Amazon warehouses.</li>
+                                    <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/inbound-shipment.html" target="_blank">Click Here</a>.</li>
+                                </ol>
+                            </h5>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('both_operations','!=','amz_import_products')]}">
+                                <ol>
+                                    <li>When you upload a file, make sure it is either .csv, .xlsx or .xls file.</li>
+                                    <li>You can download sample excel file from below for your reference.</li>
+                                    <li>If your Odoo's product identifier is different than Amazon SKU then
+                                        you can map products using this operation. </li>
+                                    <li>If you have multiple
+                                        products listed on Amazon against single Odoo product then you can
+                                        map
+                                        multiple seller SKU with single Odoo's Internal
+                                        reference/Barcode.</li>
+                                    <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/product-sync-import.html" target="_blank">Click Here</a>.</li>
+                                </ol>
+                            </h5>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('both_operations','!=','amz_list_settlement_report')]}">
+                                <ol>
+                                    <li>This will import list of the settlement reports generated by
+                                        Amazon.</li>
+                                    <li>Settlement Reports from Amazon can only be imported up to past 90 days from the
+                                        creation date using the operation <b>"List Settlement report"</b>.</li>
+                                    <li>For reports older than 90 days, the user can download them from seller central
+                                        and import them manually using the operation <b>"Manually Create Settlement
+                                            Report"</b>.</li>
+                                    <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/amazon-settlement-report.html" target="_blank">Click Here</a>.</li>
+                                </ol>
+                            </h5>
+                                </b>
+                            </p>
+                        </div>
+                        <div class="col-6 o_video_container"  style="display: contents;">
+                            <field name="amz_video_url" nolabel="1" class="mt-2" widget="video_preview"/>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p role="status" colspan="2">
+                        <b>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('operations','!=','amz_import_fbm_missing_unshipped_orders')]}">
+                                <h3 style="font-weight:bold; color:#7D5A29">
+                                    <u>Note :</u><br/>
+                                </h3>
+                                <ol>
+                                    <li>Import missing unshipped FBM orders which were not imported even
+                                        after executing 'Import Unshipped Orders' operation.</li>
+                                    <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/orders.html" target="_blank">Click Here</a>.</li>
+                                </ol>
+                            </h5>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('fba_operations','!=','amz_check_cancel_orders_fba')]}">
+                                <h3 style="font-weight:bold; color:#7D5A29">
+                                    <u>Note :</u><br/>
+                                </h3>
+                                <ol>
+                                    <li>If FBA pending order gets cancelled on Amazon, this operation will
+                                        import the status in Odoo and accordingly pending order status</li>
+                                </ol>
+                            </h5>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('both_operations','!=','amz_request_rating_report')]}">
+                                <ol>
+                                    <li>You can import customer ratings along with their comment for
+                                        specific orders through this report.</li>
+                                    <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/seller-ratings.html" target="_blank">Click Here</a>.</li>
+                                </ol>
+                            </h5>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('both_operations','!=','amz_vcs_tax_report')]}">
+                                <h3 style="font-weight:bold; color:#7D5A29">
+                                    <u>Note :</u><br/>
+                                </h3>
+                                <ol>
+                                    <li>Processing this report will import Amazon generated invoice
+                                        numbers and set it within Odoo generated invoices</li>
+                                </ol>
+                            </h5>
+                            <h5 style="color:#7D5A29; font-weight:bold" class="alert alert-warning" role="alert"
+                                attrs="{'invisible': [('both_operations','!=','amz_manually_create_settlement_report')]}">
+                                <h3 style="font-weight:bold; color:#7D5A29">
+                                    <u>Note :</u><br/>
+                                </h3>
+                                <ol>
+                                    <li>We only support Flat File V2 Settlement Report format,
+                                        There might be a mismatch/error in the settlement if the report format does not match.
+                                    </li>
+                                    <li>To learn more about this Operation, <a href="https://docs.emiprotechnologies.com/amazon-odoo-connector/v16/amazon-settlement-report.html" target="_blank">Click Here</a>.</li>
+                                </ol>
+                            </h5>
+                        </b>
+                    </p>
+                </div>
+                <footer>
+                    <button string="Download Sample Attachment"
+                            name="download_sample_attachment" type="object"
+                            class="btn-primary"
+                            attrs="{'invisible':[('both_operations','!=','amz_import_products')]}"/>
+                    <button name="import_export_processes" string="Execute" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wizard_amazon_import_export_operations" model="ir.actions.act_window">
+        <field name="name">Operations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">amazon.process.import.export</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_main_amazon_import_process_ept" name="Operations"
+              action="action_wizard_amazon_import_export_operations"
+              groups="amazon_ept.group_amazon_user_ept"
+              parent="amazon_ept.amazon_instance_menu_item" sequence="14"/>
+</odoo>

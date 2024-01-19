@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="res.partner" name="update_action_context_for_amazon_customers"/>
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <!-- From View Section -->
+    <record id="import_amazon_inbound_shipment_report_form_view" model="ir.ui.view">
+        <field name="name">Import Amazon Inbound Shipment Report</field>
+        <field name="model">amazon.inbound.shipment.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Amazon Inbound Shipment Report">
+                <group>
+                    <field name="choose_file" filename="file_name" string="Select File"/>
+                    <field name="file_name" invisible="1"/>
+                </group>
+                <div style="border: 1px solid #000; padding: 5px;">
+                    <h3>Notes:</h3>
+                    <p style="color: red;">
+                        (*) indicate must be required.
+                    </p>
+                    <br/>
+                    <p>
+                        Inbound Excel report format must be in
+                        <b>[Box No,Weight,Weight Unit,Dimension Name, Dimension Type, Dimension Unit, Height, Width,
+                            Length, Seller SKU, Quantity]
+                        </b>
+                        this form.
+                    </p>
+                    <br/>
+                    <p>
+                        <b>1. Box No(*):</b>
+                        Box number must be unique.
+                    </p>
+                    <p>
+                        <b>2. Weight:</b>
+                        Weight value either in float or integer.
+                    </p>
+                    <p>
+                        <b>3. Weight Unit(*):</b>
+                        Weight must be required and value either in <b>pounds</b> or <b>kilograms</b>.
+                    </p>
+                    <p>
+                        <b>4. Dimension Name(*):</b>
+                        Dimension name must be required.
+                    </p>
+                    <p>
+                        <b>5. Dimension Type(*):</b>
+                        Dimension type must be required. Dimension Type value either in <b>unit</b> or <b>pack</b> or <b>
+                        box
+                    </b> or
+                        <b>pallet.</b>
+                    </p>
+                    <p>
+                        <b>6. Seller SKU:</b>
+                        If one box have multiple products so add multiple lines with same box number.
+                    </p>
+                    <!--Download Sample File button added by Keyur-->
+                    <button name="download_inbound_shipment_sample_csv" string="Download Sample File" type="object"
+                            class="oe_highlight capitalize"/>
+                </div>
+                <footer>
+                    <button name="import_inbound_shipment_report" string="Import" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

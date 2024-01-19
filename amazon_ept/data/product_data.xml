@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="amazon_product_categ_services" model="product.category">
+        <field name="name">Amazon Services</field>
+    </record>
+    <record id="product_product_amazon_shipping_ept" model="product.product">
+        <field name="default_code">SHIP AMAZON</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="type">service</field>
+        <field name="name">Amazon Shipping costs</field>
+        <field name="description_sale">Amazon Shipping costs</field>
+        <field name="categ_id" ref="amazon_product_categ_services"/>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="product_product_amazon_shipment_fee" model="product.product">
+        <field name="default_code">SHIPPING FEE</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="type">service</field>
+        <field name="name">FBA Shipment Fee</field>
+        <field name="description_sale">FBA Shipment Fee</field>
+        <field name="categ_id" ref="amazon_product_categ_services"/>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="product_product_amazon_giftwrapper_fee" model="product.product">
+        <field name="default_code">GIFT WRAPPER FEE</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="type">service</field>
+        <field name="name">FBA Gift Wrapper Fee</field>
+        <field name="description_sale">FBA Gift Wrapper Fee</field>
+        <field name="categ_id" ref="amazon_product_categ_services"/>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="product_product_amazon_promotion_discount" model="product.product">
+        <field name="default_code">PROMOTION DISCOUNT</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="type">service</field>
+        <field name="name">FBA Promotion Discount</field>
+        <field name="description_sale">FBA Promotion Discount</field>
+        <field name="categ_id" ref="amazon_product_categ_services"/>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="product_product_amazon_shipment_discount" model="product.product">
+        <field name="default_code">SHIPMENT DISCOUNT</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="type">service</field>
+        <field name="name">FBA Shipment Discount</field>
+        <field name="description_sale">FBA Shipment Discount</field>
+        <field name="categ_id" ref="amazon_product_categ_services"/>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="product_product_fba_reimbursement_product_id" model="product.product">
+        <field name="default_code">REIMBURSEMENT</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="type">service</field>
+        <field name="name">FBA Reimbursement</field>
+        <field name="description_sale">FBA Reimbursement</field>
+        <field name="categ_id" ref="amazon_product_categ_services"/>
+        <field name="invoice_policy">order</field>
+    </record>
+</odoo>

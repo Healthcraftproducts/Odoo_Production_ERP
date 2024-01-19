@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="inherited_account_bank_statement_form_ept" model="ir.ui.view">
+        <field name="name">inherited.account.bank.statement.form</field>
+        <field name="model">account.bank.statement</field>
+        <field name="inherit_id" ref="account.view_bank_statement_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook/page/field[@name='line_ids']/tree/field[@name='date']"
+                   position="after">
+                <field name="name"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
