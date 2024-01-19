@@ -10,7 +10,7 @@ class StockSettingsInherit(models.TransientModel):
         ('reorder', 'Reorder Rules')
         ], string='Notification Rule Type', default='individual')
     minimum_qty = fields.Integer(string="Minimum Quantity")
-    notification_user_ids = fields.Many2many("res.users", string="Notification to", help="Low stock Notification goes to Selected users")
+    notification_user_ids = fields.Many2many("res.users", 'notify_users_ids', string="Notification to", help="Low stock Notification goes to Selected users")
     company_ids = fields.Many2many("res.company", string="Filter by Companies", help="Check Low stock for Notification from selected company only. if its blank it checks in all company")
     location_ids = fields.Many2many("stock.location", string="Filter by Locations", help="Check Low stock for Notification from selected Locations only. if its blank it checks in all Locations")
 
