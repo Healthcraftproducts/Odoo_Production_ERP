@@ -6,6 +6,13 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare, is_html_empty, clean_context
 
 
+class IrActionsActWindow(models.Model):
+    _inherit = 'ir.actions.act_window'
+class IrActionsActWindowView(models.Model):
+    _inherit = 'ir.actions.act_window.view'
+class IrActionsActWindowclose(models.Model):
+    _inherit = 'ir.actions.act_window_close'
+
 class RepairOrder(models.Model):
     _inherit = 'repair.order'
 

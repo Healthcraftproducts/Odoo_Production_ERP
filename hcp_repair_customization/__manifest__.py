@@ -16,6 +16,7 @@
 
     # always loaded
     'data': [
+    'security/ir.model.access.csv',
         'views/repair_views.xml',
     ],
     "application": False,
