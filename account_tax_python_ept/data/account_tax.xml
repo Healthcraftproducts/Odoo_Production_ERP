@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <function model="account.tax" name="_create_amazon_python_tax"/>
+    </data>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record forcecreate="True" id="decimal_line_tax_amount" model="decimal.precision">
+            <field name="name">Line Tax Amount</field>
+            <field name="digits">15</field>
+        </record>
+    </data>
+</odoo>

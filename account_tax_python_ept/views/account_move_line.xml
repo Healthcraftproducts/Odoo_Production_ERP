@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_for_account_move_line_add_field" model="ir.ui.view">
+            <field name="name">account.move.line.add.field</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='price_unit']" position="after">
+                    <field name="line_tax_amount_percent"/>
+                </xpath>
+                 <xpath expr="//field[@name='line_ids']/tree/field[@name='tax_ids']"
+                       position="after">
+                    <field name="line_tax_amount_percent" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+	
