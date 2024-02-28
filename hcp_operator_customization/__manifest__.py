@@ -6,12 +6,13 @@
     'category': 'Manufacturing',
     'version': '1.0',
     'description': "HCP Operator Role Customization",
-    'depends': ['stock', 'mrp','base','mrp_workorder','quality_mrp_workorder','mrp_maintenance'],
+    'depends': ['stock', 'mrp','base','mrp_workorder','quality_mrp_workorder','mrp_maintenance','product','sale','stock_landed_costs','repair'],
     'installable': True,
     'data': [  
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/mrp_view.xml',
+        'views/product.xml'
     ],
     'application': True,
     'uninstall_hook': 'uninstall_hook',
