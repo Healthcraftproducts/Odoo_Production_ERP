@@ -800,7 +800,8 @@
                             <field name="company_id" invisible="1"/>
                             <field name="product_uom_category_id" invisible="1"/>
                             <field name="sequence" widget="handle"/>
-                            <field name="product_id" context="{'default_detailed_type': 'product'}" options="{'no_open':True,'no_create':True}"/>
+                            <field name="product_id" context="{'default_detailed_type': 'product'}"
+                                   options="{'no_quick_create':True,'no_create_edit':True}"/>
                             <field name="product_qty"/>
                             <field name="product_uom_id" groups="uom.group_uom"/>
                             <field name="cost_share" optional="hide"/>
