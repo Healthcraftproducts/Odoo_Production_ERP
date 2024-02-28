@@ -753,55 +753,7 @@
                 </page>
             </xpath>
 
-           <record id="mrp.mrp_routing_workcenter_form_view" model="ir.ui.view">
-            <field name="name">mrp.routing.workcenter.form</field>
-            <field name="model">mrp.routing.workcenter</field>
-            <field name="arch" type="xml">
-                <form string="Routing Work Centers">
-                    <sheet>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                        <group>
-                            <group name="description">
-                                <field name="active" invisible="1"/>
-                                <field name="company_id" invisible="1"/>
-                                <field name="name"/>
-                                <field name="bom_id" invisible="context.get('bom_id_invisible', False)" domain="[]" readonly="context.get('default_bom_id', False)"  options="{'no_create': True, 'no_create_edit' : True}"/>
-                                <field name="workcenter_id" context="{'default_company_id': company_id}"/>
-                                <field name="possible_bom_product_template_attribute_value_ids" invisible="1"/>
-                                <field name="bom_product_template_attribute_value_ids" widget="many2many_tags" options="{'no_create': True}" groups="product.group_product_variant"/>
-                                <field name="allow_operation_dependencies" invisible="1"/>
-                                <field name="blocked_by_operation_ids" widget="many2many_tags" context="{'default_bom_id':bom_id}" attrs="{'invisible': [('allow_operation_dependencies', '=', False)]}"/>
-                            </group><group name="workorder">
-                                <field name="workorder_count" invisible="1"/>
-                                <field name="time_mode" widget="radio"/>
-                                <label for="time_mode_batch" attrs="{'invisible': [('time_mode', '=', 'manual')]}"/>
-                                <div attrs="{'invisible': [('time_mode', '=', 'manual')]}">
-                                    last
-                                    <field name="time_mode_batch" class="oe_inline"/>
-                                    work orders
-                                </div>
-                                <label for="time_cycle_manual" attrs="{'invisible': [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}" string="Default Duration"/>
-                                <div attrs="{'invisible':  [('time_mode', '=', 'auto'), ('workorder_count', '!=' , 0)]}">
-                                    <field name="time_cycle_manual" widget="float_time" class="oe_inline"/> minutes
-                                </div>
-                                <field name="time_cycle" invisible="1"/>
-                                <field name="company_id" groups="base.group_multi_company" />
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Work Sheet" name="worksheet">
-                                <group>
-                                    <field name="worksheet_type" widget="radio"/>
-                                    <field name="worksheet" help="Upload your PDF file." widget="pdf_viewer" attrs="{'invisible':  [('worksheet_type', '!=', 'pdf')], 'required':  [('worksheet_type', '=', 'pdf')]}"/>
-                                    <field name="worksheet_google_slide" placeholder="Google Slide Link" widget="embed_viewer" attrs="{'invisible':  [('worksheet_type', '!=', 'google_slide')], 'required': [('worksheet_type', '=', 'google_slide')]}"/>
-                                    <field name="note" attrs="{'invisible':  [('worksheet_type', '!=', 'text')]}"/>
-                                </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+
         </field>
     </record>
     <record model="ir.ui.view" id="mrp_production_workorder_tree_editable_view_product_ext">
