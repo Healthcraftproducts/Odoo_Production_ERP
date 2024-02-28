@@ -341,7 +341,9 @@
         <field name="model">quality.point</field>
         <field name="inherit_id" ref="quality.quality_point_view_form"/>
         <field name="arch" type="xml">
-            <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            <xpath expr="//field[@name='product_ids']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
         </field>
     </record>
 
