@@ -197,6 +197,9 @@
                 <field name="runtime_per_unit" widget="float_time"/>
                 <field name="total_time" widget="float_time"/>
             </xpath>
+            <xpath expr="//field[@name='bom_id']" position="attributes">
+                        <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
 
             <!--            <xpath expr="//field[@name='sequence']" position="replace">-->
             <!--            </xpath>-->
