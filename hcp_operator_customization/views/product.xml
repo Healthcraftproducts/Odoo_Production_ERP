@@ -681,7 +681,7 @@
         <field name="name">mrp.bom.form</field>
         <field name="model">mrp.bom</field>
         <field name="priority">100</field>
-        <field name="inherit_id" ref="mrp.mrp_bom_form_view_"/>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='product_tmpl_id']" position="attributes">
                 <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
@@ -753,9 +753,10 @@
                 </page>
             </xpath>
 
-            <record id="mrp_routing_workcenter_form_view" model="ir.ui.view">
+            <record id="mrp_routing_workcenter_form_view_ext_new" model="ir.ui.view">
                 <field name="name">mrp.routing.workcenter.form</field>
                 <field name="model">mrp.routing.workcenter</field>
+                <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
                 <field name="arch" type="xml">
                     <xpath expr="//page[@name='bom_id']" position="attributes">
                         <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
