@@ -8,6 +8,99 @@
             <xpath expr="//field[@name='product_template_id']" position="attributes">
                 <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
             </xpath>
+            <xpath expr="//page[@name='optional_products']" position="replace">
+                <page string="Optional Products"
+                    name="optional_products"
+                    attrs="{'invisible': [('state', 'not in', ['draft', 'sent'])]}">
+                    <field name="sale_order_option_ids" mode="tree,form,kanban">
+                        <form string="Optional Products">
+                            <group>
+                                <field name="product_id"
+                                    domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" options="{'no_create': True, 'no_create_edit' : True}" invisible="1"/>
+                                <field name="name"/>
+                                <field name="quantity"/>
+                                <field name="product_uom_category_id" invisible="1"/>
+                                <field name="uom_id" groups="uom.group_uom"/>
+                                <field name="price_unit"/>
+                                <field name="discount" groups="product.group_discount_per_so_line"/>
+                                <field name="is_present" />
+                            </group>
+                        </form>
+                        <kanban class="o_kanban_mobile">
+                            <field name="product_id" options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="quantity"/>
+                            <field name="uom_id" groups="uom.group_uom"/>
+                            <field name="price_unit"/>
+                            <field name="is_present" />
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div class="oe_kanban_card oe_kanban_global_click">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <strong>
+                                                    <span>
+                                                        <t t-out="record.product_id.value"/>
+                                                    </span>
+                                                </strong>
+                                            </div>
+                                            <div class="col-2">
+                                                <button name="button_add_to_order"
+                                                    class="btn btn-link oe_link fa fa-shopping-cart"
+                                                    title="Add to order lines"
+                                                    type="object"
+                                                    attrs="{'invisible': [('is_present', '=', True)]}"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 text-muted">
+                                                <span>
+                                                    Quantity:
+                                                    <t t-out="record.quantity.value"/>
+                                                    <t t-out="record.uom_id.value" groups="uom.group_uom"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 text-muted">
+                                                <span>
+                                                    Unit Price:
+                                                    <t t-out="record.price_unit.value"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                        <tree string="Sales Quotation Template Lines"
+                            editable="bottom"
+                            decoration-success="is_present == True">
+                            <control>
+                                <create name="add_product_control" string="Add a product"/>
+                            </control>
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id"
+                                domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="name" optional="show"/>
+                            <field name="quantity"/>
+                            <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="price_unit"/>
+                            <field name="discount"
+                                string="Disc.%"
+                                groups="product.group_discount_per_so_line"
+                                optional="show"/>
+                            <field name="is_present" invisible="1" />
+                            <button name="button_add_to_order"
+                                type="object"
+                                class="oe_link"
+                                icon="fa-shopping-cart"
+                                title="Add to order lines"
+                                attrs="{'invisible': [('is_present', '=', True)]}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
       <record id="purchase_order_form_ext_product" model="ir.ui.view">
@@ -392,6 +485,123 @@
             </xpath>
         </field>
      </record>
+    <record id="product_template_only_form_view_product_ext" model="ir.ui.view">
+        <field name="name">product.template.only.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+             <xpath expr="//page[@name='sales']" position="replace">
+                 <page string="Sales" name="sales" modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">
+    <group name="sale">
+        <group string="Upsell &amp; Cross-Sell" name="upsell">
+            <field name="optional_product_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit' : True}"
+                   domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                   placeholder="Recommend when 'Adding to Cart' or quotation" can_create="true" can_write="true"/>
+            <field name="accessory_product_ids" widget="many2many_tags"
+                   placeholder="Suggested accessories in the eCommerce cart" options="{'no_create': True, 'no_create_edit' : True}"
+                   modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}" can_create="true"
+                   can_write="true"/>
+            <field name="alternative_product_ids" widget="many2many_tags"
+                   domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                   placeholder="Displayed in bottom of product pages" options="{'no_create': True, 'no_create_edit' : True}"
+                   modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}" can_create="true"
+                   can_write="true"/>
+        </group>
+        <group string="eCommerce Shop" name="shop"
+               modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">
+            <field name="website_url" modifiers="{&quot;readonly&quot;: true}"/>
+            <field name="website_id" options="{'no_create': True}" on_change="1" can_create="true" can_write="true"/>
+            <field name="website_sequence"/>
+            <field name="rating_avg" modifiers="{&quot;readonly&quot;: true}"/>
+            <field name="website_description"/>
+            <field name="website_published"/>
+            <field name="website_meta_keywords"/>
+            <field name="can_image_1024_be_zoomed" modifiers="{&quot;readonly&quot;: true}"/>
+            <field name="public_categ_ids" widget="many2many_tags" string="Categories" can_create="true"
+                   can_write="true"/>
+            <label for="allow_out_of_stock_order" string="Out-of-Stock"
+                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>
+            <div modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}">
+                <field name="allow_out_of_stock_order" class="oe_inline"/>
+                Continue Selling
+            </div>
+
+            <label for="show_availability" string="Show Available Qty"
+                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>
+            <div modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}">
+                <field name="show_availability" class="oe_inline"/>
+                <span modifiers="{&quot;invisible&quot;: [[&quot;show_availability&quot;, &quot;=&quot;, false]]}">
+                    <label for="available_threshold" string="only if below" class="o_light_label"/>
+                    <field name="available_threshold" class="oe_inline col-1" widget="integer"/>
+                    Units
+                </span>
+            </div>
+            <field name="out_of_stock_message"
+                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>
+            <field name="website_ribbon_id" options="{'no_quick_create': True}" can_create="true" can_write="true"/>
+        </group>
+        <group name="product_template_images" string="Extra Product Media"
+               modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">
+            <field name="product_template_image_ids" class="o_website_sale_image_list" context="{'default_name': name}"
+                   mode="kanban" add-label="Add a Media" nolabel="1">
+                <kanban string="Product Images" default_order="sequence">
+                    <field name="id" modifiers="{&quot;readonly&quot;: true}"/>
+                    <field name="name" modifiers="{&quot;required&quot;: true}"/>
+                    <field name="image_1920"/>
+                    <field name="sequence" widget="handle"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="card oe_kanban_global_click p-0">
+                                <div class="o_squared_image">
+                                    <img class="card-img-top"
+                                         t-att-src="kanban_image('product.image', 'image_1920', record.id.raw_value)"
+                                         t-att-alt="record.name.value"/>
+                                </div>
+                                <div class="card-body p-0">
+                                    <h4 class="card-title p-2 m-0 bg-200">
+                                        <small>
+                                            <field name="name" modifiers="{&quot;required&quot;: true}"/>
+                                        </small>
+                                    </h4>
+                                </div>
+                                <!-- below 100 Kb: good -->
+                                <t t-if="record.image_1920.raw_value.length &lt; 100*1000">
+                                    <t t-set="size_status" t-value="'text-bg-success'"/>
+                                    <t t-set="message">Acceptable file size</t>
+                                </t>
+                                <!-- below 1000 Kb: decent -->
+                                <t t-elif="record.image_1920.raw_value.length &lt; 1000*1000">
+                                    <t t-set="size_status" t-value="'text-bg-warning'"/>
+                                    <t t-set="message">Huge file size. The image should be optimized/reduced.</t>
+                                </t>
+                                <!-- above 1000 Kb: bad -->
+                                <t t-else="1">
+                                    <t t-set="size_status" t-value="'text-bg-danger'"/>
+                                    <t t-set="message">Optimization required! Reduce the image size or increase your
+                                        compression settings.
+                                    </t>
+                                </t>
+                                <span t-attf-class="badge #{size_status} o_product_image_size"
+                                      t-esc="record.image_1920.value" t-att-title="message"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </group>
+    </group>
+    <group>
+        <group string="Sales Description" name="description">
+            <field colspan="2" name="description_sale" nolabel="1"
+                   placeholder="This note is added to sales orders and invoices."/>
+        </group>
+    </group>
+</page>
+
+             </xpath>
+        </field>
+    </record>
+
 
 
 </odoo>
