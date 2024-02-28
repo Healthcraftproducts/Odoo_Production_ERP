@@ -758,7 +758,7 @@
                 <field name="model">mrp.routing.workcenter</field>
                 <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
                 <field name="arch" type="xml">
-                    <xpath expr="//page[@name='bom_id']" position="attributes">
+                    <xpath expr="//field[@name='bom_id']" position="attributes">
                         <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
                     </xpath>
 
@@ -773,7 +773,7 @@
         <field name="priority" eval="100"/>
         <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
         <field name="arch" type="xml">
-             <xpath expr="//page[@name='product_id']" position="attributes">
+             <xpath expr="//field[@name='product_id']" position="attributes">
                         <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
                     </xpath>
         </field>
