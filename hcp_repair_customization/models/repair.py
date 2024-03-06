@@ -260,7 +260,7 @@ class StockPickingInherit(models.Model):
     def button_validate(self):
         res = super(StockPickingInherit, self).button_validate()
         type_id = self.env['stock.picking.type'].sudo().search(
-            [('name', '=', 'Returns'), ('warehouse_id', '=', 'Amazon Canada')])
+            [('name', '=', 'Returns'), ('warehouse_id', '=', 'CANADA')])
         if self.picking_type_id.id == type_id.id:
             self.is_return_transfer = True
         else:
