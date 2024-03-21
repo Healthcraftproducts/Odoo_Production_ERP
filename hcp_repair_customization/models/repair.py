@@ -259,13 +259,15 @@ class StockPickingInherit(models.Model):
 
     def button_validate(self):
         res = super(StockPickingInherit, self).button_validate()
-        type_id = self.env['stock.picking.type'].sudo().search(
-            [('name', '=', 'Returns'), ('warehouse_id', '=', 'Amazon Canada')])
-        if self.picking_type_id.id == type_id.id:
-            self.is_return_transfer = True
-        else:
-            self.is_return_transfer = False
+        for rec in self:
+            type_id = rec.env['stock.picking.type'].sudo().search(
+                [('name', '=', 'Returns'), ('warehouse_id', '=', 'Amazon Canada')])
+            if rec.picking_type_id.id == type_id.id:
+                rec.is_return_transfer = True
+            else:
+                rec.is_return_transfer = False
         return res
+
 
 class RepairLineExt(models.Model):
     _inherit = 'repair.line'
