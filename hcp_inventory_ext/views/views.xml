@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_line_tree_inherit_new" model="ir.ui.view">
+        <field name="name">stock.move.line.tree.inherit</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='qty_done']" position="before">
+                <field name="product_cost"/>
+            </xpath>
+            <xpath expr="//field[@name='qty_done']" position="after">
+                <field name="total_value_moved" string="Total Value"
+                       decoration-danger="(location_usage in ('internal','transit')) and (location_dest_usage not in ('internal','transit'))"
+                       decoration-success="(location_usage not in ('internal','transit')) and (location_dest_usage in ('internal','transit'))"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_scrap_tree_view_inherit" model="ir.ui.view">
+        <field name="name">stock.scrap.tree.inherit</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='scrap_qty']" position="before">
+                <field name="product_cost_price"/>
+            </xpath>
+            <xpath expr="//field[@name='product_uom_id']" position="after">
+                <field name="total_value_scraped"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
