@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.new</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_template_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            <xpath expr="//page[@name='optional_products']" position="replace">
+                <page string="Optional Products"
+                      name="optional_products"
+                      attrs="{'invisible': [('state', 'not in', ['draft', 'sent'])]}">
+                    <field name="sale_order_option_ids" mode="tree,form,kanban">
+                        <form string="Optional Products">
+                            <group>
+                                <field name="product_id"
+                                       domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                                       options="{'no_create': True, 'no_create_edit' : True}" invisible="1"/>
+                                <field name="name"/>
+                                <field name="quantity"/>
+                                <field name="product_uom_category_id" invisible="1"/>
+                                <field name="uom_id" groups="uom.group_uom"/>
+                                <field name="price_unit"/>
+                                <field name="discount" groups="product.group_discount_per_so_line"/>
+                                <field name="is_present"/>
+                            </group>
+                        </form>
+                        <kanban class="o_kanban_mobile">
+                            <field name="product_id" options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="quantity"/>
+                            <field name="uom_id" groups="uom.group_uom"/>
+                            <field name="price_unit"/>
+                            <field name="is_present"/>
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div class="oe_kanban_card oe_kanban_global_click">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <strong>
+                                                    <span>
+                                                        <t t-out="record.product_id.value"/>
+                                                    </span>
+                                                </strong>
+                                            </div>
+                                            <div class="col-2">
+                                                <button name="button_add_to_order"
+                                                        class="btn btn-link oe_link fa fa-shopping-cart"
+                                                        title="Add to order lines"
+                                                        type="object"
+                                                        attrs="{'invisible': [('is_present', '=', True)]}"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 text-muted">
+                                                <span>
+                                                    Quantity:
+                                                    <t t-out="record.quantity.value"/>
+                                                    <t t-out="record.uom_id.value" groups="uom.group_uom"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 text-muted">
+                                                <span>
+                                                    Unit Price:
+                                                    <t t-out="record.price_unit.value"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                        <tree string="Sales Quotation Template Lines"
+                              editable="bottom"
+                              decoration-success="is_present == True">
+                            <control>
+                                <create name="add_product_control" string="Add a product"/>
+                            </control>
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id"
+                                   domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                                   options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="name" optional="show"/>
+                            <field name="quantity"/>
+                            <field name="uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="price_unit"/>
+                            <field name="discount"
+                                   string="Disc.%"
+                                   groups="product.group_discount_per_so_line"
+                                   optional="show"/>
+                            <field name="is_present" invisible="1"/>
+                            <button name="button_add_to_order"
+                                    type="object"
+                                    class="oe_link"
+                                    icon="fa-shopping-cart"
+                                    title="Add to order lines"
+                                    attrs="{'invisible': [('is_present', '=', True)]}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="purchase_order_form_ext_product" model="ir.ui.view">
+        <field name="name">purchase.order.form.new</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_picking_form_ext_product" model="ir.ui.view">
+        <field name="name">stock.picking.form.new</field>
+        <field name="model">stock.picking</field>
+        <field eval="12" name="priority"/>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="stock_scrap_form_view_ext_product" model="ir.ui.view">
+        <field name="name">stock.scrap.form.new</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_move_form_ext_product" model="ir.ui.view">
+        <field name="name">account.move.form.extract.inherit.new</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="html">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_warehouse_orderpoint_tree_editable_inherited_purchase_ext" model="ir.ui.view">
+        <field name="name">stock.warehouse.orderpoint.tree.editable.inherit.purchase</field>
+        <field name="model">stock.warehouse.orderpoint</field>
+        <field name="inherit_id" ref="stock.view_warehouse_orderpoint_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="product_product_stock_tree_ext_product">
+        <field name="name">product.product.stock.tree</field>
+        <field name="model">product.product</field>
+        <field name="priority" eval="100"/>
+        <field name="inherit_id" ref="stock.product_product_stock_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_name']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id='stock_landed_costs.view_stock_landed_cost_form' model='ir.ui.view'>
+        <field name="name">stock.landed.cost.form</field>
+        <field name="model">stock.landed.cost</field>
+        <field name="arch" type="xml">
+            <form string="Landed Costs">
+                <field name="company_id" invisible="1"/>
+                <field name="stock_valuation_layer_ids" invisible="1"/>
+                <header>
+                    <button name="button_validate" string="Validate" states="draft" class="oe_highlight" type="object"/>
+                    <button name="button_cancel" string="Cancel" states="draft" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button string="Valuation" type="object"
+                                name="action_view_stock_valuation_layers"
+                                class="oe_stat_button" icon="fa-dollar" groups="stock.group_stock_manager"
+                                attrs="{'invisible': ['|' , ('state', 'not in', ['done']), ('stock_valuation_layer_ids', '=', [])]}"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="Landed Cost"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="target_model" widget="radio" invisible="1"/>
+                            <field name="picking_ids" widget="many2many_tags"
+                                   options="{'no_create_edit': True}"
+                                   attrs="{'invisible': [('target_model', '!=', 'picking')]}"
+                                   domain="[('company_id', '=', company_id), ('move_ids.stock_valuation_layer_ids', '!=', False)]"/>
+                        </group>
+                        <group>
+                            <label for="account_journal_id" string="Journal"/>
+                            <field name="account_journal_id" nolabel="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="account_move_id" attrs="{'invisible': [('account_move_id', '=', False)]}"/>
+                            <field name="vendor_bill_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Additional Costs" name="additional_costs">
+                            <field name="cost_lines">
+                                <form string="Cost Lines">
+                                    <group>
+                                        <group>
+                                            <field name="product_id"
+                                                   domain="[('landed_cost_ok', '=', True)]"
+                                                   context="{'default_landed_cost_ok': True}"
+                                                   options="{'no_create': True, 'no_create_edit' : True}"/>
+                                            <field name="price_unit"/>
+                                            <field name="currency_id" invisible="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="split_method"/>
+                                            <field name="account_id" options="{'no_create': True}"/>
+                                        </group>
+                                    </group>
+                                    <label for="name"/>
+                                    <field name="name"/>
+                                </form>
+                                <tree string="Cost Lines" editable="bottom">
+                                    <field name="product_id"
+                                           domain="[('landed_cost_ok', '=', True)]"
+                                           context="{'default_landed_cost_ok': True, 'default_detailed_type': 'service'}"
+                                           options="{'no_create': True, 'no_create_edit' : True}"/>
+                                    <field name="name"/>
+                                    <field name="account_id" options="{'no_create': True}"/>
+                                    <field name="split_method"/>
+                                    <field name="price_unit"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="amount_total"/>
+                                <button colspan="2" name="compute_landed_cost" string="Compute" type="object"
+                                        class="oe_right btn-secondary" states='draft'/>
+                            </group>
+                        </page>
+                        <page string="Valuation Adjustments" name="valuation_adjustments">
+                            <field name="valuation_adjustment_lines">
+                                <form string="Valuation Adjustments">
+                                    <group>
+                                        <group>
+                                            <field name="product_id"/>
+                                            <field name="quantity"/>
+                                        </group>
+                                        <group>
+                                            <field name="currency_id" invisible="1"/>
+                                            <field name="former_cost"/>
+                                            <field name="additional_landed_cost"/>
+                                        </group>
+                                    </group>
+                                </form>
+                                <tree string="Valuation Adjustments" editable="bottom" create="0">
+                                    <field name="cost_line_id" readonly="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="weight" readonly="1" optional="hide"/>
+                                    <field name="volume" readonly="1" optional="hide"/>
+                                    <field name="quantity" readonly="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="former_cost" readonly="1"/>
+                                    <field name="final_cost" readonly="1"/>
+                                    <field name="additional_landed_cost"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="stock_production_lot_view_form_new_ext" model="ir.ui.view">
+        <field name="name">stock.production.lot.view.form</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_packaging_form_view_ext_product" model="ir.ui.view">
+        <field name="name">product.packaging.form.view.new</field>
+        <field name="model">product.packaging</field>
+        <field name="inherit_id" ref="product.product_packaging_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_delivery_carrier_form_ext_new" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.new</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="quality_check_view_form_ext_new" model="ir.ui.view">
+        <field name="name">quality.check.view.form</field>
+        <field name="model">quality.check</field>
+        <field name="inherit_id" ref="quality_control.quality_check_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="quality_point_view_form_inherit_ext_new" model="ir.ui.view">
+        <field name="name">quality.point.view.form.inherit.quality.control</field>
+        <field name="model">quality.point</field>
+        <field name="inherit_id" ref="quality.quality_point_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_ids']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="quality_control.quality_alert_view_form" model="ir.ui.view">
+        <field name="name">quality.alert.view.form</field>
+        <field name="model">quality.alert</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'folded'}"/>
+                </header>
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <field name="product_id" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_see_check" type="object" attrs="{'invisible': [('check_id', '=', False)]}"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="check_id" readonly="1"/>
+                                </span>
+                                <span class="o_stat_text">Quality Check</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="title"/>
+                            <field name="product_tmpl_id" options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="product_id" groups="product.group_product_variant"
+                                   options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="lot_id" context="{'default_product_id': product_id}"
+                                   groups="stock.group_production_lot"/>
+                            <field name="picking_id"/>
+                        </group>
+                        <group>
+                            <field name="team_id"/>
+                            <field name="user_id" domain="[('share', '=', False)]"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="reason_id"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Description of the issue..."/>
+                        </page>
+                        <page string="Corrective Actions" name="corrective_actions">
+                            <field name="action_corrective" placeholder="Describe the corrective actions you did..."/>
+                        </page>
+                        <page string="Preventive Actions" name="preventive_actions">
+                            <field name="action_preventive" placeholder="Describe the preventive actions you did..."/>
+                        </page>
+                        <page string="Miscellaneous" name="miscellaneous">
+                            <group>
+                                <group>
+                                    <field name="partner_id"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                    <field name="email_cc" groups="base.group_no_one"/>
+                                </group>
+                                <group>
+                                    <field name="date_assign"/>
+                                    <field name="date_close" attrs="{'invisible': [('date_close', '=', False)]}"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_purchase_requisition_form_ext_new">
+        <field name="name">purchase.requisition.form.new</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_supplierinfo_form_view" model="ir.ui.view">
+        <field name="name">product.supplierinfo.form.view</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mrp_workorder_eco_view_form_new_ext" model="ir.ui.view">
+        <field name="name">mrp.workorder.eco.view.form.new</field>
+        <field name="model">mrp.eco</field>
+        <field name="inherit_id" ref="mrp_plm.mrp_eco_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_repair_order_form_new_ext" model="ir.ui.view">
+        <field name="name">repair.form.new.ext</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id'][1]" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field/tree//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            <xpath expr="//page[@name='operations']" position="replace">
+                <page string="Operations" name="operations">
+                    <field name="fees_lines" context="{'default_company_id': company_id}"
+                           attrs="{'readonly':[('state', 'in', ['done', 'cancel'])]}">
+                        <form string="Fees">
+                            <group>
+                                <field name="company_id" invisible="1" force_save="1"/>
+                                <field name="product_id" required="True"/>
+                                <field name="name"/>
+                                <field name="product_uom_category_id" invisible="1"/>
+                                <label for="product_uom_qty"/>
+                                <div class="o_row">
+                                    <field name="product_uom_qty" string="Quantity"/>
+                                    <field name="product_uom" groups="uom.group_uom"/>
+                                </div>
+                                <field name="price_unit"/>
+                                <field widget="many2many_tags" name="tax_id"/>
+                                <field name="price_subtotal" widget="monetary" invisible="1"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </form>
+                        <tree string="Fees" editable="bottom">
+                            <field name="company_id" invisible="1" force_save="1"/>
+                            <field name="product_id" required="True" context="{'default_type': 'service'}"
+                                   options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name='name' optional="show"/>
+                            <field name="product_uom_qty" string="Quantity"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="product_uom" string="Unit of Measure" groups="uom.group_uom" optional="show"/>
+                            <field name="price_unit"/>
+                            <field name="tax_id" widget="many2many_tags" optional="show"/>
+                            <field name="price_subtotal" widget="monetary"
+                                   groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <field name="price_total" widget="monetary"
+                                   groups="account.group_show_line_subtotals_tax_included"/>
+                            <field name="currency_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+    <record id="product_template_only_form_view_product_ext" model="ir.ui.view">
+        <field name="name">product.template.only.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales']" position="replace">
+                <page string="Sales" name="sales"
+                      modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">
+                    <group name="sale">
+                        <group string="Upsell &amp; Cross-Sell" name="upsell">
+                            <field name="optional_product_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color','no_create': True, 'no_create_edit' : True}"
+                                   domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                                   placeholder="Recommend when 'Adding to Cart' or quotation" can_create="true"
+                                   can_write="true"/>
+                            <field name="accessory_product_ids" widget="many2many_tags"
+                                   placeholder="Suggested accessories in the eCommerce cart"
+                                   options="{'no_create': True, 'no_create_edit' : True}"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}"
+                                   can_create="true"
+                                   can_write="true"/>
+                            <field name="alternative_product_ids" widget="many2many_tags"
+                                   domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                                   placeholder="Displayed in bottom of product pages"
+                                   options="{'no_create': True, 'no_create_edit' : True}"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}"
+                                   can_create="true"
+                                   can_write="true"/>
+                        </group>
+                        <group string="eCommerce Shop" name="shop"
+                               modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">
+                            <field name="website_url" modifiers="{&quot;readonly&quot;: true}"/>
+                            <field name="website_id" options="{'no_create': True}" on_change="1" can_create="true"
+                                   can_write="true"/>
+                            <field name="website_sequence"/>
+                            <field name="rating_avg" modifiers="{&quot;readonly&quot;: true}"/>
+                            <field name="website_description"/>
+                            <field name="website_published"/>
+                            <field name="website_meta_keywords"/>
+                            <field name="can_image_1024_be_zoomed" modifiers="{&quot;readonly&quot;: true}"/>
+                            <field name="public_categ_ids" widget="many2many_tags" string="Categories" can_create="true"
+                                   can_write="true"/>
+                            <label for="allow_out_of_stock_order" string="Out-of-Stock"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>
+                            <div modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}">
+                                <field name="allow_out_of_stock_order" class="oe_inline"/>
+                                Continue Selling
+                            </div>
+
+                            <label for="show_availability" string="Show Available Qty"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>
+                            <div modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}">
+                                <field name="show_availability" class="oe_inline"/>
+                                <span modifiers="{&quot;invisible&quot;: [[&quot;show_availability&quot;, &quot;=&quot;, false]]}">
+                                    <label for="available_threshold" string="only if below" class="o_light_label"/>
+                                    <field name="available_threshold" class="oe_inline col-1" widget="integer"/>
+                                    Units
+                                </span>
+                            </div>
+                            <field name="out_of_stock_message"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>
+                            <field name="website_ribbon_id" options="{'no_quick_create': True}" can_create="true"
+                                   can_write="true"/>
+                        </group>
+                        <group name="product_template_images" string="Extra Product Media"
+                               modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">
+                            <field name="product_template_image_ids" class="o_website_sale_image_list"
+                                   context="{'default_name': name}"
+                                   mode="kanban" add-label="Add a Media" nolabel="1">
+                                <kanban string="Product Images" default_order="sequence">
+                                    <field name="id" modifiers="{&quot;readonly&quot;: true}"/>
+                                    <field name="name" modifiers="{&quot;required&quot;: true}"/>
+                                    <field name="image_1920"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="card oe_kanban_global_click p-0">
+                                                <div class="o_squared_image">
+                                                    <img class="card-img-top"
+                                                         t-att-src="kanban_image('product.image', 'image_1920', record.id.raw_value)"
+                                                         t-att-alt="record.name.value"/>
+                                                </div>
+                                                <div class="card-body p-0">
+                                                    <h4 class="card-title p-2 m-0 bg-200">
+                                                        <small>
+                                                            <field name="name"
+                                                                   modifiers="{&quot;required&quot;: true}"/>
+                                                        </small>
+                                                    </h4>
+                                                </div>
+                                                <!-- below 100 Kb: good -->
+                                                <t t-if="record.image_1920.raw_value.length &lt; 100*1000">
+                                                    <t t-set="size_status" t-value="'text-bg-success'"/>
+                                                    <t t-set="message">Acceptable file size</t>
+                                                </t>
+                                                <!-- below 1000 Kb: decent -->
+                                                <t t-elif="record.image_1920.raw_value.length &lt; 1000*1000">
+                                                    <t t-set="size_status" t-value="'text-bg-warning'"/>
+                                                    <t t-set="message">Huge file size. The image should be
+                                                        optimized/reduced.
+                                                    </t>
+                                                </t>
+                                                <!-- above 1000 Kb: bad -->
+                                                <t t-else="1">
+                                                    <t t-set="size_status" t-value="'text-bg-danger'"/>
+                                                    <t t-set="message">Optimization required! Reduce the image size or
+                                                        increase your
+                                                        compression settings.
+                                                    </t>
+                                                </t>
+                                                <span t-attf-class="badge #{size_status} o_product_image_size"
+                                                      t-esc="record.image_1920.value" t-att-title="message"/>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Sales Description" name="description">
+                            <field colspan="2" name="description_sale" nolabel="1"
+                                   placeholder="This note is added to sales orders and invoices."/>
+                        </group>
+                    </group>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+    <record id="mrp_production_form_view_product_ext" model="ir.ui.view">
+        <field name="name">mrp.production.form</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='bom_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            <xpath expr="//page[@name='finished_products']" position="replace">
+                <page string="By-Products" name="finished_products" groups="mrp.group_mrp_byproducts">
+                    <field name="move_byproduct_ids"
+                           context="{'default_date': date_planned_finished, 'default_date_deadline': date_deadline, 'default_location_id': production_location_id, 'default_location_dest_id': location_dest_id, 'default_state': 'draft', 'default_production_id': id, 'default_picking_type_id': picking_type_id, 'default_company_id': company_id}"
+                           attrs="{'readonly': ['|', ('state', '=', 'cancel'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}"
+                           options="{'delete': [('state', '=', 'draft')]}">
+                        <tree default_order="is_done,sequence" decoration-muted="is_done" editable="bottom">
+                            <field name="product_id" context="{'default_detailed_type': 'product'}"
+                                   domain="[('id', '!=', parent.product_id)]" required="1" options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="location_dest_id" string="To" readonly="1" force_save="1"
+                                   groups="stock.group_stock_multi_locations"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="allowed_operation_ids" invisible="1"/>
+                            <field name="unit_factor" invisible="1"/>
+                            <field name="date" invisible="1"/>
+                            <field name="date_deadline" invisible="1" force_save="1"/>
+                            <field name="additional" invisible="1"/>
+                            <field name="picking_type_id" invisible="1"/>
+                            <field name="has_tracking" invisible="1"/>
+                            <field name="operation_id" invisible="1"/>
+                            <field name="is_done" invisible="1"/>
+                            <field name="bom_line_id" invisible="1"/>
+                            <field name="sequence" invisible="1"/>
+                            <field name="location_id" invisible="1"/>
+                            <field name="warehouse_id" invisible="1"/>
+                            <field name="is_locked" invisible="1"/>
+                            <field name="move_lines_count" invisible="1"/>
+                            <field name="state" invisible="1" force_save="1"/>
+                            <field name="product_uom_qty" string="To Produce" force_save="1"
+                                   attrs="{'readonly': ['&amp;', ('parent.state', '!=', 'draft'), '|', '&amp;', ('parent.state', 'not in', ('confirmed', 'progress', 'to_close')), ('parent.is_planned', '!=', True), ('parent.is_locked', '=', True)]}"/>
+                            <field name="quantity_done" string="Produced"
+                                   attrs="{'column_invisible': [('parent.state', '=', 'draft')], 'readonly': [('has_tracking', '=', True)]}"/>
+                            <field name="product_uom" groups="uom.group_uom"/>
+                            <field name="cost_share" optional="hide"/>
+                            <field name="show_details_visible" invisible="1"/>
+                            <field name="lot_ids" widget="many2many_tags"
+                                   groups="stock.group_production_lot"
+                                   attrs="{'invisible': ['|', '|', ('show_details_visible', '=', False), ('has_tracking', '!=', 'serial'), ('parent.state', '=', 'draft')]}"
+                                   options="{'create': [('parent.use_create_components_lots', '!=', False)]}"
+                                   context="{'default_company_id': company_id, 'default_product_id': product_id}"
+                                   domain="[('product_id','=',product_id)]"
+                            />
+                            <button name="action_show_details" type="object" title="Show Details" icon="fa-list"
+                                    attrs="{'invisible': ['|', ('has_tracking', '=','none'), ('show_details_visible', '=', False)]}"/>
+                            <button class="o_optional_button btn btn-light" name="action_show_details" type="object"
+                                    title="Show Details" icon="fa-list"
+                                    attrs="{'invisible': ['|', ('has_tracking', '!=','none'), ('show_details_visible', '=', False)]}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+    <record id="mrp_unbuild_form_view" model="ir.ui.view">
+        <field name="name">mrp.unbuild.form</field>
+        <field name="model">mrp.unbuild</field>
+        <field name="inherit_id" ref="mrp.mrp_unbuild_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='bom_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="stock_scrap_form_view_ext_new" model="ir.ui.view">
+        <field name="name">stock.scrap.form</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mrp_bom_form_view_new_ext" model="ir.ui.view">
+        <field name="name">mrp.bom.form</field>
+        <field name="model">mrp.bom</field>
+        <field name="priority">100</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+            <xpath expr="//page[@name='components']" position="replace">
+                <page string="Components" name="components">
+                    <field name="bom_line_ids" widget="one2many"
+                           context="{'default_parent_product_tmpl_id': product_tmpl_id, 'default_product_id': False, 'default_bom_id': id}">
+                        <tree string="Components" editable="bottom">
+                            <field name="company_id" invisible="1"/>
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id" context="{'default_detailed_type': 'product'}"
+                                   options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="product_tmpl_id" invisible="1"
+                                   options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <button name="action_see_attachments" type="object" icon="fa-files-o"
+                                    aria-label="Product Attachments" title="Product Attachments" class="float-end"/>
+                            <field name="attachments_count" class="text-start" string=" "/>
+                            <field name="product_qty"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="parent_product_tmpl_id" invisible="1"/>
+                            <field name="product_uom_id" options="{'no_open':True,'no_create':True}"
+                                   groups="uom.group_uom"/>
+                            <field name="possible_bom_product_template_attribute_value_ids" invisible="1"/>
+                            <field name="bom_product_template_attribute_value_ids" optional="hide"
+                                   widget="many2many_tags" options="{'no_create': True}"
+                                   attrs="{'column_invisible': [('parent.product_id', '!=', False)]}"
+                                   groups="product.group_product_variant"/>
+                            <field name="allowed_operation_ids" invisible="1"/>
+                            <field name="operation_id" groups="mrp.group_mrp_routings" optional="hidden"
+                                   attrs="{'column_invisible': [('parent.type','not in', ('normal', 'phantom'))]}"
+                                   options="{'no_quick_create':True,'no_create_edit':True}"/>
+                            <field name="manual_consumption_readonly" invisible="1"/>
+                            <field name="manual_consumption" optional="hide" width="1.0"
+                                   attrs="{'readonly': [('manual_consumption_readonly', '=', True)]}" force_save="1"/>
+                        </tree>
+                    </field>
+                </page>
+
+            </xpath>
+            <xpath expr="//page[@name='by_products']" position="replace">
+                <page string="By-products"
+                      name="by_products"
+                      attrs="{'invisible': [('type','!=','normal')]}"
+                      groups="mrp.group_mrp_byproducts">
+                    <field name="byproduct_ids"
+                           context="{'form_view_ref' : 'mrp.mrp_bom_byproduct_form_view', 'default_bom_id': id}">
+                        <tree string="By-products" editable="top">
+                            <field name="company_id" invisible="1"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id" context="{'default_detailed_type': 'product'}"
+                                   options="{'no_quick_create':True,'no_create_edit':True}"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom_id" groups="uom.group_uom"/>
+                            <field name="cost_share" optional="hide"/>
+                            <field name="allowed_operation_ids" invisible="1"/>
+                            <field name="operation_id" groups="mrp.group_mrp_routings"
+                                   options="{'no_quick_create':True,'no_create_edit':True}"/>
+                            <field name="possible_bom_product_template_attribute_value_ids" invisible="1"/>
+                            <field name="bom_product_template_attribute_value_ids" optional="hide"
+                                   widget="many2many_tags" options="{'no_create': True}"
+                                   attrs="{'column_invisible': [('parent.product_id', '!=', False)]}"
+                                   groups="product.group_product_variant"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mrp_production_workorder_tree_editable_view_product_ext">
+        <field name="name">mrp.production.work.order.tree.editable</field>
+        <field name="model">mrp.workorder</field>
+        <field name="priority" eval="100"/>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
+
