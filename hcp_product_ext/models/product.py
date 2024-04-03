@@ -263,14 +263,16 @@ class StockQuant(models.Model):
 				else:
 					rec.min_reorder_quantity = 0.0
 
-	# @api.model
-	# def _get_removal_strategy_order(self, removal_strategy):
-	# 	if removal_strategy == 'fifo':
-	# 	    return 'lot_id ASC NULLS FIRST, id'
-	# 	elif removal_strategy == 'lifo':
-	# 	    return 'lot_id DESC NULLS LAST, id desc'
-	# 	raise UserError(_('Removal strategy %s not implemented.') % (removal_strategy,))
-    # 
+	@api.model
+	def _get_removal_strategy_order(self, removal_strategy):
+		if removal_strategy == 'fifo':
+			return 'lot_id ASC, id'
+		elif removal_strategy == 'lifo':
+			return 'lot_id DESC, id DESC'
+		elif removal_strategy == 'closest':
+			return 'location_id ASC, id DESC'
+		raise UserError(_('Removal strategy %s not implemented.') % (removal_strategy,))
+
 	@api.model
 	def _update_reserved_quantity(self, product_id, location_id, quantity, lot_id=None, package_id=None, owner_id=None, strict=False):
 		""" Increase the reserved quantity, i.e. increase `reserved_quantity` for the set of quants
