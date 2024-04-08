@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="customer_category_groupby_ext" model="ir.ui.view">
+        <field name="name">Customer Category Search View</field>
+        <field name="model">sale.report</field>
+        <field name="inherit_id" ref="sale.view_order_product_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="CustomerCategory" name="code_group_hcp" context="{'group_by':'code_group_hcp'}"/>
+            </xpath>
+        </field>
+    </record>
+     <record id="customer_category_groupby_ext_1" model="ir.ui.view">
+        <field name="name">Customer Category Search View</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_sale"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="CustomerCategory" name="code_group_hcp" context="{'group_by':'code_group_hcp_sale'}"/>
+            </xpath>
+        </field>
+    </record>
+
 <!--two fields created in vendor master tree view-->
     <record id="view_partner_tree_id" model="ir.ui.view">
             <field name="name">res.partner.tree</field>
