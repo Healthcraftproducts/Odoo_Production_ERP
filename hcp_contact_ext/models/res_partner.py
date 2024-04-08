@@ -4,6 +4,7 @@ import threading
 from psycopg2 import sql
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
+
 from odoo import api, fields, models, tools, SUPERUSER_ID
 from odoo.tools.translate import _
 from odoo.tools import email_re, email_split
@@ -65,8 +66,7 @@ class HcpGroupCode(models.Model):
 	_rec_name = 'name'
 
 	name = fields.Char(string='Name', required=True)
-	# group_ids = fields.One2many('sale.report', 'code_group_hcp', string='group hcp')
-	# group_ids_order = fields.One2many('sale.order', 'code_group_hcp', string='group hcp')
+
 class DeliveryCarrier(models.Model):
 	_inherit = 'delivery.carrier'
 
@@ -258,44 +258,4 @@ class Lead(models.Model):
 		}
 		if self.lang_id:
 			res['lang'] = self.lang_id.code
-		return res
-
-class SaleOrder(models.Model):
-	_inherit = "sale.order"
-	# code_group_hcp = fields.Many2one('hcp.group.code', string='Group Code', store=True)
-	code_group_hcp_sale = fields.Many2one('hcp.group.code',string='Group Code',compute="_compute_group_code",readonly=False,store=True)
-
-	@api.depends('partner_id')
-	def _compute_group_code(self):
-		for rec in self:
-			if rec.partner_id:
-				if rec.partner_id.hcp_group_code:
-					rec.code_group_hcp_sale = rec.partner_id.hcp_group_code
-				else:
-					rec.code_group_hcp_sale = ""
-			else:
-				rec.code_group_hcp_sale = ""
-
-
-class SaleReport(models.Model):
-	_inherit = "sale.report"
-
-	code_group_hcp = fields.Many2one('hcp.group.code',string='Group Code',store=True)
-
-	def _select_additional_fields(self):
-		"""
-        Inherited Select method to Add category fields filter in Reports
-        :return:
-        """
-		res = super(SaleReport, self)._select_additional_fields()
-		res['code_group_hcp'] = "s.code_group_hcp_sale"
-		return res
-
-	def _group_by_sale(self):
-		"""
-        Inherit group by for filter category data
-        :return:
-        """
-		res = super(SaleReport, self)._group_by_sale()
-		res += """, s.code_group_hcp_sale"""
 		return res
