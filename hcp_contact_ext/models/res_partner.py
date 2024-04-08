@@ -259,3 +259,8 @@ class Lead(models.Model):
 		if self.lang_id:
 			res['lang'] = self.lang_id.code
 		return res
+
+class SaleOrder(models.Model):
+	_inherit = "sale.order"
+	# code_group_hcp = fields.Many2one('hcp.group.code', string='Group Code', store=True)
+	code_group_hcp_sale = fields.Many2one('hcp.group.code',string='Group Code',readonly=False,store=True)
