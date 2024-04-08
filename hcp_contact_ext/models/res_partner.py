@@ -260,23 +260,23 @@ class Lead(models.Model):
 			res['lang'] = self.lang_id.code
 		return res
 
-# class SaleOrder(models.Model):
-# 	_inherit = "sale.order"
-#
-# 	code_group_hcp = fields.Many2one('hcp.group.code',string='Group Code',compute="_compute_group_code",readonly=False,store=True)
-#
-# 	@api.depends('partner_id')
-# 	def _compute_group_code(self):
-# 		for rec in self:
-# 			if rec.partner_id:
-# 				if rec.partner_id.hcp_group_code:
-# 					rec.code_group_hcp = rec.partner_id.hcp_group_code
-# 				else:
-# 					rec.code_group_hcp = ""
-# 			else:
-# 				rec.code_group_hcp = ""
-#
-#
+class SaleOrder(models.Model):
+	_inherit = "sale.order"
+
+	code_group_hcp = fields.Many2one('hcp.group.code',string='Group Code',compute="_compute_group_code",readonly=False,store=True)
+
+	@api.depends('partner_id')
+	def _compute_group_code(self):
+		for rec in self:
+			if rec.partner_id:
+				if rec.partner_id.hcp_group_code:
+					rec.code_group_hcp = rec.partner_id.hcp_group_code
+				else:
+					rec.code_group_hcp = ""
+			else:
+				rec.code_group_hcp = ""
+
+
 # class SaleReport(models.Model):
 # 	_inherit = "sale.report"
 #
