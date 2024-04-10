@@ -33,8 +33,8 @@
             <field name="name">Production Orders</field>
             <field name="model">mrp.production</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">hcp_mrp_module.mrp_production_order_report_template_id</field>
-            <field name="report_file">hcp_mrp_module.mrp_production_order_report_template_id</field>
+            <field name="report_name">hcp_mrp_module.mrp_production_order_report_template_ids</field>
+            <field name="report_file">hcp_mrp_module.mrp_production_order_report_template_ids</field>
             <field name="binding_model_id" ref="mrp.model_mrp_production"/>
             <field name="print_report_name">'Production Order - %s' % object.name</field>
             <field name="binding_type">report</field>
