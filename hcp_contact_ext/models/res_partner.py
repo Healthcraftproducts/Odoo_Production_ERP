@@ -194,7 +194,7 @@ class ResPartner(models.Model):
 				if vals['company_type'] == 'company':
 					vendor_no = self.env['ir.sequence'].next_by_code('vendor.sequence')
 					vals['hcp_vendor_no'] = vendor_no
-		if 'company_type' in vals and 'company_type' in vals:
+		if 'company_type' in vals:
 			if vals['company_type'] == 'person':
 				parent_id = vals.get('parent_id')
 				if parent_id:
@@ -205,6 +205,7 @@ class ResPartner(models.Model):
 
 	def copy(self, default=None):
 		self.ensure_one()
+		default = dict(default or {})
 		customer_no = False
 		vendor_no = False
 		for rec in self:
@@ -215,12 +216,12 @@ class ResPartner(models.Model):
 						rec.hcp_customer_id = customer_no
 					elif rec.company_type == 'person':
 						if rec.parent_id:
-							print("havingggparentttttttttttttttttttttttttttttttttttttttttttttt")
 							rec.hcp_customer_id = rec.parent_id.hcp_customer_id
+							default['company_type'] = 'person'
 						elif not rec.parent_id:
-							print("not havingggggggggggggggggggggggggggggggggggggggggggggggggg")
 							customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
 							rec.hcp_customer_id = customer_no
+							default['company_type'] = 'person'
 				else:
 					rec.hcp_customer_id = False
 			if rec.hcp_is_vendor and rec.company_type:
@@ -231,9 +232,11 @@ class ResPartner(models.Model):
 					elif rec.company_type == 'person':
 						if rec.parent_id:
 							rec.hcp_vendor_no = rec.parent_id.hcp_vendor_no
+							default['company_type'] = 'person'
 						elif not rec.parent_id:
 							customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
 							rec.hcp_vendor_no = customer_no
+							default['company_type'] = 'person'
 				else:
 					rec.hcp_vendor_no = False
 		return super(ResPartner, self).copy(default)
