@@ -183,24 +183,45 @@ class ResPartner(models.Model):
 	@api.model
 	def create(self, vals):
 		customer_no = False
-		if 'hcp_is_customer' in vals and vals['hcp_is_customer'] == True:
-			if vals['hcp_is_customer'] == True and vals['company_type'] == 'company':
-				customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
-			vals['hcp_customer_id'] = customer_no
-		if 'hcp_is_vendor' in vals:
-			if vals['hcp_is_vendor'] == True and vals['company_type'] == 'company':
-				vendor_no = self.env['ir.sequence'].next_by_code('vendor.sequence')
-				vals['hcp_vendor_no'] = vendor_no
-		if 'company_type' in vals and vals['company_type'] == 'person':
+		vendor_no = False
+		if 'hcp_is_customer' in vals and 'company_type' in vals:
+			if vals['hcp_is_customer'] == True:
+				if vals['company_type'] == 'company':
+					customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
+					vals['hcp_customer_id'] = customer_no
+		if 'hcp_is_vendor' in vals and 'company_type' in vals:
+			if vals['hcp_is_vendor'] == True:
+				if vals['company_type'] == 'company':
+					vendor_no = self.env['ir.sequence'].next_by_code('vendor.sequence')
+					vals['hcp_vendor_no'] = vendor_no
+		if 'company_type' in vals and 'company_type' in vals:
 			if vals['company_type'] == 'person':
 				parent_id = vals.get('parent_id')
-			if parent_id:
-				main_company = self.env['res.partner'].search([('id', '=', parent_id)])
-				vals.update({'hcp_customer_id': main_company.hcp_customer_id,'hcp_vendor_no': main_company.hcp_vendor_no,'hcp_is_customer':main_company.hcp_is_customer,'hcp_is_vendor':main_company.hcp_is_vendor,'property_delivery_carrier_id':main_company.property_delivery_carrier_id.id,'hcp_ship_via_description':main_company.hcp_ship_via_description})
+				if parent_id:
+					main_company = self.env['res.partner'].search([('id', '=', parent_id)])
+					vals.update({'hcp_customer_id': main_company.hcp_customer_id,'hcp_vendor_no': main_company.hcp_vendor_no,'hcp_is_customer':main_company.hcp_is_customer,'hcp_is_vendor':main_company.hcp_is_vendor,'property_delivery_carrier_id':main_company.property_delivery_carrier_id.id,'hcp_ship_via_description':main_company.hcp_ship_via_description})
 		res = super(ResPartner, self).create(vals)
 		return res
 
-	#def name_get(self):
+	def copy(self, default=None):
+		self.ensure_one()
+		customer_no = False
+		vendor_no = False
+		for rec in self:
+			if rec.hcp_is_customer and rec.company_type:
+				if rec.hcp_is_customer == True:
+					if rec.company_type == 'company':
+						customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
+						rec.hcp_customer_id = customer_no
+			if rec.hcp_is_vendor and rec.company_type:
+				if rec.hcp_is_vendor == True:
+					if rec.company_type == 'company':
+						vendor_no = self.env['ir.sequence'].next_by_code('vendor.sequence')
+						rec.hcp_vendor_no = vendor_no
+		return super(ResPartner, self).copy(default)
+
+
+#def name_get(self):
 		## name get function for the model executes automatically
 		#res = []
 		#for rec in self:
