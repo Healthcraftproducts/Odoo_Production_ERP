@@ -213,11 +213,29 @@ class ResPartner(models.Model):
 					if rec.company_type == 'company':
 						customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
 						rec.hcp_customer_id = customer_no
+					elif rec.company_type == 'person':
+						if rec.parent_id:
+							print("havingggparentttttttttttttttttttttttttttttttttttttttttttttt")
+							rec.hcp_customer_id = rec.parent_id.hcp_customer_id
+						elif not rec.parent_id:
+							print("not havingggggggggggggggggggggggggggggggggggggggggggggggggg")
+							customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
+							rec.hcp_customer_id = customer_no
+				else:
+					rec.hcp_customer_id = False
 			if rec.hcp_is_vendor and rec.company_type:
 				if rec.hcp_is_vendor == True:
 					if rec.company_type == 'company':
 						vendor_no = self.env['ir.sequence'].next_by_code('vendor.sequence')
 						rec.hcp_vendor_no = vendor_no
+					elif rec.company_type == 'person':
+						if rec.parent_id:
+							rec.hcp_vendor_no = rec.parent_id.hcp_vendor_no
+						elif not rec.parent_id:
+							customer_no = self.env['ir.sequence'].next_by_code('partner.sequence')
+							rec.hcp_vendor_no = customer_no
+				else:
+					rec.hcp_vendor_no = False
 		return super(ResPartner, self).copy(default)
 
 
