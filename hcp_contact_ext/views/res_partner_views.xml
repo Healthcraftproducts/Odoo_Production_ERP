@@ -613,7 +613,16 @@
     sequence="1"
   />
 
-
+    <record id="amazon_sales_order_form_view_ept_dummy" model="ir.ui.view">
+        <field name="name">Amazon Information new</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_order']" position="after">
+                <field name="code_group_hcp_sale"/>
+            </xpath>
+        </field>
+    </record>
 
 
 </odoo>
