@@ -274,6 +274,8 @@ class MrpProductionWorkcenterLine(models.Model):
                     raise UserError(_('Please enter a Lot/SN.'))
                 if float_compare(self.qty_done, 0, precision_rounding=rounding) < 0:
                     raise UserError(_('Please enter a positive quantity.'))
+                if float_compare(self.qty_done, 0, precision_rounding=rounding) == 0:
+                    raise UserError(_('Work order cannot be processed with Zero Quantity,Please enter a positive quantity.'))
 
                 # Write the lot and qty to the move line
                 if self.move_line_id:
