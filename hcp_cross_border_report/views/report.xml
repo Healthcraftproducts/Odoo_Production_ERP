@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_sale_excel_report_wizard" model="ir.ui.view">
+            <field name="name">sale_excel_report_wizard</field>
+            <field name="model">sale.excel.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Sales Excel Report">
+                    <group>
+                        <field name="current_date"/>
+                    </group>
+                    <group>
+                        <field name="invoice_id"
+                               widget="many2many_tags"
+                               domain="[('invoice_date', '=', current_date), ('state', '=', 'posted'), ('move_type', 'in', ['out_invoice', 'out_receipt']),('partner_shipping_id.country_id.code', '=', 'US') ]"/>
+                        <field name="user_id"/>
+
+                    </group>
+
+
+                    <footer>
+                        <button name="action_print_excel_report"
+                                class="btn-primary"
+                                string="Generate Report"
+                                type="object"/>
+                        <button string="Cancel"
+                                class="btn-secondary"
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sale_excel_report_wizard" model="ir.actions.act_window">
+            <field name="name">Cross Border Report</field>
+            <field name="res_model">sale.excel.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="sale.report_excel_print"
+                  name="Cross Border Report"
+                  action="hcp_cross_border_report.action_sale_excel_report_wizard"
+                  parent="sale.menu_sale_report"
+                  sequence="20"/>
+
+    </data>
+</odoo>
