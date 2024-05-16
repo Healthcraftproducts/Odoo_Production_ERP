@@ -33,7 +33,7 @@ class SaleExcelReport(models.TransientModel):
             invoices = self.env['account.move'].search([
                 ('invoice_date', '=', self.current_date),
                 ('state', '=', 'posted'), ('move_type', 'in', ['out_invoice', 'out_receipt']),
-                ('partner_shipping_id.country_id.code', '=', 'US')])
+                ('partner_shipping_id.country_id.code', '=', 'US'),('amz_instance_id','=',False)])
             self.invoice_id = invoices
         else:
             self.invoice_id = False
