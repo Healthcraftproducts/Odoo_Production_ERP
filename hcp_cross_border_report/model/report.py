@@ -31,7 +31,8 @@ class SaleExcelReport(models.TransientModel):
     def _onchange_current_date(self):
         if self.current_date:
             sale_orders = self.env['sale.order'].search([
-                ('amz_instance_id', '=', False)
+                ('amz_instance_id', '=', False), ('state', 'in', ['sent', 'sale', 'done']),
+                ('partner_shipping_id.country_id.code', '=', 'US'),
             ])
             invoices = self.env['account.move'].search([
                 ('invoice_date', '=', self.current_date),
