@@ -340,3 +340,64 @@ class SaleReport(models.Model):
 		res = super(SaleReport, self)._group_by_sale()
 		res += """, s.code_group_hcp_sale"""
 		return res
+
+class AccountMoveInheritModel(models.Model):
+    _inherit = 'account.move'
+
+    code_group_hcp_account_move = fields.Many2one(
+        'hcp.group.code',
+        string='Group Code',
+        compute='_compute_group_code_account_move',
+        readonly=False,
+        store=True,
+    )
+
+    customer_industry_account_move = fields.Many2one(
+        'res.partner.industry',
+        string="Customer industry",
+        compute='_compute_customer_industry_account_move',
+		store=True,
+    )
+
+    @api.depends('partner_id')
+    def _compute_group_code_account_move(self):
+        for rec in self:
+            if rec.partner_id:
+                if rec.partner_id.hcp_group_code:
+                    rec.code_group_hcp_account_move = rec.partner_id.hcp_group_code
+                else:
+                    rec.code_group_hcp_account_move = False
+            else:
+                rec.code_group_hcp_account_move = False
+
+    @api.depends('partner_id')
+    def _compute_customer_industry_account_move(self):
+        for rec in self:
+            if rec.partner_id:
+                if rec.partner_id.hcp_group_code:
+                    rec.customer_industry_account_move = rec.partner_id.industry_id
+                else:
+                    rec.customer_industry_account_move = False
+            else:
+                rec.customer_industry_account_move = False
+
+class AccountInvoiceReport(models.Model):
+    _inherit = "account.invoice.report"
+
+    code_group_hcp_account_move = fields.Many2one(
+        'hcp.group.code',
+        string='Group Code Invoice Report'
+    )
+
+    customer_industry_account_move = fields.Many2one(
+        'res.partner.industry',
+        string="Customer industry",
+    )
+
+    @api.model
+    def _select(self):
+        res = super(AccountInvoiceReport, self)._select()
+        return res + '''
+            , move.code_group_hcp_account_move
+            , move.customer_industry_account_move
+        '''
