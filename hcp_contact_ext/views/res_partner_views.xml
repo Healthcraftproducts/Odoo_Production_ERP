@@ -10,6 +10,7 @@
             </xpath>
         </field>
     </record>
+
      <record id="customer_category_groupby_ext_1" model="ir.ui.view">
         <field name="name">Customer Category Search View</field>
         <field name="model">sale.order</field>
@@ -613,16 +614,28 @@
     sequence="1"
   />
 
-    <record id="amazon_sales_order_form_view_ept_dummy" model="ir.ui.view">
-        <field name="name">Amazon Information new</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
+    <record id="view_account_invoice_report_search_inherit" model="ir.ui.view">
+        <field name="name">account.invoice.report.search</field>
+        <field name="model">account.invoice.report</field>
+        <field name="inherit_id" ref="account.view_account_invoice_report_search"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='date_order']" position="after">
-                <field name="code_group_hcp_sale"/>
+            <xpath expr="//search" position="inside">
+                <filter string="Customer Category" name="code_group_hcp_account_move" context="{'group_by':'code_group_hcp_account_move'}"/>
+                <filter string="Customer Industry" name="customer_industry_account_move" context="{'group_by':'customer_industry_account_move'}"/>
             </xpath>
         </field>
     </record>
 
+       <record id="group_code_account_invoice_inherit_filter" model="ir.ui.view">
+            <field name="name">account.move.search</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter string="Customer Category" name="code_group_hcp_account_move" context="{'group_by':'code_group_hcp_account_move'}" />
+                    <filter string="Customer Industry" name="customer_industry_account_move" context="{'group_by':'customer_industry_account_move'}" />
+                </xpath>
+            </field>
+        </record>
 
 </odoo>

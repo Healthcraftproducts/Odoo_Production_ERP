@@ -30,10 +30,17 @@ class SaleExcelReport(models.TransientModel):
     @api.onchange('current_date')
     def _onchange_current_date(self):
         if self.current_date:
+            sale_orders = self.env['sale.order'].search([
+                ('amz_instance_id', '=', False), ('state', 'in', ['sent', 'sale', 'done']),
+                ('partner_shipping_id.country_id.code', '=', 'US'),
+            ])
             invoices = self.env['account.move'].search([
                 ('invoice_date', '=', self.current_date),
-                ('state', '=', 'posted'), ('move_type', 'in', ['out_invoice', 'out_receipt']),
-                ('partner_shipping_id.country_id.code', '=', 'US')])
+                ('state', '=', 'posted'),
+                ('move_type', 'in', ['out_invoice', 'out_receipt']),
+                ('partner_shipping_id.country_id.code', '=', 'US'),
+                ('invoice_origin', 'in', sale_orders.mapped('name'))
+            ])
             self.invoice_id = invoices
         else:
             self.invoice_id = False
