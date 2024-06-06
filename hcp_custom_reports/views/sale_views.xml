@@ -130,8 +130,8 @@
         <field name="arch" type="xml">
 
             <xpath expr="//form/sheet/group/group[1]/field[@name = 'code']" position="after">
-
                 <field name="remittance_address"/>
+                <field name="gst_hst_number"/>
             </xpath>
 
         </field>
