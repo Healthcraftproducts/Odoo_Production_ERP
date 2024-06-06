@@ -291,3 +291,4 @@ class Country(models.Model):
 	_inherit = 'res.country'
 
 	remittance_address = fields.Char(string="Remittance Address")
+	gst_hst_number = fields.Char(string="GST/HST Number")
