@@ -429,8 +429,10 @@
                     <span t-esc="o.partner_shipping_id.country_id.remittance_address"/>
                 </br>
                 <br>
-                    <strong>GST/HST #:</strong>
-                    <span t-esc="o.partner_shipping_id.country_id.vat_label"/>
+                    <t t-if="o.partner_shipping_id.country_id.gst_hst_number">
+                        <strong>GST/HST #:</strong>
+                        <strong><span t-esc="o.partner_shipping_id.country_id.gst_hst_number"/></strong>
+                    </t>
                 </br>
 
             </t>
