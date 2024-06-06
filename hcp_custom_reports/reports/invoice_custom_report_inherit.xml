@@ -432,7 +432,6 @@
                     <t t-if="o.partner_shipping_id.country_id.gst_hst_number">
                         <strong>GST/HST #:</strong>
                         <strong><span t-esc="o.partner_shipping_id.country_id.gst_hst_number"/></strong>
-                        &amp;nbsp;HST
                     </t>
                 </br>
 
