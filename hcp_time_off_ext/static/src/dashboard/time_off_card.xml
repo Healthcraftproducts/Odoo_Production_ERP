@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates xml:space="preserve">
+    <!-- Inheriting and replacing the TimeOffCard template from hr_holidays -->
+    <t t-inherit="hr_holidays.TimeOffCard" t-inherit-mode="extension"
+       t-name="hcp_time_off_ext.time_off_negative_holidays" owl="1">
+        <xpath expr="/div//span[hasclass('o_timeoff_duration')]" position="replace">
+            <t t-set="negative_off_duration" t-value="data.usable_remaining_leaves"/>
+
+            <span class="o_timeoff_duration">
+                <t t-if="data and data.icon">
+                    <img t-att-src="data.icon"/>
+                </t>
+
+                <t t-if="data and data.icon">
+                    <t t-if="data.usable_remaining_leaves >= 0">
+                        <t t-esc="duration"/>
+                    </t>
+                    <t t-else="">
+                        <t t-esc="negative_off_duration"/>
+                    </t>
+                </t>
+            </span>
+
+        </xpath>
+
+    </t>
+</templates>
