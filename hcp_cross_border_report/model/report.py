@@ -33,6 +33,7 @@ class SaleExcelReport(models.TransientModel):
             sale_orders = self.env['sale.order'].search([
                 ('amz_instance_id', '=', False), ('state', 'in', ['sent', 'sale', 'done']),
                 ('partner_shipping_id.country_id.code', '=', 'US'),
+                ('amz_fulfillment_by', '!=', 'FBA')
             ])
             invoices = self.env['account.move'].search([
                 ('invoice_date', '=', self.current_date),
