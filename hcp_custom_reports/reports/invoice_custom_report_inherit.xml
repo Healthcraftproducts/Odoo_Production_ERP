@@ -2,6 +2,9 @@
 
     <template id="invoice_custom_report_inherit_template_id" inherit_id="account.report_invoice_document">
 
+        <xpath expr="//div[@name='shipping_address_block']" position="replace">
+
+        </xpath>
         <xpath expr="//t[@t-set='address']/address" position="replace">
 
             <address/>
