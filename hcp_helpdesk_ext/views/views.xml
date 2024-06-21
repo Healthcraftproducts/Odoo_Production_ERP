@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="helpdesk_ticket_view_form_inherit" model="ir.ui.view">
-        <field name="name">helpdesk.ticket.form</field>
+        <field name="name">helpdesk.ticket.form.inherit.hcp</field>
         <field name="model">helpdesk.ticket</field>
         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
         <field name="arch" type="xml">
@@ -19,9 +19,6 @@
             </xpath>
             <xpath expr="//field[@name='ticket_type_id']" position="attributes">
                 <attribute name="options">{'no_create_edit': True, 'no_create':True}</attribute>
-            </xpath>
-            <xpath expr="//field[@name='product_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="pickup_cost" widget="monetary"/>
