@@ -8,6 +8,7 @@ class HelpdeskTicketInherit(models.Model):
     pickup_cost_currency_id = fields.Many2one('res.currency', string='Currency')
     pickup_cost = fields.Monetary(string='Pickup Cost', currency_field='pickup_cost_currency_id')
     re_shipment_cost = fields.Monetary(string='Re-Shipment Cost', currency_field='pickup_cost_currency_id')
+    additional_shipment_cost = fields.Monetary(string='Additional Shipment Cost', currency_field='pickup_cost_currency_id')
 
     @api.onchange('sale_order_id')
     def _onchange_sale_order_id(self):

@@ -23,6 +23,7 @@
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="pickup_cost" widget="monetary"/>
                 <field name="re_shipment_cost" widget="monetary"/>
+                <field name="additional_shipment_cost" widget="monetary"/>
             </xpath>
             <xpath expr="//field[@name='email_cc']" position="after">
                 <field name="sale_order_id" string="Order #" options="{'no_create': True}"/>
