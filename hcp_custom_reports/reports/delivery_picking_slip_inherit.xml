@@ -107,7 +107,9 @@
                         <div class="row justify-content-end mb16">
                             <div class="col-4" name="right_box">
                                 <br/>
-                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/>
+                                <!--                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/>-->
+                                <div t-field="o.name"
+                                     t-options="{'widget': 'barcode', 'width': 600, 'height': 100}"/>
                             </div>
                         </div>
 
