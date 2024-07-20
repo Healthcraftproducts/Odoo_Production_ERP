@@ -120,12 +120,12 @@
                                     <t t-if="o.barcode">
                                         <t t-set="content" t-value="o.barcode"/>
                                         <div t-if="o.barcode" t-field="o.barcode"
-                                             t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100}" style="text-align: center; font-size: 3em"/>
+                                             t-options="{'type':'Code128','widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100}" style="text-align: center; font-size: 3em"/>
                                     </t>
                                     <t t-if="not o.barcode">
                                         <t t-set="content" t-value="o.name"/>
                                         <div t-if="o.name" t-field="o.name"
-                                             t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100}" style="text-align: center; font-size: 3em"/>
+                                             t-options="{'type':'Code128','widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100}" style="text-align: center; font-size: 3em"/>
                                     </t>
                                     <td>
                                     </td>
@@ -147,7 +147,7 @@
                                 <br/>
                                 <!--                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/>-->
                                 <div t-field="o.name"
-                                     t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 600, 'height': 100}"/>
+                                     t-options="{'type':'Code128','widget': 'barcode','width': 600, 'height': 100}"/>
                             </div>
                         </div>
                     </xpath>
