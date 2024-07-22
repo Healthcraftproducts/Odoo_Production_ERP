@@ -9,6 +9,7 @@
 
         <xpath expr="//t[@t-set='address']" position="after">
             <t>
+
                 <br/>
                 <span><strong>Delivery Address:</strong></span>
                 <div t-field="o.partner_id"
