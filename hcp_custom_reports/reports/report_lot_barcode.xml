@@ -60,7 +60,7 @@
                             <div>
                                 <t t-if="quote_plus(o.product_id.barcode)">
                                     <div t-field="o.product_id.barcode"
-                                         t-options="{'type':'Code128', 'humanreadable': 1, 'widget': 'barcode', 'width': 600, 'height': 75}"/>
+                                         t-options="{'type':'Code128','widget': 'barcode', 'width': 600, 'height': 75}"/>
                                     <p style="font-size: 25px; text-align:center ; padding-top:2px">
                                         <b>UPC:
                                             <span t-field="o.product_id.barcode"/>
