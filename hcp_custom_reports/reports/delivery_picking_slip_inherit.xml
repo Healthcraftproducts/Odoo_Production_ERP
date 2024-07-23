@@ -142,18 +142,18 @@
 
     <template id="stock_picking_operations_inherit_id" inherit_id="stock.report_picking">
 
-                    <xpath expr="//div[@class='row justify-content-end mb16']" position="replace">
-                        <div class="row justify-content-end mb16">
-                            <div class="col-4" name="right_box">
-                                <br/>
-                                <!--                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/>-->
-                                <div t-esc="quote_plus(o.name)"
-                                      t-options="{'type':'Code128','widget': 'barcode','width': 600, 'height': 100}"/>
-<!--                                <div t-field="o.name"-->
-<!--                                     t-options="{'type':'Code128','widget': 'barcode','width': 600, 'height': 100}"/>-->
-                            </div>
-                        </div>
-                    </xpath>
+<xpath expr="//div[@class='row justify-content-end mb16']" position="replace">
+    <div class="row justify-content-end mb16">
+        <div class="col-4 text-end" name="right_box">
+            <br/>
+            <!-- <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/> -->
+            <div t-esc="quote_plus(o.name)"
+                 t-options="{'widget': 'barcode','width': 300, 'height':80}"
+                 />
+        </div>
+    </div>
+</xpath>
+
 
                     <xpath expr="//div[@class='row']" position="replace">
 
