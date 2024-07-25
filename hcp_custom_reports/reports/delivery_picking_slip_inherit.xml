@@ -142,20 +142,25 @@
 
     <template id="stock_picking_operations_inherit_id" inherit_id="stock.report_picking">
 
-<xpath expr="//div[@class='row justify-content-end mb16']" position="replace">
-    <div class="row justify-content-end mb16">
-        <div class="col-4 text-end" name="right_box">
-            <br/>
-            <!-- <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/> -->
-            <div t-esc="quote_plus(o.name)"
-                 t-options="{'widget': 'barcode','width': 400, 'height':80}"
-                 />
-        </div>
-    </div>
-</xpath>
+        <xpath expr="//div[@class='row justify-content-end mb16']" position="replace">
+            <div class="row justify-content-end mb16">
+                <div class="col-4 text-end" name="right_box">
+                    <br/>
+                    <!-- <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;" alt="Barcode"/> -->
+                    <div t-esc="quote_plus(o.name)"
+                         t-options="{'widget': 'barcode','width': 400, 'height':80}"
+                    />
+                </div>
+            </div>
+        </xpath>
+         <xpath expr="//td[@class=' text-center h6']" position="replace">
+            <td class=" text-center h6" t-if="has_serial_number">
+                <div t-if="has_serial_number and (ml.lot_id or ml.lot_name)" t-esc="ml.lot_id.name or ml.lot_name"
+                     t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100, 'img_style': 'width:109%;height:53px;'}"/>
+            </td>
+        </xpath>
 
-
-                    <xpath expr="//div[@class='row']" position="replace">
+        <xpath expr="//div[@class='row']" position="replace">
 
                             <div class="row">
                                 <div class="col-6" name="div_outgoing_address">
