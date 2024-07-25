@@ -31,6 +31,7 @@
         'reports/purchase_quotation_inherit.xml',
         'reports/purchase_report_inherit.xml',
         'reports/delivery_picking_slip_inherit.xml',
+        'reports/print_label_barcode_report_inherit.xml',
         'reports/operator_bom_efficiency_report.xml',
         'reports/operator_bom_efficiency.xml',
         'reports/report_lot_barcode.xml',
