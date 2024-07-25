@@ -159,19 +159,19 @@
                                 <t t-set="has_serial_number" t-value="any(move_line.lot_id or move_line.lot_name for move_line in o.move_line_ids)" groups="stock.group_production_lot"/>
                                 <thead>
                                     <tr>
-                                        <th name="th_product" style="width:35%;">
+                                        <th name="th_product" style="width:38%;">
                                             <strong>Product</strong>
                                         </th>
                                         <th style="width:10%;">
                                             <strong>Quantity</strong>
                                         </th>
-                                        <th name="th_from" t-if="o.picking_type_id.code != 'incoming'" align="left" groups="stock.group_stock_multi_locations" style="width:10%;">
+                                        <th name="th_from" t-if="o.picking_type_id.code != 'incoming'" align="left" groups="stock.group_stock_multi_locations" style="width:12%;">
                                             <strong>From</strong>
                                         </th>
-                                        <th name="th_to" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" style="width:10%;">
+                                        <th name="th_to" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" style="width:12%;">
                                             <strong>To</strong>
                                         </th>
-                                        <th name="th_serial_number" class="text-center" t-if="has_serial_number" style="width:25%;">
+                                        <th name="th_serial_number" class="text-center" t-if="has_serial_number" style="width:20%;">
                                            <strong>Lot/Serial Number</strong>
                                         </th>
                                         <th name="th_barcode" class="text-center" t-if="has_barcode" style="width:20%;">
