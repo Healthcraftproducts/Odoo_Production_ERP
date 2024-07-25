@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_inherit_report_simple_label2x7" inherit_id="product.report_simple_label2x7">
+        <xpath expr="//div[@class='text-center o_label_left_column']" position="replace">
+            <t t-set="scanner_barcode_size" t-value="'width:42mm;height:14mm'"/>
+            <div class="text-center o_label_left_column" style="width:48%;">
+                <span class="text-nowrap" t-field="product.default_code"/>
+                <t t-if="barcode">
+                    <div t-out="barcode"
+                         t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': scanner_barcode_size}"/>
+                    <span class="text-center" t-out="barcode"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+    <template id="report_inherit_report_simple_label4x7" inherit_id="product.report_simple_label4x7">
+        <xpath expr="//div[@class='text-center o_label_small_barcode']" position="replace">
+            <t t-set="scanner_barcode_size" t-value="'width:42mm;'"/>
+            <div class= "text-center o_label_small_barcode" style="width:92%;">
+                        <span class="text-nowrap" t-field="product.default_code"/>
+                        <t t-if="barcode">
+                            <div t-out="barcode" style="padding:0" t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': scanner_barcode_size}"/>
+                            <span class="text-center" t-out="barcode"/>
+                        </t>
+                    </div>
+        </xpath>
+    </template>
+    <template id="report_inherit_simple_label4x12" inherit_id="product.report_simple_label4x12">
+        <xpath expr="//div[@class='text-center o_label_small_barcode']" position="replace">
+            <t t-set="scanner_barcode_size" t-value="'width:41mm;height:4mm'"/>
+            <div class="text-center o_label_small_barcode">
+                <t t-if="barcode">
+                    <div t-out="barcode" style="padding:0"
+                         t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': scanner_barcode_size}"/>
+                    <span class="text-center" t-out="barcode"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+    
+</odoo>
