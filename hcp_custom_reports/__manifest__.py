@@ -35,6 +35,7 @@
         'reports/operator_bom_efficiency_report.xml',
         'reports/operator_bom_efficiency.xml',
         'reports/report_lot_barcode.xml',
+        'reports/report_lot_barcode_vertical.xml',
         'reports/lot_serial_number_pdf_inherit.xml',
         'views/sale_views.xml',
         'views/invoice_views.xml',

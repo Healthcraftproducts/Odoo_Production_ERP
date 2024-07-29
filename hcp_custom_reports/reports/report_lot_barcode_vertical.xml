@@ -2,16 +2,16 @@
 <odoo>
     <data>
         <report
-                string="Lot/Serial Number (UPC)"
-                id="action_report_lot_serial_label"
+                string="Lot/Serial Number (UPC) Vertical"
+                id="action_report_lot_serial_vertical_label"
                 model="stock.lot"
-                report_type="qweb-pdf"
-                name="hcp_custom_reports.report_lot_serial_label"
-                file="hcp_custom_reports.report_lot_serial_label"
+                report_type="qweb-html"
+                name="hcp_custom_reports.report_lot_serial_label_vertical"
+                file="hcp_custom_reports.report_lot_serial_label_vertical"
                 print_report_name="'Lot-Serial - %s' % object.name"
         />
 
-        <record id="report_lot_serial_paperformats" model="report.paperformat">
+        <record id="report_lot_serial__vertical_paperformat" model="report.paperformat">
             <field name="name">Paper Format Lot/Serial Number(UPC)</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
@@ -25,18 +25,19 @@
             <field name="header_line" eval="False"/>
             <field name="header_spacing">1</field>
             <field name="dpi">90</field>
-            <field name="report_ids" eval="[(4,ref('hcp_custom_reports.action_report_lot_serial_label'))]"/>
+            <field name="report_ids" eval="[(4,ref('hcp_custom_reports.action_report_lot_serial_vertical_label'))]"/>
         </record>
 
-        <template id="report_lot_serial_label">
+        <template id="report_lot_serial_label_vertical">
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">
-                    <div class="page">
+                    <div class="page"
+                         style="display:flex;display: -webkit-box;-webkit-box-pack: center; justify-content: center; -webkit-justify-content: left;align-items:center">
                         <div>
                             <br/>
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
-                            <div style="padding-top:5px;">
-                                <p style="font-size: 30px;">
+                            <div style="padding-top:3px;">
+                                <p style="font-size: 25px;width:50%">
                                     <b>
                                         <span t-field="o.product_id.display_name"/>
                                     </b>
@@ -44,12 +45,12 @@
                             </div>
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                             <div>
-                                <div>
-                                    <div t-esc="o.name"
+                                <pre style="margin-bottom:0;">
+                                    <div style="right: 100px;position: relative;" t-esc="o.name"
                                          t-options="{'widget': 'barcode', 'width': 600, 'height': 75}"/>
-                                </div>
+                                </pre>
                                 <div>
-                                    <p style="font-size: 25px; text-align:center ; padding-top:2px">
+                                    <p style="font-size: 25px; text-align:center ; padding-top:0px;padding-right:182px;">
                                         <b>LN/SN:
                                             <span t-esc="o.name"/>
                                         </b>
@@ -57,21 +58,12 @@
                                 </div>
                             </div>
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
-                            <div>
-                                <t t-if="quote_plus(o.product_id.barcode)">
-                                    <div t-field="o.product_id.barcode"
-                                         t-options="{'type':'Code128','widget': 'barcode', 'width': 600, 'height': 75}"/>
-                                    <p style="font-size: 25px; text-align:center ; padding-top:2px">
-                                        <b>UPC:
-                                            <span t-field="o.product_id.barcode"/>
-                                        </b>
-                                    </p>
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted">No Barcode Available</span>
-                                </t>
-                            </div>
                         </div>
+                        <t t-if="quote_plus(o.product_id.barcode)">
+                            <div style="transform: rotate(270deg);"
+                                 t-field="o.product_id.barcode"
+                                 t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 450, 'height': 85}"/>
+                        </t>
                     </div>
                     <div style="page-break-before:always;"></div>
                 </t>

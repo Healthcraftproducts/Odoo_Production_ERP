@@ -135,16 +135,16 @@
                 </ul>
             </xpath>
 
-          <!--  <xpath expr='//div[@class="oe_kanban_details"]/div[3]' position="replace">
-                <ul>
-                    <li>
-                        <strong>Quantity On Hand:
-                            <field name="qty_available"></field>
-                        </strong>
-                    </li>
-                </ul>
+            <!--  <xpath expr='//div[@class="oe_kanban_details"]/div[3]' position="replace">
+                  <ul>
+                      <li>
+                          <strong>Quantity On Hand:
+                              <field name="qty_available"></field>
+                          </strong>
+                      </li>
+                  </ul>
 
-            </xpath>-->
+              </xpath>-->
             <xpath expr='//div[@class="oe_kanban_details"]/t[1]' position="replace">
                 <t t-if="record.default_code.value">
                     <field name="default_code" on_change="1" invisible="1"/>
@@ -250,9 +250,9 @@
                 <field name="obsolute_product"/>
             </xpath>
 
-<!--            <xpath expr="//field[@name='default_code']" position="replace">-->
-<!--                <field name="default_code" invisible="1"/>-->
-<!--            </xpath>-->
+            <!--            <xpath expr="//field[@name='default_code']" position="replace">-->
+            <!--                <field name="default_code" invisible="1"/>-->
+            <!--            </xpath>-->
 
             <xpath expr="//form/sheet/div[@class='oe_title']/label" position='replace'>
 
@@ -749,25 +749,32 @@
     </record>
     <!--    new barcode-->
     <template id="report_simple_barcode">
-        <div style="width: 32%; display: inline-table; height: 7rem;">
-            <table class="table table-bordered mb-0" style="border: 2px solid black;">
-                <tr>
-                    <th class="table-active text-left" style="height: 4rem;">
-                        <strong t-field="product.display_name"/>
-                    </th>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle" style="height: 6rem;">
-                        <t t-if="product.barcode">
-                            <div t-field="product.barcode"
-                                 t-options="{'widget': 'barcode', 'width': 300, 'height': 75}"/>
-                        </t>
-                        <t t-else="">
-                            <span class="text-muted">No Barcode Available</span>
-                        </t>
-                    </td>
-                </tr>
-            </table>
+        <div style="display:flex;">
+            <div class="table table-bordered mb-0" style="border: 2px solid black;">
+                <div class="table-active text-left" style="padding: 5px;">
+                    <strong t-field="product.display_name"/>
+                </div>
+
+                <div class="text-center align-middle" style="">
+                    <t t-if="product.barcode">
+                        <div t-field="product.barcode"
+                             t-options="{'widget': 'barcode', 'width': 300, 'height': 75}"/>
+                    </t>
+                    <t t-else="">
+                        <span class="text-muted">No Barcode Available</span>
+                    </t>
+                </div>
+            </div>
+
+            <div t-if="product.image_1920" style="display: flex;align-items: center;justify-content: center;border: 2px solid;padding: 10px;">
+                <t t-if="product.image_1920">
+                    <img t-att-src="image_data_uri(product.image_1920)" alt="Product Image"
+                         style="max-height: 75px; max-width: 100px;"/>
+                </t>
+                <t t-else="">
+                    <span class="text-muted">No Image Available</span>
+                </t>
+            </div>
         </div>
     </template>
 
@@ -813,17 +820,18 @@
             </field>
         </record>
      -->
-     <record model="ir.ui.view" id="view_stock_quant_tree_inventory_editable_custom_ext">
+    <record model="ir.ui.view" id="view_stock_quant_tree_inventory_editable_custom_ext">
         <field name="name">stock.quant.inventory.tree.editable.custom.ext</field>
         <field name="model">stock.quant</field>
         <field eval="10" name="priority"/>
         <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_apply_inventory']" position="replace">
-                <button name="stock.action_stock_inventory_adjustement_name" groups="stock.group_stock_manager" type="action" string="Apply"/>
+                <button name="stock.action_stock_inventory_adjustement_name" groups="stock.group_stock_manager"
+                        type="action" string="Apply"/>
             </xpath>
 
         </field>
-     </record>
+    </record>
 
 </odoo>
