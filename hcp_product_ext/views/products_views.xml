@@ -758,7 +758,7 @@
                 <div class="text-center align-middle" style="">
                     <t t-if="product.barcode">
                         <div t-field="product.barcode"
-                             t-options="{'widget': 'barcode', 'width': 300, 'height': 75}"/>
+                             t-options="{'widget': 'barcode', 'humanreadable': 1,'width': 300, 'height': 75}"/>
                     </t>
                     <t t-else="">
                         <span class="text-muted">No Barcode Available</span>
