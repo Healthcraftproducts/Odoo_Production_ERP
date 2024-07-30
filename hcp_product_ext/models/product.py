@@ -371,3 +371,4 @@ class StockInventoryAdjustmentNameInherit(models.TransientModel):
 		_inherit = 'stock.inventory.adjustment.name'
 
 		inventory_adjustment_name = fields.Char(default="",required=1)
+
