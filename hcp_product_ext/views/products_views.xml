@@ -749,7 +749,7 @@
     </record>
     <!--    new barcode-->
     <template id="report_simple_barcode">
-        <div style="display:flex;width:100%;">
+        <div style="display:flex;width:100%;flex-wrap: nowrap;">
             <div class="table table-bordered mb-0" style="border: 2px solid black;">
                 <div class="table-active text-left" style="padding: 20px 10px;">
                     <strong t-field="product.display_name"/>
