@@ -769,7 +769,7 @@
             <div t-if="product.image_1920" style="display: flex;align-items: center;justify-content: center;border: 2px solid;padding: 10px;">
                 <t t-if="product.image_1920">
                     <img t-att-src="image_data_uri(product.image_1920)" alt="Product Image"
-                         style="max-height: 100px; max-width: 100px;"/>
+                         style="height: 150px; width: 150px;"/>
                 </t>
                 <t t-else="">
                     <span class="text-muted">No Image Available</span>
