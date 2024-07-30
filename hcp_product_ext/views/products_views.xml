@@ -745,7 +745,7 @@
     <!--    new barcode-->
     <template id="report_simple_barcode">
         <div style="display:flex;width:100%;">
-            <div class="table table-bordered mb-0" style="border: 2px solid black;">
+            <div class="table table-bordered mb-0" style="border: 2px solid black;width: -webkit-fill-available;">
                 <div class="table-active text-left" style="padding: 20px 10px;">
                     <strong t-field="product.display_name"/>
                 </div>
@@ -761,7 +761,7 @@
                 </div>
             </div>
 
-            <div t-if="product.image_1920" style="display: flex;align-items: center;justify-content: center;border: 2px solid;padding: 10px;">
+            <div t-if="product.image_1920" style="display: flex;align-items: center;justify-content: center;border: 2px solid;padding: 10px;width: max-content;">
                 <t t-if="product.image_1920">
                     <img t-att-src="image_data_uri(product.image_1920)" alt="Product Image"
                          style="height: 100px; width: 100px;"/>
