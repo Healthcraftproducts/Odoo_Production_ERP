@@ -1,11 +1,19 @@
 /** @odoo-module **/
 
 import BarcodeModel from '@stock_barcode/models/barcode_model';
-console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { useService } from "@web/core/utils/hooks";
 
+console.log("BARCODE MODULE LOADED");
 
 export default class ConfirmBarcodeModel extends BarcodeModel {
-createNewLine(params) {
+    constructor(...args) {
+        super(...args);
+        console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        this.dialogService = useService('dialog');
+        // Add custom properties or override initial values here
+    }
+    createNewLine(params) {
     console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         const product = params.fieldsParams.product_id;
         if (this.askBeforeNewLinesCreation(product)) {
