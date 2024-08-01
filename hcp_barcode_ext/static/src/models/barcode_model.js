@@ -14,7 +14,8 @@ export default class ConfirmBarcodeModel extends BarcodeModel {
         // Add custom properties or override initial values here
     }
     createNewLine(params) {
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        console.log("hcpdev", params)
         const product = params.fieldsParams.product_id;
         if (this.askBeforeNewLinesCreation(product)) {
             const confirmationPromise = new Promise((resolve, reject) => {
