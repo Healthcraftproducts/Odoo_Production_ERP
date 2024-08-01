@@ -638,4 +638,9 @@
             </field>
         </record>
 
+
+     <record id="custom_barcode_admin" model="res.groups">
+            <field name="name">Barcode Admin</field>
+         </record>
+
 </odoo>
