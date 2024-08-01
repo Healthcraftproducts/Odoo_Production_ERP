@@ -6,6 +6,19 @@ import { useService } from "@web/core/utils/hooks";
 
 console.log("BARCODE MODULE LOADED");
 
+/*  Modify the BarcodeModel prototype */
+BarcodeModel.prototype.createNewLine = function (params) {
+    console.log("test-log-9898", params)
+    return new Promise((resolve, reject) => {
+        this.dialogService.add(ConfirmationDialog, {
+            body: "Test",
+            title: "Wrong product",
+            cancel: reject,
+            close: reject,
+        });
+    })
+}
+
 export default class ConfirmBarcodeModel extends BarcodeModel {
     constructor(...args) {
         super(...args);
