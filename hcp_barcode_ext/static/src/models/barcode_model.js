@@ -33,10 +33,12 @@ export default class ConfirmBarcodeModel extends BarcodeModel {
                     this.dialogService.add(ConfirmationDialog, {
                         body, title: _t("Add extra product?"),
                         cancel: reject,
+                       /*
                         confirm: async () => {
                             const newLine = await this._createNewLine(params);
                             resolve(newLine);
                         },
+*/
                         close: reject,
                     });
                 }
