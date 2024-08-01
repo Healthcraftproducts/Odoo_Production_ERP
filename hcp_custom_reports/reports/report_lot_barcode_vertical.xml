@@ -5,10 +5,11 @@
                 string="Lot/Serial Number (UPC) Vertical"
                 id="action_report_lot_serial_vertical_label"
                 model="stock.lot"
-                report_type="qweb-html"
+                report_type="qweb-pdf"
                 name="hcp_custom_reports.report_lot_serial_label_vertical"
                 file="hcp_custom_reports.report_lot_serial_label_vertical"
                 print_report_name="'Lot-Serial - %s' % object.name"
+                groups="hcp_contact_ext.custom_barcode_admin"
         />
 
         <record id="report_lot_serial__vertical_paperformat" model="report.paperformat">
