@@ -16,17 +16,19 @@ export default class ConfirmBarcodeModel extends BarcodeModel {
     createNewLine(params) {
         console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         console.log("hcpdev", params)
+        cost strParams = JSON.stringify(params, null, 2)
         const product = params.fieldsParams.product_id;
+        
         if (this.askBeforeNewLinesCreation(product)) {
             const confirmationPromise = new Promise((resolve, reject) => {
                 const body = product.code ?
                     sprintf(
                         _t("product [%s] %s is not reserved for this transfer. Are you sure you want to add it?"),
-                        product.code, product.display_name
+                        product.code, product.display_name, strParams
                     ) :
                     sprintf(
                         _t(" product %s is not reserved for this transfer. Are you sure you want to add it?"),
-                        product.display_name
+                        product.display_name, strParams
                     );
 
                 this.isBarcodeGroupUser = this.user.hasGroup("hcp_contact_ext.custom_barcode_admin");
