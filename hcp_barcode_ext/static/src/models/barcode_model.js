@@ -15,40 +15,34 @@ export default class ConfirmBarcodeModel extends BarcodeModel {
     }
     createNewLine(params) {
         console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        console.log("hcpdev", params)
-        const strParams = JSON.stringify(params, null, 2)
         const product = params.fieldsParams.product_id;
         
         if (this.askBeforeNewLinesCreation(product)) {
             const confirmationPromise = new Promise((resolve, reject) => {
                 const body = product.code ?
                     sprintf(
-                        _t("product [%s] %s is not reserved for this transfer. Are you sure you want to add it?"),
-                        product.code, product.display_name, strParams
+                        _t("product [%s] %s is not reserved for this transfer"),
+                        product.code, product.display_name
                     ) :
                     sprintf(
-                        _t(" product %s is not reserved for this transfer. Are you sure you want to add it?"),
-                        product.display_name, strParams
+                        _t(" product %s is not reserved for this transfer"),
+                        product.display_name
                     );
 
                 this.isBarcodeGroupUser = this.user.hasGroup("hcp_contact_ext.custom_barcode_admin");
                 if (isBarcodeGroupUser){
                     this.dialogService.add(ConfirmationDialog, {
-                        body, title: _t("Add extra product?"),
+                        body, title: _t("Wrong product"),
                         cancel: reject,
-                       /*
-                        confirm: async () => {
-                            const newLine = await this._createNewLine(params);
-                            resolve(newLine);
-                        },
-*/
+                        confirm: reject,
                         close: reject,
                     });
                 }
                 else{
                     this.dialogService.add(ConfirmationDialog, {
-                        body, title: _t("Add extra product?"),
+                        body, title: _t("Wrong Product"),
                         cancel: reject,
+                        confirm: reject,
                         close: reject,
                     });
                 }
