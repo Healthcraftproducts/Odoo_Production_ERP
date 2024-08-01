@@ -20,11 +20,11 @@ export default class ConfirmBarcodeModel extends BarcodeModel {
             const confirmationPromise = new Promise((resolve, reject) => {
                 const body = product.code ?
                     sprintf(
-                        _t("Scanned product [%s] %s is not reserved for this transfer. Are you sure you want to add it?"),
+                        _t("product [%s] %s is not reserved for this transfer. Are you sure you want to add it?"),
                         product.code, product.display_name
                     ) :
                     sprintf(
-                        _t("Scanned product %s is not reserved for this transfer. Are you sure you want to add it?"),
+                        _t(" product %s is not reserved for this transfer. Are you sure you want to add it?"),
                         product.display_name
                     );
 
