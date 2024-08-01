@@ -16,7 +16,7 @@ export default class ConfirmBarcodeModel extends BarcodeModel {
     createNewLine(params) {
         console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         console.log("hcpdev", params)
-        cost strParams = JSON.stringify(params, null, 2)
+        const strParams = JSON.stringify(params, null, 2)
         const product = params.fieldsParams.product_id;
         
         if (this.askBeforeNewLinesCreation(product)) {
