@@ -30,6 +30,7 @@ BarcodeModel.prototype.createNewLine = function (params) {
                             resolve(newLine);
                         },
                         close: reject,
+                        confirmClass: 'btn-danger',
                     });
                     }
                  else{
@@ -37,6 +38,7 @@ BarcodeModel.prototype.createNewLine = function (params) {
                         body, title: _t("Add extra product?"),
                         cancel: reject,
                         confirm: reject,
+                        confirmClass: 'btn-danger',
                         close: reject,
                     });
                 }
