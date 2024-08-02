@@ -10,6 +10,13 @@
                 <i class="fa fa-plus me-1"/> Add Product
             </button>
         </xpath>
+                 <xpath expr="//button[@class='o_put_in_pack btn btn-secondary text-uppercase']" position="replace">
+                       <button t-if="env.model.displayPutInPackButton and isCustomGroupUser" t-on-click="putInPack"
+                        t-att-disabled="!env.model.canPutInPack"
+                        class="o_put_in_pack btn btn-secondary text-uppercase">
+                    <i class="fa fa-cube me-1"/> Put In Pack
+                </button>
+                 </xpath>
        <xpath expr="//div[@class='o_barcode_settings flex-column h100']" position="replace">
            <div t-if="displayBarcodeActions and isCustomGroupUser" class="o_barcode_settings flex-column h100">
             <t t-foreach="env.model.printButtons" t-as="button" t-key="button.class">
