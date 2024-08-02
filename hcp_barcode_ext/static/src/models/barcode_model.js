@@ -23,25 +23,25 @@ BarcodeModel.prototype.createNewLine = function (params) {
 //                custom_barcode_admin
                 if (this.groups.group_barcode_admin){
                     this.dialogService.add(ConfirmationDialog, {
-                        body, title: _t("Add extra product?"),
+                        body, title: _t("Wrong Product?"),
                         cancel: reject,
                         confirm: async () => {
                             const newLine = await this._createNewLine(params);
                             resolve(newLine);
                         },
                         close: reject,
-                        confirmClass: 'btn-danger',
                     });
                     }
                  else{
                     this.dialogService.add(ConfirmationDialog, {
-                        body, title: _t("Add extra product?"),
+                        body, title: _t("Wrong Product?"),
                         cancel: reject,
                         confirm: reject,
-                        confirmClass: 'btn-danger',
                         close: reject,
                     });
+
                 }
+
             });
             return confirmationPromise;
         } else {
