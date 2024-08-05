@@ -39,7 +39,9 @@ BarcodeModel.prototype.createNewLine = function (params) {
                         confirm: reject,
                         close: reject,
                     });
+
                 }
+
             });
             return confirmationPromise;
         } else {

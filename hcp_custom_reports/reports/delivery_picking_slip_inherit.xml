@@ -193,9 +193,9 @@
                         <th name="th_serial_number" class="text-center" t-if="has_serial_number" style="width:20%;">
                             <strong>Lot/Serial Number</strong>
                         </th>
-                        <th name="th_barcode" class="text-center" t-if="has_barcode" style="width:20%;">
-                            <strong>Product Barcode</strong>
-                        </th>
+<!--                        <th name="th_barcode" class="text-center" t-if="has_barcode" style="width:20%;">-->
+<!--                            <strong>Product Barcode</strong>-->
+<!--                        </th>-->
                     </tr>
                 </thead>
                 <tbody>
@@ -228,20 +228,25 @@
 <!--                                </div>-->
 <!--                            </td>-->
 <!--                            kinchit asked to hide it-->
-                            <td class=" text-center h6" t-if="has_serial_number">
-                                <div t-if="has_serial_number and (ml.lot_id or ml.lot_name)"
-                                     t-esc="ml.lot_id.name or ml.lot_name"
-                                     t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100, 'img_style': 'width:300px;height:60px;'}"/>
+<!--                            <td class=" text-center h6" t-if="has_serial_number">-->
+<!--                                <div t-if="has_serial_number and (ml.lot_id or ml.lot_name)"-->
+<!--                                     t-esc="ml.lot_id.name or ml.lot_name"-->
+<!--                                     t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100, 'img_style': 'width:300px;height:60px;'}"/>-->
+<!--                            </td>-->
+                            <td class="text-center h6" t-if="has_serial_number">
+                                <div t-if="has_serial_number and (ml.lot_id or ml.lot_name)">
+                                    <span t-esc="ml.lot_id.name or ml.lot_name"/>
+                                </div>
                             </td>
-                            <td class="text-center" t-if="has_barcode">
-                                <t t-if="product_barcode != ml.product_id.barcode">
-                                    <span t-if="ml.product_id and ml.product_id.barcode">
-                                        <div t-field="ml.product_id.barcode"
-                                             t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 400, 'height': 100, 'quiet': 0, 'img_style': 'height:35px;'}"/>
-                                    </span>
-                                    <t t-set="product_barcode" t-value="ml.product_id.barcode"/>
-                                </t>
-                            </td>
+<!--                            <td class="text-center" t-if="has_barcode">-->
+<!--                                <t t-if="product_barcode != ml.product_id.barcode">-->
+<!--                                    <span t-if="ml.product_id and ml.product_id.barcode">-->
+<!--                                        <div t-field="ml.product_id.barcode"-->
+<!--                                             t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 400, 'height': 100, 'quiet': 0, 'img_style': 'height:35px;'}"/>-->
+<!--                                    </span>-->
+<!--                                    <t t-set="product_barcode" t-value="ml.product_id.barcode"/>-->
+<!--                                </t>-->
+<!--                            </td>-->
                         </tr>
                     </t>
                 </tbody>
