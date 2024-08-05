@@ -32,7 +32,8 @@
         </xpath>
 
 
-        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="after">
+<!--        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="after">-->
+        <xpath expr="//div[@name='div_sched_date']" position="after">
 
             <t t-set="sale_obj" t-value="request.env['sale.order'].search([('name','=',o.origin)],limit=1)"/>
 
@@ -49,7 +50,8 @@
 
         </xpath>
 
-        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="replace">
+<!--        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="replace">-->
+        <xpath expr="//div[@name='div_sched_date']" position="replace">
             <div t-if="o.state" class="col-auto" name="div_sched_date">
                 <div t-if="o.state" class="col-auto" name="div_sched_date">
                     <strong>Shipping Date:</strong>
