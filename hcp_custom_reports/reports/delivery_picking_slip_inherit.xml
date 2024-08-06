@@ -436,10 +436,10 @@
                     <p t-esc="sale_obj.po_number"/>
                 </div>
 
-<!--                <div t-if="sale_obj.ship_via_desc" class="col-auto" name="div_origin">-->
-<!--                    <strong>Ship Via Description</strong>-->
-<!--                    <p t-esc="sale_obj.ship_via_desc"/>-->
-<!--                </div>-->
+                <div t-if="sale_obj.ship_via_desc" class="col-auto" name="div_origin">
+                    <strong>Ship Via Description</strong>
+                    <p t-esc="sale_obj.ship_via_desc"/>
+                </div>
 <!--                kinchit asked to hide it-->
 
 
