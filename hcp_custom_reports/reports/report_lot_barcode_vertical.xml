@@ -88,7 +88,7 @@
                                 </td>
                                 <td style="width: 125px;">
                                     <t t-if="quote_plus(o.product_id.barcode)">
-                                        <div style="transform: rotate(270deg);width: 220px;height: 220px;text-align: right;" t-field="o.product_id.barcode"
+                                        <div style="-ms-transform: rotate(270deg);-webkit-transform: rotate(270deg);transform: rotate(270deg);width: 220px;height: 220px;text-align: right;" t-field="o.product_id.barcode"
                                              t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 200, 'height': 50}"/>
                                     </t>
                                 </td>
