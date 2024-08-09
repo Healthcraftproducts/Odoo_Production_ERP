@@ -12,8 +12,8 @@
                 groups="hcp_contact_ext.custom_barcode_admin"
         />
 
-        <record id="report_lot_serial__vertical_paperformat" model="report.paperformat">
-            <field name="name">Paper Format Lot/Serial Number(UPC)</field>
+        <record id="report_lot_serial_vertical_paperformat" model="report.paperformat">
+            <field name="name">Paper Format Vertical Lot/Serial Number(UPC)</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
             <field name="page_height">80</field>
