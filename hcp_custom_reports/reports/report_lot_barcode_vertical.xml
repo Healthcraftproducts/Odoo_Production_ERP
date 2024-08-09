@@ -21,7 +21,7 @@
             <field name="orientation">Portrait</field>
             <field name="margin_top">1.00</field>
             <field name="margin_bottom">0.50</field>
-            <field name="margin_left">5.00</field>
+            <field name="margin_left">1.00</field>
             <field name="margin_right">1.00</field>
             <field name="header_line" eval="False"/>
             <field name="header_spacing">1</field>
@@ -32,40 +32,33 @@
         <template id="report_lot_serial_label_vertical">
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">
-                    <div class="page"
-                         style="display:flex;display: -webkit-box;-webkit-box-pack: center; justify-content: center; -webkit-justify-content: left;align-items:center">
-                        <div>
-                            <br/>
-                            <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
-                            <div style="padding-top:3px;">
-                                <p style="font-size: 25px;width:50%">
-                                    <b>
-                                        <span t-field="o.product_id.display_name"/>
-                                    </b>
-                                </p>
-                            </div>
-                            <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
-                            <div>
-                                <pre style="margin-bottom:0;">
-                                    <div style="right: 100px;position: relative;" t-esc="o.name"
-                                         t-options="{'widget': 'barcode', 'width': 600, 'height': 75}"/>
-                                </pre>
-                                <div>
-                                    <p style="font-size: 25px; text-align:center ; padding-top:0px;padding-right:182px;">
+<!--                                        <div style="width:375px;height:302px;">-->
+                    <table style="width:1000px;height:302px;">
+                        <tr>
+                            <td style="width:355px;height:302px;">
+                                <div style="height:230px;">
+                                    <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
+                                    <span t-field="o.product_id.display_name" style="font-size: 25px"/>
+                                    <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
+                                    <div style="text-align: center;">
+                                        <div t-esc="o.name"
+                                             t-options="{'widget': 'barcode', 'width': 500, 'height': 75}"/>
                                         <b>LN/SN:
                                             <span t-esc="o.name"/>
                                         </b>
-                                    </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
-                        </div>
-                        <t t-if="quote_plus(o.product_id.barcode)">
-                            <div style="transform: rotate(270deg);"
-                                 t-field="o.product_id.barcode"
-                                 t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 450, 'height': 85}"/>
-                        </t>
-                    </div>
+                            </td>
+                            <td style="width:200px;">
+                                <t t-if="quote_plus(o.product_id.barcode)">
+                                    <div style="-ms-transform: rotate(270deg);-webkit-transform: rotate(270deg);transform: rotate(270deg);width: 405px;height: 335px;text-align: right;"
+                                         t-field="o.product_id.barcode"
+                                         t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 400, 'height': 75}"/>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+<!--                                        </div>-->
                     <div style="page-break-before:always;"></div>
                 </t>
             </t>
