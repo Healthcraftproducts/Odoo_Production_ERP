@@ -73,10 +73,10 @@
         <template id="report_lot_serial_label_vertical">
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">
-                    <!--                    <div style="width:375px;height:302px;">-->
+<!--                                        <div style="width:375px;height:302px;">-->
                     <table style="width:1000px;height:302px;">
                         <tr>
-                            <td style="width:375px;height:302px;">
+                            <td style="width:355px;height:302px;">
                                 <div style="height:230px;">
                                     <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                                     <span t-field="o.product_id.display_name" style="font-size: 25px"/>
@@ -92,14 +92,14 @@
                             </td>
                             <td style="width:200px;">
                                 <t t-if="quote_plus(o.product_id.barcode)">
-                                    <div style="-ms-transform: rotate(270deg);-webkit-transform: rotate(270deg);transform: rotate(270deg);width: 290px;height: 290px;text-align: right;"
+                                    <div style="-ms-transform: rotate(270deg);-webkit-transform: rotate(270deg);transform: rotate(270deg);width: 405px;height: 335px;text-align: right;"
                                          t-field="o.product_id.barcode"
-                                         t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 280, 'height': 75}"/>
+                                         t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 400, 'height': 75}"/>
                                 </t>
                             </td>
                         </tr>
                     </table>
-                    <!--                    </div>-->
+<!--                                        </div>-->
                     <div style="page-break-before:always;"></div>
                 </t>
             </t>
