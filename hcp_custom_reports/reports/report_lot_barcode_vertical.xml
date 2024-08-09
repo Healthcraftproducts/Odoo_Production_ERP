@@ -35,10 +35,10 @@
                     <div class="page"
                          style="display:flex;display: -webkit-box;-webkit-box-pack: center; justify-content: center; -webkit-justify-content: left;align-items:center">
                         <div>
-<!--                            <br/>-->
+                            <br/>
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
-                            <div style="padding-top:1px;">
-                                <p style="font-size: 23px;width:50%">
+                            <div style="padding-top:3px;">
+                                <p style="font-size: 25px;width:50%">
                                     <b>
                                         <span t-field="o.product_id.display_name"/>
                                     </b>
@@ -48,10 +48,10 @@
                             <div>
                                 <pre style="margin-bottom:0;">
                                     <div style="right: 100px;position: relative;" t-esc="o.name"
-                                         t-options="{'widget': 'barcode', 'width': 500, 'height': 75}"/>
+                                         t-options="{'widget': 'barcode', 'width': 600, 'height': 75}"/>
                                 </pre>
                                 <div>
-                                    <p style="font-size: 18px; text-align:center ; padding-top:0px;padding-right:182px;">
+                                    <p style="font-size: 25px; text-align:center ; padding-top:0px;padding-right:182px;">
                                         <b>LN/SN:
                                             <span t-esc="o.name"/>
                                         </b>
@@ -61,16 +61,9 @@
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                         </div>
                         <t t-if="quote_plus(o.product_id.barcode)">
-                            <svg width="85" height="400" xmlns="http://www.w3.org/2000/svg">
-                                <g transform="rotate(-90, 42.5, 42.5)">
-                                    <foreignObject width="400" height="85">
-                                        <div style="display:inline-block;">
-                                            <t t-field="o.product_id.barcode"
-                                               t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 400, 'height': 85}"/>
-                                        </div>
-                                    </foreignObject>
-                                </g>
-                            </svg>
+                            <div style="transform: rotate(270deg);"
+                                 t-field="o.product_id.barcode"
+                                 t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 450, 'height': 85}"/>
                         </t>
                     </div>
                     <div style="page-break-before:always;"></div>
