@@ -74,7 +74,7 @@
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">
                     <div style="width: 375px;height: 302px;">
-                        <table style="height: 302px;">
+                        <table style="height: 302px;border: 0;">
                             <tr>
                                 <td style="width: 250px;height: 302px;border: 0;">
                                     <div style="height: 110px;">
