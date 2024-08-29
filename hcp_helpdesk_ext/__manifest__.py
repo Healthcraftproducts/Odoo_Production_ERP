@@ -15,9 +15,13 @@
     'depends': ['base', 'helpdesk','helpdesk_sale'],
 
     'data': [
+      'security/ir.model.access.csv',
       'views/views.xml',
     ],
-
+    'assets': {
+        'web.assets_backend': [
+            '/hcp_helpdesk_ext/static/src/css/style.css',]
+    },
     "application": True,
     "installable": True,
     'license': 'LGPL-3'
