@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_company_fedex_configuration" model="ir.ui.view">
+        <field name="name">Fedex Configuration</field>
+        <field name="model">res.company</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page string="FedEx Configuration">
+                    <group>
+                        <field name="use_fedex_shipping_provider"/>
+                    </group>
+                    <group attrs="{'invisible': [('use_fedex_shipping_provider', '!=', True)]}">
+                        <field name="fedex_api_url"
+                               attrs="{'required':[('use_fedex_shipping_provider','=',True)]}"/>
+                        <field name="fedex_client_id"
+                               attrs="{'required':[('use_fedex_shipping_provider','=',True)]}"/>
+                        <field name="fedex_client_secret"
+                               attrs="{'required':[('use_fedex_shipping_provider','=',True)]}" password="True"/>
+                        <field name="fedex_account_number"
+                               attrs="{'required':[('use_fedex_shipping_provider','=',True)]}"/>
+                        <field name="fedex_access_token"/>
+                        <button type="object" class="fa fa-arrow-right oe_link"
+                                attrs="{'invisible': [('use_fedex_shipping_provider', '!=', True)]}"
+                                name="generate_fedex_access_token" string="Access Token"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

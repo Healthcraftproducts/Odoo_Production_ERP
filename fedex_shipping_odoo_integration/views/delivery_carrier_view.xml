@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fedex_form_view_delivery_carrier" model="ir.ui.view">
+        <field name="name">delivery.carrier.fedex.view</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='destination']" position='before'>
+                <page string="Configuration" name="fedex_configuration"
+                      attrs="{'invisible': [('delivery_type', '!=', 'fedex_shipping_provider')]}">
+                    <group>
+                        <group>
+                            <field name="company_id"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                            <field name="fedex_service_type"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                            <field name="fedex_hub_id" attrs="{'invisible': [('fedex_service_type', '!=', 'SMART_POST')],'required': [('fedex_service_type', '=', 'SMART_POST')]}"/>
+                            <field name="fedex_indicia" attrs="{'invisible': [('fedex_service_type', '!=', 'SMART_POST')],'required': [('fedex_service_type', '=', 'SMART_POST')]}"/>
+                            <field name="fedex_pickup_type"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                            <field name="fedex_default_product_packaging_id"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                            <field name="fedex_request_type"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                            <field name="fedex_payment_type"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                            <field name="fedex_weight_uom"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                        </group>
+                        <group>
+                            <field name="fedex_shipping_label_stock_type"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                            <field name="fedex_shipping_label_file_type"
+                                   attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
+                            <field name="is_cod"/>
+                            <field name="is_signature_required"/>
+                            <field name="signature_options"
+                                   attrs="{'invisible': [('is_signature_required', '=', False)], 'required': [('is_signature_required', '=', True)]}"/>
+                            <field name="insured_request"/>
+                            <field name="fedex_onerate"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
