@@ -7,6 +7,7 @@ class HelpdeskTicketInherit(models.Model):
     _inherit = 'helpdesk.ticket'
 
     ticket_line_ids = fields.One2many('helpdesk.ticket.line', 'ticket_id', string='Ticket Lines')
+    shipping_cost_line_ids = fields.One2many('helpdesk.shipping.cost.line','ticket_id',string='Shipping Cost Lines')
     product_ids = fields.Many2many('product.product', 'sale_order_product_ids_rel', string='Products')
     helpdesk_account_payable = fields.Many2one('account.account',string="Account Payable")
     helpdesk_journal_id = fields.Many2one('account.journal',string="Journal")
@@ -27,17 +28,18 @@ class HelpdeskTicketInherit(models.Model):
 
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.company.currency_id)
     price_total = fields.Monetary(string='Total', compute='_compute_price_total', store=True)
-    accounting_total = fields.Monetary(string='Accounting Total', compute='_compute_price_total', store=True)
+    accounting_total = fields.Monetary(string='Total', compute='_compute_price_total', store=True)
 
-    @api.depends('ticket_line_ids.line_amount', 'ticket_line_ids.product_id.detailed_type')
+    @api.depends('ticket_line_ids.line_amount', 'ticket_line_ids.product_id.detailed_type','shipping_cost_line_ids.line_amount', 'shipping_cost_line_ids.product_id.detailed_type')
     def _compute_price_total(self):
         for record in self:
             acc_total = 0
             total = 0
             for line in record.ticket_line_ids:
                 total += line.line_amount
-                if line.product_id.detailed_type == 'service':
-                    acc_total += line.line_amount
+            for shp_line in record.shipping_cost_line_ids:
+                if shp_line.product_id.detailed_type == 'service':
+                    acc_total += shp_line.line_amount
             record.accounting_total = acc_total
             record.price_total = total
 
@@ -246,46 +248,49 @@ class HelpdeskTicketInherit(models.Model):
         return True
 
     def create_accounting_entries(self):
-        offset_account_id = self.env['account.account'].search([('account_type', '=', 'liability_current')], limit=1).id
-        total_debit = 0.0
+        if self.delivery_order_count > 0:
+            offset_account_id = self.env['account.account'].search([('account_type', '=', 'liability_current')], limit=1).id
+            total_debit = 0.0
 
-        journal_entry_vals = {
-            'journal_id': self.env['account.journal'].search([('type', '=', 'general')], limit=1).id,
-            'date': fields.Date.today(),
-            'ref': f"{self.name} - {self.ticket_ref}",
-            'helpdesk_id': self.id,
-            'line_ids': []
-        }
-        print(journal_entry_vals,"jounal valssssssss")
-        for line in self.ticket_line_ids:
-            if line.product_id.detailed_type == 'service':
-                journal_entry_vals['line_ids'].append((0, 0, {
-                    'account_id': line.product_id.categ_id.property_account_expense_categ_id.id or line.product_id.property_account_expense_id.id,
-                    'name': line.product_id.name,
-                    'debit': line.product_uom_qty * line.unit_price,
-                    'credit': 0,
-                }))
-                total_debit += line.product_uom_qty * line.unit_price
-
-        if total_debit > 0:
-            journal_entry_vals['line_ids'].append((0, 0, {
-                'account_id': self.helpdesk_account_payable.id or offset_account_id,
-                'name': 'Offsetting Payable Account',
-                'debit': 0,
-                'credit': total_debit,
-            }))
-
-            journal_entry = self.env['account.move'].create(journal_entry_vals)
-
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Journal Entry',
-                'view_mode': 'form',
-                'res_model': 'account.move',
-                'res_id': journal_entry.id,
+            journal_entry_vals = {
+                'journal_id': self.env['account.journal'].search([('type', '=', 'general')], limit=1).id,
+                'date': fields.Date.today(),
+                'ref': f"{self.name} - {self.ticket_ref}",
+                'helpdesk_id': self.id,
+                'line_ids': []
             }
+            print(journal_entry_vals,"jounal valssssssss")
+            for line in self.shipping_cost_line_ids:
+                if line.product_id.detailed_type == 'service':
+                    journal_entry_vals['line_ids'].append((0, 0, {
+                        'account_id': line.product_id.categ_id.property_account_expense_categ_id.id or line.product_id.property_account_expense_id.id,
+                        'name': line.product_id.name,
+                        'debit': line.product_uom_qty * line.unit_price,
+                        'credit': 0,
+                    }))
+                    total_debit += line.product_uom_qty * line.unit_price
+
+            if total_debit > 0:
+                journal_entry_vals['line_ids'].append((0, 0, {
+                    'account_id': self.helpdesk_account_payable.id or offset_account_id,
+                    'name': 'Offsetting Payable Account',
+                    'debit': 0,
+                    'credit': total_debit,
+                }))
+
+                journal_entry = self.env['account.move'].create(journal_entry_vals)
+
+                return {
+                    'type': 'ir.actions.act_window',
+                    'name': 'Journal Entry',
+                    'view_mode': 'form',
+                    'res_model': 'account.move',
+                    'res_id': journal_entry.id,
+                }
+            else:
+                raise UserError("Please add at least one service product line with a Unit Price to create a journal entry.")
         else:
-            raise UserError("Please add at least one service product line with a Unit Price to create a journal entry.")
+            raise UserError("Please Process delivery order to create a journal entry.")
 
 class HelpdeskTicketLine(models.Model):
     _name = 'helpdesk.ticket.line'
@@ -332,7 +337,7 @@ class HelpdeskTicketLine(models.Model):
             # Combine both lists
             allowed_products = sale_order_products | service_products
 
-            return {'domain': {'product_id': [('id', 'in', allowed_products.ids)]}}
+            return {'domain': {'product_id': [('id', 'in', sale_order_products.ids)]}}
         else:
             return {'domain': {'product_id': []}}
 
@@ -354,3 +359,54 @@ class HelpdeskTicketLine(models.Model):
                         raise exceptions.ValidationError(
                             "The total quantity for the product '%s' in the ticket lines cannot exceed the quantity ordered in the sale order." % line.product_id.display_name
                         )
+
+class HelpdeskShippingCostLine(models.Model):
+    _name = 'helpdesk.shipping.cost.line'
+    _description = 'Helpdesk Shipping Cost Line'
+
+    name = fields.Char(string='Description')
+    ticket_id = fields.Many2one('helpdesk.ticket', string='Ticket', required=True, ondelete='cascade')
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    product_uom_qty = fields.Float(string='Quantity', required=True, default=1.0)
+    uom_id = fields.Many2one('uom.uom', string='Unit of Measure', related='product_id.uom_id', readonly=True)
+    currency_id = fields.Many2one('res.currency', string='Currency',default=lambda self: self.env.company.currency_id.id)
+    unit_price = fields.Float("Price Unit")
+    line_amount = fields.Float("Line Amount",compute='_compute_invoice_line_level_amount',currency_field='currency_id')
+    price_subtotal = fields.Monetary(
+        string="Subtotal",
+        compute='_compute_amount',
+        store=True, precompute=True)
+
+    @api.depends('product_uom_qty', 'unit_price')
+    def _compute_invoice_line_level_amount(self):
+        for line in self:
+            line.line_amount = line.product_uom_qty * line.unit_price
+
+    @api.depends('line_amount')
+    def _compute_amount(self):
+        for line in self:
+            line.update({
+                'price_subtotal': line.line_amount,
+            })
+
+    @api.onchange('product_id')
+    def _onchange_ticket_id(self):
+        if self.product_id:
+            self.uom_id = self.product_id.uom_id
+            self.name = self.product_id.name or False
+            self.unit_price = self.product_id.list_price or False
+
+        if self.ticket_id :
+            # Get all product IDs from the sale order lines
+            sale_order_products = self.ticket_id.sale_order_id.order_line.mapped('product_id')
+            # Add the IDs of all service products
+            service_products = self.env['product.product'].search([('type', '=', 'service')])
+
+            # Combine both lists
+            allowed_products = sale_order_products | service_products
+
+            return {'domain': {'product_id': [('id', 'in', service_products.ids)]}}
+        else:
+            return {'domain': {'product_id': []}}
+
+

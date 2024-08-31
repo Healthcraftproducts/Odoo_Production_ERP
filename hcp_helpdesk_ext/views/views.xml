@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+
+    <record id="helpdesk_ticket_stock_view_form_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.stock.ticket.form.inherit.hcp</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_stock.helpdesk_ticket_view_form_inherit_helpdesk_stock"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
     <record id="helpdesk_ticket_view_form_inherit" model="ir.ui.view">
         <field name="name">helpdesk.ticket.form.inherit.hcp</field>
         <field name="model">helpdesk.ticket</field>
@@ -54,8 +66,33 @@
             </xpath>
             <xpath expr="/form//sheet" position="inside">
                 <notebook>
-                    <page name="product_lines" string="Product Lines">
-                        <field name="ticket_line_ids">
+                    <page name="product_lines" string="Product">
+                        <field name="ticket_line_ids" attrs="{'readonly': [('delivery_order_count', '>', 0)]}">
+                            <tree editable="bottom">
+                                <field name="product_id"/>
+                                <field name="name"/>
+                                <field name="product_uom_qty"/>
+                                <field name="unit_price"/>
+                                <field name="currency_id" optional="1"/>
+                                <field name="uom_id" readonly="1"/>
+                                <field name="line_amount" readonly="1" optional="1"/>
+                                <field name="price_subtotal" readonly="1"/>
+                            </tree>
+                        </field>
+                        <group name="note_group" col="6" class="mt-2 mt-md-0">
+                            <group colspan="4">
+                            </group>
+                            <group class="oe_subtotal_footer" colspan="2" name="sale_total">
+<!--                                <field name="accounting_total" nolabel="0" colspan="2" readonly="1" field_id="acc_totals_1"-->
+<!--                                       class="custom-price-total"/>-->
+                                <field name="price_total" nolabel="0" colspan="2" readonly="1" field_id="price_totals_1"
+                                       class="custom-price-total"/>
+                            </group>
+                            <div class="clearfix"/>
+                        </group>
+                    </page>
+                    <page name="shipping_cost_lines" string="Shipping Cost">
+                        <field name="shipping_cost_line_ids" attrs="{'readonly': [('journal_entry_count', '>', 0)]}">
                             <tree editable="bottom">
                                 <field name="product_id"/>
                                 <field name="name"/>
@@ -73,8 +110,8 @@
                             <group class="oe_subtotal_footer" colspan="2" name="sale_total">
                                 <field name="accounting_total" nolabel="0" colspan="2" readonly="1" field_id="acc_totals_1"
                                        class="custom-price-total"/>
-                                <field name="price_total" nolabel="0" colspan="2" readonly="1" field_id="price_totals_1"
-                                       class="custom-price-total"/>
+<!--                                <field name="price_total" nolabel="0" colspan="2" readonly="1" field_id="price_totals_1"-->
+<!--                                       class="custom-price-total"/>-->
                             </group>
                             <div class="clearfix"/>
                         </group>
@@ -96,4 +133,7 @@
     </record>
 
 </odoo>
+
+
+
 

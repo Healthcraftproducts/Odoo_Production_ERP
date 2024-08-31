@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'helpdesk','helpdesk_sale'],
+    'depends': ['base', 'helpdesk','helpdesk_sale','helpdesk_stock'],
 
     'data': [
       'security/ir.model.access.csv',
