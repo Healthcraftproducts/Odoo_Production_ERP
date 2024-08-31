@@ -14,7 +14,7 @@ class SaleOrder(models.Model):
     @api.onchange("carrier_id","partner_shipping_id")
     def _onchange_carrier_id(self):
         if self.carrier_id:
-            if self.carrier_id.fedex_payment_type == "THIRD_PARTY":
+            if self.carrier_id.delivery_type == 'fedex_shipping_provider' and self.carrier_id.fedex_payment_type == "THIRD_PARTY":
                 self.fedex_bill_by_third_party_sale_order = True
             else:
                 self.fedex_bill_by_third_party_sale_order = False
