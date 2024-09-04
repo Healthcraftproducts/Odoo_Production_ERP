@@ -18,7 +18,7 @@ class SaleOrder(models.Model):
                 self.fedex_bill_by_third_party_sale_order = True
             else:
                 self.fedex_bill_by_third_party_sale_order = False
-        if self.partner_shipping_id:
+        if self.partner_shipping_id or self.partner_id:
             if self.fedex_bill_by_third_party_sale_order == True and self.partner_id.hcp_ship_via_description or self.partner_shipping_id.hcp_ship_via_description:
                 self.fedex_third_party_account_number_sale_order = self.partner_id.hcp_ship_via_description or self.partner_shipping_id.hcp_ship_via_description
             else:
