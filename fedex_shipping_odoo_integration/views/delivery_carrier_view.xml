@@ -44,4 +44,22 @@
             </xpath>
         </field>
     </record>
+
+        <record id="choose_delivery_package_view_form_inherit_weight" model="ir.ui.view">
+        <field name="name">choose.delivery.package.form.inherit</field>
+        <field name="model">choose.delivery.package</field>
+        <field name="inherit_id" ref="delivery.choose_delivery_package_view_form"/>
+        <field name="arch" type="xml">
+            <form string="Package">
+                <xpath expr="//div[@name='package_weight']" position="after">
+                    <div class="o_row" attrs="{'invisible': [('delivery_package_type_id', '=', False)]}" name="picking_weight">
+                        <label for="weight" attrs="{'invisible': [('delivery_package_type_id', '=', False)]}"/>
+                        <field name="weight" readonly="1"/>
+                        <field name="weight_uom_name" readonly="1"/>
+                    </div>
+                </xpath>
+            </form>
+        </field>
+        </record>
+
 </odoo>
