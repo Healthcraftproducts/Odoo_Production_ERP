@@ -11,7 +11,7 @@ class SaleOrder(models.Model):
                                                           help="when this fields is true,then we can visible fedex_third party account number")
 
 
-    @api.onchange("carrier_id","partner_shipping_id")
+    @api.onchange("carrier_id","partner_id","partner_shipping_id")
     def _onchange_carrier_id(self):
         if self.carrier_id:
             if self.carrier_id.delivery_type == 'fedex_shipping_provider' and self.carrier_id.fedex_payment_type == "THIRD_PARTY":
@@ -19,7 +19,7 @@ class SaleOrder(models.Model):
             else:
                 self.fedex_bill_by_third_party_sale_order = False
         if self.partner_shipping_id:
-            if self.fedex_bill_by_third_party_sale_order == True and self.partner_shipping_id.hcp_ship_via_description:
-                self.fedex_third_party_account_number_sale_order = self.partner_shipping_id.hcp_ship_via_description
+            if self.fedex_bill_by_third_party_sale_order == True and self.partner_id.hcp_ship_via_description or self.partner_shipping_id.hcp_ship_via_description:
+                self.fedex_third_party_account_number_sale_order = self.partner_id.hcp_ship_via_description or self.partner_shipping_id.hcp_ship_via_description
             else:
                 self.fedex_third_party_account_number_sale_order = ""
