@@ -10,7 +10,7 @@
     'version': '16.0.1.0',
     'description': """This app allowed to Calculate Tax Amount in which Tax type is Python Code 
     and Line Tax Amount set in Order Line and Account Move Line """,
-    'depends': ['account_tax_python','sale'],
+    'depends': ['account_tax_python','sale','account'],
     'data': [
         'data/decimal_precision.xml',
         'data/account_tax.xml',
