@@ -50,6 +50,8 @@ class ProductTemplate(models.Model):
 
 class ProductProduct(models.Model):
     _inherit = "product.product"
+    project_template_use_documents = fields.Char()
+
 
     qty_available_not_res = fields.Float(
         string="Qty Available Not Reserved",

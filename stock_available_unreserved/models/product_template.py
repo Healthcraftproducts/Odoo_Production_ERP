@@ -8,6 +8,7 @@ from odoo import api, fields, models
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
+    project_template_use_documents = fields.Char()
     qty_available_not_res = fields.Float(
         string="Quantity On Hand Unreserved",
         digits="Product Unit of Measure",
