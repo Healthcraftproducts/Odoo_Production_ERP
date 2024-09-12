@@ -744,40 +744,33 @@
     </record>
     <!--    new barcode-->
     <template id="report_simple_barcode">
-<!--        <div style="display:inline-flex;">-->
-            <table>
-                <tr style="display: flex;align-items: center;border: 2px solid;">
-                    <td style="padding:0;border-right:2px solid black;">
-                        <div class=""
-                             style="margin-top: 0;">
-<!--                            <div class="table-active text-left" style="padding: 20px 10px;">-->
-                                <strong t-field="product.display_name"/>
-                                <t t-if="product.barcode">
-                                    <div style="border-top: 2px solid;padding: 20px 0;" t-field="product.barcode"
-                                         t-options="{'widget': 'barcode', 'humanreadable': 1,'width': 300, 'height': 75}"/>
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted">No Barcode Available</span>
-                                </t>
-                            </div>
-<!--                        </div>-->
-                    </td>
-                    <td style="padding:0;">
-                        <div t-if="product.image_1920"
-                             style="display: flex;align-items: center;justify-content: center;padding: 10px;width: max-content;">
-                            <t t-if="product.image_1920">
-                                <img t-att-src="image_data_uri(product.image_1920)" alt="Product Image"
-                                     style="height: 100px; width: 100px;"/>
-                            </t>
-                            <t t-else="">
-                                <span class="text-muted">No Image Available</span>
-                            </t>
-                        </div>
-                    </td>
-                </tr>
-                <tr style="display:none"></tr>
-            </table>
-<!--        </div>-->
+        <div style="display:flex;">
+            <div class="table table-bordered mb-0" style="border: 2px solid black;">
+                <div class="table-active text-left" style="padding: 20px 10px;">
+                    <strong t-field="product.display_name"/>
+                </div>
+
+                <div class="text-center align-middle" style="padding: 30px 0;">
+                    <t t-if="product.barcode">
+                        <div t-field="product.barcode"
+                             t-options="{'widget': 'barcode', 'humanreadable': 1,'width': 300, 'height': 75}"/>
+                    </t>
+                    <t t-else="">
+                        <span class="text-muted">No Barcode Available</span>
+                    </t>
+                </div>
+            </div>
+
+            <div t-if="product.image_1920" style="display: flex;align-items: center;justify-content: center;border: 2px solid;padding: 10px;">
+                <t t-if="product.image_1920">
+                    <img t-att-src="image_data_uri(product.image_1920)" alt="Product Image"
+                         style="max-height: 100px; max-width: 100px;"/>
+                </t>
+                <t t-else="">
+                    <span class="text-muted">No Image Available</span>
+                </t>
+            </div>
+        </div>
     </template>
 
     <template id="report_productbarcode">

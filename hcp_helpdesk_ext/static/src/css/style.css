@@ -1,0 +1,6 @@
+.custom-price-total {
+    font-size: 18px; /* Adjust as needed */
+    font-weight: bold; /* Optional */
+    display: flex;
+    align-items: center;
+}
