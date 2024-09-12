@@ -30,6 +30,8 @@ class HelpdeskTicketInherit(models.Model):
     price_total = fields.Monetary(string='Total', compute='_compute_price_total', store=True)
     accounting_total = fields.Monetary(string='Total', compute='_compute_price_total', store=True)
     pickup_cost = fields.Monetary()
+    re_shipment_cost = fields.Monetary()
+    additional_shipment_cost = fields.Monetary()
 
     @api.depends('ticket_line_ids.line_amount', 'ticket_line_ids.product_id.detailed_type','shipping_cost_line_ids.line_amount', 'shipping_cost_line_ids.product_id.detailed_type')
     def _compute_price_total(self):
