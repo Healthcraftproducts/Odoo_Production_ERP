@@ -29,6 +29,7 @@ class HelpdeskTicketInherit(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.company.currency_id)
     price_total = fields.Monetary(string='Total', compute='_compute_price_total', store=True)
     accounting_total = fields.Monetary(string='Total', compute='_compute_price_total', store=True)
+    pickup_cost = fields.Monetary()
 
     @api.depends('ticket_line_ids.line_amount', 'ticket_line_ids.product_id.detailed_type','shipping_cost_line_ids.line_amount', 'shipping_cost_line_ids.product_id.detailed_type')
     def _compute_price_total(self):
