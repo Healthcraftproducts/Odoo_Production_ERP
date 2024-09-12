@@ -116,14 +116,11 @@ class SaleOrder(models.Model):
 			self.phone=False
 		
 
-	@api.onchange('partner_shipping_id')
+	@api.onchange('partner_id','partner_shipping_id')
 	def on_change_carrier_id(self):
-		if self.partner_shipping_id:
+		if self.partner_shipping_id or self.partner_id:
 			self.carrier_id = self.partner_shipping_id.property_delivery_carrier_id
-			self.ship_via_desc = self.partner_shipping_id.hcp_ship_via_description
-
-
-
+			self.ship_via_desc = self.partner_shipping_id.hcp_ship_via_description or self.partner_id.hcp_ship_via_description
 
 	# @api.model
 	# def create(self, vals):

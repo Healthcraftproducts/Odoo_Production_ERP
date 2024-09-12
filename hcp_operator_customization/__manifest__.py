@@ -21,6 +21,7 @@
 'assets': {
     'web.assets_backend': [
         'hcp_operator_customization/static/src/components/menuPopup.js',
+        'hcp_operator_customization/static/src/js/delete_action.js',
         'hcp_operator_customization/static/src/**/menuPopup.xml',
         'hcp_operator_customization/static/src/components/menupopupA.xml',
         # 'hcp_operator_customization/static/src/components/menupopupB.xml',
