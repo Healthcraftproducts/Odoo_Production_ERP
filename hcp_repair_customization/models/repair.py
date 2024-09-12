@@ -268,6 +268,7 @@ class StockPickingInherit(models.Model):
                 rec.is_return_transfer = False
         return res
 
+
 class RepairLineExt(models.Model):
     _inherit = 'repair.line'
 
