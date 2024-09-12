@@ -169,22 +169,34 @@ class DeliveryCarrier(models.Model):
                                      ('5902', 'LACA Los Angeles - 5902'),
                                      ('5929', 'COCA Chino - 5929'),
                                      ('5958', 'SACA Sacramento - 5958'),
-                                     ('5983', 'SEWA Seattle - 5983')],string="Fedex Hub ID")
+                                     ('5983', 'SEWA Seattle - 5983')], string="Fedex Hub ID")
     fedex_indicia = fields.Selection([('MEDIA_MAIL', 'MEDIA_MAIL'),
                                       ('PARCEL_SELECT', 'PARCEL_SELECT'),
                                       ('PRESORTED_BOUND_PRINTED_MATTER', 'PRESORTED_BOUND_PRINTED_MATTER'),
-                                      ('PRESORTED_STANDARD', 'PRESORTED_STANDARD')],string="Fedex Indicia")
+                                      ('PRESORTED_STANDARD', 'PRESORTED_STANDARD')], string="Fedex Indicia")
 
-    def get_fedex_address_dict(self, address_id):
-        return {
-            "address": {
-                "city": address_id.city or "",
-                "stateOrProvinceCode": address_id.state_id and address_id.state_id.code or "",
-                "postalCode": "{0}".format(address_id.zip or ""),
-                "countryCode": address_id.country_id and address_id.country_id.code or "",
-                "residential": "true" if self.fedex_service_type in ['GROUND_HOME_DELIVERY','SMART_POST'] else "false"
+    def get_fedex_address_dict(self, address_id, us_shipper_address=False):
+        if us_shipper_address:
+            return {
+                "address": {
+                "city": "Ogdensburg",
+                "stateOrProvinceCode": "NY",
+                "postalCode": "13669",
+                "countryCode": "US",
+                "residential": "true" if self.fedex_service_type in ['GROUND_HOME_DELIVERY', 'SMART_POST'] else "false"
+                }
             }
-        }
+        else:
+            return {
+                "address": {
+                    "city": address_id.city or "",
+                    "stateOrProvinceCode": address_id.state_id and address_id.state_id.code or "",
+                    "postalCode": "{0}".format(address_id.zip or ""),
+                    "countryCode": address_id.country_id and address_id.country_id.code or "",
+                    "residential": "true" if self.fedex_service_type in ['GROUND_HOME_DELIVERY',
+                                                                         'SMART_POST'] else "false"
+                }
+            }
 
     def fedex_shipping_provider_rate_shipment(self, order):
         order_lines_without_weight = order.order_line.filtered(
@@ -209,6 +221,9 @@ class DeliveryCarrier(models.Model):
         total_weight = sum([(line.product_id.weight * line.product_uom_qty) for line in order.order_line]) or 0.0
         if not company_id.fedex_access_token:
             raise ValidationError("Please enter correct credentials data!")
+
+        us_shipper_address = recipient_address_id.country_id.code == "US"
+
         try:
             api_url = "{0}/rate/v1/rates/quotes".format(company_id.fedex_api_url)
             headers = {
@@ -219,7 +234,8 @@ class DeliveryCarrier(models.Model):
             request_data = {
                 "accountNumber": {"value": "{0}".format(company_id.fedex_account_number)},
                 "requestedShipment": {
-                    "shipper": self.get_fedex_address_dict(shipper_address_id),
+
+                    "shipper": self.get_fedex_address_dict(shipper_address_id, us_shipper_address),
                     "recipient": self.get_fedex_address_dict(recipient_address_id),
                     "pickupType": self.fedex_pickup_type,
                     "serviceType": self.fedex_service_type,
@@ -232,7 +248,7 @@ class DeliveryCarrier(models.Model):
                             "weight": {
                                 "units": "{0}".format(self.fedex_weight_uom),
                                 "value": (total_weight)
-                            },"dimensions": {
+                            }, "dimensions": {
                             "length": self.fedex_default_product_packaging_id.packaging_length or '',
                             "width": self.fedex_default_product_packaging_id.width or '',
                             "height": self.fedex_default_product_packaging_id.height or '',
@@ -243,22 +259,18 @@ class DeliveryCarrier(models.Model):
                 }
             }
             if self.fedex_service_type == 'SMART_POST':
-                request_data.get("requestedShipment").update({"smartPostInfoDetail": {
-                    "indicia": self.fedex_indicia,
-                    "hubId": self.fedex_hub_id
-                }}),
+                request_data.get("requestedShipment").update(
+                    {"smartPostInfoDetail": {"indicia": self.fedex_indicia, "hubId": self.fedex_hub_id}}),
             if self.fedex_onerate:
                 request_data.get("requestedShipment").update(
                     {"shipmentSpecialServices": {"specialServiceTypes": ["FEDEX_ONE_RATE"]}})
             if self.is_cod:
                 request_data.get("requestedShipment").update(
                     {"shipmentSpecialServices": {"specialServiceTypes": ["COD"],
-                                                 "shipmentCODDetail": {
-                                                     "codCollectionType": self.fedex_collection_type,
-                                                     "codCollectionAmount": {
-                                                         "amount": order.amount_total,
-                                                         "currency": order.company_id.currency_id.name or "USD"
-                                                     }}}})
+                                                 "shipmentCODDetail": {"codCollectionType": self.fedex_collection_type,
+                                                                       "codCollectionAmount": {
+                                                                           "amount": order.amount_total,
+                                                                           "currency": order.company_id.currency_id.name or "USD"}}}})
 
             response_data = requests.request("POST", api_url, headers=headers, data=json.dumps(request_data))
             if response_data.status_code in [200, 201]:
@@ -278,13 +290,21 @@ class DeliveryCarrier(models.Model):
         except Exception as e:
             return {'success': False, 'price': 0.0, 'error_message': e, 'warning_message': False}
 
-    def get_fedex_shipp_address_dict(self, address_id):
-        address_dict = self.get_fedex_address_dict(address_id)
-        address_dict.update({"contact": {"personName": "",
-                                         "emailAddress": address_id.email or "",
-                                         "phoneNumber": "%s" % (address_id.phone or ""),
-                                         "companyName": address_id.name}})
-        address_dict.get("address").update({"streetLines": [address_id.street]})
+    def get_fedex_shipp_address_dict(self, address_id, us_shipper_address=False):
+        if us_shipper_address:
+            address_dict = self.get_fedex_address_dict(address_id, us_shipper_address)
+            address_dict.update({"contact": {"personName": "HEALTHCRAFT PRODUCTS INC ",
+                                             "emailAddress": address_id.email or "",
+                                             "phoneNumber": "%s" % (address_id.phone or ""),
+                                             "companyName": "c/o A.N. Deringer Inc"}})
+            address_dict.get("address").update({"streetLines": ["835 Commerce Park Drive"]})
+        else:
+            address_dict = self.get_fedex_address_dict(address_id)
+            address_dict.update({"contact": {"personName": "",
+                                             "emailAddress": address_id.email or "",
+                                             "phoneNumber": "%s" % (address_id.phone or ""),
+                                             "companyName": address_id.name}})
+            address_dict.get("address").update({"streetLines": [address_id.street]})
         return address_dict
 
     def manage_fedex_packages(self, package_count=False, shipping_weight=False, packaging_length=False, width=False,
@@ -341,7 +361,7 @@ class DeliveryCarrier(models.Model):
                     ],
                     "signatureOptionType": self.signature_options or ''
                 }})
-
+        us_shipper_address = receiver_id.country_id.code == "US"
         try:
             order = pickings.sale_id
             request_data = {
@@ -350,7 +370,7 @@ class DeliveryCarrier(models.Model):
                 "accountNumber": {"value": "{0}".format(company_id.fedex_account_number)},
                 "shipAction": "CONFIRM",
                 "requestedShipment": {
-                    "shipper": self.get_fedex_shipp_address_dict(shipper_address_id),
+                    "shipper": self.get_fedex_shipp_address_dict(shipper_address_id, us_shipper_address),
                     "recipients": [self.get_fedex_shipp_address_dict(receiver_id)],
                     "pickupType": self.fedex_pickup_type,
                     "serviceType": self.fedex_service_type,
