@@ -528,54 +528,55 @@
             </xpath>
         </field>
     </record>
-    <record id="product_template_only_form_view_product_ext" model="ir.ui.view">
-        <field name="name">product.template.only.form.inherit</field>
-        <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_only_form_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='sales']" position="replace">
-                <page string="Sales" name="sales"
-                      modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">
-                    <group name="sale">
-                        <group string="Upsell &amp; Cross-Sell" name="upsell">
-                            <field name="optional_product_ids" widget="many2many_tags"
-                                   options="{'color_field': 'color','no_create': True, 'no_create_edit' : True}"
-                                   domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
-                                   placeholder="Recommend when 'Adding to Cart' or quotation" can_create="true"
-                                   can_write="true"/>
-                            <field name="accessory_product_ids" widget="many2many_tags"
-                                   placeholder="Suggested accessories in the eCommerce cart"
-                                   options="{'no_create': True, 'no_create_edit' : True}"
-                                   modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}"
-                                   can_create="true"
-                                   can_write="true"/>
-                            <field name="alternative_product_ids" widget="many2many_tags"
-                                   domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
-                                   placeholder="Displayed in bottom of product pages"
-                                   options="{'no_create': True, 'no_create_edit' : True}"
-                                   modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}"
-                                   can_create="true"
-                                   can_write="true"/>
-                        </group>
-                        <group string="eCommerce Shop" name="shop"
-                               modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">
-                            <field name="website_url" modifiers="{&quot;readonly&quot;: true}"/>
-                            <field name="website_id" options="{'no_create': True}" on_change="1" can_create="true"
-                                   can_write="true"/>
-                            <field name="website_sequence"/>
-                            <field name="rating_avg" modifiers="{&quot;readonly&quot;: true}"/>
-                            <field name="website_description"/>
-                            <field name="website_published"/>
-                            <field name="website_meta_keywords"/>
-                            <field name="can_image_1024_be_zoomed" modifiers="{&quot;readonly&quot;: true}"/>
-                            <field name="public_categ_ids" widget="many2many_tags" string="Categories" can_create="true"
-                                   can_write="true"/>
-                            <label for="allow_out_of_stock_order" string="Out-of-Stock"
-                                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>
-                            <div modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}">
-                                <field name="allow_out_of_stock_order" class="oe_inline"/>
-                                Continue Selling
-                            </div>
+<!--    This is commented in version 16 due to hcp is not using website in live so it will throw error if website_sale is installed then we can uncomment it-->
+<!--    <record id="product_template_only_form_view_product_ext" model="ir.ui.view">-->
+<!--        <field name="name">product.template.only.form.inherit</field>-->
+<!--        <field name="model">product.template</field>-->
+<!--        <field name="inherit_id" ref="product.product_template_only_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//page[@name='sales']" position="replace">-->
+<!--                <page string="Sales" name="sales"-->
+<!--                      modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">-->
+<!--                    <group name="sale">-->
+<!--                        <group string="Upsell &amp; Cross-Sell" name="upsell">-->
+<!--                            <field name="optional_product_ids" widget="many2many_tags"-->
+<!--                                   options="{'color_field': 'color','no_create': True, 'no_create_edit' : True}"-->
+<!--                                   domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"-->
+<!--                                   placeholder="Recommend when 'Adding to Cart' or quotation" can_create="true"-->
+<!--                                   can_write="true"/>-->
+<!--                            <field name="accessory_product_ids" widget="many2many_tags"-->
+<!--                                   placeholder="Suggested accessories in the eCommerce cart"-->
+<!--                                   options="{'no_create': True, 'no_create_edit' : True}"-->
+<!--                                   modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}"-->
+<!--                                   can_create="true"-->
+<!--                                   can_write="true"/>-->
+<!--                            <field name="alternative_product_ids" widget="many2many_tags"-->
+<!--                                   domain="[('id', '!=', active_id), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"-->
+<!--                                   placeholder="Displayed in bottom of product pages"-->
+<!--                                   options="{'no_create': True, 'no_create_edit' : True}"-->
+<!--                                   modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}"-->
+<!--                                   can_create="true"-->
+<!--                                   can_write="true"/>-->
+<!--                        </group>-->
+<!--                        <group string="eCommerce Shop" name="shop"-->
+<!--                               modifiers="{&quot;invisible&quot;: [[&quot;sale_ok&quot;, &quot;=&quot;, false]]}">-->
+<!--                            <field name="website_url" modifiers="{&quot;readonly&quot;: true}"/>-->
+<!--                            <field name="website_id" options="{'no_create': True}" on_change="1" can_create="true"-->
+<!--                                   can_write="true"/>-->
+<!--                            <field name="website_sequence"/>-->
+<!--                            <field name="rating_avg" modifiers="{&quot;readonly&quot;: true}"/>-->
+<!--                            <field name="website_description"/>-->
+<!--                            <field name="website_published"/>-->
+<!--                            <field name="website_meta_keywords"/>-->
+<!--                            <field name="can_image_1024_be_zoomed" modifiers="{&quot;readonly&quot;: true}"/>-->
+<!--                            <field name="public_categ_ids" widget="many2many_tags" string="Categories" can_create="true"-->
+<!--                                   can_write="true"/>-->
+<!--                            <label for="allow_out_of_stock_order" string="Out-of-Stock"-->
+<!--                                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>-->
+<!--                            <div modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}">-->
+<!--                                <field name="allow_out_of_stock_order" class="oe_inline"/>-->
+<!--                                Continue Selling-->
+<!--                            </div>-->
 
                             <label for="show_availability" string="Show Available Qty"
                                    modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;in&quot;, [&quot;service&quot;, &quot;consu&quot;]]]}"/>
