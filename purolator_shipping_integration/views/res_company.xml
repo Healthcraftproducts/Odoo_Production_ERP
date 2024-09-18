@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purolator_credential_configuration" model="ir.ui.view">
+        <field name="name">Purolator Configuration</field>
+        <field name="model">res.company</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page string="Purolator Configuration">
+                    <group>
+                        <field name="use_purolator_shipping_provider"/>
+                    </group>
+                    <group attrs="{'invisible': [('use_purolator_shipping_provider', '!=', True)],'required':[('use_purolator_shipping_provider','=',True)]}">
+                        <field name="purolator_username" style='width:50%'/>
+                        <field name="purolator_password" style='width:50%'/>
+                        <field name="purolator_api_url" style='width:50%'/>
+                        <field name="purolator_account_number" style='width:50%'/>
+
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
