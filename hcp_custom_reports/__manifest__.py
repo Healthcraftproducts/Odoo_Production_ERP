@@ -37,6 +37,7 @@
         'reports/report_lot_barcode.xml',
         'reports/report_lot_barcode_vertical.xml',
         'reports/lot_serial_number_pdf_inherit.xml',
+        'reports/report_lot_barcode_internal_reference.xml',
         'views/sale_views.xml',
         'views/invoice_views.xml',
         'wizard/product_discount_consolidated_wizard_views.xml',
