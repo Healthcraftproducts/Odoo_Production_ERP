@@ -15,8 +15,8 @@
             <field name="name">Paper Format Lot/Serial 80*40</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
-            <field name="page_height">40</field>
-            <field name="page_width">85</field>
+            <field name="page_height">30</field>
+            <field name="page_width">60</field>
             <field name="orientation">Portrait</field>
             <field name="margin_top">1.00</field>
             <field name="margin_bottom">0.50</field>
@@ -34,16 +34,16 @@
                 <t t-foreach="docs" t-as="o">
                     <div class="page">
                         <div>
-                            <div style="padding-top:5px;">
-                                <p style="font-size: 30px;">
+                            <div style="padding-top:2px;">
+                                <p style="font-size: 25px;">
                                     <b>
-                                        <span t-field="o.product_id.display_name"/>
+                                        <span t-field="o.product_id.default_code"/>
                                     </b>
                                 </p>
                             </div>
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                             <div>
-                                <p style="font-size: 25px; text-align:left ; padding-top:2px">
+                                <p style="font-size: 15px; text-align:left ; padding-top:1px">
                                     <b>LN/SN:
                                         <span t-esc="o.name"/>
                                     </b>
@@ -52,7 +52,7 @@
                             <div>
                                 <div>
                                     <div t-esc="o.name"
-                                         t-options="{'widget': 'barcode', 'width': 600, 'height': 75}"/>
+                                         t-options="{'widget': 'barcode', 'width': 450, 'height': 60}"/>
                                 </div>
                             </div>
                         </div>
