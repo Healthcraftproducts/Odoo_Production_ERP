@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record forcecreate="True" id="auto_generate_token_fedex" model="ir.cron">
             <field name="name">Auto generate token</field>
-            <field name="model_id" ref="model_res_company"/>
+            <field name="model_id" ref="model_delivery_carrier"/>
             <field name="state">code</field>
             <field name="code">model.auto_generate_fedex_access_token()</field>
             <field name="active" eval="False"/>

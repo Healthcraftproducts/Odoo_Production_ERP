@@ -175,6 +175,57 @@ class DeliveryCarrier(models.Model):
                                       ('PRESORTED_BOUND_PRINTED_MATTER', 'PRESORTED_BOUND_PRINTED_MATTER'),
                                       ('PRESORTED_STANDARD', 'PRESORTED_STANDARD')], string="Fedex Indicia")
 
+
+    # Fedex Shipping Credential configration
+
+    use_fedex_shipping_provider = fields.Boolean(copy=False, string="Are You Use FedEx Shipping Provider.?",
+                                                 help="If use fedEx shipping provider than value set TRUE.",
+                                                 default=False)
+    fedex_api_url = fields.Char(string="FedEx API URL", copy=False, default="https://apis-sandbox.fedex.com")
+    fedex_client_id = fields.Char(string="FedEx Client ID", copy=False)
+    fedex_client_secret = fields.Char(string="FedEx Client Secret", copy=False)
+    fedex_account_number = fields.Char(copy=False, string='Account Number',
+                                       help="The account number sent to you by Fedex after registering for Web Services.")
+    fedex_access_token = fields.Char(string="FedEx Access Token", copy=False)
+
+    def auto_generate_fedex_access_token(self):
+        for company_id in self.search([('use_fedex_shipping_provider', '!=', False)]):
+            company_id.generate_fedex_access_token()
+
+    def generate_fedex_access_token(self):
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        api_url = "%s/oauth/token" % (self.fedex_api_url)
+        if not self.fedex_client_id or not self.fedex_client_secret:
+            raise ValidationError("Please enter correct credentials")
+        data = {
+            'client_id': self.fedex_client_id,
+            'client_secret': self.fedex_client_secret,
+            'grant_type': 'client_credentials',
+        }
+        try:
+            response_data = requests.request("POST", api_url, headers=headers, data=data)
+            if response_data.status_code in [200, 201]:
+                response_data = response_data.json()
+                if response_data.get('access_token'):
+                    self.fedex_access_token = response_data.get('access_token')
+                    return {
+                        'effect': {
+                            'fadeout': 'slow',
+                            'message': "Yeah! Token has been retrieved.",
+                            'img_url': '/web/static/img/smile.svg',
+                            'type': 'rainbow_man',
+                        }
+                    }
+                else:
+                    raise ValidationError(response_data)
+            if not response_data.status_code in [200, 201]:
+                raise ValidationError(response_data.text)
+        except Exception as e:
+            raise ValidationError(e)
+
+
     def get_fedex_address_dict(self, address_id, us_shipper_address=False):
         if us_shipper_address:
             return {
@@ -219,20 +270,20 @@ class DeliveryCarrier(models.Model):
             raise ValidationError("Please Define Proper Recipient Address!")
 
         total_weight = sum([(line.product_id.weight * line.product_uom_qty) for line in order.order_line]) or 0.0
-        if not company_id.fedex_access_token:
+        if not self.fedex_access_token:
             raise ValidationError("Please enter correct credentials data!")
 
         us_shipper_address = recipient_address_id.country_id.code == "US"
 
         try:
-            api_url = "{0}/rate/v1/rates/quotes".format(company_id.fedex_api_url)
+            api_url = "{0}/rate/v1/rates/quotes".format(self.fedex_api_url)
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': 'Bearer {0}'.format(company_id.fedex_access_token)
+                'Authorization': 'Bearer {0}'.format(self.fedex_access_token)
             }
             request_data = {
-                "accountNumber": {"value": "{0}".format(company_id.fedex_account_number)},
+                "accountNumber": {"value": "{0}".format(self.fedex_account_number)},
                 "requestedShipment": {
 
                     "shipper": self.get_fedex_address_dict(shipper_address_id, us_shipper_address),
@@ -273,8 +324,11 @@ class DeliveryCarrier(models.Model):
                                                                            "currency": order.company_id.currency_id.name or "USD"}}}})
 
             response_data = requests.request("POST", api_url, headers=headers, data=json.dumps(request_data))
+            _logger.info("Shipment Request API URL:::: %s" % api_url)
+            _logger.info("Shipment Request Data:::: %s" % request_data)
             if response_data.status_code in [200, 201]:
                 response_data = response_data.json()
+                _logger.info("Shipment Response Data:::: %s" % response_data)
                 if response_data.get('output') and response_data.get('output').get('rateReplyDetails'):
                     for rateReplyDetail in response_data.get('output').get('rateReplyDetails'):
                         if self.fedex_service_type == rateReplyDetail.get("serviceType"):
@@ -367,7 +421,7 @@ class DeliveryCarrier(models.Model):
             request_data = {
                 "mergeLabelDocOption": "LABELS_AND_DOCS",
                 "labelResponseOptions": "LABEL",
-                "accountNumber": {"value": "{0}".format(company_id.fedex_account_number)},
+                "accountNumber": {"value": "{0}".format(self.fedex_account_number)},
                 "shipAction": "CONFIRM",
                 "requestedShipment": {
                     "shipper": self.get_fedex_shipp_address_dict(shipper_address_id, us_shipper_address),
@@ -501,15 +555,17 @@ class DeliveryCarrier(models.Model):
                         }
                     }
                 })
-            api_url = "{0}/ship/v1/shipments".format(company_id.fedex_api_url)
+            api_url = "{0}/ship/v1/shipments".format(self.fedex_api_url)
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': 'Bearer {0}'.format(company_id.fedex_access_token)
+                'Authorization': 'Bearer {0}'.format(self.fedex_access_token)
             }
             response_data = requests.request("POST", api_url, headers=headers, data=json.dumps(request_data))
             attachments = []
             exact_charge = 0.0
+            _logger.info("Shipment Request API URL:::: %s" % api_url)
+            _logger.info("Shipment Request Data:::: %s" % request_data)
             if response_data.status_code in [200, 201]:
                 response_data = response_data.json()
                 _logger.info("Shipment Response Data %s" % response_data)
@@ -561,17 +617,17 @@ class DeliveryCarrier(models.Model):
     def fedex_shipping_provider_cancel_shipment(self, picking):
         try:
             request_data = {"accountNumber": {
-                "value": self.company_id.fedex_account_number
+                "value": self.fedex_account_number
             },
                 "senderCountryCode": "US",
                 "deletionControl": "DELETE_ALL_PACKAGES",
                 "trackingNumber": "%s" % (picking.carrier_tracking_ref)
             }
-            api_url = "{0}/ship/v1/shipments/cancel".format(self.company_id.fedex_api_url)
+            api_url = "{0}/ship/v1/shipments/cancel".format(self.fedex_api_url)
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': 'Bearer {0}'.format(self.company_id.fedex_access_token)
+                'Authorization': 'Bearer {0}'.format(self.fedex_access_token)
             }
             response_data = requests.request("PUT", api_url, headers=headers, data=json.dumps(request_data))
             if response_data.status_code in [200, 201]:

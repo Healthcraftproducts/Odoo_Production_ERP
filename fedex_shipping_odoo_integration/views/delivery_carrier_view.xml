@@ -6,7 +6,28 @@
         <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='destination']" position='before'>
-                <page string="Configuration" name="fedex_configuration"
+                <page string="FedEx Credential Configuration">
+                    <group>
+                        <field name="use_fedex_shipping_provider"/>
+                    </group>
+                    <group attrs="{'invisible': [('use_fedex_shipping_provider', '!=', True)]}">
+                        <field name="fedex_api_url"
+                               attrs="{'required':[('use_fedex_shipping_provider','=',True)]}"/>
+                        <field name="fedex_client_id"
+                               attrs="{'required':[('use_fedex_shipping_provider','=',True)]}"/>
+                        <field name="fedex_client_secret"
+                               attrs="{'required':[('use_fedex_shipping_provider','=',True)]}" password="True"/>
+                        <field name="fedex_account_number"
+                               attrs="{'required':[('use_fedex_shipping_provider','=',True)]}"/>
+                        <field name="fedex_access_token"/>
+                        <button type="object" class="fa fa-arrow-right oe_link"
+                                attrs="{'invisible': [('use_fedex_shipping_provider', '!=', True)]}"
+                                name="generate_fedex_access_token" string="Access Token"/>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='destination']" position='before'>
+                <page string="Fedex Shipping Method Configuration" name="fedex_configuration"
                       attrs="{'invisible': [('delivery_type', '!=', 'fedex_shipping_provider')]}">
                     <group>
                         <group>
@@ -14,8 +35,10 @@
                                    attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
                             <field name="fedex_service_type"
                                    attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
-                            <field name="fedex_hub_id" attrs="{'invisible': [('fedex_service_type', '!=', 'SMART_POST')],'required': [('fedex_service_type', '=', 'SMART_POST')]}"/>
-                            <field name="fedex_indicia" attrs="{'invisible': [('fedex_service_type', '!=', 'SMART_POST')],'required': [('fedex_service_type', '=', 'SMART_POST')]}"/>
+                            <field name="fedex_hub_id" attrs="{'invisible': [('fedex_service_type', '!=', 'SMART_POST')]
+                            ,'required': [('fedex_service_type', '=', 'SMART_POST')]}"/>
+                            <field name="fedex_indicia" attrs="{'invisible': [('fedex_service_type', '!=', 'SMART_POST')]
+                            ,'required': [('fedex_service_type', '=', 'SMART_POST')]}"/>
                             <field name="fedex_pickup_type"
                                    attrs="{'required': [('delivery_type', '=', 'fedex_shipping_provider')]}"/>
                             <field name="fedex_default_product_packaging_id"
@@ -35,7 +58,8 @@
                             <field name="is_cod"/>
                             <field name="is_signature_required"/>
                             <field name="signature_options"
-                                   attrs="{'invisible': [('is_signature_required', '=', False)], 'required': [('is_signature_required', '=', True)]}"/>
+                                   attrs="{'invisible': [('is_signature_required', '=', False)],
+                                    'required': [('is_signature_required', '=', True)]}"/>
                             <field name="insured_request"/>
                             <field name="fedex_onerate"/>
                         </group>
@@ -45,21 +69,63 @@
         </field>
     </record>
 
-        <record id="choose_delivery_package_view_form_inherit_weight" model="ir.ui.view">
+    <record id="choose_delivery_package_view_form_inherit_weight" model="ir.ui.view">
         <field name="name">choose.delivery.package.form.inherit</field>
         <field name="model">choose.delivery.package</field>
         <field name="inherit_id" ref="delivery.choose_delivery_package_view_form"/>
         <field name="arch" type="xml">
             <form string="Package">
                 <xpath expr="//div[@name='package_weight']" position="after">
-                    <div class="o_row" attrs="{'invisible': [('delivery_package_type_id', '=', False)]}" name="picking_weight">
+                    <div class="o_row" attrs="{'invisible': [('delivery_package_type_id', '=', False)]}"
+                         name="picking_weight">
                         <label for="weight" attrs="{'invisible': [('delivery_package_type_id', '=', False)]}"/>
                         <field name="weight" readonly="1"/>
                         <field name="weight_uom_name" readonly="1"/>
                     </div>
+                    <div attrs="{'invisible': [('delivery_package_type_id', '=', False)]}">
+                        <div class="o_row" name="size">
+                            <label for="length_uom_name" string="Size"/>
+                            <field name="packaging_length" required="1" placeholder="Length"/>
+                            <span>×</span>
+                            <field name="width" required="1" placeholder="Width"/>
+                            <span>×</span>
+                            <field name="height" required="1" placeholder="Height"/>
+                            <span>
+                                <field name="length_uom_name" help="Size: Length × Width × Height"/>
+                            </span>
+                        </div>
+                        <div>
+                        </div>
+                    </div>
                 </xpath>
             </form>
         </field>
-        </record>
+    </record>
+
+    <record model="ir.ui.view" id="view_quant_package_inherit_ept_form">
+        <field name="name">stock.quant.package.inherit.update.dimension</field>
+        <field name="model">stock.quant.package</field>
+        <field name="inherit_id" ref="stock.view_quant_package_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet//group" position="after">
+                <group >
+                    <group class="o_row" name="size">
+                        <label for="length_uom_name" string="Size"/>
+                        <field name="packaging_length" placeholder="Length"/>
+                        <span>×</span>
+                        <field name="width" placeholder="Width"/>
+                        <span>×</span>
+                        <field name="height" placeholder="Height"/>
+                        <span>
+                            <field name="length_uom_name" help="Size: Length × Width × Height"/>
+                        </span>
+                    </group>
+                    <group>
+
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
 
 </odoo>
