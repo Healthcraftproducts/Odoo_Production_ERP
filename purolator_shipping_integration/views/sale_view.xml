@@ -1,0 +1,27 @@
+<odoo>
+    <data>
+        <record id="purolator_shipping_charge_page_view" model="ir.ui.view">
+            <field name="name">Sales Order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[last()]" position="after">
+                    <page string="Purolator Shipping Charges">
+                        <field name="purolator_shipping_charge_ids" readonly="1">
+                            <tree nolabel="1" readonly="1">
+                                <field name="purolator_service_id"/>
+                                <field name="expected_delivery_date" />
+                                <field name="estimated_transit_days"/>
+                                <field name="purolator_total_charge"/>
+                                <button type='object' class="fa fa-arrow-right oe_link" name="set_service" string="Use Service"/>
+                            </tree>
+                        </field>
+                        <group>
+                            <field name="purolator_shipping_charge_id" readonly="1"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

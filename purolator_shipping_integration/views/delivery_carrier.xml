@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purolator_method_configuration" model="ir.ui.view">
+        <field name="name">Purolator Carrier Information</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='destination']" position='before'>
+                <page string="Purolator Configuration" name="purolator_configuration"
+                      attrs="{'invisible': [('delivery_type', '!=', 'purolator')]}">
+
+                    <group>
+                        <group>
+                            <field name="company_id"
+                                    attrs="{'required': [('delivery_type', '=', 'purolator')]}"/>
+
+                            <field name="purolator_package_type"
+                                   attrs="{'required': [('delivery_type', '=', 'purolator')]}"/>
+                            <field name="weight_unit"
+                                   attrs="{'required': [('delivery_type', '=', 'purolator')]}"/>
+                            <field name="purolator_provider_package_id"
+                                   attrs="{'required': [('delivery_type', '=', 'purolator')]}"/>
+                            <field name="dimension_unit"
+                                   attrs="{'required': [('delivery_type', '=', 'purolator')]}"/>
+                            <field name="purolator_pickup_type"
+                                   attrs="{'required': [('delivery_type', '=', 'purolator')]}"/>
+                            <field name="purolator_payment_type"
+                                   attrs="{'required': [('delivery_type', '=', 'purolator')]}"/>
+                            <field name="printer_type"
+                                   attrs="{'required': [('delivery_type', '=', 'purolator')]}"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
