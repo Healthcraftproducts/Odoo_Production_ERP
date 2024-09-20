@@ -11,7 +11,7 @@
      FedEx to Odoo.we also provide the ups,dhl,usps,stamp.com,shipstation shipping integration.""",
 
     # Dependencies
-    'depends': ['delivery'],
+    'depends': ['delivery','stock'],
 
     # Views
     'data': [
