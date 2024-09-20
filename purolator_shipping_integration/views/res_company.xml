@@ -11,12 +11,15 @@
                     <group>
                         <field name="use_purolator_shipping_provider"/>
                     </group>
-                    <group attrs="{'invisible': [('use_purolator_shipping_provider', '!=', True)],'required':[('use_purolator_shipping_provider','=',True)]}">
-                        <field name="purolator_username" style='width:50%'/>
-                        <field name="purolator_password" style='width:50%'/>
-                        <field name="purolator_api_url" style='width:50%'/>
-                        <field name="purolator_account_number" style='width:50%'/>
-
+                    <group attrs="{'invisible': [('use_purolator_shipping_provider', '!=', True)]}">
+                        <field name="purolator_username"
+                               attrs="{'required':[('use_purolator_shipping_provider','=',True)]}"/>
+                        <field name="purolator_password"
+                               attrs="{'required':[('use_purolator_shipping_provider','=',True)]}"/>
+                        <field name="purolator_api_url"
+                               attrs="{'required':[('use_purolator_shipping_provider','=',True)]}"/>
+                        <field name="purolator_account_number"
+                               attrs="{'required':[('use_purolator_shipping_provider','=',True)]}"/>
                     </group>
                 </page>
             </xpath>

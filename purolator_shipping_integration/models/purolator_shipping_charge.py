@@ -3,6 +3,8 @@ from odoo import models, fields
 class PurolatorShippingCharge(models.Model):
     _name = "purolator.shipping.charge"
     _rec_name = "purolator_service_id"
+    _description = "Purolator Shipping Charge"
+
 
     purolator_service_id = fields.Char(string="Service Id",help="Purolator Carrier Id")
     expected_delivery_date = fields.Char(string="Expected Delivery Date")

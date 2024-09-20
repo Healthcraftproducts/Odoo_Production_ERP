@@ -4,7 +4,7 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     purolator_shipping_charge_ids = fields.One2many("purolator.shipping.charge", "sale_order_id", string="Purolator Rate ")
-    purolator_shipping_charge_id = fields.Many2one("purolator.shipping.charge", string="Purolator Service")
+    purolator_shipping_charge_id = fields.Many2one("purolator.shipping.charge", string="Purolator Service", copy=False)
 
     # def set_delivery_line(self, carrier, amount):
     #     # Remove delivery products from the sales order
