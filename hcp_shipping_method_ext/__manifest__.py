@@ -11,8 +11,8 @@
     ],
     'installable': True,
     'data': [
-
-      'views/delivery_views.xml',
+        'security/ir.model.access.csv',
+        'views/delivery_views.xml',
 
     ],
     'application': True,
