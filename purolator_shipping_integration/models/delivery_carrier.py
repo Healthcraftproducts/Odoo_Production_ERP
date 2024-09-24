@@ -3,11 +3,11 @@ import requests
 import binascii
 import xml.etree.ElementTree as etree
 from odoo import models, fields, api, _
-from odoo.exceptions import Warning, ValidationError, UserError
+from odoo.exceptions import ValidationError, UserError
 from odoo.addons.purolator_shipping_integration.models.purolator_response import Response
 import hashlib
 from requests.auth import HTTPBasicAuth
-
+import time
 import base64
 import uuid
 
@@ -22,14 +22,24 @@ class DeliveryCarrier(models.Model):
     purolator_package_type = fields.Selection([("ExpressEnvelope", "ExpressEnvelope"),
                                                ("ExpressPack", "ExpressPack"),
                                                ("CustomerPackaging", "CustomerPackaging"),
-                                               ("ExpressBox", "ExpressBox")])
+                                               ("ExpressBox", "ExpressBox")], default='CustomerPackaging')
     weight_unit = fields.Selection([("lb", "lb - pounds"),
-                                    ("kg", "kg - kilogram")])
+                                    ("kg", "kg - kilogram")], string="Weight Unit", default='kg')
+    purolator_provider_package_id = fields.Many2one('stock.package.type', string="Package",
+                                                    help="Default Package")
+    dimension_unit = fields.Selection([('in', 'Inch'), ('cm', 'centimetres')], string="Dimension Unit", default='cm')
+    purolator_pickup_type = fields.Selection([('DropOff', 'DropOff'),
+                                              ('PreScheduled', 'PreScheduled')], string="Pickup Type",
+                                             default='DropOff')
+    purolator_payment_type = fields.Selection([('Sender', 'Sender'), ('Receiver', 'Receiver')], string="Payment Type",
+                                              default="Sender")
+    printer_type = fields.Selection([('Regular', 'Regular'), ('Thermal', 'Thermal')], string="Printer Type",
+                                    default="Regular")
 
     def purolator_rate_shipment(self, orders):
         "This Method Is Used For Get Rate"
-
         sender_address = orders.warehouse_id and orders.warehouse_id.partner_id
+        # sender_address = orders.partner_return_id if orders.partner_return_id else orders.warehouse_id and orders.warehouse_id.partner_id
         receiver_address = orders.partner_shipping_id
 
         if not sender_address.zip or not sender_address.city or not sender_address.country_id:
@@ -43,6 +53,8 @@ class DeliveryCarrier(models.Model):
                     'warning_message': False}
         weight = sum(
             [(line.product_id.weight * line.product_uom_qty) for line in orders.order_line if not line.is_delivery])
+        # if weight < 1.0:
+        #     weight = "1.0"
 
         root_element = etree.Element("soapenv:Envelope")
 
@@ -75,8 +87,6 @@ class DeliveryCarrier(models.Model):
         etree.SubElement(root_totalweight, "v2:Value").text = str(weight)
         etree.SubElement(root_totalweight, "v2:WeightUnit").text = self.weight_unit
 
-        print(etree.tostring(root_element))
-
         try:
             headers = {
                 'Content-Type': "text/xml;  charset=utf-8",
@@ -90,10 +100,11 @@ class DeliveryCarrier(models.Model):
             response_data = requests.request(method="POST", url=url, headers=headers,
                                              auth=HTTPBasicAuth(username=username, password=password),
                                              data=etree.tostring(root_element))
-            _logger.info("Response Data Of Rate%s" % response_data.content)
+            _logger.info("Response Data Of Rate::::%s" % response_data.content)
             if response_data.status_code in [200, 201]:
                 api = Response(response_data)
                 response_data = api.dict()
+                _logger.info("JSON Response Data Of Rate::::%s" % response_data)
                 common_response = response_data.get('Envelope').get('Body').get('GetQuickEstimateResponse')
                 check_errors = common_response.get('ResponseInformation').get('Errors')
                 if check_errors:
@@ -142,15 +153,48 @@ class DeliveryCarrier(models.Model):
         response = []
         for picking in pickings:
             recipient_address = picking.partner_id
-            shipper_address = picking.picking_type_id.warehouse_id.partner_id
+            # je shipper address comment karelu che ene uncomment karvu and niche nu comment karvu jyare third party
+            shipper_address = picking.picking_type_id and picking.picking_type_id.warehouse_id and picking.picking_type_id.warehouse_id.partner_id
+            # shipper_address = picking.sale_id.partner_return_id if picking.sale_id.partner_return_id else picking.picking_type_id and picking.picking_type_id.warehouse_id and picking.picking_type_id.warehouse_id.partner_id
             total_bulk_weight = picking.weight_bulk
 
             if not shipper_address.zip or not shipper_address.city or not shipper_address.country_id:
                 raise ValidationError("Please define  proper sender addres")
 
+            shipper_address_phone_number = shipper_address.phone and shipper_address.phone.replace(' ', '').replace('+','').replace('(','').replace(')', '').replace('-', '')
+            if shipper_address_phone_number and len(shipper_address_phone_number) < 10:
+                raise ValidationError("Please Check Shipper Phone Number Properly")
+
+            shipper_country_code = '' if not shipper_address_phone_number else (
+                shipper_address_phone_number[0] if '+1' in shipper_address.phone else '1')
+            shipper_area_code = ' ' if not shipper_address_phone_number else (
+                shipper_address_phone_number[1:4] if '+1' in shipper_address.phone else shipper_address_phone_number[
+                                                                                        0:3])
+            shipper_phone = ' ' if not shipper_address_phone_number else shipper_address_phone_number[
+                                                                         4:11] if '+1' in shipper_address.phone else shipper_address_phone_number[
+                                                                                                                     3:10]
+
+            sender_phone_extension = shipper_address_phone_number[
+                                     -3:] if shipper_address_phone_number and 'ext' in shipper_address_phone_number else ' '
+
             # check Receiver Address
             if not recipient_address.zip or not recipient_address.city or not recipient_address.country_id:
                 raise ValidationError("Please define  proper receiver address")
+
+            receipient_phone_number = recipient_address.phone and recipient_address.phone.replace(' ', '').replace('+','').replace('(','').replace(')','').replace('-', '')
+            if receipient_phone_number and len(receipient_phone_number) < 10:
+                raise ValidationError("Please Check Customer Phone Number Properly")
+
+            receiver_country_code = '' if not receipient_phone_number else (
+                receipient_phone_number[0] if '+1' in recipient_address.phone else '1')
+            receiver_area_code = ' ' if not receipient_phone_number else (
+                receipient_phone_number[1:4] if '+1' in recipient_address.phone else receipient_phone_number[0:3])
+            receiver_phone = ' ' if not receipient_phone_number else receipient_phone_number[
+                                                                     4:11] if '+1' in recipient_address.phone else receipient_phone_number[
+                                                                                                                   3:10]
+
+            receiver_phone_extension = receipient_phone_number[
+                                       -3:] if receipient_phone_number and 'ext' in receipient_phone_number else ' '
 
             root_element = etree.Element("soapenv:Envelope")
             root_element.attrib['xmlns:soapenv'] = "http://schemas.xmlsoap.org/soap/envelope/"
@@ -161,8 +205,8 @@ class DeliveryCarrier(models.Model):
             etree.SubElement(request_context, "v2:Version").text = "2.2"
             etree.SubElement(request_context, "v2:Language").text = "en"
             etree.SubElement(request_context, "v2:GroupID").text = "1"
-            etree.SubElement(request_context, "v2:RequestReference").text = "Shipping Request123"
-            # etree.SubElement(request_context, "v2:UserToken").text = "b4a9f14b1dfd4315902eef4e0c4da56a"
+            etree.SubElement(request_context, "v2:RequestReference").text = "Shipping Request"
+
 
             root_body = etree.SubElement(root_element, "soapenv:Body")
             root_createshipment = etree.SubElement(root_body, "v2:CreateShipmentRequest")
@@ -171,6 +215,8 @@ class DeliveryCarrier(models.Model):
             root_address = etree.SubElement(root_senderinformation, "v2:Address")
 
             etree.SubElement(root_address, "v2:Name").text = shipper_address.name or ''
+            etree.SubElement(root_address,
+                             "v2:Company").text = shipper_address.parent_id and shipper_address.parent_id.name or ''
             etree.SubElement(root_address, "v2:StreetNumber").text = shipper_address.street2 or ''
             etree.SubElement(root_address, "v2:StreetName").text = shipper_address.street or ''
             etree.SubElement(root_address, "v2:City").text = shipper_address.city or ''
@@ -181,16 +227,26 @@ class DeliveryCarrier(models.Model):
             etree.SubElement(root_address, "v2:PostalCode").text = shipper_address.zip or ''
 
             root_phonenumber = etree.SubElement(root_address, "v2:PhoneNumber")
-            etree.SubElement(root_phonenumber, "v2:CountryCode").text = "1"
-            etree.SubElement(root_phonenumber, "v2:AreaCode").text = "905"
-            etree.SubElement(root_phonenumber, "v2:Phone").text = "5555555"
+            etree.SubElement(root_phonenumber,
+                             "v2:CountryCode").text = shipper_country_code  # shipper_address_phone_number[0] if '+1' in shipper_address.phone else '1'
+            etree.SubElement(root_phonenumber,
+                             "v2:AreaCode").text = shipper_area_code  # shipper_address_phone_number[1:4]
+            etree.SubElement(root_phonenumber, "v2:Phone").text = shipper_phone  # shipper_address_phone_number[4:11]
+            etree.SubElement(root_phonenumber,
+                             "v2:Extension").text = sender_phone_extension  # shipper_address_phone_number[-3:] if 'ext' in shipper_address_phone_number else ''
 
             root_receiverinformation = etree.SubElement(root_shipment, "v2:ReceiverInformation")
             root_recaddress = etree.SubElement(root_receiverinformation, "v2:Address")
 
             etree.SubElement(root_recaddress, "v2:Name").text = recipient_address.name or ''
-            etree.SubElement(root_recaddress, "v2:StreetNumber").text = recipient_address.street2 or ''
+            etree.SubElement(root_recaddress,
+                             "v2:Company").text = recipient_address.parent_id and recipient_address.parent_id.name or ''
+
+            etree.SubElement(root_recaddress, "v2:StreetNumber").text = recipient_address.street2 or ' '
             etree.SubElement(root_recaddress, "v2:StreetName").text = recipient_address.street or ''
+            # etree.SubElement(root_recaddress, "v2:Suite").text = recipient_address.suite or ''
+            # etree.SubElement(root_recaddress, "v2:Floor").text = recipient_address.floor or ''
+            etree.SubElement(root_recaddress, "v2:StreetAddress2").text = recipient_address.street2 or ''
             etree.SubElement(root_recaddress, "v2:City").text = recipient_address.city or ''
             etree.SubElement(root_recaddress,
                              "v2:Province").text = recipient_address.state_id and recipient_address.state_id.code or ''
@@ -199,9 +255,14 @@ class DeliveryCarrier(models.Model):
             etree.SubElement(root_recaddress, "v2:PostalCode").text = recipient_address.zip or ''
 
             root_recphonenumber = etree.SubElement(root_recaddress, "v2:PhoneNumber")
-            etree.SubElement(root_recphonenumber, "v2:CountryCode").text = "1"
-            etree.SubElement(root_recphonenumber, "v2:AreaCode").text = "604"
-            etree.SubElement(root_recphonenumber, "v2:Phone").text = "2982181"
+            etree.SubElement(root_recphonenumber,
+                             "v2:CountryCode").text = receiver_country_code  # receipient_phone_number[0] if '+1' in  recipient_address.phone else '1'
+            etree.SubElement(root_recphonenumber,
+                             "v2:AreaCode").text = receiver_area_code  # receipient_phone_number[1:4] if '+1' in recipient_address.phone else receipient_phone_number[0:3]
+            etree.SubElement(root_recphonenumber,
+                             "v2:Phone").text = receiver_phone  # receipient_phone_number[4:11] if '+1' in recipient_address.phone else receipient_phone_number[3:10]
+            etree.SubElement(root_recphonenumber,
+                             "v2:Extension").text = receiver_phone_extension  # receipient_phone_number[-3:] if 'ext' in receipient_phone_number else ''
 
             etree.SubElement(root_shipment, "v2:ShipmentDate").text = picking.scheduled_date.strftime("%Y-%m-%d")
 
@@ -212,22 +273,61 @@ class DeliveryCarrier(models.Model):
             etree.SubElement(root_total_weight, "v2:Value").text = str(picking.shipping_weight) or ''
             etree.SubElement(root_total_weight, "v2:WeightUnit").text = self.weight_unit or ''
 
-            etree.SubElement(root_package_information, "v2:TotalPieces").text = "1"
+            etree.SubElement(root_package_information, "v2:TotalPieces").text = str(
+                len(picking.package_ids) + (1 if picking.weight_bulk else 0))
+            pieces_information = etree.SubElement(root_package_information, "v2:PiecesInformation")
+            for package_id in picking.package_ids:
+                piece_node = etree.SubElement(pieces_information, "v2:Piece")
+                weight_node = etree.SubElement(piece_node, "v2:Weight")
+                etree.SubElement(weight_node, "v2:Value").text = str(package_id.shipping_weight)
+                etree.SubElement(weight_node, "v2:WeightUnit").text = self.weight_unit
+
+                length_node = etree.SubElement(piece_node, "v2:Length")
+                etree.SubElement(length_node, "v2:Value").text = str(package_id.package_type_id.packaging_length or 0)
+                etree.SubElement(length_node, "v2:DimensionUnit").text = self.dimension_unit
+
+                width_node = etree.SubElement(piece_node, "v2:Width")
+                etree.SubElement(width_node, "v2:Value").text = str(package_id.package_type_id.width or 0)
+                etree.SubElement(width_node, "v2:DimensionUnit").text = self.dimension_unit
+
+                height_node = etree.SubElement(piece_node, "v2:height")
+                etree.SubElement(height_node, "v2:Value").text = str(package_id.package_type_id.height or 0)
+                etree.SubElement(height_node, "v2:DimensionUnit").text = self.dimension_unit
+
+            if total_bulk_weight:
+                piece_node = etree.SubElement(pieces_information, "v2:Piece")
+                weight_node = etree.SubElement(piece_node, "v2:Weight")
+                etree.SubElement(weight_node, "v2:Value").text = str(total_bulk_weight)
+                etree.SubElement(weight_node, "v2:WeightUnit").text = self.weight_unit
+
+                length_node = etree.SubElement(piece_node, "v2:Length")
+                etree.SubElement(length_node, "v2:Value").text = str(
+                    self.purolator_provider_package_id.packaging_length or 0)
+                etree.SubElement(length_node, "v2:DimensionUnit").text = self.dimension_unit
+
+                width_node = etree.SubElement(piece_node, "v2:Width")
+                etree.SubElement(width_node, "v2:Value").text = str(self.purolator_provider_package_id.width or 0)
+                etree.SubElement(width_node, "v2:DimensionUnit").text = self.dimension_unit
+
+                height_node = etree.SubElement(piece_node, "v2:height")
+                etree.SubElement(height_node, "v2:Value").text = str(self.purolator_provider_package_id.height or 0)
+                etree.SubElement(height_node, "v2:DimensionUnit").text = self.dimension_unit
 
             root_payment_information = etree.SubElement(root_shipment, "v2:PaymentInformation")
-            etree.SubElement(root_payment_information, "v2:PaymentType").text = "Sender"
-            etree.SubElement(root_payment_information, "v2:RegisteredAccountNumber").text = "9999999999"
-            etree.SubElement(root_payment_information, "v2:BillingAccountNumber").text = "9999999999"
+            etree.SubElement(root_payment_information, "v2:PaymentType").text = self.purolator_payment_type
+            etree.SubElement(root_payment_information,
+                             "v2:RegisteredAccountNumber").text = self.company_id.purolator_account_number
+            etree.SubElement(root_payment_information,
+                             "v2:BillingAccountNumber").text = self.company_id.purolator_account_number
 
             root_pickup_information = etree.SubElement(root_shipment, "v2:PickupInformation")
-            etree.SubElement(root_pickup_information, "v2:PickupType").text = "DropOff"
+            etree.SubElement(root_pickup_information, "v2:PickupType").text = self.purolator_pickup_type
 
             root_notification_information = etree.SubElement(root_shipment, "v2:NotificationInformation")
-            etree.SubElement(root_notification_information, "v2:ConfirmationEmailAddress").text = "abc@abc.com"
+            etree.SubElement(root_notification_information, "v2:ConfirmationEmailAddress").text = ""
 
-            etree.SubElement(root_createshipment, "v2:PrinterType").text = "Regular"
-            request_data = etree.tostring(root_element)
-            _logger.info("=====>Request data of shipment%s" % request_data)
+            etree.SubElement(root_createshipment, "v2:PrinterType").text = self.printer_type
+
 
             try:
                 headers = {
@@ -242,32 +342,48 @@ class DeliveryCarrier(models.Model):
                 response_data = requests.request(method="POST", url=url, headers=headers,
                                                  auth=HTTPBasicAuth(username=username, password=password),
                                                  data=etree.tostring(root_element))
-                _logger.info("Response Data Of Rate%s" % response_data.content)
+                _logger.info("Response Data Of Shipping::::%s" % response_data.content)
                 if response_data.status_code in [200, 201]:
                     api = Response(response_data)
                     response_data = api.dict()
+                    _logger.info("JSON Response Data Of Shipping::::%s" % response_data)
                     common_response_data = response_data.get('Envelope').get('Body').get('CreateShipmentResponse')
                     check_errors = common_response_data.get('ResponseInformation').get('Errors')
                     if check_errors:
                         raise ValidationError(check_errors)
+                    purolator_pieces_pin = []
                     purolator_shipment_pin = common_response_data.get('ShipmentPIN').get('Value')
+                    piece_pins = common_response_data.get('PiecePINs').get('PIN')
+                    if isinstance(piece_pins, dict):
+                        piece_pins = [piece_pins]
+                    for piece_pin in piece_pins:
+                        purolator_pieces_pin.append(piece_pin.get('Value'))
                     label_response_data = self.purolator_get_label_using_shipment_pin(picking, purolator_shipment_pin)
                     picking.carrier_tracking_ref = purolator_shipment_pin
-
-                    pdf_label_url = label_response_data.get('Envelope') and label_response_data.get('Envelope').get(
+                    picking.purolator_piece_pin = ','.join(purolator_pieces_pin)
+                    headers = {'Content-Type': "application/x-www-form-urlencoded", 'Accept': "application/pdf"}
+                    common_response_of_label_data = label_response_data.get('Envelope') and label_response_data.get(
+                        'Envelope').get(
                         'Body') and label_response_data.get('Envelope').get('Body').get(
                         'GetDocumentsResponse') and label_response_data.get('Envelope').get('Body').get(
                         'GetDocumentsResponse').get('Documents') and label_response_data.get('Envelope').get(
                         'Body').get('GetDocumentsResponse').get('Documents').get(
                         'Document') and label_response_data.get('Envelope').get('Body').get('GetDocumentsResponse').get(
-                        'Documents').get('Document').get('DocumentDetails').get('DocumentDetail').get('URL')
+                        'Documents').get('Document')
 
-                    headers = {'Content-Type': "application/x-www-form-urlencoded", 'Accept': "application/pdf"}
+                    # if isinstance(common_response_of_label_data, dict):
+                    #     common_response_of_label_data = [common_response_of_label_data]
+
+                    # for piece_pdf_url in common_response_of_label_data:
+                    pdf_label_url = common_response_of_label_data.get('DocumentDetails').get('DocumentDetail').get(
+                        'URL')
+                    time.sleep(3)
                     pdf_response = requests.request("GET", url=pdf_label_url, headers=headers)
-                    logmessage = ("<b>Tracking Numbers:</b> %s") % (purolator_shipment_pin)
+                    logmessage = ("Tracking Numbers: %s") % (purolator_shipment_pin)
                     pickings.message_post(body=logmessage,
                                           attachments=[
-                                              ("%s.pdf" % (purolator_shipment_pin), pdf_response.content)])
+                                              ("%s.pdf" % (common_response_of_label_data.get('PIN').get('Value')),
+                                               pdf_response.content)])
                     shipping_data = {'exact_price': 0.0, 'tracking_number': purolator_shipment_pin}
                     response += [shipping_data]
                     return response
@@ -298,7 +414,7 @@ class DeliveryCarrier(models.Model):
         pin_node = etree.SubElement(void_shipment_request_node, "v2:PIN")
 
         etree.SubElement(pin_node, 'v2:Value').text = picking.carrier_tracking_ref
-        _logger.info("Cancel request data %s" % etree.tostring(cancel_request))
+
         try:
             headers = {
                 'Content-Type': "text/xml;  charset=utf-8",
@@ -312,7 +428,7 @@ class DeliveryCarrier(models.Model):
             response_data = requests.request(method="POST", url=url, headers=headers,
                                              auth=HTTPBasicAuth(username=username, password=password),
                                              data=etree.tostring(cancel_request))
-            _logger.info("Response Data Of Rate%s" % response_data.content)
+            _logger.info("Response Data Of Cancel::::%s" % response_data.content)
             if response_data.status_code in [200, 201]:
                 api = Response(response_data)
                 response_data = api.dict()
@@ -327,7 +443,7 @@ class DeliveryCarrier(models.Model):
 
     def purolator_get_tracking_link(self, pickings):
         """This Method is used for tracking parcel"""
-        return "https://www.purolator.com/en/shipping/tracker?pins={}".format(pickings.purolator_shipment_pin)
+        return "https://www.purolator.com/en/shipping/tracker?pins={}".format(pickings.purolator_piece_pin)
 
     def purolator_get_label_using_shipment_pin(self, picking, purolator_shipment_pin):
 
@@ -344,10 +460,13 @@ class DeliveryCarrier(models.Model):
         root_body = etree.SubElement(root_element, "SOAP-ENV:Body")
         root_get_document_request = etree.SubElement(root_body, "ns1:GetDocumentsRequest")
         root_document_criterium = etree.SubElement(root_get_document_request, "ns1:DocumentCriterium")
+        # if isinstance(purolator_shipment_pin, dict):
+        #     purolator_shipment_pin = [purolator_shipment_pin]
+        # for piece_pin in purolator_shipment_pin:
         root_document_criteria = etree.SubElement(root_document_criterium, "ns1:DocumentCriteria")
         root_pin = etree.SubElement(root_document_criteria, "ns1:PIN")
         etree.SubElement(root_pin, "ns1:Value").text = purolator_shipment_pin
-        _logger.info(etree.tostring(root_element))
+
 
         try:
             headers = {
@@ -358,11 +477,11 @@ class DeliveryCarrier(models.Model):
             password = self.company_id.purolator_password
             url = "{0}/v1/ShippingDocuments/ShippingDocumentsService.asmx".format(
                 self.company_id and self.company_id.purolator_api_url)
-            _logger.info("Request Data Of Rate::::%s" % etree.tostring(root_element))
+            _logger.info("Request Data Of label::::%s" % etree.tostring(root_element))
             response_data = requests.request(method="POST", url=url, headers=headers,
                                              auth=HTTPBasicAuth(username=username, password=password),
                                              data=etree.tostring(root_element))
-            _logger.info("Response Data Of Rate%s" % response_data.content)
+            _logger.info("Response Data Of label::::%s" % response_data.content)
             if response_data.status_code in [200, 201]:
                 api = Response(response_data)
                 response_data = api.dict()

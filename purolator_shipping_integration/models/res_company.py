@@ -11,3 +11,4 @@ class PurolatorResCompany(models.Model):
     use_purolator_shipping_provider = fields.Boolean(copy=False, string="Are You Using purolator?",
                                                  help="If use purolator shipping Integration then set value to TRUE.",
                                                  default=False)
+
