@@ -21,6 +21,14 @@
                         </group>
                     </page>
                 </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="purolator_bill_by_third_party_sale_order"
+                       attrs="{'readonly':[('state','in',('cancel','sale'))]}"/>
+                <field name="purolator_third_party_account_number_sale_order"
+                       attrs="{'invisible': [('purolator_bill_by_third_party_sale_order', '!=', True)],
+                       'required':[('purolator_bill_by_third_party_sale_order', '!=', False)],
+                       'readonly':[('state','in',('cancel','sale'))]}"/>
+            </xpath>
             </field>
         </record>
     </data>
