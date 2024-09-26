@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <report
-                string="Lot/Serial Number 80*40"
+                string="Lot/Serial Number 60*30"
                 id="action_report_lot_serial_label_internal_reference"
                 model="stock.lot"
                 report_type="qweb-pdf"
@@ -12,16 +12,16 @@
         />
 
         <record id="report_lot_serial_internal_reference_paperformat" model="report.paperformat">
-            <field name="name">Paper Format Lot/Serial 80*40</field>
+            <field name="name">Paper Format Lot/Serial 60*30</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
             <field name="page_height">30</field>
             <field name="page_width">60</field>
             <field name="orientation">Portrait</field>
-            <field name="margin_top">1.00</field>
-            <field name="margin_bottom">0.50</field>
-            <field name="margin_left">0.70</field>
-            <field name="margin_right">0.70</field>
+            <field name="margin_top">0.20</field>
+            <field name="margin_bottom">0.20</field>
+            <field name="margin_left">0.20</field>
+            <field name="margin_right">0.20</field>
             <field name="header_line" eval="False"/>
             <field name="header_spacing">1</field>
             <field name="dpi">90</field>
@@ -35,7 +35,7 @@
                     <div class="page">
                         <div>
                             <div style="padding-top:2px;">
-                                <p style="font-size: 25px;">
+                                <p style="font-size: 25px;margin-left: 66px;">
                                     <b>
                                         <span t-field="o.product_id.default_code"/>
                                     </b>
@@ -43,7 +43,7 @@
                             </div>
                             <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                             <div>
-                                <p style="font-size: 15px; text-align:left ; padding-top:1px">
+                                <p style="font-size: 15px;text-align: left;padding-top:1px;margin-left: 66px;">
                                     <b>LN/SN:
                                         <span t-esc="o.name"/>
                                     </b>
