@@ -482,7 +482,7 @@ class DeliveryCarrier(models.Model):
                                                          "amount": pickings.sale_id and pickings.sale_id.amount_total,
                                                          "currency": pickings.sale_id and pickings.sale_id.company_id.currency_id.name or "USD"
                                                      }}}})
-            if shipper_address_id.country_id.code != receiver_id.country_id.code:
+            if shipper_address_id.country_id.code != receiver_id.country_id.code and receiver_id.country_id.code != "US":
                 weight_bulk = pickings.weight_bulk
                 package_ids = pickings.package_ids
                 parcel_value_for_bulk_weight = 0.0
@@ -653,7 +653,7 @@ class DeliveryCarrier(models.Model):
                                                    self.fedex_shipping_label_file_type),
                                      label_binary_data))
                                 exact_charge += piece_respone.get('baseRateAmount')
-                        if shipper_address_id.country_id.code != receiver_id.country_id.code:
+                        if shipper_address_id.country_id.code != receiver_id.country_id.code and receiver_id.country_id.code != "US":
                             commercial_label = binascii.a2b_base64(
                                 response_data.get('output').get('transactionShipments')[0].get('shipmentDocuments')[
                                     0].get(
