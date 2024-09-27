@@ -34,16 +34,15 @@
                 <t t-foreach="docs" t-as="o">
                     <div class="page">
                         <div>
-                            <div style="padding-top:2px;">
-                                <p style="font-size: 25px;margin-left: 66px;">
+                            <div style="padding-top:0px;">
+                                <p style="font-size: 25px;margin-left:66px;margin-bottom:0px;">
                                     <b>
                                         <span t-field="o.product_id.default_code"/>
                                     </b>
                                 </p>
                             </div>
-                            <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                             <div>
-                                <p style="font-size: 15px;text-align: left;padding-top:1px;margin-left: 66px;">
+                                <p style="font-size: 15px;text-align:left;padding-top:0.5px;margin-left:142px;margin-bottom:0px;">
                                     <b>LN/SN:
                                         <span t-esc="o.name"/>
                                     </b>
@@ -54,7 +53,7 @@
                                     <div t-esc="o.name"
                                          t-options="{'widget': 'barcode', 'width': 450, 'height': 60}"/>
                                 </div>
-                            </div>
+                                </div>
                         </div>
                     </div>
                     <div style="page-break-before:always;"></div>
