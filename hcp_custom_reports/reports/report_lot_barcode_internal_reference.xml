@@ -3,7 +3,7 @@
     <data>
         <report
                 string="Lot/Serial Number 60*30"
-                id="action_report_lot_serial_label_internal_reference"
+                id="action_report_lots_serial_label_internal_reference"
                 model="stock.lot"
                 report_type="qweb-pdf"
                 name="hcp_custom_reports.report_lot_serial_label_internal_reference"
@@ -11,7 +11,7 @@
                 print_report_name="'Lot-Serial - %s' % object.name"
         />
 
-        <record id="report_lot_serial_internal_reference_paperformat" model="report.paperformat">
+        <record id="report_lots_serial_internal_reference_paperformat" model="report.paperformat">
             <field name="name">Paper Format Lot/Serial 60*30</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
@@ -26,10 +26,10 @@
             <field name="header_spacing">1</field>
             <field name="dpi">90</field>
             <field name="report_ids"
-                   eval="[(4,ref('hcp_custom_reports.action_report_lot_serial_label_internal_reference'))]"/>
+                   eval="[(4,ref('hcp_custom_reports.action_report_lots_serial_label_internal_reference'))]"/>
         </record>
 
-        <template id="report_lot_serial_label_internal_reference">
+        <template id="report_lots_serial_label_internal_reference">
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">
                     <div class="page">
