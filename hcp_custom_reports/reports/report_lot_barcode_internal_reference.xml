@@ -35,7 +35,7 @@
                     <div class="page">
                         <div>
                             <div style="padding-top:0px;">
-                                <p style="font-size: 25px;margin-left:66px;margin-bottom:0px;">
+                                <p style="font-size: 23px;margin-left:178px;margin-bottom:0px;">
                                     <b>
                                         <span t-field="o.product_id.default_code"/>
                                     </b>
