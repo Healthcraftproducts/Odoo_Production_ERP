@@ -6,8 +6,8 @@
                 id="action_report_lots_serial_label_internal_reference"
                 model="stock.lot"
                 report_type="qweb-pdf"
-                name="hcp_custom_reports.report_lot_serial_label_internal_reference"
-                file="hcp_custom_reports.report_lot_serial_label_internal_reference"
+                name="hcp_custom_reports.report_lots_serial_label_internal_reference"
+                file="hcp_custom_reports.report_lots_serial_label_internal_reference"
                 print_report_name="'Lot-Serial - %s' % object.name"
         />
 
