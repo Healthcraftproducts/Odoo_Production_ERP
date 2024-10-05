@@ -388,9 +388,9 @@ class DeliveryCarrier(models.Model):
         total_bulk_weight = pickings.weight_bulk
         for package_id in pickings.package_ids:
             package_count = package_count + 1
-            length = package_id.package_type_id.packaging_length if package_id.package_type_id.packaging_length else self.fedex_default_product_packaging_id.packaging_length or ""
-            width = package_id.package_type_id.width if package_id.package_type_id.width else self.fedex_default_product_packaging_id.width or ""
-            height = package_id.package_type_id.height if package_id.package_type_id.height else self.fedex_default_product_packaging_id.height or ""
+            length = package_id.packaging_length or package_id.package_type_id.packaging_length if package_id.package_type_id.packaging_length else self.fedex_default_product_packaging_id.packaging_length or ""
+            width = package_id.width or package_id.package_type_id.width if package_id.package_type_id.width else self.fedex_default_product_packaging_id.width or ""
+            height = package_id.height or package_id.package_type_id.height if package_id.package_type_id.height else self.fedex_default_product_packaging_id.height or ""
             package_list.append(
                 self.manage_fedex_packages(package_count, package_id.shipping_weight, length, width, height,
                                            package_id.name))
@@ -482,7 +482,7 @@ class DeliveryCarrier(models.Model):
                                                          "amount": pickings.sale_id and pickings.sale_id.amount_total,
                                                          "currency": pickings.sale_id and pickings.sale_id.company_id.currency_id.name or "USD"
                                                      }}}})
-            if shipper_address_id.country_id.code != receiver_id.country_id.code and receiver_id.country_id.code != "US":
+            if shipper_address_id.country_id.code != receiver_id.country_id.code:
                 weight_bulk = pickings.weight_bulk
                 package_ids = pickings.package_ids
                 parcel_value_for_bulk_weight = 0.0
@@ -653,7 +653,7 @@ class DeliveryCarrier(models.Model):
                                                    self.fedex_shipping_label_file_type),
                                      label_binary_data))
                                 exact_charge += piece_respone.get('baseRateAmount')
-                        if shipper_address_id.country_id.code != receiver_id.country_id.code and receiver_id.country_id.code != "US":
+                        if shipper_address_id.country_id.code != receiver_id.country_id.code:
                             commercial_label = binascii.a2b_base64(
                                 response_data.get('output').get('transactionShipments')[0].get('shipmentDocuments')[
                                     0].get(
