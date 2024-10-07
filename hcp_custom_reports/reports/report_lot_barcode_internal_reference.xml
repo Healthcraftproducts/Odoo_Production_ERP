@@ -43,7 +43,7 @@
                             </div>
                             <div>
 <!--                                <p style="font-size: 15px;padding-top:0.5px;margin-left:142px;margin-bottom:0px;">-->
-                                <p style="font-size: 13px;text-align:center;padding-top:0.5px;margin-bottom:0px;">
+                                <p style="font-size:13px;text-align:center;padding-top:0.5px;margin-bottom:0px;">
                                     <b>LN/SN:
                                         <span t-esc="o.name"/>
                                     </b>
@@ -51,8 +51,7 @@
                             </div>
                             <div>
                                 <div>
-                                    <div style="text-align:left;" t-esc="o.name"
-                                         t-options="{'widget': 'barcode', 'width': 430, 'height': 50}"/>
+                               <div style="text-align:center;margin-left:-60px" t-esc="o.name" t-options="{'widget': 'barcode', 'width': 480, 'height': 60}"/>
                                 </div>
                                 </div>
                         </div>
