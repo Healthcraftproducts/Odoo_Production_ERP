@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <report
-                string="Lot/Serial Number 60*30"
+                string="Lot/Serial Number 50*25"
                 id="action_report_lots_serial_label_internal_reference"
                 model="stock.lot"
                 report_type="qweb-pdf"
@@ -11,7 +11,7 @@
                 print_report_name="'Lot-Serial - %s' % object.name"
         />
         <record id="report_lots_serial_internal_reference_paperformat" model="report.paperformat">
-            <field name="name">Paper Format Lot/Serial 60*30</field>
+            <field name="name">Paper Format Lot/Serial 50*25</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
             <field name="page_height">25</field>
