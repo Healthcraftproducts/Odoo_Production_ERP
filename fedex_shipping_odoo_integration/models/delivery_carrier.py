@@ -388,9 +388,9 @@ class DeliveryCarrier(models.Model):
         total_bulk_weight = pickings.weight_bulk
         for package_id in pickings.package_ids:
             package_count = package_count + 1
-            length = package_id.package_type_id.packaging_length if package_id.package_type_id.packaging_length else self.fedex_default_product_packaging_id.packaging_length or ""
-            width = package_id.package_type_id.width if package_id.package_type_id.width else self.fedex_default_product_packaging_id.width or ""
-            height = package_id.package_type_id.height if package_id.package_type_id.height else self.fedex_default_product_packaging_id.height or ""
+            length = package_id.packaging_length or package_id.package_type_id.packaging_length if package_id.package_type_id.packaging_length else self.fedex_default_product_packaging_id.packaging_length or ""
+            width = package_id.width or package_id.package_type_id.width if package_id.package_type_id.width else self.fedex_default_product_packaging_id.width or ""
+            height = package_id.height or package_id.package_type_id.height if package_id.package_type_id.height else self.fedex_default_product_packaging_id.height or ""
             package_list.append(
                 self.manage_fedex_packages(package_count, package_id.shipping_weight, length, width, height,
                                            package_id.name))

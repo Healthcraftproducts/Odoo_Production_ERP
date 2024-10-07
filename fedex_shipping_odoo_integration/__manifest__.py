@@ -39,3 +39,4 @@
 
 }
 # 16.1.0 In this moduel if there is the customer from the USA then sender address is pass as the static which is given and the credential configuration in the from the company is change to the shipping method.
+# 16.2.0 In this moduel we have manage the BOM type product also BOM bom type product.
