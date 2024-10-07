@@ -51,7 +51,7 @@
                             </div>
                             <div>
                                 <div>
-                               <div style="text-align:center;margin-left:-60px" t-esc="o.name" t-options="{'widget': 'barcode', 'width': 480, 'height': 60}"/>
+                               <div style="text-align:center;margin-left:-78px" t-esc="o.name" t-options="{'widget': 'barcode', 'width': 480, 'height': 40}"/>
                                 </div>
                                 </div>
                         </div>
