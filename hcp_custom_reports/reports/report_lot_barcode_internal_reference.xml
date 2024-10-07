@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <report
-                string="Lot/Serial Number 60*30"
+                string="Lot/Serial Number 50*25"
                 id="action_report_lots_serial_label_internal_reference"
                 model="stock.lot"
                 report_type="qweb-pdf"
@@ -10,13 +10,12 @@
                 file="hcp_custom_reports.report_lots_serial_label_internal_reference"
                 print_report_name="'Lot-Serial - %s' % object.name"
         />
-
         <record id="report_lots_serial_internal_reference_paperformat" model="report.paperformat">
-            <field name="name">Paper Format Lot/Serial 60*30</field>
+            <field name="name">Paper Format Lot/Serial 50*25</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
-            <field name="page_height">30</field>
-            <field name="page_width">60</field>
+            <field name="page_height">25</field>
+            <field name="page_width">50</field>
             <field name="orientation">Portrait</field>
             <field name="margin_top">0.20</field>
             <field name="margin_bottom">0.20</field>
@@ -35,14 +34,16 @@
                     <div class="page">
                         <div>
                             <div style="padding-top:0px;">
-                                <p style="font-size: 23px;margin-left:178px;margin-bottom:0px;">
+<!--                                <p style="font-size:23px;margin-left:178px;margin-bottom:0px;">-->
+                                <p style="font-size:23px;text-align:center;margin-bottom:0px;">
                                     <b>
                                         <span t-field="o.product_id.default_code"/>
                                     </b>
                                 </p>
                             </div>
                             <div>
-                                <p style="font-size: 15px;text-align:left;padding-top:0.5px;margin-left:142px;margin-bottom:0px;">
+<!--                                <p style="font-size: 15px;padding-top:0.5px;margin-left:142px;margin-bottom:0px;">-->
+                                <p style="font-size: 15px;text-align:center;padding-top:0.5px;margin-bottom:0px;">
                                     <b>LN/SN:
                                         <span t-esc="o.name"/>
                                     </b>
@@ -50,8 +51,8 @@
                             </div>
                             <div>
                                 <div>
-                                    <div t-esc="o.name"
-                                         t-options="{'widget': 'barcode', 'width': 450, 'height': 60}"/>
+                                    <div style="text-align:left;" t-esc="o.name"
+                                         t-options="{'widget': 'barcode', 'width': 430, 'height': 50}"/>
                                 </div>
                                 </div>
                         </div>
