@@ -4,12 +4,10 @@
     <template id="delivery_slip_report_inherit_id" inherit_id="stock.report_delivery_document">
 
         <xpath expr="//t[@t-set='partner']" position="replace">
-
         </xpath>
 
         <xpath expr="//t[@t-set='address']" position="after">
             <t>
-
                 <br/>
                 <span>
                     <strong>Delivery Address:</strong>
@@ -32,17 +30,17 @@
         </xpath>
 
 
-<!--        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="after">-->
+        <!--        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="after">-->
         <xpath expr="//div[@name='div_sched_date']" position="after">
 
             <t t-set="sale_obj" t-value="request.env['sale.order'].search([('name','=',o.origin)],limit=1)"/>
 
-            <div t-if="sale_obj" class="col-auto" name="div_origin">
+            <div t-if="sale_obj" class="col-auto col-3 mw-100 mb-2" name="div_origin">
                 <strong>PO#</strong>
                 <p t-esc="sale_obj.po_number"/>
             </div>
 
-            <div t-if="sale_obj" class="col-auto" name="div_origin">
+            <div t-if="sale_obj" class="col-auto col-3 mw-100 mb-2" name="div_origin">
                 <strong>Ship Via Description</strong>
                 <p t-esc="sale_obj.ship_via_desc"/>
             </div>
@@ -50,10 +48,10 @@
 
         </xpath>
 
-<!--        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="replace">-->
+        <!--        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']/div[2]" position="replace">-->
         <xpath expr="//div[@name='div_sched_date']" position="replace">
-            <div t-if="o.state" class="col-auto" name="div_sched_date">
-                <div t-if="o.state" class="col-auto" name="div_sched_date">
+            <div t-if="o.state" class="col-auto col-3 mw-100 mb-2" name="div_sched_date">
+                <div t-if="o.state"  name="div_sched_date">
                     <strong>Shipping Date:</strong>
                     <t>
                         <p t-field='o.shipment_date'/>
@@ -186,18 +184,18 @@
                             groups="stock.group_stock_multi_locations" style="width:12%;">
                             <strong>From</strong>
                         </th>
-<!--                        <th name="th_to" t-if="o.picking_type_id.code != 'outgoing'"-->
-<!--                            groups="stock.group_stock_multi_locations" style="width:12%;">-->
-<!--                            <strong>To</strong>-->
-<!--                        </th>-->
+                        <!--                        <th name="th_to" t-if="o.picking_type_id.code != 'outgoing'"-->
+                        <!--                            groups="stock.group_stock_multi_locations" style="width:12%;">-->
+                        <!--                            <strong>To</strong>-->
+                        <!--                        </th>-->
                         <!--                            kinchit asked to hide it-->
 
                         <th name="th_serial_number" class="text-center" t-if="has_serial_number" style="width:20%;">
                             <strong>Lot/Serial Number</strong>
                         </th>
-<!--                        <th name="th_barcode" class="text-center" t-if="has_barcode" style="width:20%;">-->
-<!--                            <strong>Product Barcode</strong>-->
-<!--                        </th>-->
+                        <!--                        <th name="th_barcode" class="text-center" t-if="has_barcode" style="width:20%;">-->
+                        <!--                            <strong>Product Barcode</strong>-->
+                        <!--                        </th>-->
                     </tr>
                 </thead>
                 <tbody>
@@ -221,34 +219,34 @@
                                     <span t-field="ml.package_id"/>
                                 </t>
                             </td>
-<!--                            <td t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations">-->
-<!--                                <div>-->
-<!--                                    <span t-field="ml.location_dest_id"/>-->
-<!--                                    <t t-if="ml.result_package_id">-->
-<!--                                        <span t-field="ml.result_package_id"/>-->
-<!--                                    </t>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            kinchit asked to hide it-->
-<!--                            <td class=" text-center h6" t-if="has_serial_number">-->
-<!--                                <div t-if="has_serial_number and (ml.lot_id or ml.lot_name)"-->
-<!--                                     t-esc="ml.lot_id.name or ml.lot_name"-->
-<!--                                     t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100, 'img_style': 'width:300px;height:60px;'}"/>-->
-<!--                            </td>-->
+                            <!--                            <td t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations">-->
+                            <!--                                <div>-->
+                            <!--                                    <span t-field="ml.location_dest_id"/>-->
+                            <!--                                    <t t-if="ml.result_package_id">-->
+                            <!--                                        <span t-field="ml.result_package_id"/>-->
+                            <!--                                    </t>-->
+                            <!--                                </div>-->
+                            <!--                            </td>-->
+                            <!--                            kinchit asked to hide it-->
+                            <!--                            <td class=" text-center h6" t-if="has_serial_number">-->
+                            <!--                                <div t-if="has_serial_number and (ml.lot_id or ml.lot_name)"-->
+                            <!--                                     t-esc="ml.lot_id.name or ml.lot_name"-->
+                            <!--                                     t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100, 'img_style': 'width:300px;height:60px;'}"/>-->
+                            <!--                            </td>-->
                             <td class="text-center h6" t-if="has_serial_number">
                                 <div t-if="has_serial_number and (ml.lot_id or ml.lot_name)">
                                     <span t-esc="ml.lot_id.name or ml.lot_name"/>
                                 </div>
                             </td>
-<!--                            <td class="text-center" t-if="has_barcode">-->
-<!--                                <t t-if="product_barcode != ml.product_id.barcode">-->
-<!--                                    <span t-if="ml.product_id and ml.product_id.barcode">-->
-<!--                                        <div t-field="ml.product_id.barcode"-->
-<!--                                             t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 400, 'height': 100, 'quiet': 0, 'img_style': 'height:35px;'}"/>-->
-<!--                                    </span>-->
-<!--                                    <t t-set="product_barcode" t-value="ml.product_id.barcode"/>-->
-<!--                                </t>-->
-<!--                            </td>-->
+                            <!--                            <td class="text-center" t-if="has_barcode">-->
+                            <!--                                <t t-if="product_barcode != ml.product_id.barcode">-->
+                            <!--                                    <span t-if="ml.product_id and ml.product_id.barcode">-->
+                            <!--                                        <div t-field="ml.product_id.barcode"-->
+                            <!--                                             t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 400, 'height': 100, 'quiet': 0, 'img_style': 'height:35px;'}"/>-->
+                            <!--                                    </span>-->
+                            <!--                                    <t t-set="product_barcode" t-value="ml.product_id.barcode"/>-->
+                            <!--                                </t>-->
+                            <!--                            </td>-->
                         </tr>
                     </t>
                 </tbody>
@@ -362,89 +360,80 @@
             </table>
 
         </xpath>
-           <xpath expr="//table[3]" position="after">
-        <!-- Condition to display related shipping if the current picking type is 'internal' -->
-        <t t-if="o.picking_type_id.code == 'internal'">
-            <t t-set="related_shipping" t-value="request.env['stock.picking'].search([('origin', '=', o.origin), ('id', '!=', o.id), ('picking_type_id.code', '=', 'outgoing')])"/>
-            <table t-if="related_shipping">
-                <div class="row mt48 mb32">
-                    <div class="col-6">
+        <xpath expr="//table[3]" position="after">
+            <!-- Condition to display related shipping if the current picking type is 'internal' -->
+            <t t-if="o.picking_type_id.code == 'internal'">
+                <t t-set="related_shipping"
+                   t-value="request.env['stock.picking'].search([('origin', '=', o.origin), ('id', '!=', o.id), ('picking_type_id.code', '=', 'outgoing')])"/>
+                <table t-if="related_shipping">
+                    <div class="row mt48 mb32">
+                        <div class="col-6">
+                        </div>
+                        <div class="col-6" style="padding-left:104px;">
+                            <strong>Delivery #:</strong>
+                            <ul style="list-style:none;">
+                                <t t-foreach="related_shipping" t-as="related_ship">
+                                    <li>
+                                        <div t-esc="related_ship.name"
+                                             t-options="{'widget': 'barcode','humanreadable':1,'width': 400, 'height':80}"/>
+                                        <br/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="col-6" style="padding-left:104px;">
-                        <strong>Delivery #:</strong>
-                        <ul style="list-style:none;">
-                            <t t-foreach="related_shipping" t-as="related_ship">
-                                <li>
-                                    <div t-esc="related_ship.name"
-                                         t-options="{'widget': 'barcode','humanreadable':1,'width': 400, 'height':80}"/>
-                                    <br/>
-                                </li>
-                            </t>
-                        </ul>
-                    </div>
-                </div>
-            </table>
-        </t>
+                </table>
+            </t>
 
-        <!-- Condition to display related pickings if the current picking type is 'outgoing' -->
-        <t t-if="o.picking_type_id.code == 'outgoing'">
-            <t t-set="related_picking" t-value="request.env['stock.picking'].search([('origin', '=', o.origin), ('id', '!=', o.id), ('picking_type_id.code', '=', 'internal')])"/>
-            <table t-if="related_picking">
-                <div class="row mt48 mb32">
-                    <div class="col-6">
+            <!-- Condition to display related pickings if the current picking type is 'outgoing' -->
+            <t t-if="o.picking_type_id.code == 'outgoing'">
+                <t t-set="related_picking"
+                   t-value="request.env['stock.picking'].search([('origin', '=', o.origin), ('id', '!=', o.id), ('picking_type_id.code', '=', 'internal')])"/>
+                <table t-if="related_picking">
+                    <div class="row mt48 mb32">
+                        <div class="col-6">
+                        </div>
+                        <div class="col-6" style="padding-left:104px;">
+                            <strong>Picking #:</strong>
+                            <ul style="list-style:none;">
+                                <t t-foreach="related_picking" t-as="related_pick">
+                                    <li>
+                                        <div t-esc="related_pick.name"
+                                             t-options="{'widget': 'barcode','humanreadable':1,'width': 400, 'height':80}"/>
+                                        <br/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="col-6" style="padding-left:104px;">
-                        <strong>Picking #:</strong>
-                        <ul style="list-style:none;">
-                            <t t-foreach="related_picking" t-as="related_pick">
-                                <li>
-                                    <div t-esc="related_pick.name"
-                                         t-options="{'widget': 'barcode','humanreadable':1,'width': 400, 'height':80}"/>
-                                    <br/>
-                                </li>
-                            </t>
-                        </ul>
-                    </div>
-                </div>
-            </table>
-        </t>
-    </xpath>
+                </table>
+            </t>
+        </xpath>
         <xpath expr="//div[@class='row mt48 mb32']" position="replace">
 
             <div class="row mt48 mb32">
-
-                <div t-if="o.origin" class="col-auto" name="div_origin">
+                <div t-if="o.origin" class="col-auto col-3 mw-100 mb-2" name="div_origin">
                     <strong>Order:</strong>
                     <p t-field="o.origin"/>
                 </div>
 
-<!--                <div class="col-auto" name="div_state">-->
-<!--                    <strong>Status:</strong>-->
-<!--                    <p t-field="o.state"/>-->
-<!--                </div>-->
-<!--                kinchit asked to hide above-->
-
-                <div class="col-auto" name="div_sched_date">
+                <div class="col-auto col-3 mw-100 mb-2" name="div_sched_date">
                     <strong>Scheduled Date:</strong>
                     <p t-field="o.scheduled_date"/>
                 </div>
 
                 <t t-set="sale_obj" t-value="request.env['sale.order'].search([('name','=',o.origin)],limit=1)"/>
 
-                <div t-if="sale_obj.po_number" class="col-auto" name="div_origin">
+                <div t-if="sale_obj.po_number" class="col-auto col-3 mw-100 mb-2" name="div_origin">
                     <strong>PO#</strong>
                     <p t-esc="sale_obj.po_number"/>
                 </div>
 
-                <div t-if="sale_obj.ship_via_desc" class="col-auto" name="div_origin">
+                <div t-if="sale_obj.ship_via_desc" class="col-auto col-3 mw-100 mb-2" name="div_origin">
                     <strong>Ship Via Description</strong>
                     <p t-esc="sale_obj.ship_via_desc"/>
                 </div>
-<!--                kinchit asked to hide it-->
-
-
             </div>
-
         </xpath>
 
 
