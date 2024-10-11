@@ -641,14 +641,27 @@ class DeliveryCarrier(models.Model):
                 if response_data.get('output') and response_data.get('output').get('transactionShipments'):
                     for transaction_shipment in response_data.get('output').get('transactionShipments'):
                         carrier_tracking_ref = transaction_shipment.get('masterTrackingNumber')
+
+                        # if (transaction_shipment.get('completedShipmentDetail') and
+                        #         transaction_shipment.get('completedShipmentDetail').get('shipmentRating') and
+                        #         transaction_shipment.get('completedShipmentDetail').get('shipmentRating').get(
+                        #             'shipmentRateDetails')):
+                        #     for rate_detail in transaction_shipment.get('completedShipmentDetail').get(
+                        #             'shipmentRating').get('shipmentRateDetails'):
+                        #         if rate_detail.get('totalNetCharge') and rate_detail.get('totalNetCharge')[0]:
+                        #             exact_charge += float(rate_detail.get('totalNetCharge'))
+
                         if (transaction_shipment.get('completedShipmentDetail') and
                                 transaction_shipment.get('completedShipmentDetail').get('shipmentRating') and
                                 transaction_shipment.get('completedShipmentDetail').get('shipmentRating').get(
                                     'shipmentRateDetails')):
-                            for rate_detail in transaction_shipment.get('completedShipmentDetail').get(
-                                    'shipmentRating').get('shipmentRateDetails'):
-                                if rate_detail.get('totalNetCharge') and rate_detail.get('totalNetCharge'):
-                                    exact_charge += float(rate_detail.get('totalNetCharge'))
+                            rate_details = transaction_shipment.get('completedShipmentDetail').get(
+                                'shipmentRating').get('shipmentRateDetails')
+
+                            # Set the first item amount in exact_charge
+                            if rate_details and rate_details[0].get('totalNetCharge'):
+                                exact_charge = float(rate_details[0].get('totalNetCharge'))
+
                         for piece_respone in transaction_shipment.get('pieceResponses'):
                             for package_document in piece_respone.get('packageDocuments'):
                                 if package_document.get('contentType') == 'ACCEPTANCE_LABEL':
