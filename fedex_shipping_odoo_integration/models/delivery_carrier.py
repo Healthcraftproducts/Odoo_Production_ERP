@@ -482,7 +482,7 @@ class DeliveryCarrier(models.Model):
                                                          "amount": pickings.sale_id and pickings.sale_id.amount_total,
                                                          "currency": pickings.sale_id and pickings.sale_id.company_id.currency_id.name or "USD"
                                                      }}}})
-            if shipper_address_id.country_id.code != receiver_id.country_id.code:
+            if shipper_address_id.country_id.code != receiver_id.country_id.code and receiver_id.country_id.code != "US":
                 weight_bulk = pickings.weight_bulk
                 package_ids = pickings.package_ids
                 parcel_value_for_bulk_weight = 0.0
@@ -514,7 +514,8 @@ class DeliveryCarrier(models.Model):
                                 product_id = move_line.product_id
                                 # _logger.info("UPS Package Product:{}".format(product_id))
                                 find_sale_line_id = pickings.sale_id.order_line.filtered(
-                                    lambda x: x.product_id.id == product_id.id and move_line.move_id.sale_line_id.id == x.id)
+                                    lambda
+                                        x: x.product_id.id == product_id.id and move_line.move_id.sale_line_id.id == x.id)
                                 find_sale_line_id = find_sale_line_id and find_sale_line_id[0]
                             _logger.info("PACKAGE : Sale Line:{}".format(find_sale_line_id))
                             if find_sale_line_id.id in sale_line_added:
@@ -640,6 +641,14 @@ class DeliveryCarrier(models.Model):
                 if response_data.get('output') and response_data.get('output').get('transactionShipments'):
                     for transaction_shipment in response_data.get('output').get('transactionShipments'):
                         carrier_tracking_ref = transaction_shipment.get('masterTrackingNumber')
+                        if (transaction_shipment.get('completedShipmentDetail') and
+                                transaction_shipment.get('completedShipmentDetail').get('shipmentRating') and
+                                transaction_shipment.get('completedShipmentDetail').get('shipmentRating').get(
+                                    'shipmentRateDetails')):
+                            for rate_detail in transaction_shipment.get('completedShipmentDetail').get(
+                                    'shipmentRating').get('shipmentRateDetails'):
+                                if rate_detail.get('totalNetCharge') and rate_detail.get('totalNetCharge'):
+                                    exact_charge += float(rate_detail.get('totalNetCharge'))
                         for piece_respone in transaction_shipment.get('pieceResponses'):
                             for package_document in piece_respone.get('packageDocuments'):
                                 if package_document.get('contentType') == 'ACCEPTANCE_LABEL':
@@ -652,8 +661,8 @@ class DeliveryCarrier(models.Model):
                                                    piece_respone.get('packageSequenceNumber') or carrier_tracking_ref,
                                                    self.fedex_shipping_label_file_type),
                                      label_binary_data))
-                                exact_charge += piece_respone.get('baseRateAmount')
-                        if shipper_address_id.country_id.code != receiver_id.country_id.code:
+                                # exact_charge += piece_respone.get('baseRateAmount')
+                        if shipper_address_id.country_id.code != receiver_id.country_id.code and receiver_id.country_id.code != "US":
                             commercial_label = binascii.a2b_base64(
                                 response_data.get('output').get('transactionShipments')[0].get('shipmentDocuments')[
                                     0].get(
