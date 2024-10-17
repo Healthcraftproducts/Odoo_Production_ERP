@@ -175,7 +175,6 @@ class DeliveryCarrier(models.Model):
                                       ('PRESORTED_BOUND_PRINTED_MATTER', 'PRESORTED_BOUND_PRINTED_MATTER'),
                                       ('PRESORTED_STANDARD', 'PRESORTED_STANDARD')], string="Fedex Indicia")
 
-
     # Fedex Shipping Credential configration
 
     use_fedex_shipping_provider = fields.Boolean(copy=False, string="Are You Use FedEx Shipping Provider.?",
@@ -225,16 +224,16 @@ class DeliveryCarrier(models.Model):
         except Exception as e:
             raise ValidationError(e)
 
-
     def get_fedex_address_dict(self, address_id, us_shipper_address=False):
         if us_shipper_address:
             return {
                 "address": {
-                "city": "Ogdensburg",
-                "stateOrProvinceCode": "NY",
-                "postalCode": "13669",
-                "countryCode": "US",
-                "residential": "true" if self.fedex_service_type in ['GROUND_HOME_DELIVERY', 'SMART_POST'] else "false"
+                    "city": "Ogdensburg",
+                    "stateOrProvinceCode": "NY",
+                    "postalCode": "13669",
+                    "countryCode": "US",
+                    "residential": "true" if self.fedex_service_type in ['GROUND_HOME_DELIVERY',
+                                                                         'SMART_POST'] else "false"
                 }
             }
         else:
@@ -354,10 +353,11 @@ class DeliveryCarrier(models.Model):
             address_dict.get("address").update({"streetLines": ["835 Commerce Park Drive"]})
         else:
             address_dict = self.get_fedex_address_dict(address_id)
-            address_dict.update({"contact": {"personName": "",
-                                             "emailAddress": address_id.email or "",
-                                             "phoneNumber": "%s" % (address_id.phone or ""),
-                                             "companyName": address_id.name}})
+            address_dict.update({"contact": {
+                "personName": address_id.commercial_partner_id and address_id.commercial_partner_id.name or "",
+                "emailAddress": address_id.email or "",
+                "phoneNumber": "%s" % (address_id.phone or ""),
+                "companyName": address_id.name}})
             address_dict.get("address").update({"streetLines": [address_id.street]})
         return address_dict
 
@@ -388,9 +388,9 @@ class DeliveryCarrier(models.Model):
         total_bulk_weight = pickings.weight_bulk
         for package_id in pickings.package_ids:
             package_count = package_count + 1
-            length = package_id.package_type_id.packaging_length if package_id.package_type_id.packaging_length else self.fedex_default_product_packaging_id.packaging_length or ""
-            width = package_id.package_type_id.width if package_id.package_type_id.width else self.fedex_default_product_packaging_id.width or ""
-            height = package_id.package_type_id.height if package_id.package_type_id.height else self.fedex_default_product_packaging_id.height or ""
+            length = package_id.packaging_length or package_id.package_type_id.packaging_length if package_id.package_type_id.packaging_length else self.fedex_default_product_packaging_id.packaging_length or ""
+            width = package_id.width or package_id.package_type_id.width if package_id.package_type_id.width else self.fedex_default_product_packaging_id.width or ""
+            height = package_id.height or package_id.package_type_id.height if package_id.package_type_id.height else self.fedex_default_product_packaging_id.height or ""
             package_list.append(
                 self.manage_fedex_packages(package_count, package_id.shipping_weight, length, width, height,
                                            package_id.name))
@@ -482,60 +482,129 @@ class DeliveryCarrier(models.Model):
                                                          "amount": pickings.sale_id and pickings.sale_id.amount_total,
                                                          "currency": pickings.sale_id and pickings.sale_id.company_id.currency_id.name or "USD"
                                                      }}}})
-            if shipper_address_id.country_id.code != receiver_id.country_id.code:
+            if shipper_address_id.country_id.code != receiver_id.country_id.code and receiver_id.country_id.code != "US":
+                weight_bulk = pickings.weight_bulk
+                package_ids = pickings.package_ids
+                parcel_value_for_bulk_weight = 0.0
+                parcel_value_for_all_package_amount = 0.0
+                sale_line_added = []
+                single_unit_price = 0.0
                 comodities_packages = []
-
-                for package_id in pickings.package_ids:
-                    for stock_quant_package in package_id.quant_ids:
-                        product_id = stock_quant_package.product_id
-                        # move_line_id = self.env['stock.move.line'].search([('product_id', '=', product_id.id)])
-                        find_sale_line_id = pickings.sale_id.order_line.filtered(
-                            lambda x: x.product_template_id.product_variant_id == product_id)
-
+                for package_id in package_ids:
+                    parcel_value_for_package = 0.0
+                    move_lines = self.env['stock.move.line'].search(
+                        [('picking_id', '=', pickings.id), ('result_package_id', '=', package_id.id)])
+                    for move_line in move_lines:
+                        if pickings.sale_id:
+                            if move_line.move_id.bom_line_id and move_line.move_id.bom_line_id.bom_id.mapped(
+                                    'product_id'):
+                                product_id = move_line.move_id.bom_line_id.bom_id.product_id
+                                find_sale_line_id = pickings.sale_id.order_line.filtered(
+                                    lambda
+                                        x: x.product_id.id == product_id.id and move_line.move_id.sale_line_id.id == x.id)
+                            elif move_line.move_id.bom_line_id and move_line.move_id.bom_line_id.bom_id and move_line.move_id.bom_line_id.bom_id.mapped(
+                                    'product_tmpl_id'):
+                                product_tmpl_id = move_line.move_id.bom_line_id.bom_id.product_tmpl_id
+                                _logger.info("Bom Line : {}".format(move_line.move_id.sale_line_id))
+                                find_sale_line_id = pickings.sale_id.order_line.filtered(
+                                    lambda
+                                        x: x.product_id.product_tmpl_id.id == product_tmpl_id.id and move_line.move_id.sale_line_id.id == x.id)[
+                                    0]
+                            else:
+                                product_id = move_line.product_id
+                                # _logger.info("UPS Package Product:{}".format(product_id))
+                                find_sale_line_id = pickings.sale_id.order_line.filtered(
+                                    lambda
+                                        x: x.product_id.id == product_id.id and move_line.move_id.sale_line_id.id == x.id)
+                                find_sale_line_id = find_sale_line_id and find_sale_line_id[0]
+                            _logger.info("PACKAGE : Sale Line:{}".format(find_sale_line_id))
+                            if find_sale_line_id.id in sale_line_added:
+                                continue
+                            if not find_sale_line_id or not find_sale_line_id.product_uom_qty:
+                                raise ValidationError("Proper data of sale order lines not found.")
+                            if move_line.move_id.bom_line_id and move_line.move_id.bom_line_id.bom_id:
+                                single_unit_price = find_sale_line_id.price_subtotal / find_sale_line_id.product_uom_qty
+                                parcel_value_for_package += single_unit_price * find_sale_line_id.product_uom_qty
+                                parcel_value_for_all_package_amount += parcel_value_for_package
+                            else:
+                                single_unit_price = find_sale_line_id.price_subtotal / find_sale_line_id.product_uom_qty
+                                parcel_value_for_package += single_unit_price * move_line.qty_done
+                                parcel_value_for_all_package_amount += parcel_value_for_package
+                            sale_line_added.append(find_sale_line_id)
+                        else:
+                            parcel_value_for_package += move_line.product_id.lst_price * move_line.qty_done
+                            parcel_value_for_all_package_amount += parcel_value_for_package
                         comodities_packages.append({
                             "description": "%s" % (package_id.name),
                             "countryOfManufacture": self.company_id and self.company_id.country_id.code,
-                            "quantity": stock_quant_package.quantity,
+                            "quantity": move_line.qty_done,  # stock_quant_package.quantity,
                             "quantityUnits": "PCS",
                             "unitPrice": {
-                                "amount": find_sale_line_id.price_subtotal / find_sale_line_id.product_qty,
+                                "amount": single_unit_price,
                                 "currency": self.company_id and self.company_id.currency_id.name
                             },
                             "customsValue": {
-                                "amount": find_sale_line_id.price_subtotal / find_sale_line_id.product_qty,
+                                "amount": single_unit_price,
                                 "currency": self.company_id and self.company_id.currency_id.name
                             },
                             "weight": {
                                 "units": self.fedex_weight_uom,
-                                "value": stock_quant_package.quantity * product_id.weight
+                                "value": move_line.qty_done * move_line.product_id.weight
+                                # stock_quant_package.quantity * product_id.weight
                             }
                         })
-                if total_bulk_weight:
-                    for move_line in pickings.move_line_ids:
-                        if move_line.product_id and not move_line.result_package_id:
-                            product_id = move_line.product_id
-                            # move_line_id = self.env['stock.move.line'].search([('product_id', '=', product_id.id)])
-                            find_sale_line_id = pickings.sale_id.order_line.filtered(
-                                lambda x: x.product_template_id.product_variant_id == product_id)
+                if weight_bulk:
+                    for rec in pickings.move_line_ids:
+                        if rec.product_id and not rec.result_package_id:
+                            product_id = rec.product_id
+                            if pickings.sale_id:
+                                if rec.move_id.bom_line_id and rec.move_id.bom_line_id.bom_id and rec.move_id.bom_line_id.bom_id.product_id:
+                                    product_id = rec.move_id.bom_line_id.bom_id.product_id
+                                    find_sale_line_id = pickings.sale_id.order_line.filtered(lambda
+                                                                                                 x: x.product_id.id == product_id.id and rec.move_id.sale_line_id.id == x.id)
+                                    find_sale_line_id = find_sale_line_id[0]
+                                elif rec.move_id.bom_line_id and rec.move_id.bom_line_id.bom_id.mapped(
+                                        'product_tmpl_id'):
+                                    product_tmpl_id = rec.move_id.bom_line_id.bom_id.product_tmpl_id
+                                    find_sale_line_id = pickings.sale_id.order_line.filtered(lambda
+                                                                                                 x: x.product_id.product_tmpl_id.id == product_tmpl_id.id and rec.move_id.sale_line_id.id == x.id)
+                                    find_sale_line_id = find_sale_line_id and find_sale_line_id[0]
+                                else:
+                                    find_sale_line_id = pickings.sale_id.order_line.filtered(lambda
+                                                                                                 x: x.product_id.id == product_id.id and rec.move_id.sale_line_id.id == x.id)
+                                    find_sale_line_id = find_sale_line_id and find_sale_line_id[0]
+                                _logger.info("Bulk Product : {}".format(product_id))
+                                if find_sale_line_id.id in sale_line_added:
+                                    continue
+                                if not find_sale_line_id or not find_sale_line_id.product_uom_qty:
+                                    raise ValidationError("Proper data of sale order lines not found.")
+                                single_unit_price = find_sale_line_id.price_subtotal / find_sale_line_id.product_uom_qty
+                                if rec.move_id.bom_line_id and rec.move_id.bom_line_id.bom_id:
+                                    parcel_value_for_bulk_weight += single_unit_price * rec.qty_done
+                                else:
+                                    parcel_value_for_bulk_weight += find_sale_line_id.price_unit * rec.qty_done
+                            else:
+                                parcel_value_for_bulk_weight = rec.product_id.lst_price * rec.qty_done
                             comodities_packages.append({
                                 "description": "%s" % (pickings.name),
                                 "countryOfManufacture": self.company_id and self.company_id.country_id.code,
-                                "quantity": move_line.qty_done,
+                                "quantity": rec.qty_done,
                                 "quantityUnits": "PCS",
                                 "unitPrice": {
-                                    "amount": find_sale_line_id.price_subtotal / find_sale_line_id.product_qty,
+                                    "amount": single_unit_price,
                                     "currency": self.company_id and self.company_id.currency_id.name
                                 },
                                 "customsValue": {
-                                    "amount": find_sale_line_id.price_subtotal / find_sale_line_id.product_qty,
+                                    "amount": single_unit_price,
                                     "currency": self.company_id and self.company_id.currency_id.name
                                 },
                                 "weight": {
                                     "units": self.fedex_weight_uom,
-                                    "value": move_line.qty_done * product_id.weight
+                                    "value": rec.qty_done * product_id.weight
 
                                 }
                             })
+
                 request_data.get("requestedShipment").update({"customsClearanceDetail": {
                     "dutiesPayment": {
                         "paymentType": "SENDER"
@@ -572,6 +641,27 @@ class DeliveryCarrier(models.Model):
                 if response_data.get('output') and response_data.get('output').get('transactionShipments'):
                     for transaction_shipment in response_data.get('output').get('transactionShipments'):
                         carrier_tracking_ref = transaction_shipment.get('masterTrackingNumber')
+
+                        # if (transaction_shipment.get('completedShipmentDetail') and
+                        #         transaction_shipment.get('completedShipmentDetail').get('shipmentRating') and
+                        #         transaction_shipment.get('completedShipmentDetail').get('shipmentRating').get(
+                        #             'shipmentRateDetails')):
+                        #     for rate_detail in transaction_shipment.get('completedShipmentDetail').get(
+                        #             'shipmentRating').get('shipmentRateDetails'):
+                        #         if rate_detail.get('totalNetCharge') and rate_detail.get('totalNetCharge')[0]:
+                        #             exact_charge += float(rate_detail.get('totalNetCharge'))
+
+                        if (transaction_shipment.get('completedShipmentDetail') and
+                                transaction_shipment.get('completedShipmentDetail').get('shipmentRating') and
+                                transaction_shipment.get('completedShipmentDetail').get('shipmentRating').get(
+                                    'shipmentRateDetails')):
+                            rate_details = transaction_shipment.get('completedShipmentDetail').get(
+                                'shipmentRating').get('shipmentRateDetails')
+
+                            # Set the first item amount in exact_charge
+                            if rate_details and rate_details[0].get('totalNetCharge'):
+                                exact_charge = float(rate_details[0].get('totalNetCharge'))
+
                         for piece_respone in transaction_shipment.get('pieceResponses'):
                             for package_document in piece_respone.get('packageDocuments'):
                                 if package_document.get('contentType') == 'ACCEPTANCE_LABEL':
@@ -584,8 +674,8 @@ class DeliveryCarrier(models.Model):
                                                    piece_respone.get('packageSequenceNumber') or carrier_tracking_ref,
                                                    self.fedex_shipping_label_file_type),
                                      label_binary_data))
-                                exact_charge += piece_respone.get('baseRateAmount')
-                        if shipper_address_id.country_id.code != receiver_id.country_id.code:
+                                # exact_charge += piece_respone.get('baseRateAmount')
+                        if shipper_address_id.country_id.code != receiver_id.country_id.code and receiver_id.country_id.code != "US":
                             commercial_label = binascii.a2b_base64(
                                 response_data.get('output').get('transactionShipments')[0].get('shipmentDocuments')[
                                     0].get(

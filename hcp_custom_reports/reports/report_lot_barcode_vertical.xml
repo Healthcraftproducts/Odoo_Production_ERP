@@ -29,47 +29,6 @@
             <field name="report_ids" eval="[(4,ref('hcp_custom_reports.action_report_lot_serial_vertical_label'))]"/>
         </record>
 
-        <!--        <template id="report_lot_serial_label_vertical">-->
-        <!--            <t t-call="web.basic_layout">-->
-        <!--                <t t-foreach="docs" t-as="o">-->
-        <!--                    <div class="page"-->
-        <!--                         style="display:flex;display: -webkit-box;-webkit-box-pack: center; justify-content: center; -webkit-justify-content: left;align-items:center">-->
-        <!--                        <div>-->
-        <!--                            <br/>-->
-        <!--                            <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>-->
-        <!--                            <div style="padding-top:3px;">-->
-        <!--                                <p style="font-size: 25px;width:50%">-->
-        <!--                                    <b>-->
-        <!--                                        <span t-field="o.product_id.display_name"/>-->
-        <!--                                    </b>-->
-        <!--                                </p>-->
-        <!--                            </div>-->
-        <!--                            <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>-->
-        <!--                            <div>-->
-        <!--                                <pre style="margin-bottom:0;">-->
-        <!--                                    <div style="right: 100px;position: relative;" t-esc="o.name"-->
-        <!--                                         t-options="{'widget': 'barcode', 'width': 600, 'height': 75}"/>-->
-        <!--                                </pre>-->
-        <!--                                <div>-->
-        <!--                                    <p style="font-size: 25px; text-align:center ; padding-top:0px;padding-right:182px;">-->
-        <!--                                        <b>LN/SN:-->
-        <!--                                            <span t-esc="o.name"/>-->
-        <!--                                        </b>-->
-        <!--                                    </p>-->
-        <!--                                </div>-->
-        <!--                            </div>-->
-        <!--                            <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>-->
-        <!--                        </div>-->
-        <!--                        <t t-if="quote_plus(o.product_id.barcode)">-->
-        <!--                            <div style="transform: rotate(270deg);"-->
-        <!--                                 t-field="o.product_id.barcode"-->
-        <!--                                 t-options="{'type':'Code128','widget': 'barcode','humanreadable': 1, 'width': 450, 'height': 85}"/>-->
-        <!--                        </t>-->
-        <!--                    </div>-->
-        <!--                    <div style="page-break-before:always;"></div>-->
-        <!--                </t>-->
-        <!--            </t>-->
-        <!--        </template>-->
         <template id="report_lot_serial_label_vertical">
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">

@@ -2,48 +2,48 @@
 <odoo>
     <data>
         <report
-                string="Lot/Serial Number 80*40"
-                id="action_report_lot_serial_label_internal_reference"
+                string="Lot/Serial Number 50*25"
+                id="action_report_lots_serial_label_internal_reference"
                 model="stock.lot"
                 report_type="qweb-pdf"
-                name="hcp_custom_reports.report_lot_serial_label_internal_reference"
-                file="hcp_custom_reports.report_lot_serial_label_internal_reference"
+                name="hcp_custom_reports.report_lots_serial_label_internal_reference"
+                file="hcp_custom_reports.report_lots_serial_label_internal_reference"
                 print_report_name="'Lot-Serial - %s' % object.name"
         />
-
-        <record id="report_lot_serial_internal_reference_paperformat" model="report.paperformat">
-            <field name="name">Paper Format Lot/Serial 80*40</field>
+        <record id="report_lots_serial_internal_reference_paperformat" model="report.paperformat">
+            <field name="name">Paper Format Lot/Serial 50*25</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
-            <field name="page_height">30</field>
-            <field name="page_width">60</field>
+            <field name="page_height">25</field>
+            <field name="page_width">50</field>
             <field name="orientation">Portrait</field>
-            <field name="margin_top">1.00</field>
-            <field name="margin_bottom">0.50</field>
-            <field name="margin_left">0.70</field>
-            <field name="margin_right">0.70</field>
+            <field name="margin_top">0.20</field>
+            <field name="margin_bottom">0.20</field>
+            <field name="margin_left">0.20</field>
+            <field name="margin_right">0.20</field>
             <field name="header_line" eval="False"/>
             <field name="header_spacing">1</field>
             <field name="dpi">90</field>
             <field name="report_ids"
-                   eval="[(4,ref('hcp_custom_reports.action_report_lot_serial_label_internal_reference'))]"/>
+                   eval="[(4,ref('hcp_custom_reports.action_report_lots_serial_label_internal_reference'))]"/>
         </record>
 
-        <template id="report_lot_serial_label_internal_reference">
+        <template id="report_lots_serial_label_internal_reference">
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">
                     <div class="page">
                         <div>
-                            <div style="padding-top:2px;">
-                                <p style="font-size: 25px;">
+                            <div style="padding-top:0px;">
+<!--                                <p style="font-size:23px;margin-left:178px;margin-bottom:0px;">-->
+                                <p style="font-size:23px;text-align:center;margin-bottom:0px;">
                                     <b>
                                         <span t-field="o.product_id.default_code"/>
                                     </b>
                                 </p>
                             </div>
-                            <hr style="border: 1px solid grey; border-radius: 1em; background-color: gray;"/>
                             <div>
-                                <p style="font-size: 15px; text-align:left ; padding-top:1px">
+<!--                                <p style="font-size: 15px;padding-top:0.5px;margin-left:142px;margin-bottom:0px;">-->
+                                <p style="font-size:15px;text-align:center;padding-top:0.5px;margin-bottom:0px;">
                                     <b>LN/SN:
                                         <span t-esc="o.name"/>
                                     </b>
@@ -51,10 +51,9 @@
                             </div>
                             <div>
                                 <div>
-                                    <div t-esc="o.name"
-                                         t-options="{'widget': 'barcode', 'width': 450, 'height': 60}"/>
+                               <div style="text-align:center;margin-left:-78px" t-esc="o.name" t-options="{'widget': 'barcode', 'width': 480, 'height': 40}"/>
                                 </div>
-                            </div>
+                                </div>
                         </div>
                     </div>
                     <div style="page-break-before:always;"></div>

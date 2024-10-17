@@ -9,6 +9,7 @@ import hashlib
 from requests.auth import HTTPBasicAuth
 import time
 import base64
+import re
 import uuid
 
 _logger = logging.getLogger("Purolator")
@@ -31,8 +32,10 @@ class DeliveryCarrier(models.Model):
     purolator_pickup_type = fields.Selection([('DropOff', 'DropOff'),
                                               ('PreScheduled', 'PreScheduled')], string="Pickup Type",
                                              default='DropOff')
-    purolator_payment_type = fields.Selection([('Sender', 'Sender'), ('Receiver', 'Receiver')], string="Payment Type",
-                                              default="Sender")
+    purolator_payment_type = fields.Selection([('Sender', 'Sender'),
+                                               ('Receiver', 'Receiver'),
+                                               ('ThirdParty', 'ThirdParty')],
+                                              string="Payment Type", default="Sender")
     printer_type = fields.Selection([('Regular', 'Regular'), ('Thermal', 'Thermal')], string="Printer Type",
                                     default="Regular")
 
@@ -70,8 +73,14 @@ class DeliveryCarrier(models.Model):
 
         root_body = etree.SubElement(root_element, "soapenv:Body")
         root_getquickestimateRequest = etree.SubElement(root_body, "v2:GetQuickEstimateRequest")
-        etree.SubElement(root_getquickestimateRequest,
-                         "v2:BillingAccountNumber").text = self.company_id and self.company_id.purolator_account_number
+        if self.purolator_payment_type == 'Sender':
+            etree.SubElement(root_getquickestimateRequest,
+                             "v2:BillingAccountNumber").text = self.company_id.purolator_account_number
+        else:
+            etree.SubElement(root_getquickestimateRequest,
+                             "v2:BillingAccountNumber").text = orders.purolator_third_party_account_number_sale_order
+        # etree.SubElement(root_getquickestimateRequest,
+        #                  "v2:BillingAccountNumber").text = self.company_id and self.company_id.purolator_account_number
         etree.SubElement(root_getquickestimateRequest, "v2:SenderPostalCode").text = sender_address.zip or ''
         root_receiveraddress = etree.SubElement(root_getquickestimateRequest, "v2:ReceiverAddress")
         etree.SubElement(root_receiveraddress, "v2:City").text = receiver_address.city or ''
@@ -149,10 +158,18 @@ class DeliveryCarrier(models.Model):
 
     def purolator_send_shipping(self, pickings):
         """This Method Is Used For Send The Shipping Request To Shipper"""
-
         response = []
         for picking in pickings:
             recipient_address = picking.partner_id
+            recipient_name = recipient_address.parent_id and recipient_address.parent_id.name or ''
+            cleaned_name = re.sub(r'[^A-Za-z0-9]+', ' ', recipient_name)
+            if len(cleaned_name) > 30:
+                company_name = cleaned_name[:30].strip()  # First 30 characters for Company
+                department_name = cleaned_name[30:50].strip()  # Next 20 characters for Department
+            else:
+                company_name = cleaned_name
+                department_name = ''  # No department name if total characters are <= 30
+
             # je shipper address comment karelu che ene uncomment karvu and niche nu comment karvu jyare third party
             shipper_address = picking.picking_type_id and picking.picking_type_id.warehouse_id and picking.picking_type_id.warehouse_id.partner_id
             # shipper_address = picking.sale_id.partner_return_id if picking.sale_id.partner_return_id else picking.picking_type_id and picking.picking_type_id.warehouse_id and picking.picking_type_id.warehouse_id.partner_id
@@ -161,7 +178,9 @@ class DeliveryCarrier(models.Model):
             if not shipper_address.zip or not shipper_address.city or not shipper_address.country_id:
                 raise ValidationError("Please define  proper sender addres")
 
-            shipper_address_phone_number = shipper_address.phone and shipper_address.phone.replace(' ', '').replace('+','').replace('(','').replace(')', '').replace('-', '')
+            shipper_address_phone_number = shipper_address.phone and shipper_address.phone.replace(' ', '').replace('+',
+                                                                                                                    '').replace(
+                '(', '').replace(')', '').replace('-', '')
             if shipper_address_phone_number and len(shipper_address_phone_number) < 10:
                 raise ValidationError("Please Check Shipper Phone Number Properly")
 
@@ -181,7 +200,9 @@ class DeliveryCarrier(models.Model):
             if not recipient_address.zip or not recipient_address.city or not recipient_address.country_id:
                 raise ValidationError("Please define  proper receiver address")
 
-            receipient_phone_number = recipient_address.phone and recipient_address.phone.replace(' ', '').replace('+','').replace('(','').replace(')','').replace('-', '')
+            receipient_phone_number = recipient_address.phone and recipient_address.phone.replace(' ', '').replace('+',
+                                                                                                                   '').replace(
+                '(', '').replace(')', '').replace('-', '')
             if receipient_phone_number and len(receipient_phone_number) < 10:
                 raise ValidationError("Please Check Customer Phone Number Properly")
 
@@ -206,7 +227,6 @@ class DeliveryCarrier(models.Model):
             etree.SubElement(request_context, "v2:Language").text = "en"
             etree.SubElement(request_context, "v2:GroupID").text = "1"
             etree.SubElement(request_context, "v2:RequestReference").text = "Shipping Request"
-
 
             root_body = etree.SubElement(root_element, "soapenv:Body")
             root_createshipment = etree.SubElement(root_body, "v2:CreateShipmentRequest")
@@ -240,7 +260,9 @@ class DeliveryCarrier(models.Model):
 
             etree.SubElement(root_recaddress, "v2:Name").text = recipient_address.name or ''
             etree.SubElement(root_recaddress,
-                             "v2:Company").text = recipient_address.parent_id and recipient_address.parent_id.name or ''
+                             "v2:Company").text = company_name
+            etree.SubElement(root_recaddress,
+                             "v2:Department").text = department_name
 
             etree.SubElement(root_recaddress, "v2:StreetNumber").text = recipient_address.street2 or ' '
             etree.SubElement(root_recaddress, "v2:StreetName").text = recipient_address.street or ''
@@ -317,8 +339,13 @@ class DeliveryCarrier(models.Model):
             etree.SubElement(root_payment_information, "v2:PaymentType").text = self.purolator_payment_type
             etree.SubElement(root_payment_information,
                              "v2:RegisteredAccountNumber").text = self.company_id.purolator_account_number
-            etree.SubElement(root_payment_information,
-                             "v2:BillingAccountNumber").text = self.company_id.purolator_account_number
+
+            if self.purolator_payment_type == 'Sender':
+                etree.SubElement(root_payment_information,
+                                 "v2:BillingAccountNumber").text = self.company_id.purolator_account_number
+            else:
+                etree.SubElement(root_payment_information,
+                                 "v2:BillingAccountNumber").text = picking.sale_id.purolator_third_party_account_number_sale_order
 
             root_pickup_information = etree.SubElement(root_shipment, "v2:PickupInformation")
             etree.SubElement(root_pickup_information, "v2:PickupType").text = self.purolator_pickup_type
@@ -327,7 +354,6 @@ class DeliveryCarrier(models.Model):
             etree.SubElement(root_notification_information, "v2:ConfirmationEmailAddress").text = ""
 
             etree.SubElement(root_createshipment, "v2:PrinterType").text = self.printer_type
-
 
             try:
                 headers = {
@@ -466,7 +492,6 @@ class DeliveryCarrier(models.Model):
         root_document_criteria = etree.SubElement(root_document_criterium, "ns1:DocumentCriteria")
         root_pin = etree.SubElement(root_document_criteria, "ns1:PIN")
         etree.SubElement(root_pin, "ns1:Value").text = purolator_shipment_pin
-
 
         try:
             headers = {
