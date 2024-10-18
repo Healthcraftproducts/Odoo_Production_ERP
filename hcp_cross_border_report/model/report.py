@@ -3,6 +3,7 @@ import io  # To handle in-memory streams
 import base64  # To encode the Excel file for download
 import xlsxwriter  # To create Excel files
 from odoo.tools import date_utils
+from openpyxl.styles.builtins import normal
 
 
 class SaleExcelReport(models.TransientModel):
@@ -50,10 +51,29 @@ class SaleExcelReport(models.TransientModel):
         workbook_stream = io.BytesIO()
         workbook = xlsxwriter.Workbook(workbook_stream)
         worksheet = workbook.add_worksheet("CrossBorderReport")
+        worksheet2 = workbook.add_worksheet("Additional Data")
         date_format = workbook.add_format({'num_format': 'mm/dd/yyyy'})
 
         worksheet.set_column(1, 3, 14)
         worksheet.set_column(1, 10, 14)
+
+        worksheet2.set_column(0, 0, 18)
+        worksheet2.set_column(1, 1, 15)
+        worksheet2.set_column(2, 2, 15)
+        worksheet2.set_column(3, 3, 15)
+        worksheet2.set_column(4, 4, 15)
+        worksheet2.set_column(5, 5, 15)
+        worksheet2.set_column(6, 6, 15)
+        worksheet2.set_column(7, 7, 15)
+        worksheet2.set_column(8, 8, 25)
+        worksheet2.set_column(9, 9, 25)
+        worksheet2.set_column(10, 10, 26)
+        worksheet2.set_column(11, 11, 25)
+        worksheet2.set_column(12, 12, 15)
+        worksheet2.set_column(13, 13, 15)
+        worksheet2.set_column(14, 14, 15)
+        worksheet2.set_column(15, 15, 15)
+        worksheet2.set_column(16, 16, 15)
 
         bold_format = workbook.add_format({
             'bold': True,
@@ -75,6 +95,14 @@ class SaleExcelReport(models.TransientModel):
             'font_size': 11,
             'border': True,
             'num_format': 'mm/dd/yyyy'
+        })
+
+        normal_format_small_2 = workbook.add_format({
+            'bold': False,
+            'align': 'left',
+            'valign': 'top',
+            'font_size': 11,
+            'border': True,
         })
         format_small = workbook.add_format({
             'align': 'left',
@@ -169,17 +197,17 @@ class SaleExcelReport(models.TransientModel):
             worksheet.write(row, 1, s_no, bold_format_left_align)
             worksheet.write(row, 2, invoice.name, border_format)
             worksheet.write(row, 3, invoice.amount_total, border_format)
-            vat = 0
+            shipping_charge = 0
             for line in invoice.invoice_line_ids:
                 if line.account_id.code == '31900':
-                    vat = line.inv_line_amount
-            sat = invoice.amount_total - vat
-            sat = abs(sat)
-            worksheet.write(row, 4, vat, border_format)
-            worksheet.write(row, 5, sat, border_format)
+                    shipping_charge = line.price_subtotal
+            total_not_inc_shipping = invoice.amount_total - shipping_charge
+            total_not_inc_shipping = abs(total_not_inc_shipping)
+            worksheet.write(row, 4, shipping_charge, border_format)
+            worksheet.write(row, 5, total_not_inc_shipping, border_format)
             total_amount += invoice.amount_total
-            shipping_amount += vat
-            total_shipping_amount += sat
+            shipping_amount += shipping_charge
+            total_shipping_amount += total_not_inc_shipping
             row += 1
             s_no += 1
         worksheet.write(row, 2, "TOTAL", bold_align)
@@ -192,6 +220,40 @@ class SaleExcelReport(models.TransientModel):
         worksheet.merge_range('D18:E18', "TOTAL # OF ORDERS:", merge_formats)
         worksheet.write('F18', s_no, merge_formates)
 
+        headers = [
+            "PART#", "TARIFF #", "WEIGHT", "UOM", "RELATED", "SPI",
+            "Parties Qualifier", "Entity Id Qualifier Code", "Entity Identifier",
+            "Name", "Address 1", "City", "State Province", "Postal Code", "Country", "isSold To","VALUE",
+        ]
+
+        # Write the headers on the second worksheet
+        for col_num, header in enumerate(headers):
+            worksheet2.write(0, col_num, header, bold_format_small)
+
+        row = 1
+        for data in self.invoice_id:
+            for data_line in data.invoice_line_ids:
+                if data_line.product_id.detailed_type in ["product", "consu"]:
+                    spi = "S" if data_line.product_id.usmca_eligible == 'yes' else ""
+                    worksheet2.write(row, 0, data_line.product_id.default_code, normal_format_small_2)
+                    worksheet2.write(row, 1, data_line.product_id.cust_fld2 or "", normal_format_small_2)
+                    worksheet2.write(row, 2, data_line.product_id.weight, normal_format_small_2)
+                    worksheet2.write(row, 3, data_line.product_uom_id.name, normal_format_small_2)
+                    worksheet2.write(row, 4, "N", normal_format_small_2)
+                    worksheet2.write(row, 5, spi, normal_format_small_2)
+                    worksheet2.write(row, 6, "CN", normal_format_small_2)
+                    worksheet2.write(row, 7, "EI", normal_format_small_2)
+                    worksheet2.write(row, 8, "", normal_format_small_2)
+                    worksheet2.write(row, 9, data.partner_id.name, normal_format_small_2)
+                    worksheet2.write(row, 10, data.partner_id.street, normal_format_small_2)
+                    worksheet2.write(row, 11, data.partner_id.city, normal_format_small_2)
+                    worksheet2.write(row, 12, data.partner_id.state_id.code, normal_format_small_2)
+                    worksheet2.write(row, 13, data.partner_id.zip, normal_format_small_2)
+                    worksheet2.write(row, 14, data.partner_id.country_id.code, normal_format_small_2)
+                    worksheet2.write(row, 15, "Y", normal_format_small_2)
+                    worksheet2.write(row, 16, data_line.price_unit, normal_format_small_2)
+
+                    row += 1
         workbook.close()
         workbook_stream.seek(0)
         workbook_data = workbook_stream.read()
