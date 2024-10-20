@@ -1,6 +1,7 @@
 from odoo import fields, models, api, _
 from odoo.addons.iap.tools import iap_tools
 
+
 class SellerIapDatabases(models.TransientModel):
     """
     Wizard to view and update the databases to active and inactive
@@ -26,17 +27,17 @@ class SellerIapDatabases(models.TransientModel):
         if self._context.get('databases', False) and self._context.get('staging_limit'):
             databases = []
             for database in self._context.get('databases'):
-                database.update({'is_db_active': True if database.get('state') in ['new', 'run'] else False})
+                database.update({'is_db_active': True if database.get('state') in ['new', 'running'] else False})
                 databases.append((0, 0, database))
                 self.current_database_state.update({database.get('db_uid'): {'is_db_active': database.get(
                     'is_db_active'), 'state': database.get('state')}})
-                if database.get('state') == 'run' and database.get('account_type') == 'sandbox':
+                if database.get('state') == 'run':
                     self.currently_active.append(database.get('db_uid'))
             res.update({'iap_database_line_ids': databases})
             self.seller_data.update({'staging_limit': self._context.get('staging_limit'),
-                                'seller': self._context.get('seller', ''),
-                                'account_token': self._context.get('account_token', ''),
-                                'dbuuid': self._context.get('dbuuid', '')})
+                                     'seller': self._context.get('seller', ''),
+                                     'account_token': self._context.get('account_token', ''),
+                                     'dbuuid': self._context.get('dbuuid', '')})
 
         return res
 
@@ -49,13 +50,14 @@ class SellerIapDatabases(models.TransientModel):
         update_data = dict()
         updated_by = f"Updated By : {self.create_uid.name}, with User ID : {self.create_uid.id}"
         for db_uid, data in self.updated_database_state.items():
-            if data.get('is_db_active') != self.current_database_state.get(db_uid).get('is_db_active'):
-                update_log.update({db_uid: [self.current_database_state.get(db_uid).get('state'),
-                                            data.get('account_type')]})
+            if db_uid and data.get('is_db_active', False) != self.current_database_state.get(
+                    db_uid, {}).get('is_db_active', False):
+                update_log.update({db_uid: [self.current_database_state.get(db_uid).get('state', False),
+                                            data.get('account_type', False)]})
                 update_data.update({db_uid: {'db_uid': db_uid,
-                                             'name': data.get('name'),
-                                             'account_type': data.get('account_type'),
-                                             'is_db_active': data.get('is_db_active')
+                                             'name': data.get('name', ''),
+                                             'account_type': data.get('account_type', False),
+                                             'is_db_active': data.get('is_db_active', False)
                                              }})
         kwargs = {'update_data': update_data, 'update_log': update_log,
                   'updated_by': updated_by, 'database': 'update', 'seller': self.seller_data.get('seller')}
@@ -93,7 +95,7 @@ class SellerIapDatabases(models.TransientModel):
             message = ''
             seller = self.env['amazon.seller.ept'].search([('merchant_id', '=', merchant_id)])
             if update_log:
-                current_state = {'new': 'New', 'run': 'Running', 'block': 'Blocked', 'expire': 'Expired'}
+                current_state = {'new': 'New', 'running': 'Running', 'blocked': 'Blocked', 'expired': 'Expired'}
                 message = message + f"{updated_by}<br/><table><tr><th>DB-UID</th><th>&ensp;STATUS</th></tr>"
                 for dbuid, update in update_log.items():
                     message = message + f"<tr><td>   {dbuid}</td><td>&ensp;{current_state.get(update[0])} &rarr; " \
@@ -113,8 +115,7 @@ class SellerIapDatabases(models.TransientModel):
         :return:
         """
         if self.seller_data.get('staging_limit'):
-            active_database = self.iap_database_line_ids.filtered(lambda db: db.is_db_active and db.account_type ==
-                                                                             'sandbox')
+            active_database = self.iap_database_line_ids.filtered(lambda db: db.is_db_active)
             toggle_count = len(active_database)
             if toggle_count > self.seller_data.get('staging_limit'):
                 active_db = active_database.filtered(lambda db:db.db_uid in self.currently_active)
@@ -127,5 +128,5 @@ class SellerIapDatabases(models.TransientModel):
                 'account_type': 'Running' if database.is_db_active else 'Expired',
                 'is_db_active': database.is_db_active,
             }})
-            if database.is_db_active and database.account_type == 'sandbox':
+            if database.is_db_active:
                 self.currently_active.append(database.db_uid)

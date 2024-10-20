@@ -225,7 +225,8 @@ class RemovalOrder(models.Model):
         file_order_ship.write("RemovalDisposition\t%s\n" % (self.removal_disposition))
         file_order_ship.write("AddressName\t%s\n" % (address.name))
         file_order_ship.write("AddressFieldOne\t%s\n" % (address_field_one))
-        file_order_ship.write("AddressFieldTwo\t%s\n" % (address_field_two))
+        if address_field_two:
+            file_order_ship.write("AddressFieldTwo\t%s\n" % (address_field_two))
         file_order_ship.write("AddressCity\t%s\n" % (address.city))
         file_order_ship.write("AddressCountryCode\t%s\n" % (address.country_id.code))
         file_order_ship.write("AddressStateOrRegion\t%s\n" % (address.state_id.code))
@@ -241,7 +242,7 @@ class RemovalOrder(models.Model):
                 "%s\t%s\t%s\n" % (removal_line.seller_sku, int(sellable_quantity), int(unsellable_quantity)))
         file_order_ship.close()
         fl = open(file_order_ship.name, 'rb')
-        data = fl.read()
+        data = fl.read().decode('utf-8')
         file_name = "removal_request_" + time.strftime("%Y_%m_%d_%H%M%S") + '.csv'
 
         account = self.env['iap.account'].search([('service_name', '=', 'amazon_ept')])
@@ -250,7 +251,7 @@ class RemovalOrder(models.Model):
         kwargs = {'merchant_id': str(instance.merchant_id) if instance.merchant_id else False,
                   'app_name': 'amazon_ept_spapi',
                   'account_token': account.account_token,
-                  'emipro_api': 'amazon_submit_feeds_sp_api',
+                  'emipro_api': 'amazon_create_removal_orders_sp_api',
                   'dbuuid': dbuuid,
                   'feed_type': 'POST_FLAT_FILE_FBA_CREATE_REMOVAL',
                   'amazon_marketplace_code': instance.country_id.amazon_marketplace_code or
@@ -269,7 +270,7 @@ class RemovalOrder(models.Model):
         self.write({'state': 'plan_approved'})
         attachment = self.env['ir.attachment'].create({
             'name': file_name,
-            'datas': base64.b64encode(data),
+            'datas': base64.b64encode(data.encode('utf-8')),
             'res_model': 'mail.compose.message',
             'type': 'binary'
         })

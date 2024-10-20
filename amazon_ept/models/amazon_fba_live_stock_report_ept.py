@@ -67,14 +67,16 @@ class AmazonLiveStockReportEpt(models.Model):
         """
         This method will display the list of inventory records
         """
-        stock_quant_tree_view = self.env.ref('stock.view_stock_quant_tree_inventory_editable', raise_if_not_found=False)
+        stock_move_tree_view = self.env.ref('stock.view_move_tree', raise_if_not_found=False)
+        stock_move_form_view = self.env.ref('stock.view_move_form', raise_if_not_found=False)
         action = {
-            'domain': "[('id', 'in', " + str(self.quant_ids.ids) + " )]",
+            'domain': [('reference', '=', self.name)],
             'name': 'FBA Live Stock Inventory',
-            'view_mode': 'tree',
-            'res_model': STOCK_QUANT,
+            'view_mode': 'tree,form',
+            'res_model': 'stock.move',
             'type': 'ir.actions.act_window',
-            'view_id': stock_quant_tree_view.id if stock_quant_tree_view else False
+            'views': [(stock_move_tree_view.id if stock_move_tree_view else False, 'tree'),
+                      (stock_move_form_view.id if stock_move_form_view else False, 'form')]
         }
         return action
 
@@ -82,8 +84,9 @@ class AmazonLiveStockReportEpt(models.Model):
         """
         This method will count the number of inventory records
         """
+        stock_move = self.env['stock.move']
         for record in self:
-            record.inventory_count = len(record.quant_ids.ids)
+            record.inventory_count = len(stock_move.search([('reference', '=', self.name)]))
 
     name = fields.Char(size=256)
     state = fields.Selection([('draft', 'Draft'), ('SUBMITTED', 'SUBMITTED'),
@@ -600,9 +603,11 @@ class AmazonLiveStockReportEpt(models.Model):
         :return: This Method prepare and return sellable line dict, unsellable line dict.
         """
         common_log_line_obj = self.env['common.log.lines.ept']
+        bom_lines = []
         sellable_line_dict = {}
         unsellable_line_dict = {}
         product_obj = self.env['product.product']
+        mrp_module = product_obj.search_installed_module_ept('mrp')
         for row in reader:
             seller_sku = row.get('sku', '') or row.get('seller-sku', '')
             afn_listing = row.get('afn-listing-exists', '')
@@ -620,17 +625,34 @@ class AmazonLiveStockReportEpt(models.Model):
                         amz_seller_ept=self.seller_id and self.seller_id.id or False)
                     continue
             odoo_product_id = odoo_product.id
-            sellable_qty = sellable_line_dict.get(odoo_product_id, 0.0)
-            if self.seller_id.amz_is_reserved_qty_included_inventory_report:
-                sellable_line_dict.update(
-                    {odoo_product_id: sellable_qty + float(row.get('afn-fulfillable-quantity', 0.0)) + float(
-                        row.get('afn-reserved-quantity', 0.0))})
-            else:
-                sellable_line_dict.update(
-                    {odoo_product_id: sellable_qty + float(row.get('afn-fulfillable-quantity', 0.0))})
-            unsellable_qty = unsellable_line_dict.get(odoo_product_id, 0.0)
-            unsellable_line_dict.update({
-                odoo_product_id: unsellable_qty + float(row.get('afn-unsellable-quantity', 0.0))})
+            afn_fulfillable_qty = float(row.get('afn-fulfillable-quantity', 0.0))
+            afn_reserved_qty = float(row.get('afn-reserved-quantity', 0.0))
+            afn_unsellable_qty = float(row.get('afn-unsellable-quantity', 0.0))
+            if mrp_module:
+                bom_lines = self.env['shipping.report.request.history'].with_context(
+                    is_fba_live_stock_report_company=self.company_id.id).amz_shipment_get_set_product_ept(
+                    odoo_product)
+                if bom_lines:
+                    for bom_line in bom_lines:
+                        odoo_product_id = bom_line[0].product_id.id
+                        qty = bom_line[1].get('qty', 0.0)
+                        sellable_qty = sellable_line_dict.get(odoo_product_id, 0.0)
+                        if self.seller_id.amz_is_reserved_qty_included_inventory_report:
+                            sellable_line_dict.update(
+                                {odoo_product_id: sellable_qty + (afn_fulfillable_qty + afn_reserved_qty) * qty})
+                        else:
+                            sellable_line_dict.update({odoo_product_id: sellable_qty + (afn_fulfillable_qty * qty)})
+                        unsellable_qty = unsellable_line_dict.get(odoo_product_id, 0.0)
+                        unsellable_line_dict.update({odoo_product_id: unsellable_qty + (afn_unsellable_qty * qty)})
+            if not bom_lines or not mrp_module:
+                sellable_qty = sellable_line_dict.get(odoo_product_id, 0.0)
+                if self.seller_id.amz_is_reserved_qty_included_inventory_report:
+                    sellable_line_dict.update({odoo_product_id: sellable_qty + afn_fulfillable_qty + afn_reserved_qty})
+                else:
+                    sellable_line_dict.update({odoo_product_id: sellable_qty + afn_fulfillable_qty})
+                unsellable_qty = unsellable_line_dict.get(odoo_product_id, 0.0)
+                unsellable_line_dict.update({odoo_product_id: unsellable_qty + afn_unsellable_qty})
+
         return sellable_line_dict, unsellable_line_dict
 
     def process_report_and_find_amazon_product(self, row):
@@ -678,7 +700,8 @@ class AmazonLiveStockReportEpt(models.Model):
         auto_validate = self.seller_id.validate_stock_inventory_for_report
         if sellable_line_dict:
             amazon_warehouse_location = amz_warehouse.lot_stock_id
-            quant_list_sellable = stock_quant.with_context(fba_live_inv_id=self.id).create_inventory_adjustment_ept(
+            quant_list_sellable = stock_quant.with_context(fba_live_inv_id=self.id).with_company(
+                self.seller_id.company_id.id).create_inventory_adjustment_ept(
                 sellable_line_dict, amazon_warehouse_location, auto_apply=auto_validate, name=self.name)
             quant_list_sellable.update({'fba_live_stock_report_id': self.id})
         if not amz_warehouse.unsellable_location_id:
@@ -689,9 +712,9 @@ class AmazonLiveStockReportEpt(models.Model):
         else:
             if unsellable_line_dict:
                 amazon_warehouse_location = amz_warehouse.unsellable_location_id
-                quant_list_unsellable = stock_quant.with_context(fba_live_inv_id=self.id).\
-                    create_inventory_adjustment_ept(unsellable_line_dict, amazon_warehouse_location,
-                                                    auto_apply=auto_validate, name=self.name)
+                quant_list_unsellable = stock_quant.with_context(fba_live_inv_id=self.id).with_company(
+                    self.seller_id.company_id.id).create_inventory_adjustment_ept(
+                    unsellable_line_dict, amazon_warehouse_location, auto_apply=auto_validate, name=self.name)
                 quant_list_unsellable.update({'fba_live_stock_report_id': self.id})
         return True
 

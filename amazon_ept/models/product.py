@@ -591,7 +591,10 @@ class AmazonProductEpt(models.Model):
         :return: This Method return Boolean(True/False).
         """
         prod_obj = self.env[PRODUCT_PRODUCT]
-        from_datetime = instance.inventory_last_sync_on
+        if self._context.get('is_auto_process', False) and instance.inventory_last_sync_on:
+            from_datetime = instance.inventory_last_sync_on - timedelta(days=1)
+        else:
+            from_datetime = instance.inventory_last_sync_on
         company = instance.company_id
 
         warehouse_ids = self.get_warehouses_for_export_stock(instance)
@@ -657,10 +660,8 @@ class AmazonProductEpt(models.Model):
 
         if response.get('error', False):
             common_log_line_obj.create_common_log_line_ept(
-                message=response.get('error', {}),
-                model_name=AMAZON_PRODUCT_EPT, fulfillment_by='FBM', module='amazon_ept',
-                operation_type='export', res_id=self.id,
-                amz_instance_ept=instance and instance.id or False,
+                message=response.get('error', {}), model_name=AMAZON_PRODUCT_EPT, fulfillment_by='FBM',
+                module='amazon_ept', operation_type='export', amz_instance_ept=instance and instance.id or False,
                 amz_seller_ept=instance.seller_id and instance.seller_id.id or False)
         else:
             results = response.get('results', {})

@@ -150,7 +150,7 @@ class AmazonSellerConfig(models.TransientModel):
             company_id = self.company_id or self.env.user.company_id or False
             vals = self.prepare_amazon_seller_vals(company_id)
             if self.country_id.code in ['AE', 'DE', 'EG', 'ES', 'FR', 'GB', 'IN', 'IT', 'SA', 'TR', 'NL',
-                                        'SE', 'BE', 'PL', 'ZA']:
+                                        'SE', 'BE', 'PL', 'ZA', 'IE']:
                 vals.update({'is_european_region': True})
             else:
                 vals.update({'is_european_region': False})
@@ -181,7 +181,6 @@ class AmazonSellerConfig(models.TransientModel):
             'tag': 'reload',
         }
 
-    @staticmethod
     def confirm_archive_un_archive(self):
         """
         Send confirmation for archiving the seller

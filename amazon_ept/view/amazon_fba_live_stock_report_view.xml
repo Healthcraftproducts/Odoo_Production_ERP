@@ -90,7 +90,7 @@
                                 <span class="o_stat_value">
                                     <field name="inventory_count"/> Inventory
                                 </span>
-                                <span class="o_stat_text">Stock Inventory</span>
+                                <span class="o_stat_text">Stock Moves</span>
                             </div>
                         </button>
                     </div>
