@@ -2,6 +2,7 @@
 # See LICENSE file for full copyright and licensing details.
 from datetime import datetime
 from odoo import models
+from psycopg2 import sql
 
 
 class IrCron(models.Model):
@@ -13,8 +14,10 @@ class IrCron(models.Model):
             @return: Message like scheduler is running in backend.
         """
         try:
-            self._cr.execute("""SELECT id FROM "%s" WHERE id IN %%s FOR UPDATE NOWAIT""" % self._table,
-                             [tuple(self.ids)], log_exceptions=False)
+            # query="""SELECT id FROM "%s" WHERE id IN %%s FOR UPDATE NOWAIT"""
+            query = sql.SQL("""SELECT id FROM {} WHERE id IN %s FOR UPDATE NOWAIT""").format(sql.Identifier(self._table))
+            params=(tuple(self.ids),)
+            self._cr.execute(query,params)
             difference = self.nextcall - datetime.now()
             diff_days = difference.days
             if not diff_days < 0:

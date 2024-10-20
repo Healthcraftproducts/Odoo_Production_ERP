@@ -974,14 +974,9 @@
                             <div class="col-xs-12 col-md-6 o_setting_box"
                                  attrs="{'invisible': [('is_amz_create_schedule_activity', '=', False)]}">
                                 <div class="o_setting_right_pane">
-                                    <label for="amz_activity_user_ids"/>
-                                    <div class="text-muted">
-                                        Select Responsible User for activity
-                                        <div>
-                                            <field name="amz_activity_user_ids" widget="many2many_tags"
-                                                   class="oe_inline"
-                                                   attrs="{'required': [('is_amz_create_schedule_activity', '=', True)]}"/>
-                                        </div>
+                                    <div>
+                                        <b>The configuration for Select Responsible User for Schedule activity
+                                            has been moved to Seller Configuration. Please configure it from there.</b>
                                     </div>
                                 </div>
                             </div>
@@ -1362,16 +1357,8 @@
                                  attrs="{'invisible': [('amazon_selling', '=', 'FBA')] }">
                                 <div class="o_setting_right_pane">
                                     <div>
-                                        <label for="stock_update_warehouse_ids"
-                                               string="FBM Warehouse(s)"/>
-                                        <field name="stock_update_warehouse_ids"
-                                               widget="many2many_tags"
-                                               class="oe_inline"
-                                               domain="[('company_id','=',company_for_amazon_id),('is_fba_warehouse','=',False)]"/>
-                                        <div class="text-muted">
-                                            Tooltip: Calculate total stock for FBM products to update from Odoo to
-                                            Amazon.
-                                        </div>
+                                        <b>The FBM Warehouse(S) configuration has been moved to Instance i.e Marketplaces Configuration.
+                                               Please configure it from there</b>
                                     </div>
                                 </div>
                             </div>

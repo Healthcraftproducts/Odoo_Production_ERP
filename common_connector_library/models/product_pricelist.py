@@ -15,9 +15,10 @@ class ProductPricelist(models.Model):
         domain = [('pricelist_id', '=', self.id), ('product_id', '=', product_id), ('min_quantity', '=', min_qty)]
 
         pricelist_item = pricelist_item_obj.search(domain)
-
+        price = float(price)
         if pricelist_item:
             pricelist_item.write({'fixed_price': price})
+            pricelist_item.invalidate_model(['fixed_price'])
         else:
             vals = self.prepre_pricelistitem_vals(product_id, min_qty, price)
             new_record = pricelist_item_obj.new(vals)

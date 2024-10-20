@@ -305,9 +305,6 @@ class AmazonProcessImportExport(models.TransientModel):
         if self.fba_operations == "amz_import_fba_pending_orders":
             self.check_running_schedulers('ir_cron_import_amazon_fba_pending_order_seller_')
 
-        if self.fba_operations == "amz_import_inbound_shipment":
-            self.check_running_schedulers('ir_cron_inbound_shipment_check_status_')
-
     @api.onchange('both_operations')
     def onchange_both_operations(self):
         """
@@ -687,8 +684,6 @@ class AmazonProcessImportExport(models.TransientModel):
         warning otherwise import Inbound Shipment Report from Amazon to odoo.
         """
         import_shipment_obj = self.env['amazon.inbound.import.shipment.ept']
-        self.with_context({'raise_warning': True}).check_running_schedulers(
-            'ir_cron_inbound_shipment_check_status_')
         inbound_shipment_list = import_shipment_obj.get_inbound_import_shipment(
             self.instance_id, self.from_warehouse_id, self.shipment_id, self.ship_to_address)
         if not inbound_shipment_list:
@@ -730,8 +725,7 @@ class AmazonProcessImportExport(models.TransientModel):
         cancel_order_marketplaces_fbm = self.get_amz_cancel_and_pending_orders_details(instance_ids)
         if cancel_order_marketplaces_fbm:
             for seller, marketplaces in cancel_order_marketplaces_fbm.items():
-                sale_order_obj.cancel_amazon_fbm_pending_sale_orders(seller, marketplaceids=marketplaces,
-                                                                     instance_ids=instance_ids.ids or [])
+                sale_order_obj.cancel_amazon_fbm_pending_sale_orders(seller, marketplaceids=marketplaces)
 
     def amz_import_fba_pending_orders(self):
         """
@@ -941,7 +935,8 @@ class AmazonProcessImportExport(models.TransientModel):
         seller = self.seller_id
         if not seller:
             raise UserError(_('Please select Seller'))
-
+        common_log_line_obj = self.env['common.log.lines.ept']
+        odoo_report_ids = []
         start_date, end_date = self.get_fba_reports_date_format()
         kwargs = self.sudo().prepare_merchant_report_dict(seller)
         report_types = report_values.get('report_type', '')
@@ -951,17 +946,74 @@ class AmazonProcessImportExport(models.TransientModel):
                        "marketplaceids": marketplace_ids})
         response = iap_tools.iap_jsonrpc(DEFAULT_ENDPOINT, params=kwargs, timeout=1000)
         if response.get('error', False):
-            raise UserError(_(response.get('error', {})))
+            if not self._context.get('is_auto_process', False):
+                raise UserError(_(response.get('error', {})))
+            common_log_line_obj.create_common_log_line_ept(message=response.get('error', False),
+                                                           model_name='settlement.report.ept',
+                                                           module='amazon_ept', operation_type='import',
+                                                           amz_seller_ept=seller and seller.id or False)
+            return odoo_report_ids
         list_of_wrapper = response.get('result', {})
+        next_token = response.get('next_token', False)
         odoo_report_ids = self.get_amazon_fba_report_ids(list_of_wrapper, report_values.get('start_date', ''),
-                                                         report_values.get('end_date', ''), report_values.get('model_obj', False),
-                                                         report_values.get('sequence', ''))
+                                                         report_values.get('end_date', ''),
+                                                         report_values.get('model_obj', False),
+                                                         report_values.get('sequence', ''), odoo_report_ids)
+        if next_token:
+            odoo_report_ids = self.amz_import_reports_by_next_token_ept(
+                next_token, report_values, odoo_report_ids, kwargs, seller)
         if self._context.get('is_auto_process', False):
             return odoo_report_ids
         if not odoo_report_ids:
             return True
         return self.amz_return_tree_form_action_ept(
             report_values.get('name'), report_values.get('res_model'), odoo_report_ids)
+
+    def amz_import_reports_by_next_token_ept(self, next_token, report_values, odoo_report_ids, kwargs, seller):
+        """
+        Define this method for get reports using next token of api response.
+        :param: next_token: str
+        :param: report_values: dict {}
+        :param: odoo_report_ids : list []
+        :param: kwargs: dict {}
+        :param: seller: amazon.seller.ept()
+        :return: list []
+        """
+        common_log_line_obj = self.env['common.log.lines.ept']
+        kwargs.update({'next_token': next_token, 'emipro_api': 'get_reports_by_next_token_sp_api'})
+        response = iap_tools.iap_jsonrpc(DEFAULT_ENDPOINT, params=kwargs, timeout=1000)
+        if response.get('error', False):
+            if not self._context.get('is_auto_process', False):
+                raise UserError(_(response.get('error', {})))
+            common_log_line_obj.create_common_log_line_ept(message=response.get('error', False),
+                                                           model_name='settlement.report.ept',
+                                                           module='amazon_ept', operation_type='import',
+                                                           amz_seller_ept=seller and seller.id or False)
+            return odoo_report_ids
+        list_of_wrapper = response.get('result', {})
+        next_token = response.get('next_token', False)
+        odoo_report_ids = self.get_amazon_fba_report_ids(list_of_wrapper, report_values.get('start_date', ''),
+                                                         report_values.get('end_date', ''),
+                                                         report_values.get('model_obj', False),
+                                                         report_values.get('sequence', ''), odoo_report_ids)
+        while next_token:
+            kwargs.update({'next_token': next_token})
+            response = iap_tools.iap_jsonrpc(DEFAULT_ENDPOINT, params=kwargs, timeout=1000)
+            if response.get('error', False):
+                if not self._context.get('is_auto_process', False):
+                    raise UserError(_(response.get('error', {})))
+                common_log_line_obj.create_common_log_line_ept(message=response.get('error', False),
+                                                               model_name='settlement.report.ept',
+                                                               module='amazon_ept', operation_type='import',
+                                                               amz_seller_ept=seller and seller.id or False)
+                return odoo_report_ids
+            list_of_wrapper = response.get('result', {})
+            next_token = response.get('next_token', False)
+            odoo_report_ids = self.get_amazon_fba_report_ids(list_of_wrapper, report_values.get('start_date', ''),
+                                                             report_values.get('end_date', ''),
+                                                             report_values.get('model_obj', False),
+                                                             report_values.get('sequence', ''), odoo_report_ids)
+        return odoo_report_ids
 
     def get_fba_reports_date_format(self):
         """
@@ -996,17 +1048,17 @@ class AmazonProcessImportExport(models.TransientModel):
             end_date = earlier_str + 'Z'
         return start_date, end_date
 
-    def get_amazon_fba_report_ids(self, list_of_wrapper, start_date, end_date, model_obj, sequence):
+    def get_amazon_fba_report_ids(self, list_of_wrapper, start_date, end_date, model_obj, sequence, odoo_report_ids):
         """
         This method will create settlement report and it's attachments from the amazon api response.
-        :param list_of_wrapper: Dictionary of amazon api response.
-        :param start_date: Selected start date in wizard in specific format.
-        :param end_date: Selected end date in wizard in specific format.
+        :param: list_of_wrapper: Dictionary of amazon api response.
+        :param: start_date: Selected start date in wizard in specific format.
+        :param: end_date: Selected end date in wizard in specific format.
         :param: model_obj : model object
         :param: sequence : report sequence
+        :param: odoo_report_ids : list []
         :return: This method will return list of newly created settlement report id.
         """
-        odoo_report_ids = []
         list_of_wrapper = list_of_wrapper.get('reports', {}) if list_of_wrapper else []
         for report in list_of_wrapper:
             report_document_id = report.get('reportDocumentId', '')
@@ -1302,6 +1354,7 @@ class AmazonProcessImportExport(models.TransientModel):
                 instance.id, seller_sku, fulfillment_by=fulfillment)
             mismatch = False
             if amazon_product_id and amazon_product_id.product_id.id != product_id.id:
+                instace_obj = self.env[AMZ_INSTANCE_EPT].search([('name', '=', line.get('Marketplace'))])
                 if product_id:
                     amazon_product_id.product_id = product_id
                     message = """ Odoo Product [%s] has been updated for Seller Sku [%s]""" \
@@ -1314,7 +1367,9 @@ class AmazonProcessImportExport(models.TransientModel):
                     log_line_type='fail' if mismatch else 'success', mismatch_details=mismatch,
                     product_id=amazon_product_id.product_id.id if amazon_product_id.product_id else False,
                     module='amazon_ept', operation_type='import',
-                    amz_seller_ept=self.seller_id and self.seller_id.id or False)
+                    amz_seller_ept=self.seller_id and self.seller_id.id or False,
+                    odoo_internal_reference=odoo_default_code
+                )
                 return instance_dict, map_product_count
 
             if amazon_product_id:
@@ -1445,10 +1500,13 @@ class AmazonProcessImportExport(models.TransientModel):
         if not product_id:
             message = """ Line Skipped due to product not found seller sku %s || Internal
              Reference %s """ % (seller_sku, odoo_default_code)
+            instace_obj = self.env[AMZ_INSTANCE_EPT].search([('name', '=', line_vals.get('Marketplace'))])
             common_log_line_obj.create_common_log_line_ept(
                 message=message, model_name='product.product', fulfillment_by=fullfillment_by, default_code=seller_sku,
                 mismatch_details=True, module='amazon_ept', operation_type='import',
-                amz_seller_ept=self.seller_id and self.seller_id.id or False)
+                amz_seller_ept=self.seller_id and self.seller_id.id or False,
+                amz_instance_ept=instace_obj.id, product_title=line_vals.get('Title', False),
+                odoo_internal_reference=odoo_default_code)
         return product_id
 
     def create_amazon_listing(self, instance, product_id, line_vals):

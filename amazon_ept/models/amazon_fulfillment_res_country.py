@@ -32,6 +32,7 @@ class AmazonFulfillmentCenter(models.Model):
                  })
         return True
 
+
 class ResCountry(models.Model):
     """
     Inherited class to relate the country with the fulfillment center

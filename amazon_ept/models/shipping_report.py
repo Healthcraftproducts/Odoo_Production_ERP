@@ -920,7 +920,7 @@ class ShippingReportRequestHistory(models.Model):
 
                 if new_picking:
                     self.update_outbound_picking(line, order, new_picking, new_pickings)
-            if all([p.state in ('done', 'cancel') for p in order.picking_ids]):
+            if all([p.state in ('done', 'cancel') for p in order.picking_ids]) and order.invoice_status != 'invoiced':
                 order.validate_and_paid_invoices_ept(order.auto_workflow_process_id)
         return True
 
@@ -1088,6 +1088,8 @@ class ShippingReportRequestHistory(models.Model):
                                                                                        state_dict)
                 amazon_order = sale_order_obj.create_amazon_shipping_report_sale_order(order_line, partner_dict,
                                                                                        self.id)
+                if not amazon_order:
+                    continue
                 if amazon_order not in amz_order_list:
                     amz_order_list.append(amazon_order)
                 # Create Sale order lines
@@ -1174,10 +1176,13 @@ class ShippingReportRequestHistory(models.Model):
         :param product:
         :return:
         """
+        if self._context.get('is_fba_live_stock_report_company'):
+            company_id = self._context.get('is_fba_live_stock_report_company')
+        else:
+            company_id = self.company_id.id
         try:
             bom_obj = self.env['mrp.bom']
-            bom_point_dict = bom_obj.sudo()._bom_find(products=product, company_id=self.company_id.id,
-                                                      bom_type='phantom')
+            bom_point_dict = bom_obj.sudo()._bom_find(products=product, company_id=company_id, bom_type='phantom')
             bom_point = bom_point_dict[product]
             from_uom = product.uom_id
             to_uom = bom_point.product_uom_id
@@ -1433,7 +1438,7 @@ class ShippingReportRequestHistory(models.Model):
                 order_details_dict_list.update({row.get('amazon-order-id', False): [row]})
         return order_details_dict_list
 
-    def check_odoo_product_for_import_order(self, row, instance, order_ref, odoo_product, seller_sku):
+    def check_odoo_product_for_import_order(self, row, instance, order_ref, odoo_product, seller_sku, skip_order):
         """
         This method will find or create product for sale order.
         :param row: iterable line of shipment report
@@ -1445,7 +1450,7 @@ class ShippingReportRequestHistory(models.Model):
         """
         odoo_product_obj = self.env['product.product']
         common_log_line_obj = self.env[COMMON_LOG_LINES_EPT]
-        skip_order = False
+        # skip_order = False
         if odoo_product:
             message = 'Odoo Product is already exists. System have created new Amazon ' \
                       'Product %s for %s instance' % (seller_sku, instance.name)
@@ -1518,8 +1523,9 @@ class ShippingReportRequestHistory(models.Model):
             if not amazon_product:
                 odoo_product = amazon_product_obj.search_product(seller_sku)
                 skip_order, odoo_product = self.check_odoo_product_for_import_order(row, instance, order_ref,
-                                                                                    odoo_product, seller_sku)
-                if not skip_order:
+                                                                                    odoo_product, seller_sku,
+                                                                                    skip_order)
+                if not skip_order or odoo_product:
                     sku = seller_sku or (odoo_product and odoo_product[0].default_code) or False
                     # #Prepare Product Values
                     prod_vals = self.prepare_amazon_prod_vals(instance, row, sku, odoo_product)

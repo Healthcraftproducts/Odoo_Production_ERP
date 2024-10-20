@@ -10,6 +10,7 @@ import base64
 import csv
 import os
 import time
+import logging
 from io import StringIO
 from io import BytesIO
 import re
@@ -19,6 +20,7 @@ from odoo.exceptions import UserError
 from odoo.tools.misc import xlsxwriter
 from ..endpoint import DEFAULT_ENDPOINT
 from .. reportTypes import ReportType
+_logger = logging.getLogger(__name__)
 
 COMMON_LOG_LINES_EPT = 'common.log.lines.ept'
 PRODUCT_PRODUCT = 'product.product'
@@ -192,7 +194,7 @@ class ActiveProductListingReportEpt(models.Model):
                 if r == 0:
                     worksheet.write(r, c, col, header_format)
                 else:
-                    if bool(re.match('^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$', col)):
+                    if bool(re.match(r'^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$', col)):
                         col = float(col)
                     worksheet.write(r, c, col)
         workbook.close()
@@ -270,6 +272,91 @@ class ActiveProductListingReportEpt(models.Model):
                                            'min_quantity': 1,
                                            'fixed_price': price,
                                            'pricelist_id': self.instance_id.pricelist_id.id})
+
+    def process_mismatched_product(self):
+        """
+           Processes mismatched products by creating an Excel report and providing a download link for it.
+        """
+        file_name = ''
+        active_model = self.env.context.get('active_model', False)
+        if active_model == 'common.log.lines.ept':
+            log_lines = self.env['common.log.lines.ept'].browse(self.env.context.get('active_ids')).filtered(lambda x: x.odoo_internal_reference)
+        else:
+            # Retrieve model ID for the current model
+            model_id = self.env[IR_MODEL]._get(self._name).id
+
+            # Fetch log lines related to the current record and model
+            log_lines = self.env[COMMON_LOG_LINES_EPT].search([
+                ('res_id', '=', self.id),
+                ('model_id', '=', model_id)
+            ]).filtered(lambda x: x.odoo_internal_reference)
+        if not log_lines:
+            raise UserError("Can't create mismatched product file due to mismatched not found")
+        try:
+            product_data = []
+            # Collect data for products with mismatched details
+            for line in log_lines:
+                if line.mismatch_details:
+                    product_data.append([
+                        line.product_title,
+                        line.odoo_internal_reference if line.odoo_internal_reference else '',
+                        # Placeholder for internal reference
+                        line.default_code,
+                        line.amz_instance_ept.name,  # Marketplace
+                        line.fulfillment_by
+                    ])
+
+            # Define file path and name
+            file_store = self.env[IR_ATTACHMENT]._filestore()
+            file_name = file_store + "/Mismatched_Product_List_" + time.strftime("%Y_%m_%d_%H%M%S") + '.xlsx'
+
+            # Create a new Excel workbook and worksheet
+            workbook = xlsxwriter.Workbook(file_name)
+            worksheet = workbook.add_worksheet()
+            header_format = workbook.add_format({'bold': True})
+            header_list = ['Title', 'Internal Reference', 'Seller SKU', 'Marketplace', 'Fulfillment']
+
+            # Write headers to the first row
+            line = 0
+            for col_num, header in enumerate(header_list):
+                worksheet.write(line, col_num, header, header_format)
+            line += 1
+
+            # Write data rows to the worksheet
+            for row_num, data_row in enumerate(product_data, start=line):
+                for col_num, cell_value in enumerate(data_row):
+                    worksheet.write(row_num, col_num, cell_value)
+
+            workbook.close()
+
+            # Read the Excel file and create an attachment
+            with open(file_name, "rb") as excel_file:
+                file_pointer = BytesIO(excel_file.read())
+                file_pointer.seek(0)
+
+                new_attachment = self.env[IR_ATTACHMENT].create({
+                    "name": "Mismatched_Product_List_" + time.strftime("%Y_%m_%d_%H%M%S"),
+                    "datas": base64.b64encode(file_pointer.read()),
+                    "type": "binary"
+                })
+
+            # Return URL for downloading the attachment
+            if new_attachment:
+                return {
+                    'type': 'ir.actions.act_url',
+                    'url': '/web/content/%s?download=true' % new_attachment.id,
+                    'target': 'new'
+                }
+            return False
+
+        except Exception as e:
+            _logger.error("An error occurred while processing the mismatched product report: %s", e)
+            return False
+
+        finally:
+            # Ensure the temporary file is removed
+            if os.path.exists(file_name):
+                os.remove(file_name)
 
     def sync_products(self):
         """
@@ -454,7 +541,8 @@ class ActiveProductListingReportEpt(models.Model):
                 fulfillment_by=fulfillment_type, mismatch_details=is_mismatch, module='amazon_ept',
                 operation_type='import', res_id=self.id, product_title=row.get('item-name', ''),
                 amz_seller_ept=self.seller_id and self.seller_id.id or False,
-                amz_instance_ept=self.instance_id and self.instance_id.id or False)
+                amz_instance_ept=self.instance_id and self.instance_id.id or False,
+                odoo_internal_reference=seller_sku)
         return True
 
     def amz_update_price_in_pricelist(self, row, odoo_product):

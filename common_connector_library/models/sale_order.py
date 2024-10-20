@@ -120,6 +120,7 @@ class SaleOrder(models.Model):
         @param : work_flow_process_record: Record of auto invoice workflow.
         """
         self.ensure_one()
+        self = self.sudo()
         if work_flow_process_record.create_invoice:
             if work_flow_process_record.invoice_date_is_order_date:
                 if self.check_fiscal_year_lock_date_ept():

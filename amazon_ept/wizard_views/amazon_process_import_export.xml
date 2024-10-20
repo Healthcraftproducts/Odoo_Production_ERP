@@ -52,8 +52,8 @@
                                groups="amazon_ept.group_amazon_fba_ept"
                                options="{'no_create':True,'no_create_edit': True}"
                                domain="[('seller_id','=',seller_id)]"
-                               attrs="{'invisible':['|','|','|', ('fba_operations','!=', 'amz_fba_live_inventory_report'), ('country_code', 'not in', ['CA', 'BR', 'MX', 'US', 'SG', 'AU', 'JP', 'AE', 'EG', 'IN', 'SA', 'TR', 'ZA']), ('us_amazon_program', '!=', False), ('amazon_program', '!=', False)],
-                               'required': [('fba_operations','=', 'amz_fba_live_inventory_report'), ('country_code', 'in', ['CA', 'BR', 'MX', 'US', 'SG', 'AU', 'JP', 'AE', 'EG', 'IN', 'SA', 'TR', 'ZA']), ('us_amazon_program', '=', False), ('amazon_program', '=', False)]}"/>
+                               attrs="{'invisible':['|','|','|', ('fba_operations','!=', 'amz_fba_live_inventory_report'), ('country_code', 'not in', ['CA', 'BR', 'MX', 'US', 'SG', 'AU', 'JP', 'AE', 'EG', 'IN', 'SA', 'TR', 'ZA','IE']), ('us_amazon_program', '!=', False), ('amazon_program', '!=', False)],
+                               'required': [('fba_operations','=', 'amz_fba_live_inventory_report'), ('country_code', 'in', ['CA', 'BR', 'MX', 'US', 'SG', 'AU', 'JP', 'AE', 'EG', 'IN', 'SA', 'TR', 'ZA','IE']), ('us_amazon_program', '=', False), ('amazon_program', '=', False)]}"/>
                         <field name="mci_efn_instance_id" options="{'no_create':True,'no_create_edit': True}"
                                groups="amazon_ept.group_amazon_fba_ept"
                                domain="[('seller_id','=',seller_id)]"

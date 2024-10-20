@@ -13,6 +13,7 @@ class StockPicking(models.Model):
         when invoicing policy is 'delivery'.
         """
         result = super(StockPicking, self)._action_done()
+        self = self.sudo()
         for picking in self:
             if picking.sale_id.invoice_status == 'invoiced':
                 continue

@@ -199,7 +199,6 @@ class SettlementReportEpt(models.Model):
         :return:
         """
         sale_order_obj = self.env[SALE_ORDER]
-        amazon_product_obj = self.env['amazon.product.ept']
         partner_obj = self.env['res.partner']
 
         order_statement_lines = self.statement_id.line_ids.filtered(
@@ -264,10 +263,11 @@ class SettlementReportEpt(models.Model):
                         l.sale_order_id).write(
                         {'sale_order_id': amz_order.ids[0], 'partner_id': partner.id if partner else False})
                 elif order_ref in refund_name_list and amz_order and transaction_type == 'Refund':
-                    product_id = product_dict.get(row.get('sku', ''))
+                    product_id = self.amz_get_shipment_prd_for_refund_invoice(row, self.instance_id, order_ids)
                     if not product_id:
-                        amazon_product = amazon_product_obj.search([('seller_sku', '=', row.get('sku', '')),
-                                                                    ('instance_id', '=', self.instance_id.id)], limit=1)
+                        product_id = product_dict.get(row.get('sku', ''))
+                    if not product_id:
+                        amazon_product = self.amz_get_amazon_product_for_settlement(row)
                         product_id = amazon_product.product_id.id
                         product_dict.update({row.get('sku', ''): amazon_product.product_id.id})
 
@@ -827,6 +827,11 @@ class SettlementReportEpt(models.Model):
         """
         if response:
             response = response.get('document', '')
+            # if requested report seller marketplace is Singapore (SG) then we need to skip the seller
+            # details from the report response
+            if self.seller_id.instance_ids.filtered(lambda instance: instance.market_place_id == 'A19VAU5U5O7RUS'):
+                index = response.find('settlement-id')
+                response = response[index:]
             reader = csv.DictReader(response.split('\n'), delimiter='\t')
             start_date = ''
             end_date = ''
@@ -939,7 +944,6 @@ class SettlementReportEpt(models.Model):
         order_list_item_fees = {}
         refund_list_item_price = {}
         create_or_update_refund_dict = {}
-        amazon_product_obj = self.env['amazon.product.ept']
         partner_obj = self.env['res.partner']
         amazon_other_transaction_list = {}
         product_dict = {}
@@ -960,11 +964,12 @@ class SettlementReportEpt(models.Model):
             fulfillment_by = row.get('fulfillment-id', '')
             adjustment_id = row.get('adjustment-id', '')
             posted_date = self.get_amz_settlement_posted_date(posted_date)
-            amount = float(row.get('amount', 0.0).replace(',', '.'))
+            amount = float(row.get('amount', 0.0).replace(',', '') if ',' and '.' in row.get('amount', 0.0) else
+                           row.get('amount', 0.0).replace(',', '.'))
             if row.get('transaction-type', '') in ['Order', 'Refund', 'Liquidations']:
                 if (row.get('amount-description', '').__contains__('MarketplaceFacilitator') or \
                         row.get('amount-description', '').__contains__('LowValueGoods') or \
-                        row.get('amount-type', '') == 'ItemFees' or
+                        row.get('amount-type', '') in ['ItemFees', 'ItemFee'] or
                         row.get('amount-description', '') == 'RegulatoryFee'):
                     order_list_item_fees = self.prepare_order_list_item_fees_ept(
                         row, settlement_id, amount, posted_date, order_list_item_fees)
@@ -989,8 +994,7 @@ class SettlementReportEpt(models.Model):
                     if not product_id:
                         product_id = product_dict.get(row.get('sku', ''))
                     if not product_id:
-                        amazon_product = amazon_product_obj.search([('seller_sku', '=', row.get('sku', '')),
-                                                                    ('instance_id', '=', self.instance_id.id)], limit=1)
+                        amazon_product = self.amz_get_amazon_product_for_settlement(row)
                         product_id = amazon_product.product_id.id
                         product_dict.update({row.get('sku', ''): amazon_product.product_id.id})
                     key = (order_ref, order_ids, posted_date, fulfillment_by, partner.id, adjustment_id)
@@ -1041,12 +1045,28 @@ class SettlementReportEpt(models.Model):
         """
         amz_order = self.env['sale.order'].browse(amz_order_ids[0] if amz_order_ids else [])
         product_id = False
-        if row.get('amount-description', '') in ('Shipping', 'ShippingTax') and row.get(
-                'amount-type', '') == 'ItemPrice':
+        if row.get('amount-description', '') in ('Shipping', 'ShippingTax', 'TaxDiscount') and row.get(
+                'amount-type', '') in ['ItemPrice', 'Promotion']:
             product_id = (amz_order and amz_order.carrier_id and
                           amz_order.carrier_id.product_id.id or
                           instance.seller_id and instance.seller_id.shipment_charge_product_id.id)
         return product_id
+
+    def amz_get_amazon_product_for_settlement(self, row):
+        """
+        Define this method for get amazon product based amazon fulfillment by.
+        :param: row: dict {}
+        :return: amazon.product.ept()
+        """
+        amazon_product_obj = self.env['amazon.product.ept']
+        if row.get('fulfillment-id', '') == 'AFN':
+            fulfillment_by = 'FBA'
+        else:
+            fulfillment_by = 'FBM'
+        amazon_product = amazon_product_obj.search([('seller_sku', '=', row.get('sku', '')),
+                                                    ('instance_id', '=', self.instance_id.id),
+                                                    ('fulfillment_by', '=', fulfillment_by)], limit=1)
+        return amazon_product
 
     @staticmethod
     def amz_prepare_order_liquidations_values(row, amount, posted_date, settlement_id, amazon_other_transaction_list):
@@ -1113,7 +1133,8 @@ class SettlementReportEpt(models.Model):
         stock_move = stock_move_obj
         amazon_product_obj = self.env['amazon.product.ept']
         amazon_product = amazon_product_obj.search([('seller_sku', '=', row.get('sku', '')),
-                                                    ('instance_id', '=', self.instance_id.id)], limit=1)
+                                                    ('instance_id', '=', self.instance_id.id),
+                                                    ('fulfillment_by', '=', 'FBA')], limit=1)
         if amazon_product:
             product_id = amazon_product.product_id.id
             domain.pop(2)
@@ -1818,7 +1839,7 @@ class SettlementReportEpt(models.Model):
                 report_wiz_rec = self.env['amazon.process.import.export'].create({
                     'seller_id': seller_id,
                 })
-                report_wiz_rec.get_reports(vals)
+                report_wiz_rec.with_context(is_auto_process=True).get_reports(vals)
         return True
 
     def process_amazon_settlement_report(self, report):

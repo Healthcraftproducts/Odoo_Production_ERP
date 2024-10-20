@@ -161,7 +161,7 @@ class InboundShipmentPlanEpt(models.Model):
         plan_line_obj = self.env['inbound.shipment.plan.line']
         self._cr.execute("""select amazon_product_id from inbound_shipment_plan_line where
                             shipment_plan_id=%s group by amazon_product_id having
-                            count(amazon_product_id)>1;""" % self.id)
+                            count(amazon_product_id)>1;""", (self.id,))
         result = self._cr.fetchall()
         for record in result:
             duplicate_lines = self.mapped('shipment_line_ids').filtered(

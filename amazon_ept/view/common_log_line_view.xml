@@ -32,6 +32,7 @@
         <field name="arch" type="xml">
             <field name="message" position="after">
                 <field name="mismatch_details"/>
+                 <field name="odoo_internal_reference" optional="hide"/>
             </field>
         </field>
     </record>
@@ -49,6 +50,35 @@
             <p>If any import/export/update process has got issue, log lines will be shown here.</p>
         </field>
     </record>
+
+     <record id="view_download_mismatched_product_form" model="ir.ui.view">
+		<field name="name">download.mismatched.product.form</field>
+		<field name="model">common.log.lines.ept</field>
+		<field name="arch" type="xml">
+			<form>
+				<sheet>
+					<div class="alert alert-warning" role="alert">
+						<h6>NOTE: By clicking on 'Confirm', the system will perform the following operations-</h6>
+						<p>- Download mismatched product report</p>
+					</div>
+				</sheet>
+				<footer>
+					<button name="download_mismatched_product" string="Confirm" class="btn-danger" type="object"/>
+					<button string="Cancel" class="btn-info" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_create_product_xls" model="ir.actions.act_window">
+		<field name="name">Process Mismatched Product</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">common.log.lines.ept</field>
+		<field name="view_id" ref="view_download_mismatched_product_form"/>
+		<field name="binding_model_id" ref="amazon_ept.model_common_log_lines_ept"/>
+		<field name="binding_view_types">list</field>
+		<field name="target">new</field>
+	</record>
 
     <menuitem id="mainmenu_common_log_books" name="Logs"
               parent="amazon_ept.amazon_instance_menu_item" groups="amazon_ept.group_amazon_manager_ept"
