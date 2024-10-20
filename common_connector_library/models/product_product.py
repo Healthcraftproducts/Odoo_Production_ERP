@@ -81,9 +81,10 @@ class ProductProduct(models.Model):
         if mrp_module:
             result = self.get_product_movement_of_bom_product(date, company)
 
-        qry = ("""select distinct product_id from stock_move where write_date >= '%s' and company_id = %d and
-                 state in ('partially_available','assigned','done','cancel')""" % (date, company.id))
-        self._cr.execute(qry)
+        qry = """select distinct product_id from stock_move where write_date >= %s and company_id = %s and
+                 state in ('partially_available','assigned','done','cancel')"""
+        params=(date,company.id)
+        self._cr.execute(qry,params)
         result += self._cr.dictfetchall()
         product_ids = [product_id.get('product_id') for product_id in result]
 
@@ -102,14 +103,16 @@ class ProductProduct(models.Model):
         """ This method is used to get BOM type of product which stock movement updates after specific date.
             @param: date : String formate of date and time.
             @param: company : Record of company.
-        """
-        mrp_qry = ("""select distinct p.id as product_id from product_product as p
+        """        
+        mrp_qry = """select distinct p.id as product_id from product_product as p
                     inner join mrp_bom as mb on mb.product_tmpl_id=p.product_tmpl_id
                     inner join mrp_bom_line as ml on ml.bom_id=mb.id
                     inner join stock_move as sm on sm.product_id=ml.product_id
-                    where sm.write_date >= '%s' and sm.company_id = %d and sm.state in 
-                    ('partially_available','assigned','done','cancel')""" % (date, company.id))
-        self._cr.execute(mrp_qry)
+                    where sm.write_date >= %s and sm.company_id = %s and sm.state in 
+                    ('partially_available','assigned','done','cancel')"""
+        params=(date,company.id)
+        self._cr.execute(mrp_qry,params)
+        
         result = self._cr.dictfetchall()
         return result
 
@@ -121,8 +124,8 @@ class ProductProduct(models.Model):
         @return: Ids of locations and products in string.
         """
         locations = self.env['stock.location'].search([('location_id', 'child_of', warehouse.lot_stock_id.ids)])
-        location_ids = ','.join(str(e) for e in locations.ids)
-        product_ids = ','.join(str(e) for e in product_list)
+        location_ids = tuple(locations.ids)
+        product_ids = tuple(product_list)
         return location_ids, product_ids
 
     def check_for_bom_products(self, product_ids):
@@ -134,10 +137,11 @@ class ProductProduct(models.Model):
         bom_product_ids = []
         mrp_module = self.search_installed_module_ept('mrp')
         if mrp_module:
-            qry = ("""select p.id as product_id from product_product as p
+            qry = """select p.id as product_id from product_product as p
                         inner join mrp_bom as mb on mb.product_tmpl_id=p.product_tmpl_id
-                        and p.id in (%s)""" % product_ids)
-            self._cr.execute(qry)
+                        and p.id in %s"""
+            params=(product_ids,)
+            self._cr.execute(qry,params)
             bom_product_ids = self._cr.dictfetchall()
             bom_product_ids = [product_id.get('product_id') for product_id in bom_product_ids]
 
@@ -153,8 +157,8 @@ class ProductProduct(models.Model):
         query = """select pp.id as product_id,
                 COALESCE(sum(sq.quantity)-sum(sq.reserved_quantity),0) as stock
                 from product_product pp
-                left join stock_quant sq on pp.id = sq.product_id and sq.location_id in (%s)
-                where pp.id in (%s) group by pp.id;""" % (location_ids, simple_product_list_ids)
+                left join stock_quant sq on pp.id = sq.product_id and sq.location_id in %s
+                where pp.id in %s group by pp.id;"""
         return query
 
     def prepare_onhand_qty_query(self, location_ids, simple_product_list_ids):
@@ -166,8 +170,8 @@ class ProductProduct(models.Model):
         query = """select pp.id as product_id,
                 COALESCE(sum(sq.quantity),0) as stock
                 from product_product pp
-                left join stock_quant sq on pp.id = sq.product_id and sq.location_id in (%s)
-                where pp.id in (%s) group by pp.id;""" % (location_ids, simple_product_list_ids)
+                left join stock_quant sq on pp.id = sq.product_id and sq.location_id in %s
+                where pp.id in %s group by pp.id;"""
         return query
 
     def prepare_forecasted_qty_query(self, location_ids, simple_product_list_ids):
@@ -180,13 +184,12 @@ class ProductProduct(models.Model):
         query = ("""select product_id,sum(stock) as stock from (select pp.id as product_id,
                 COALESCE(sum(sq.quantity)-sum(sq.reserved_quantity),0) as stock
                 from product_product pp
-                left join stock_quant sq on pp.id = sq.product_id and sq.location_id in (%s)
-                where pp.id in (%s) group by pp.id
+                left join stock_quant sq on pp.id = sq.product_id and sq.location_id in %s
+                where pp.id in %s group by pp.id
                 union all
                 select product_id as product_id, sum(product_qty) as stock from stock_move
-                where state in ('assigned') and product_id in (%s) and location_dest_id in (%s)
-                group by product_id) as test group by test.product_id""" % (location_ids, simple_product_list_ids,
-                                                                            simple_product_list_ids, location_ids))
+                where state in ('assigned') and product_id in %s and location_dest_id in %s
+                group by product_id) as test group by test.product_id""")
         return query
 
     def get_free_qty_ept(self, warehouse, product_list):
@@ -197,41 +200,25 @@ class ProductProduct(models.Model):
         """
         qty_on_hand = {}
         location_ids, product_ids = self.prepare_location_and_product_ids(warehouse, product_list)
-
         bom_product_ids = self.check_for_bom_products(product_ids)
         if bom_product_ids:
             # Passed location instead of the warehouse in with_context, because it was doing export the product stock
             # of all locations of the warehouse instead of the stock location of the warehouse.
-            bom_products = self.with_context(location=[int(location) for location in location_ids.split(',')]).browse(
-                bom_product_ids)
+            bom_products = self.with_context(location=[location for location in location_ids]).browse(bom_product_ids)
             for product in bom_products:
                 actual_stock = getattr(product, 'free_qty')
                 qty_on_hand.update({product.id: actual_stock})
 
         simple_product_list = list(set(product_list) - set(bom_product_ids))
-        simple_product_list_ids = ','.join(str(e) for e in simple_product_list)
+        simple_product_list_ids = tuple(simple_product_list)
         if simple_product_list_ids:
             qry = self.prepare_free_qty_query(location_ids, simple_product_list_ids)
-            self._cr.execute(qry)
+            params=(location_ids,simple_product_list_ids)
+            self._cr.execute(qry,params)
             result = self._cr.dictfetchall()
             for i in result:
                 qty_on_hand.update({i.get('product_id'): i.get('stock')})
         return qty_on_hand
-
-    def prepare_forecasted_qty_query_for_bom_product(self, location_ids, product_ids):
-        query = (("""select product_id, free_qty+incoming_qty-outgoing_qty stock from (
-            select sq.product_id, COALESCE(sum(sq.quantity)-sum(sq.reserved_quantity),0) free_qty,
-            COALESCE(sum(sm_in.product_qty),0) incoming_qty,COALESCE(sum(sm_out.product_qty),0) outgoing_qty 
-            from 
-            stock_quant sq 
-            left join stock_move sm_in on sm_in.product_id= sq.product_id and (sm_in.location_id in (%s) or sm_in.location_dest_id in (%s))
-                                          and sm_in.state in ('waiting', 'confirmed', 'assigned', 'partially_available')
-            left join stock_move sm_out on sm_out.product_id= sq.product_id and (sm_out.location_dest_id in (%s) or sm_out.location_id in (%s))
-                                          and sm_out.state in ('waiting', 'confirmed', 'assigned', 'partially_available')
-            where sq.product_id in (%s) and 
-                  sq.location_id in (%s) group by sq.product_id) as test;""" % (
-            location_ids, location_ids, location_ids, location_ids, product_ids, location_ids)))
-        return query
 
     def get_forecasted_qty_ept(self, warehouse, product_list):
         """ This method is used to get forecast quantity based on warehouse and products.
@@ -258,10 +245,11 @@ class ProductProduct(models.Model):
                 forcasted_qty.update({product.id: actual_stock})
 
         simple_product_list = list(set(product_list) - set(bom_product_ids))
-        simple_product_list_ids = ','.join(str(e) for e in simple_product_list)
+        simple_product_list_ids = tuple(simple_product_list)
         if simple_product_list_ids:
             qry = self.prepare_forecasted_qty_query(location_ids, simple_product_list_ids)
-            self._cr.execute(qry)
+            params=(location_ids, simple_product_list_ids,simple_product_list_ids, location_ids)
+            self._cr.execute(qry,params)
             result = self._cr.dictfetchall()
             for i in result:
                 forcasted_qty.update({i.get('product_id'): i.get('stock')})
@@ -285,10 +273,11 @@ class ProductProduct(models.Model):
                 onhand_qty.update({product.id: actual_stock})
 
         simple_product_list = list(set(product_list) - set(bom_product_ids))
-        simple_product_list_ids = ','.join(str(e) for e in simple_product_list)
+        simple_product_list_ids = tuple(simple_product_list)
         if simple_product_list_ids:
             qry = self.prepare_onhand_qty_query(location_ids, simple_product_list_ids)
-            self._cr.execute(qry)
+            params=(location_ids,simple_product_list_ids)
+            self._cr.execute(qry,params)
             result = self._cr.dictfetchall()
             for i in result:
                 onhand_qty.update({i.get('product_id'): i.get('stock')})
