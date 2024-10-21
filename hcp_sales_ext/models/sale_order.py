@@ -6,6 +6,8 @@ from html import unescape
 class SaleOrderInherit(models.Model):
     _inherit = "sale.order"
 
+    comment_internal_notes = fields.Html(string='Customer Internal Notes',placeholder="Displayed if customer has internal notes or remarks")
+
     @api.onchange('partner_id')
     def _onchange_partner_id_notes(self):
         if self.partner_id and self.partner_id.comment:
@@ -17,7 +19,7 @@ class SaleOrderInherit(models.Model):
 
             # Unescape any HTML entities
             clean_comment = unescape(clean_comment)
-
+            self.comment_internal_notes = self.partner_id.comment
             print("Partner ID has changed")
             return {
                 'warning': {

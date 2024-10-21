@@ -11,6 +11,10 @@
     'category': 'Sales',
     'version': '0.1',
     'depends': ['base','sale'],
+    'data': [
+        'views/sale_order.xml',
+
+    ],
     "application": False,
     "installable": True,
     'license': 'LGPL-3'
