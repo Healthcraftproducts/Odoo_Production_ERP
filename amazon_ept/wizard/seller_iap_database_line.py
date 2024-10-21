@@ -13,6 +13,6 @@ class SellerIapDatabasesLine(models.TransientModel):
     is_db_active = fields.Boolean(string="Is Active")
     iap_database_id = fields.Many2one(string='Iap_database', comodel_name='amazon.seller.iap.database')
     state = fields.Selection([('new', 'New'),
-                              ('run', 'Running'),
-                              ('block', 'Blocked'),
-                              ('expire', 'Expired')])
+                              ('running', 'Running'),
+                              ('blocked', 'Blocked'),
+                              ('expired', 'Expired')])

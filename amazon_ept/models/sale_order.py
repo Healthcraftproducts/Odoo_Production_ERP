@@ -31,6 +31,34 @@ COMMON_LOG_LINES_EPT = 'common.log.lines.ept'
 DATE_YMDHMS = "%Y-%m-%d %H:%M:%S"
 DATE_YMDTHMS = "%Y-%m-%dT%H:%M:%S"
 AMAZON_INSTANCE_NOT_CONFIGURED_WARNING = "There is no any instance is configured of seller"
+amazon_messages = {'fba_warehouse_id': "The order import operation failed because the warehouse configuration" 
+                                       "was not found in the instance configuration.\n"
+                                       "- To resolve this issue, navigate to Amazon >> Configuration >> Settings,\n"
+                                       "select Marketplace and configure FBA Warehouse",
+
+                   'picking_policy': "The order import operation failed because the shipping policy configuration"
+                                       " was not found in the auto invoice workflow configuration.\n"
+                                       "- To resolve this issue, navigate to Amazon >> Configuration >> Settings.\n"
+                                       "- Select Seller and Review whether Auto Workflow is configured,"
+                                       "and within Auto workflow, ensure that the shipping policy is also configured.",
+
+                   'ship_product': "When creating a new delivery method, the system encountered an issue as it could "
+                                   "not find the shipping product in the instance configuration.\n"
+                                   "- To resolve this issue, please follow these steps:\n"
+                                   "\t1.Go to Amazon >> Configuration>> Settings >> Amazon Shipment Fee.\n"
+                                   "\t2.Review whether the shipping product is set.\n"
+                                   "\t3.If already set, ensure that it is active in Odoo.",
+
+                   'fbm_warehouse_id': "The order import operation failed because the warehouse configuration"
+                                       "was not found in the instance configuration.\n"
+                                       "- To resolve this issue, navigate to Amazon >> Configuration >> Settings,\n"
+                                       "select Marketplace and configure FBM Warehouse",
+
+                   'pricelist_id':  "The order import operation failed because the pricelist configuration was not "
+                                   " found in the instance configuration.\n"
+                                   "- To resolve this issue, navigate to Amazon >> Configuration >> Settings,\n"
+                                   "select Marketplace  and configure Marketplace Pricelist"
+                   }
 
 
 class SaleOrder(models.Model):
@@ -487,7 +515,7 @@ class SaleOrder(models.Model):
             self._cr.commit()
         return True
 
-    def cancel_amazon_fbm_pending_sale_orders(self, seller, marketplaceids, instance_ids):
+    def cancel_amazon_fbm_pending_sale_orders(self, seller, marketplaceids):
         """
         Check Status of draft order in Amazon and if it is cancel, then cancel that order in Odoo
         Create Object for the integrate with amazon
@@ -495,32 +523,26 @@ class SaleOrder(models.Model):
         :return:
         """
         auto_process = self._context.get('is_auto_process', False)
-        orders = self.search(
-            [('amz_seller_id', '=', seller.id), ('amz_fulfillment_by', '=', 'FBM'),
-             ('amz_instance_id', 'in', instance_ids)],
-            order='date_order asc')
-        unshipped_orders = orders.filtered(
-            lambda order: order.mapped('picking_ids').filtered(
-                lambda pick: pick.state == 'confirmed' and pick.picking_type_code == 'outgoing')
-        ).sorted(key=lambda order: order.date_order)
-        if unshipped_orders:
-            updated_after_date = unshipped_orders[0].date_order - timedelta(+1)
+        if seller.cancel_fbm_order_last_sync_on:
+            updated_after_date = (seller.cancel_fbm_order_last_sync_on - timedelta(days=3)).replace(microsecond=0)
+        else:
+            today = datetime.now()
+            updated_after_date = (today - timedelta(days=3)).replace(microsecond=0)
+        if not marketplaceids:
+            marketplaceids = tuple([x.market_place_id for x in seller.instance_ids])
             if not marketplaceids:
-                marketplaceids = tuple([x.market_place_id for x in seller.instance_ids])
-                if not marketplaceids:
-                    if not auto_process:
-                        raise UserError(_(AMAZON_INSTANCE_NOT_CONFIGURED_WARNING + " %s" % (seller.name)))
-                    return []
-
-            if updated_after_date:
-                db_import_time = time.strptime(str(updated_after_date), DATE_YMDHMS)
-                db_import_time = time.strftime(DATE_YMDTHMS, db_import_time)
-                start_date = time.strftime(DATE_YMDTHMS, time.gmtime(
-                    time.mktime(time.strptime(db_import_time, DATE_YMDTHMS))))
-                updated_after_date = str(start_date) + 'Z'
-            result = self.check_amazon_fba_and_fbm_cancel_order(seller, marketplaceids, updated_after_date, 'MFN')
-            self.with_context({'fulfillment_by': 'FBM'}).cancel_amazon_draft_sales_order(seller, [result])
-            self._cr.commit()
+                if not auto_process:
+                    raise UserError(_(AMAZON_INSTANCE_NOT_CONFIGURED_WARNING + " %s" % (seller.name)))
+                return []
+        if updated_after_date:
+            db_import_time = time.strptime(str(updated_after_date), DATE_YMDHMS)
+            db_import_time = time.strftime(DATE_YMDTHMS, db_import_time)
+            start_date = time.strftime(DATE_YMDTHMS, time.gmtime(
+                time.mktime(time.strptime(db_import_time, DATE_YMDTHMS))))
+            updated_after_date = str(start_date) + 'Z'
+        result = self.check_amazon_fba_and_fbm_cancel_order(seller, marketplaceids, updated_after_date, 'MFN')
+        self.with_context({'fulfillment_by': 'FBM'}).cancel_amazon_draft_sales_order(seller, [result])
+        self._cr.commit()
         return True
 
     def check_amazon_fba_and_fbm_cancel_order(self, seller, marketplaceids, updated_after,
@@ -878,15 +900,13 @@ class SaleOrder(models.Model):
         :param: instances: amazon.instance.ept()
         :return: sale.order()
         """
-        instance_ids = ','.join(str(e) for e in instances.ids)
         query = """select sale_order.id from stock_picking inner join sale_order on 
         sale_order.procurement_group_id=stock_picking.group_id 
         inner join stock_location on stock_location.id=stock_picking.location_dest_id 
         and stock_location.usage='customer' where stock_picking.updated_in_amazon=False 
         and stock_picking.state='done' and sale_order.amz_order_reference is not NULL 
-        and sale_order.amz_instance_id in (%s) and sale_order.amz_fulfillment_by = 'FBM'""" % (
-            instance_ids)
-        self._cr.execute(query)
+        and sale_order.amz_instance_id in %s and sale_order.amz_fulfillment_by = 'FBM'"""
+        self._cr.execute(query, (tuple(instances.ids),))
         result = self._cr.dictfetchall()
         sales_orders = self.browse([order_id.get('id') for order_id in result])
         return sales_orders
@@ -1523,7 +1543,7 @@ class SaleOrder(models.Model):
                     message=response.get('error', ''), model_name='shipped.order.data.queue.ept',
                     fulfillment_by='FBM', module='amazon_ept', operation_type='import', res_id=self.id,
                     amz_seller_ept=seller and seller.id or False)
-                return []
+                return [], ''
             raise response.get('error', {})
         orders = response.get('result', [])
         next_token = response.get('NextToken', '')
@@ -1583,6 +1603,7 @@ class SaleOrder(models.Model):
         fbm_sale_order_report_obj = self.env['fbm.sale.order.report.ept']
         common_log_line_ept = self.env[COMMON_LOG_LINES_EPT]
         common_log_book_obj = self.env['common.log.book.ept']
+        model_name = 'shipped.order.data.queue.ept'
         amazon_order_ref = order.get('AmazonOrderId', False)
         # checks for the cancel requests in the order lines
         cancel_requests = [x.get('BuyerRequestedCancel') for x in order_lines if eval(x.get('BuyerRequestedCancel', {}).
@@ -1634,6 +1655,10 @@ class SaleOrder(models.Model):
                         })
                     if not ordervals.get('fiscal_position_id', False):
                         ordervals.pop('fiscal_position_id')
+                    result = self.check_amazon_order_values(instance, ordervals, 'FBM', queue_order.id, model_name)
+                    if not result:
+                        line_state = 'failed'
+                        return sales_order, line_state
                     sales_order = self.with_context(is_b2b_amz_order=ordervals.get(
                         'is_business_order', False)).create(ordervals)
             # Skip order line if order not found in ERP.
@@ -1914,6 +1939,55 @@ class SaleOrder(models.Model):
             'amz_seller_id': instance.seller_id and instance.seller_id.id or False,
         }
 
+    def amz_create_common_log(self, message, instance, order_ref, fulfillment_by, res_id, model_name):
+        """
+        This method is used to create the mismatch log for the orders.
+        :param message: string
+        :param instance: amazon.instance.ept()
+        :param order_ref: string
+        :param fulfillment_by: FBA/FBM
+        :param res_id: res_id
+        :param model_name: ir.model()
+        return:
+        """
+        common_log_obj = self.env[COMMON_LOG_LINES_EPT]
+        model_id = self.env[IR_MODEL]._get(model_name).id
+        common_log_obj.create_common_log_line_ept(
+            message=message, model_name=model_name, model_id=model_id, module='amazon_ept',
+            fulfillment_by=fulfillment_by, order_ref=order_ref,
+            operation_type='import', res_id=res_id, mismatch_details=True,
+            amz_instance_ept=instance.id,
+            amz_seller_ept=instance.seller_id.id if instance.seller_id else False
+        )
+
+    def check_amazon_order_values(self, instance, order_vals, fulfillment_by, res_id, model_name):
+        """
+        This method is used to check various fields present in order vals,
+        Check the condition and according to that it invoke other method to create the common log line.
+        :param : instance: amazon.instance.ept()
+        :param : order_vals: dict()
+        :param : fulfillment_by: FBA/FBM
+        :param : res_id: relation_id
+        :model_name : ir.model()
+        :return : boolean
+        """
+        order_ref = order_vals.get('amz_order_reference', False)
+        flag = True
+        if not order_vals.get('pricelist_id', False):
+            message = amazon_messages.get('pricelist_id', '')
+            self.amz_create_common_log(message, instance, order_ref, fulfillment_by, res_id, model_name)
+            flag = False
+        if not order_vals.get('warehouse_id', False):
+            warehouse = 'fba_warehouse_id' if fulfillment_by == 'FBA' else 'fbm_warehouse_id'
+            message = amazon_messages.get(warehouse, '')
+            self.amz_create_common_log(message, instance, order_ref, fulfillment_by, res_id, model_name)
+            flag = False
+        if not order_vals.get('picking_policy', False):
+            message = amazon_messages.get('picking_policy', '')
+            self.amz_create_common_log(message, instance, order_ref, fulfillment_by, res_id, model_name)
+            flag = False
+        return flag
+
     def create_amazon_shipping_report_sale_order(self, row, partner, report_id):
         """
         Process Amazon Shipping Report Sale Orders
@@ -1923,6 +1997,7 @@ class SaleOrder(models.Model):
         :param partner: partners {}
         :return: sale.order()
         """
+        model_name = 'shipping.report.request.history'
         amz_instance_obj = self.env[AMZ_INSTANCE_EPT]
         instance = amz_instance_obj.browse(row.get('instance_id'))
         warehouse = row.get('warehouse', False) or instance.fba_warehouse_id and \
@@ -1939,10 +2014,16 @@ class SaleOrder(models.Model):
         # set picking policy as FBA Auto workflow picking policy
         order_vals.update({'picking_policy': instance.seller_id.fba_auto_workflow_id.picking_policy or False})
         carrier_id = False
+        order_ref = row.get('amazon-order-id', False)
         if row.get('carrier', ''):
             # #shipment_charge_product_id is fetched according to seller wise
-            carrier_id = self.get_amz_shipping_method(row.get('carrier', ''),
-                                                      instance.seller_id.shipment_charge_product_id)
+            ship_product = instance.seller_id.shipment_charge_product_id
+            carrier_id = self.with_context(shipping_report=True).get_amz_shipping_method(row.get('carrier', ''),
+                                                                                         ship_product)
+            if not carrier_id:
+                message = amazon_messages.get('ship_product', '')
+                self.amz_create_common_log(message, instance, order_ref, 'FBA', report_id, model_name)
+                return False
         if row.get('purchase-date', False):
             date_order = parser.parse(row.get('purchase-date', False)) \
                 .astimezone(utc).strftime(DATE_YMDHMS)
@@ -1969,6 +2050,10 @@ class SaleOrder(models.Model):
         # analytic_account = instance.analytic_account_id.id if instance.analytic_account_id else False
         # if analytic_account:
         #     order_vals.update({'analytic_account_id': analytic_account})
+
+        result = self.check_amazon_order_values(instance, order_vals, 'FBA', report_id, model_name)
+        if not result:
+            return False
         if not order_vals.get('fiscal_position_id', False):
             order_vals.pop('fiscal_position_id')
         return self.with_context(is_b2b_amz_order=order_vals.get('is_business_order', False)).create(order_vals)
@@ -1985,6 +2070,8 @@ class SaleOrder(models.Model):
         carrier = delivery_carrier_obj.search(['|', ('amz_carrier_code', '=', ship_method),
                                                ('name', '=', ship_method)], limit=1)
         if not carrier:
+            if self._context.get('shipping_report', False) and not ship_product:
+                return delivery_carrier_obj
             carrier = delivery_carrier_obj.create({
                 'name': ship_method,
                 'product_id': ship_product.id})
@@ -2362,7 +2449,7 @@ class SaleOrder(models.Model):
         message_information = ''
         move_obj = self.env['stock.move']
         update_move_ids = []
-        picking_ids = order.picking_ids.ids
+        picking_ids = order.picking_ids.filtered(lambda l: l.location_dest_id.usage == 'customer').ids
         phantom_product_dict = self.amz_prepare_phantom_product_dict_ept(picking_ids)
         for sale_line_id, product_ids in phantom_product_dict.items():
             moves = move_obj.search([('picking_id', 'in', picking_ids), ('state', 'in', ['draft', 'cancel']),

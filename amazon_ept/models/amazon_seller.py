@@ -6,6 +6,7 @@ Added class to store the seller information
 """
 import requests
 import time
+import odoo
 from datetime import datetime, timedelta
 from odoo import SUPERUSER_ID
 from odoo import models, fields, api, _
@@ -29,7 +30,7 @@ LAST_SYNC_FIELDS = ['removal_order_report_last_sync_on', 'shipping_report_last_s
                     'fba_pending_order_last_sync_on', 'return_report_last_sync_on',
                     'last_inbound_shipment_status_sync', 'vcs_report_last_sync_on', 'inventory_last_sync_on',
                     'rating_report_last_sync_on', 'stock_adjustment_report_last_sync_on', 'order_last_sync_on',
-                    'update_shipment_last_sync_on']
+                    'update_shipment_last_sync_on', 'cancel_fbm_order_last_sync_on']
 AMZ_SELLER_EPT = 'amazon.seller.ept'
 PRODUCT_PRODUCT = 'product.product'
 AMZ_INSTANCE_EPT = 'amazon.instance.ept'
@@ -101,7 +102,7 @@ class AmazonSellerEpt(models.Model):
         """
         This method will set is_european_region based on country code.
         """
-        if self.country_id.code in ['AE', 'DE', 'EG', 'ES', 'FR', 'GB', 'IN', 'IT', 'SA', 'TR', 'NL', 'ZA']:
+        if self.country_id.code in ['AE', 'DE', 'EG', 'ES', 'FR', 'GB', 'IN', 'IT', 'SA', 'TR', 'NL', 'ZA', 'IE']:
             self.is_european_region = True
         else:
             self.is_european_region = False
@@ -312,6 +313,8 @@ class AmazonSellerEpt(models.Model):
     amz_activity_type_id = fields.Many2one('mail.activity.type', string="Activity Type")
     amz_activity_date_deadline = fields.Integer('Deadline lead days',
                                                 help="its add number of days in schedule activity deadline date ")
+    cancel_fbm_order_last_sync_on = fields.Datetime("Last Cancel FBM Order Request Time",
+                                                    help="last date and time for the fbm order request")
 
     def write(self, vals):
         """
@@ -372,18 +375,16 @@ class AmazonSellerEpt(models.Model):
 
                 if location:
                     if len(location) > 1:
-                        self._cr.execute(
-                            'update stock_location set active=False where id in %s' % (str(tuple(location.ids, ))))
+                        self._cr.execute('update stock_location set active=False where id in %s',
+                                         (tuple(location.ids), ))
                     else:
-                        self._cr.execute(
-                            'update stock_location set active=False where id = %s' % (location.id))
+                        self._cr.execute('update stock_location set active=False where id = %s', (location.id,))
                 if picking_types:
-                    self._cr.execute('update stock_picking_type set active=False where id in %s' % (
-                        str(tuple(picking_types.ids))))
+                    self._cr.execute('update stock_picking_type set active=False where id in %s',
+                                     (tuple(picking_types.ids), ))
                 if warehouses:
-                    qry = '''update stock_warehouse set active=False where id in %s''' % (
-                        str(warehouses))
-                    self._cr.execute(qry)
+                    qry = '''update stock_warehouse set active=False where id in %s'''
+                    self._cr.execute(qry, (warehouses, ))
                 unsellable_location and unsellable_location.write({'active': False})
 
             if (seller.amazon_program in ('efn', 'mci', 'efn+mci')) or (not seller.amazon_program):
@@ -481,18 +482,18 @@ class AmazonSellerEpt(models.Model):
             location = fba_warehouse_ids.with_context({'active_test': False}).mapped('lot_stock_id')
             if len(location) == 1:
                 self._cr.execute(
-                    'update stock_location set active=True where id =%s' % (location.id))
+                    'update stock_location set active=True where id =%s', (location.id,))
             else:
                 location = tuple(location.ids)
-                self._cr.execute('update stock_location set active=True where id in %s' % str(location))
+                self._cr.execute('update stock_location set active=True where id in %s', (location,))
 
             if len(fba_warehouse_ids) > 1:
                 fba_warehouse_ids = tuple(fba_warehouse_ids.ids)
-                qry = '''update stock_warehouse set active=True where id in %s''' % (str(fba_warehouse_ids))
-                self._cr.execute(qry)
+                qry = '''update stock_warehouse set active=True where id in %s'''
+                self._cr.execute(qry, (fba_warehouse_ids,))
             else:
-                qry = '''update stock_warehouse set active=True where id = %s''' % (fba_warehouse_ids.id)
-                self._cr.execute(qry)
+                qry = '''update stock_warehouse set active=True where id = %s'''
+                self._cr.execute(qry, (fba_warehouse_ids.id,))
             for fba_warehouse in self.with_context({'active_test': False}).amz_warehouse_ids:
                 name = fba_warehouse.name.split(')')[0]
                 name = name + ')'
@@ -547,7 +548,7 @@ class AmazonSellerEpt(models.Model):
             analytic_account_plan = analytic_account_plan_obj.create({'name': 'Amazon'})
         return analytic_account_plan
 
-    def amz_search_or_create_analytic_account(self, account_name, analytic_account_plan):
+    def amz_search_or_create_analytic_account(self, account_name, analytic_account_plan, company_id):
         """
         Define this method for search or create analytic account.
         :param: account_name: str
@@ -557,9 +558,9 @@ class AmazonSellerEpt(models.Model):
         analytic_account_obj = self.env['account.analytic.account']
         analytic_account = analytic_account_obj.search([('name', '=', account_name),
                                                         ('plan_id', '=', analytic_account_plan.id),
-                                                        ('company_id', '=', self.env.user.company_id.id)], limit=1)
+                                                        ('company_id', '=', company_id)], limit=1)
         if not analytic_account:
-            analytic_account = analytic_account_obj.create({'name': account_name, 'plan_id': analytic_account_plan.id})
+            analytic_account = analytic_account_obj.create({'name': account_name, 'plan_id': analytic_account_plan.id, 'company_id': company_id})
         return analytic_account
 
     def amz_create_analytic_account_for_seller(self, amazon_sellers):
@@ -572,7 +573,7 @@ class AmazonSellerEpt(models.Model):
         for amazon_seller in amazon_sellers:
             if not amazon_seller.amz_seller_analytic_account_id:
                 seller_analytic_account = self.amz_search_or_create_analytic_account(amazon_seller.name,
-                                                                                     analytic_account_plan)
+                                                                                     analytic_account_plan, amazon_seller.company_id.id)
                 amazon_seller.write({'amz_seller_analytic_account_id': seller_analytic_account.id})
             fba_account_name = ''
             fbm_account_name = ''
@@ -585,11 +586,11 @@ class AmazonSellerEpt(models.Model):
                 fbm_account_name = amazon_seller.name + '_FBM'
             if fba_account_name and not amazon_seller.fba_analytic_account_id:
                 fba_analytic_account = self.amz_search_or_create_analytic_account(fba_account_name,
-                                                                                  analytic_account_plan)
+                                                                                  analytic_account_plan, amazon_seller.company_id.id)
                 amazon_seller.write({'fba_analytic_account_id': fba_analytic_account.id})
             if fbm_account_name and not amazon_seller.fbm_analytic_account_id:
                 fbm_analytic_account = self.amz_search_or_create_analytic_account(fbm_account_name,
-                                                                                  analytic_account_plan)
+                                                                                  analytic_account_plan, amazon_seller.company_id.id)
                 amazon_seller.write({'fbm_analytic_account_id': fbm_analytic_account.id})
         return True
 
@@ -604,7 +605,7 @@ class AmazonSellerEpt(models.Model):
             if not amazon_marketplace.analytic_account_id:
                 account_name = amazon_marketplace.seller_id.name + amazon_marketplace.name
                 marketplace_analytic_account = self.amz_search_or_create_analytic_account(account_name,
-                                                                                          analytic_account_plan)
+                                                                                          analytic_account_plan, amazon_marketplace.seller_id.company_id.id)
                 amazon_marketplace.write({'analytic_account_id': marketplace_analytic_account.id})
         return True
 
@@ -718,8 +719,8 @@ class AmazonSellerEpt(models.Model):
                 if res and res.get('reason', {}):
                     is_skip = True
             if not is_skip:
-                sale_order_obj.import_fbm_shipped_or_missing_unshipped_orders(seller, False, False,
-                                                                              ['Unshipped', 'PartiallyShipped'])
+                sale_order_obj.with_context(is_auto_process=True).import_fbm_shipped_or_missing_unshipped_orders(
+                    seller, False, False, ['Unshipped', 'PartiallyShipped'])
         return True
 
     @api.model
@@ -745,8 +746,9 @@ class AmazonSellerEpt(models.Model):
         if seller_id:
             seller = self.browse(int(seller_id))
             marketplaceids = tuple([x.market_place_id for x in seller.instance_ids])
-            sale_order_obj.with_context(is_auto_process=True).cancel_amazon_fbm_pending_sale_orders(
-                seller, marketplaceids, seller.instance_ids.ids)
+            sale_order_obj.with_context(is_auto_process=True).cancel_amazon_fbm_pending_sale_orders(seller,
+                                                                                                    marketplaceids)
+            seller.write({'cancel_fbm_order_last_sync_on': datetime.now()})
         return True
 
     @api.model
@@ -760,7 +762,7 @@ class AmazonSellerEpt(models.Model):
             seller = self.browse(int(seller_id))
             if seller:
                 for instance in seller.instance_ids:
-                    amazon_product_obj.export_amazon_stock_levels_operation(instance)
+                    amazon_product_obj.with_context(is_auto_process=True).export_amazon_stock_levels_operation(instance)
                     instance.write({'inventory_last_sync_on': datetime.now()})
         return True
 
@@ -1012,7 +1014,7 @@ class AmazonSellerEpt(models.Model):
                             'A1PA6795UKMFR9', 'ARBP9OOSHTCHU', 'A1RKKUPIHCS9HS', 'A13V1IB3VIYZZH', 'A1F83G8C2ARO7P',
                             'A21TJRUUN4KGV', 'APJ6JRA9NG5V4', 'A33AVAJ2PDY3EV', 'A19VAU5U5O7RUS', 'A39IBJ37TRP1C6',
                             'A1VC38T7YXB528', 'A17E79C6D8DWNP', 'A1805IZSGTT6HS', 'A2NODRKZP88ZB9', 'A1C3SOZRARQ6R3',
-                            'AMEN7PMS3EDWL', 'AE08WJ6YKNBMC']
+                            'AMEN7PMS3EDWL', 'AE08WJ6YKNBMC', 'A28R8C7NBKEWEA']
         marketplace_obj = self.env['amazon.marketplace.ept']
         kwargs = self.prepare_marketplace_kwargs()
         response = iap_tools.iap_jsonrpc(DEFAULT_ENDPOINT, params=kwargs, timeout=1000)
@@ -1035,7 +1037,7 @@ class AmazonSellerEpt(models.Model):
 
     def update_user_groups(self):
         """
-        This mwthod will update the user groups as per the amazon fulfillment by
+        This method will update the user groups as per the amazon fulfillment by
         :return:
         """
         amazon_selling = self.amazon_selling
@@ -1412,3 +1414,21 @@ class AmazonSellerEpt(models.Model):
             'view_id': view.id
         }
         return action
+
+    @api.model
+    def update_app_version_in_iap_ept(self):
+        """
+        Define this method for update amazon connector app version name in the IAP in related database.
+        :return:
+        """
+        ir_module_obj = self.env['ir.module.module'].sudo()
+        db_uuid = self.env['ir.config_parameter'].sudo().get_param('database.uuid')
+        amz_module = ir_module_obj.search(
+            [('author', 'in', ['Emipro Technologies Pvt. Ltd.',
+                               'Emipro Technologies (P) Ltd.']), ('name', '=', 'amazon_ept')], limit=1)
+        if amz_module:
+            module_info = odoo.modules.get_manifest(amz_module.name)
+            kwargs = {'db_uuid': db_uuid, 'app_version': module_info.get('version', '')}
+            response = iap_tools.iap_jsonrpc('https://iap.odoo.emiprotechnologies.com/amz_update_version_in_iap',
+                                             params=kwargs, timeout=1000)
+        return True

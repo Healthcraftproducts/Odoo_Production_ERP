@@ -155,6 +155,15 @@
                     <field name="amz_warehouse_ids" widget="many2many_tags"
                            nolabel="1" domain="[('seller_id','=',False)]" readonly="1"
                            groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+                    <separator string="Select User for Schedule activity"
+                                attrs="{'invisible': [('is_amz_create_schedule_activity','=',False)]}"
+                               groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
+                    <group>
+                        <field name="is_amz_create_schedule_activity" invisible="1"/>
+                        <field name="amz_activity_user_ids" widget="many2many_tags"
+                        class="oe_inline" attrs="{'invisible': [('is_amz_create_schedule_activity','=',False)],
+                        'required': [('is_amz_create_schedule_activity', '=', True)]}"/>
+                    </group>
                     <notebook>
                         <page name='marketplaces' string='Marketplace'>
                             <field name="marketplace_ids" colspan="4" nolabel="1"
@@ -203,6 +212,7 @@
                                     <field name="last_inbound_shipment_status_sync"
                                            groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
                                     <field name="vcs_report_last_sync_on"/>
+                                    <field name="cancel_fbm_order_last_sync_on"/>
                                 </group>
                             </group>
                         </page>

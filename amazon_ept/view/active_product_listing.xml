@@ -48,6 +48,11 @@
                             class="oe_highlight"
                             help="Click Here To Reprocess the report file"
                             type="object"/>
+                    <button name="process_mismatched_product" string="Download Mismatched Product"
+                            attrs="{'invisible':[('log_count','=',0)]}"
+                            class="oe_highlight"
+                            help="Click Here To Download Mismatched Product Report"
+                            type="object"/>
                     <field name="state" widget="statusbar" statusbar_visible="SUBMITTED,IN_PROGRESS,DONE"/>
                 </header>
                 <sheet>

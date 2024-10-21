@@ -31,6 +31,7 @@ class AmazonInboundImportShipmentWizard(models.TransientModel):
         :param instance_id: instance record
         :return:
         """
+        not_exist_seller_skus = []
         amazon_inbound_shipment_plan_line_obj = self.env['inbound.shipment.plan.line']
         amazon_product_obj = self.env['amazon.product.ept']
         for item in items:
@@ -44,14 +45,18 @@ class AmazonInboundImportShipmentWizard(models.TransientModel):
                 amazon_product = amazon_product_obj.search([('product_asin', '=', fn_sku),
                                                             ('instance_id', '=', instance_id.id)], limit=1)
             if not amazon_product:
-                raise UserError(_("Amazon Product is not found in ERP || Seller SKU %s || "
-                                  "Instance %s" % (seller_sku, instance_id.name)))
+                not_exist_seller_skus.append(seller_sku)
+                continue
             amazon_inbound_shipment_plan_line_obj.create({'amazon_product_id': amazon_product.id,
                                                           'seller_sku': seller_sku,
                                                           'quantity': received_qty,
                                                           'fn_sku': fn_sku,
                                                           'odoo_shipment_id': inbound_shipment_id,
                                                           'quantity_in_case': quantity_in_case})
+        if not_exist_seller_skus:
+            user_message = ("You will be required to map products before proceeding. Please map the following "
+                            "Amazon SKUs with Odoo products and try again!\n%s" % not_exist_seller_skus)
+            raise UserError(_(user_message))
         return True
 
     def get_list_inbound_shipment_items(self, shipment_id, instance, inbound_shipment_id):

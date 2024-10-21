@@ -21,6 +21,7 @@ class CommonLogLineEpt(models.Model):
     product_title = fields.Char(string="Product Title", default=False, help="Product Title")
     amz_instance_ept = fields.Many2one(comodel_name='amazon.instance.ept', string="Amazon Instance")
     amz_seller_ept = fields.Many2one(comodel_name='amazon.seller.ept', string="Amazon Seller")
+    odoo_internal_reference = fields.Char(string='Internal Reference')
 
     def amz_find_mismatch_details_log_lines(self, res_id, model_name, mismatch=False):
         """
@@ -34,3 +35,6 @@ class CommonLogLineEpt(models.Model):
         if mismatch:
             domain.append(('mismatch_details', '=', True))
         return self.search(domain)
+
+    def download_mismatched_product(self):
+        return self.env['active.product.listing.report.ept'].process_mismatched_product()

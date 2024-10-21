@@ -93,13 +93,65 @@ class AccountMove(models.Model):
         })
         return vals
 
+    def request_upload_invoice_to_amazon(self, instance, shipped_orders_list):
+        """
+        This is method is used to upload the invoices to amazon and feed
+        records will be created and invoice sent will mark as a True
+        :param instance: amazon.instance.ept()
+        :param shipped_orders_list: list()
+        :return: True
+        """
+        after_req = 0.0
+        invoice_ids = self.amz_sale_order_id.search(
+            [('amz_order_reference', 'in', shipped_orders_list), ('amz_instance_id', '=', instance.id)]).mapped(
+            'invoice_ids').filtered(lambda invoice: invoice.move_type in [
+            'out_invoice', 'out_refund'] if instance.seller_id.amz_upload_refund_invoice else ['out_invoice'])
+        for invoice_id in invoice_ids:
+            kwargs = invoice_id._prepare_amz_invoice_upload_kwargs(instance)
+            before_req = time.time()
+            diff = int(after_req - before_req)
+            if 3 > diff > 0:
+                time.sleep(3 - diff)
+            response = iap_tools.iap_jsonrpc(DEFAULT_ENDPOINT, params=kwargs, timeout=1000)
+            after_req = time.time()
+            self.process_invoice_feed_submission_response(response, instance, invoice_id.id)
+        return True
+
+    def get_amazon_shipped_order_list(self, instance, invoice_ids):
+        """
+        This method is used to check status of order which are shipped in amazon
+        available invoice_ids and invoke the other method to upload the invoices.
+        :param instance: amazon.instance.ept()
+        :param invoice_ids: list()
+        :return:  list()
+        """
+        invoice_ids = [invoice[0] for invoice in invoice_ids]
+        orders_ids = self.browse(invoice_ids).mapped('amz_sale_order_id').mapped('amz_order_reference')
+        kwargs = self.env['amazon.reports'].prepare_amazon_request_report_kwargs(instance.seller_id)
+        kwargs.update({'emipro_api': 'get_amazon_orders_sp_api'})
+        for x in range(0, len(orders_ids), 50):
+            shipped_orders_list = []
+            sale_orders_list = orders_ids[x:x + 50]
+            sale_orders_list = ",".join(sale_orders_list)
+            kwargs.update({'sale_order_list': sale_orders_list})
+            response = iap_tools.iap_jsonrpc(DEFAULT_ENDPOINT, params=kwargs, timeout=1000)
+            result = response.get('result', {}) if isinstance(response.get('result', {}), list) else [
+                response.get('result', {})]
+            for obj in result:
+                orders = []
+                orders = orders.append(obj.get('Orders', {})) if not isinstance(obj.get('Orders', []),
+                                                                                list) else obj.get('Orders', [])
+                [shipped_orders_list.append(order.get('AmazonOrderId')) for order in orders if
+                 order.get('AmazonOrderId', False) and order.get('OrderStatus') == 'Shipped']
+            self.request_upload_invoice_to_amazon(instance, shipped_orders_list)
+        return True
+
     def upload_odoo_invoice_to_amazon(self, args={}):
-        """ This method is used to upload odoo invoice to amazon and
-            feed records will be created and invoice sent will mark as a
-            True """
+        """This method is used to upload odoo invoice to amazon.
+           :return: True
+        """
         seller_obj = self.env['amazon.seller.ept']
         seller_id = args.get('seller_id', False)
-        after_req = 0.0
         if not seller_id:
             _logger.info(_("Seller Id not found in Cron Argument, Please Check Cron Configurations."))
             return False
@@ -112,20 +164,11 @@ class AccountMove(models.Model):
         else:
             refund_inv = "and move_type = 'out_invoice'"
         for instance in seller.instance_ids:
-            query = "select id from account_move where amazon_instance_id=%s and state='posted' and invoice_sent=False %s" % (
-                instance.id, refund_inv)
-            self._cr.execute(query)
+            query = """select id from account_move where amazon_instance_id=%s and state='posted' and 
+            invoice_sent=False {refund_inv}""".format(refund_inv=refund_inv)
+            self._cr.execute(query, (instance.id,))
             invoice_ids = self._cr.fetchall()
-            for invoice_id in invoice_ids:
-                invoice = self.browse(invoice_id)
-                kwargs = invoice._prepare_amz_invoice_upload_kwargs(instance)
-                before_req = time.time()
-                diff = int(after_req - before_req)
-                if 3 > diff > 0:
-                    time.sleep(3 - diff)
-                response = iap_tools.iap_jsonrpc(DEFAULT_ENDPOINT, params=kwargs, timeout=1000)
-                after_req = time.time()
-                self.process_invoice_feed_submission_response(response, instance, invoice_id)
+            self.get_amazon_shipped_order_list(instance, invoice_ids)
         return True
 
     def process_invoice_feed_submission_response(self, response, instance, invoice_id):
@@ -179,8 +222,8 @@ class AccountMove(models.Model):
         account = self.env['iap.account'].search([('service_name', '=', 'amazon_ept')])
         dbuuid = self.env['ir.config_parameter'].sudo().get_param('database.uuid')
         metadata = {'metadata:orderid': self.amz_sale_order_id.amz_order_reference,
-                    'metadata:totalamount': self.amount_total,
-                    'metadata:totalvatamount': self.amount_tax,
+                    'metadata:totalamount': str(self.amount_total),
+                    'metadata:totalvatamount': str(self.amount_tax),
                     'metadata:invoicenumber': self.name,
                     'metadata:documenttype': 'Invoice' if self.move_type == 'out_invoice' else 'CreditNote'}
         report_name = instance.seller_id.amz_invoice_report.report_name if instance.seller_id.amz_invoice_report else 'account.report_invoice'

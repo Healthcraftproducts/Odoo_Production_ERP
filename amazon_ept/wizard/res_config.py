@@ -120,9 +120,6 @@ class AmazonConfigSettings(models.TransientModel):
                                                help="Select Amazon Instance for Outbound Orders.")
     amz_tax_id = fields.Many2one('account.tax', string="Tax Account")
     amz_is_usa_marketplace = fields.Boolean(string="Is USA Marketplace", store=False, default=False)
-
-    stock_update_warehouse_ids = fields.Many2many(STOCK_WAREHOUSE, string="Stock Update Warehouses", \
-                                                  help="Warehouses which will fulfill the orders")
     removal_order_report_days = fields.Integer("Removal Order Report Days", default=3,
                                                help="Days of report to import Removal Order Report")
 
@@ -187,7 +184,6 @@ class AmazonConfigSettings(models.TransientModel):
     is_amz_create_schedule_activity = fields.Boolean("Create Schedule Activity ? ", default=False,
                                                      help="If checked, Then Schedule Activity create for "
                                                           "import orders if any products missing.")
-    amz_activity_user_ids = fields.Many2many('res.users', string='Responsible User')
     amz_activity_type_id = fields.Many2one('mail.activity.type', string="Activity Type")
     amz_activity_date_deadline = fields.Integer('Deadline lead days',
                                                 help="its add number of days in schedule activity deadline date ")
@@ -337,7 +333,6 @@ class AmazonConfigSettings(models.TransientModel):
             vals['value']['is_fulfilment_center_configured'] = seller.is_fulfilment_center_configured or False
 
             vals['value']['is_amz_create_schedule_activity'] = seller.is_amz_create_schedule_activity or False
-            vals['value']['amz_activity_user_ids'] = seller.amz_activity_user_ids or False
             vals['value']['amz_activity_type_id'] = seller.amz_activity_type_id or False
             vals['value']['amz_activity_date_deadline'] = seller.amz_activity_date_deadline or False
 
@@ -439,15 +434,11 @@ class AmazonConfigSettings(models.TransientModel):
             values[
                 'amz_is_usa_marketplace'] = True if \
                 instance.market_place_id in ['ATVPDKIKX0DER', 'A2EUQ1WTGCTBG2', 'A1AM78C64UM0Y8'] else False
-            values[
-                'stock_update_warehouse_ids'] = instance.stock_update_warehouse_ids.ids if \
-                instance.stock_update_warehouse_ids else False
             values['analytic_account_id'] = instance.analytic_account_id.id if \
                 instance.analytic_account_id else False
         else:
             values = {'amz_instance_id': False, 'amz_instance_stock_field': False,
-                      'amz_country_id': False, 'stock_update_warehouse_ids': False,
-                      'amz_lang_id': False, 'amz_warehouse_id': False,
+                      'amz_country_id': False, 'amz_lang_id': False, 'amz_warehouse_id': False,
                       'amz_instance_pricelist_id': False, 'amz_partner_id': False}
         return {'value': values}
 
@@ -491,9 +482,6 @@ class AmazonConfigSettings(models.TransientModel):
                 'fba_warehouse_id'] = self.amz_fba_warehouse_id.id if self.amz_fba_warehouse_id else False
             values['amz_tax_id'] = self.amz_tax_id.id if self.amz_tax_id else False
             values['is_use_percent_tax'] = True if self.amz_tax_id else False
-            values['stock_update_warehouse_ids'] = [(6, 0,
-                                                     self.stock_update_warehouse_ids and
-                                                     self.stock_update_warehouse_ids.ids or [])]
             values['analytic_account_id'] = self.analytic_account_id.id if self.analytic_account_id else False
             instance.write(values)
         if self.amz_seller_id:
@@ -565,7 +553,6 @@ class AmazonConfigSettings(models.TransientModel):
             vals['fba_analytic_account_id'] = self.fba_analytic_account_id.id or False
             vals['fbm_analytic_account_id'] = self.fbm_analytic_account_id.id or False
             vals['is_amz_create_schedule_activity'] = self.is_amz_create_schedule_activity
-            vals['amz_activity_user_ids'] = self.amz_activity_user_ids
             vals['amz_activity_type_id'] = self.amz_activity_type_id
             vals['amz_activity_date_deadline'] = self.amz_activity_date_deadline
             vals[
@@ -648,36 +635,29 @@ class AmazonConfigSettings(models.TransientModel):
         Generate Buy Pack URL while registering Seller ID
         :return: {}
         """
-        url = 'https://iap.odoo.com/iap/1/credit?dbuuid='
-        dbuuid = self.env['ir.config_parameter'].sudo().get_param('database.uuid')
-        service_name = 'amazon_ept'
-        account = self.env['iap.account'].search([('service_name', '=', 'amazon_ept')])
-        if not account:
-            account = self.env['iap.account'].create({'service_name': 'amazon_ept'})
-        account_token = account.account_token
-        if not account_token:
-            account_token = self.get_account_token_ept(dbuuid)
-        url = ('%s%s&service_name=%s&account_token=%s&credit=1') % (
-            url, dbuuid, service_name, account_token)
+        response = self.get_iap_pack_url_based_subscription_token_ept()
+        if not response.get('url', ''):
+            return True
         return {
             'type': URL_ACTION,
-            'url': url,
+            'url': response.get('url', ''),
             'target': 'new'
         }
 
-    @staticmethod
-    def get_account_token_ept(database_uid):
+    def get_iap_pack_url_based_subscription_token_ept(self):
         """
-        This method will help to find account_token from IAP for buy amazon connector IAP pack.
-        :param database_uid: database id
-        :return str: IAP Account token
+        This method will help to find subscription_token from IAP for buy amazon connector IAP pack.
+        :return str: subscription token
         """
-        kwargs = {'database_uid': database_uid}
+        sellers = self.env['amazon.seller.ept'].sudo().search([])
+        if not sellers:
+            return True
+        kwargs = {'merchant_id': sellers[0].merchant_id}
         response = iap_tools.iap_jsonrpc('https://iap.odoo.emiprotechnologies.com/get_amz_iap_token', params=kwargs,
                                          timeout=1000)
         if response.get('error', False):
             raise UserError(_(response.get('error', False)))
-        return response.get('amz_iap_token', '')
+        return response
 
     def register_seller(self):
         """
@@ -685,7 +665,7 @@ class AmazonConfigSettings(models.TransientModel):
         :return: dict
         """
         payload = {'key1': 'value1'}
-        url = "https://iap.odoo.emiprotechnologies.com/amazon-seller-registration-sp-api"
+        url = "https://iap.odoo.emiprotechnologies.com/subscriber-merchant-registration"
         requests.post(url, data=payload)
         return {
             'type': URL_ACTION,

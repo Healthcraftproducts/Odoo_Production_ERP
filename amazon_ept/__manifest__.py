@@ -5,7 +5,7 @@
 {
     # App information
     'name': 'Amazon Odoo Connector',
-    'version': '16.0.1.2.15',
+    'version': '16.0.1.2.37',
     'category': 'Sales',
     'license': 'OPL-1',
     'summary': 'Amazon Odoo Connector helps you integrate & manage your Amazon Seller Account operations from Odoo. Save time, efforts and avoid errors due to manual data entry to boost your Amazon sales with this connector.Apart from Odoo Amazon Connector, we do have other ecommerce solutions or applications such as Woocommerce connector , Shopify connector , Magento Connector , and also we have solutions for Marketplace Integration such as Odoo eBay Connector , Odoo Walmart Connector , Odoo Bol.com Connector.Aside from ecommerce integration and ecommerce marketplace integration, we also provide solutions for various operations, such as shipping , logistics , shipping labels , and shipping carrier management with our shipping integration, known as the Shipstation connector.For the customers who are into Dropship business, we do provide EDI Integration that can help them manage their Dropshipping business with our Dropshipping integration or Dropshipper integration It is listed as Dropshipping EDI integration and Dropshipper EDI integration.Emipro applications can be searched with different keywords like Amazon integration , Shopify integration , Woocommerce integration , Magento integration , Amazon vendor center module , Amazon seller center module, Inter company transfer , Ebay integration , Bol.com integration, inventory management , warehouse transfer module , dropship and dropshipper integration and other Odoo integration application or module',
@@ -122,7 +122,7 @@
         "amazon_ept/**/*"
     ],
     # Odoo Store Specific
-    'images': ['static/description/Amazon_Odoo_Application_v16.gif'],
+    'images': ['static/description/amazon_v16_new.gif'],
     # Technical
     'installable': True,
     'auto_install': False,

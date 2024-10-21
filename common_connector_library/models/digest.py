@@ -7,6 +7,14 @@ from werkzeug.urls import url_join
 from odoo.exceptions import AccessError
 from dateutil.relativedelta import relativedelta
 from odoo.tools.date_utils import start_of, end_of
+from odoo.tools.sql import SQL
+from psycopg2 import sql
+
+table_name = ["move.", "so.", "sp.", "am.", ""]
+allowed_columns = {'shopify_instance_id', 'updated_in_shopify',
+                   'woo_instance_id', 'updated_in_woo',
+                   'magento_instance_id', 'is_exported_to_magento'}  # Define allowed columns here for domain
+allowed_operators = {'=', '>', '<', '>=', '<=', '!='} # Define allowed operators here for domain
 
 
 class Digest(models.Model):
@@ -54,11 +62,29 @@ class Digest(models.Model):
         This method is used to prepared dynamic domain based on query string and query table reference.
         @return: domain of query string
         """
-        where_string = ""
-        for d in domain:
-            if d[2]:
-                where_string += f"AND {table_ref + d[0]} {d[1]} {d[2]}  "
-        return where_string
+        where_clause = []
+        param_list = []
+        if table_ref in table_name:
+            for d in domain:
+                if d[2]:
+                    column, operator, value = d[0], d[1], d[2]
+                    # Validate column name
+                    if column not in allowed_columns:
+                        raise ValueError(f"Invalid column name: {column}")
+                    # Validate operator
+                    if operator not in allowed_operators:
+                        raise ValueError(f"Invalid operator: {operator}")
+
+                    # Updating the Query
+                    where_clause.append(
+                        sql.SQL("""AND {table_ref}{coloumn} {operator} %s """).format(table_ref=sql.SQL(table_ref),
+                                                                                      coloumn=sql.SQL(column),
+                                                                                      operator=sql.SQL(operator)
+                                                                                      ))
+                    param_list.append(d[2])
+            where_clause = sql.SQL(' ').join(where_clause)
+            return where_clause, param_list
+        return ""
 
     def get_account_total_revenue(self, domain):
         """
@@ -67,15 +93,20 @@ class Digest(models.Model):
         """
         for record in self:
             start, end, company = record._get_kpi_compute_parameters()
-            domain = self._prepare_query_domain(domain, 'move.')
-            query = f"""SELECT -SUM(line.balance)
-                FROM account_move_line line
-                JOIN account_move move ON move.id = line.move_id
-                JOIN account_account account ON account.id = line.account_id
-                WHERE line.company_id = {company.id} AND line.date >= '{start}' AND line.date <= '{end}'
-                AND account.internal_group = 'income'
-                AND move.state = 'posted' {domain}"""
-            self._cr.execute(query)
+            domain, params_value = self._prepare_query_domain(domain, 'move.')
+            query = sql.SQL("""
+                            SELECT -SUM(line.balance)
+                            FROM account_move_line line
+                            JOIN account_move move ON move.id = line.move_id
+                            JOIN account_account account ON account.id = line.account_id
+                            WHERE line.company_id = %s 
+                            AND line.date >= %s 
+                            AND line.date <= %s
+                            AND account.internal_group = 'income'
+                            AND move.state = 'posted'
+                            {domain}
+                        """).format(domain=domain)
+            self._cr.execute(query, (company.id, start, end, *params_value))
             query_res = self._cr.fetchone()
             record.kpi_account_total_revenue_value = query_res and query_res[0] or 0
 
@@ -86,11 +117,14 @@ class Digest(models.Model):
         """
         for record in self:
             start, end, company = record._get_kpi_compute_parameters()
-            domain = self._prepare_query_domain(domain, 'so.')
-            query = f"""select count(*) from sale_order so where so.company_id ={company.id} 
-                AND so.date_order >= '{start}' AND so.date_order <= '{end}' 
-                and state in ('sale','done') {domain}"""
-            self._cr.execute(query)
+            domain, params_value = self._prepare_query_domain(domain, 'so.')
+            # query = f"""select count(*) from sale_order so where so.company_id =%s
+            #     AND so.date_order >= %s AND so.date_order <= %s
+            #     and state in ('sale','done') """ + domain
+            query = sql.SQL("""select count(*) from sale_order so where so.company_id =%s
+                            AND so.date_order >= %s AND so.date_order <= %s
+                            and state in ('sale','done') {domain} """).format(domain=domain)
+            self._cr.execute(query, (company.id, start, end, *params_value))
             query_res = self._cr.fetchone()
             record.kpi_orders_value = query_res and query_res[0] or 0
 
@@ -101,13 +135,18 @@ class Digest(models.Model):
         """
         for record in self:
             start, end, company = record._get_kpi_compute_parameters()
-            domain = self._prepare_query_domain(domain, 'sp.')
-            query = f"""select count(*) from stock_picking sp
-                 inner join sale_order so on so.procurement_group_id=sp.group_id inner 
-                 join stock_location on stock_location.id=sp.location_dest_id and stock_location.usage='customer' 
-                 where sp.state != 'cancel' and sp.company_id={company.id} 
-                 and sp.date_done >= '{start}' and sp.date_done <= '{end}' {domain}"""
-            self._cr.execute(query)
+            domain, params_value = self._prepare_query_domain(domain, 'sp.')
+            # query = f"""select count(*) from stock_picking sp
+            #      inner join sale_order so on so.procurement_group_id=sp.group_id inner
+            #      join stock_location on stock_location.id=sp.location_dest_id and stock_location.usage='customer'
+            #      where sp.state != 'cancel' and sp.company_id=%s
+            #      and sp.date_done >= %s and sp.date_done <= %s """ + domain
+            query = sql.SQL("""select count(*) from stock_picking sp
+                             inner join sale_order so on so.procurement_group_id=sp.group_id inner
+                             join stock_location on stock_location.id=sp.location_dest_id and stock_location.usage='customer'
+                             where sp.state != 'cancel' and sp.company_id=%s
+                             and sp.date_done >= %s and sp.date_done <= %s {domain}""").format(domain=domain)
+            self._cr.execute(query, (company.id, start, end, *params_value))
             query_res = self._cr.fetchone()
             record.kpi_shipped_orders_value = query_res and query_res[0] or 0
 
@@ -118,13 +157,18 @@ class Digest(models.Model):
         """
         for record in self:
             start, end, company = record._get_kpi_compute_parameters()
-            domain = self._prepare_query_domain(domain, 'sp.')
-            query = f"""select count(*) from stock_picking sp
-                 inner join sale_order so on so.procurement_group_id=sp.group_id inner 
-                 join stock_location on stock_location.id=sp.location_dest_id and stock_location.usage='customer' 
-                 where sp.state != 'cancel' and sp.company_id={company.id} 
-                 and sp.scheduled_date >= '{start}' and sp.scheduled_date <= '{end}' {domain}"""
-            self._cr.execute(query)
+            domain, params_value = self._prepare_query_domain(domain, 'sp.')
+            # query = f"""select count(*) from stock_picking sp
+            #      inner join sale_order so on so.procurement_group_id=sp.group_id inner
+            #      join stock_location on stock_location.id=sp.location_dest_id and stock_location.usage='customer'
+            #      where sp.state != 'cancel' and sp.company_id=%s
+            #      and sp.scheduled_date >= %s and sp.scheduled_date <= %s """ + domain
+            query = sql.SQL("""select count(*) from stock_picking sp
+                             inner join sale_order so on so.procurement_group_id=sp.group_id inner
+                             join stock_location on stock_location.id=sp.location_dest_id and stock_location.usage='customer'
+                             where sp.state != 'cancel' and sp.company_id=%s
+                             and sp.scheduled_date >= %s and sp.scheduled_date <= %s {domain}""").format(domain=domain)
+            self._cr.execute(query, (company.id, start, end, *params_value))
             query_res = self._cr.fetchone()
             record.kpi_pending_shipment_on_date_value = query_res and query_res[0] or 0
 
@@ -135,10 +179,13 @@ class Digest(models.Model):
         """
         for record in self:
             start, end, company = record._get_kpi_compute_parameters()
-            domain = self._prepare_query_domain(domain, 'so.')
-            query = f"""select count(*) from sale_order so where so.company_id ={company.id}
-                AND so.date_order >= '{start}' AND so.date_order <= '{end}' and state='cancel' {domain}"""
-            self._cr.execute(query)
+            domain, params_value = self._prepare_query_domain(domain, 'so.')
+            # query = f"""select count(*) from sale_order so where so.company_id =%s
+            #     AND so.date_order >= %s AND so.date_order <= %s and state='cancel' """ + domain
+            query = sql.SQL("""select count(*) from sale_order so where so.company_id =%s
+                            AND so.date_order >= %s AND so.date_order <= %s and state='cancel' {domain}""").format(
+                domain=domain)
+            self._cr.execute(query, (company.id, start, end, *params_value))
             query_res = self._cr.fetchone()
             record.kpi_cancel_orders_value = query_res and query_res[0] or 0
 
@@ -149,11 +196,14 @@ class Digest(models.Model):
         """
         for record in self:
             start, end, company = record._get_kpi_compute_parameters()
-            domain = self._prepare_query_domain(domain, 'so.')
-            query = f"""select sum(amount_untaxed) from sale_order so
-                        where so.company_id ={company.id} AND so.date_order >= '{start}' AND so.date_order <= '{end}' 
-                        and state in ('sale','done') {domain}"""
-            self._cr.execute(query)
+            domain, params_value = self._prepare_query_domain(domain, 'so.')
+            # query = f"""select sum(amount_untaxed) from sale_order so
+            #             where so.company_id =%s AND so.date_order >= %s AND so.date_order <= %s
+            #             and state in ('sale','done') """ + domain
+            query = sql.SQL("""select sum(amount_untaxed) from sale_order so
+                                    where so.company_id =%s AND so.date_order >= %s AND so.date_order <= %s
+                                    and state in ('sale','done') {domain}""").format(domain=domain)
+            self._cr.execute(query, (company.id, start, end, *params_value))
             query_res = self._cr.fetchone()
             total_sales = 0.0
             if query_res and query_res[0]:
@@ -168,11 +218,15 @@ class Digest(models.Model):
         """
         for record in self:
             start, end, company = record._get_kpi_compute_parameters()
-            domain = self._prepare_query_domain(domain, 'am.')
-            query = f"""select count(*) from account_move am
-                where am.company_id = {company.id} AND am.invoice_date > '{start}' 
-                AND am.invoice_date <= '{end}' and am.move_type='out_refund' {domain} group by am.id"""
-            self._cr.execute(query)
+            domain, params_value = self._prepare_query_domain(domain, 'am.')
+            # query = f"""select count(*) from account_move am
+            #     where am.company_id = %s AND am.invoice_date > %s
+            #     AND am.invoice_date <= %s and am.move_type='out_refund' """ + domain + """ group by am.id"""
+            query = sql.SQL("""select count(*) from account_move am
+                            where am.company_id = %s AND am.invoice_date > %s
+                            AND am.invoice_date <= %s and am.move_type='out_refund' {domain} group by am.id""").format(
+                domain=domain)
+            self._cr.execute(query, (company.id, start, end, *params_value))
             query_res = self._cr.fetchone()
             total_refund_orders = []
             if query_res != None:
@@ -185,15 +239,22 @@ class Digest(models.Model):
         @return: total number of connector's sale orders ids and action for sale orders of current instance.
         """
         for record in self:
-            domain = self._prepare_query_domain(domain, '')
-            query = f"""select * from(
-                select count(*) as first from stock_picking where state='done' {domain} and (date(date_done)-date(scheduled_date)) between 1 and 3 
-                union all
-                select count(*) as second from stock_picking where state='done' {domain} and (date(date_done)-date(scheduled_date)) between 4 and 7 
-                union all
-                select count(*) as third from stock_picking where state='done' {domain} and (date(date_done)-date(scheduled_date)) > 7
-                )T"""
-            self._cr.execute(query)
+            domain, params_value = self._prepare_query_domain(domain, '')
+            # query = f"""select * from(
+            #     select count(*) as first from stock_picking where state='done' """ + domain + """ and (date(date_done)-date(scheduled_date)) between 1 and 3
+            #     union all
+            #     select count(*) as second from stock_picking where state='done' """ + domain + """ and (date(date_done)-date(scheduled_date)) between 4 and 7
+            #     union all
+            #     select count(*) as third from stock_picking where state='done' """ + domain + """ and (date(date_done)-date(scheduled_date)) > 7
+            #     )T"""
+            query = sql.SQL("""select * from(
+                            select count(*) as first from stock_picking where state='done' {domain} and (date(date_done)-date(scheduled_date)) between 1 and 3
+                            union all
+                            select count(*) as second from stock_picking where state='done' {domain} and (date(date_done)-date(scheduled_date)) between 4 and 7
+                            union all
+                            select count(*) as third from stock_picking where state='done' {domain} and (date(date_done)-date(scheduled_date)) > 7
+                            )T""").format(domain=domain)
+            self._cr.execute(query, (*params_value, *params_value, *params_value))
             query_res = self._cr.fetchall()
             late_deliveries_bt_one_three = 0
             late_deliveries_bt_four_seven = 0
@@ -214,17 +275,22 @@ class Digest(models.Model):
         @return: total number of connector's sale orders ids and action for sale orders of current instance.
         """
         for record in self:
-            domain = self._prepare_query_domain(domain, '')
+            domain, params_value = self._prepare_query_domain(domain, '')
             end_date = datetime.today()
             if self._context.get('end_datetime'):
                 end_date = self._context.get('end_datetime')
             on_date = end_date + relativedelta(days=-1)
-            query = f"""select * from (                                                                                        
-                select count(*) as first from stock_picking as sp where sp.state='done' and date(sp.date_done) = date(sp.scheduled_date) and date(sp.scheduled_date) = '{on_date}' {domain}
-                union all
-                select count(*) as second from stock_picking as sp2 where sp2.state='done' and  date(sp2.scheduled_date) = '{on_date}' {domain}
-                )T"""
-            self._cr.execute(query)
+            # query = f"""select * from (
+            #     select count(*) as first from stock_picking as sp where sp.state='done' and date(sp.date_done) = date(sp.scheduled_date) and date(sp.scheduled_date) = %s """ + domain + """
+            #     union all
+            #     select count(*) as second from stock_picking as sp2 where sp2.state='done' and  date(sp2.scheduled_date) = %s """ + domain + """
+            #     )T"""
+            query = sql.SQL("""select * from (
+                            select count(*) as first from stock_picking as sp where sp.state='done' and date(sp.date_done) = date(sp.scheduled_date) and date(sp.scheduled_date) = %s {domain}
+                            union all
+                            select count(*) as second from stock_picking as sp2 where sp2.state='done' and  date(sp2.scheduled_date) = %s {domain}
+                            )T""").format(domain=domain)
+            self._cr.execute(query, (on_date, *params_value, on_date, *params_value))
             query_res = self._cr.fetchall()
             shipping_count = 0
             if query_res and query_res[0][0] and query_res[1][0] != 0:

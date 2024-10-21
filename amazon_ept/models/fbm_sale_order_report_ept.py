@@ -267,6 +267,8 @@ class FbmSaleOrderReportEpt(models.Model):
         self.ensure_one()
         ir_cron_obj = self.env['ir.cron']
         common_log_line_obj = self.env['common.log.lines.ept']
+        mismatch_lines = common_log_line_obj.amz_find_mismatch_details_log_lines(self.id, 'fbm.sale.order.report.ept')
+        mismatch_lines and mismatch_lines.unlink()
         if not self._context.get('is_auto_process', False):
             ir_cron_obj.with_context({'raise_warning': True}).find_running_schedulers(
                 'ir_cron_process_amazon_unshipped_orders_seller_', self.seller_id.id)
@@ -298,7 +300,11 @@ class FbmSaleOrderReportEpt(models.Model):
                 unshipped_order_list, business_prime_dict = self.process_fbm_shipped_order_response_ept(
                     response, unshipped_order_list, business_prime_dict)
         self.process_prepare_unshipped_order_list_ept(unshipped_order_list, business_prime_dict)
-        self.write({'state': 'processed'})
+        model_id = self.env['ir.model']._get('fbm.sale.order.report.ept').id
+        mismatch_logs = common_log_line_obj.search_count([('res_id', '=', self.id), ('model_id', '=', model_id),
+                                                          ('mismatch_details', '=', True)])
+        report_state = 'partially_processed' if mismatch_logs else 'processed'
+        self.write({'state': report_state})
         return True
 
     def process_prepare_unshipped_order_list_ept(self, unshipped_order_list, business_prime_dict):
@@ -877,6 +883,7 @@ class FbmSaleOrderReportEpt(models.Model):
             shipment_charge_product_id = instance.seller_id.shipment_charge_product_id
             charges_vals = self.get_fbm_unshipped_order_line_vals(instance, order, shipment_charge_product_id,
                                                                   shipping_price, order_detail)
+            charges_vals.update({'is_delivery': True})
             if instance.is_use_percent_tax:
                 shipping_tax = order_detail.get('shipping-tax', 0.0)
                 ship_tax_percent = (float(shipping_tax) * 100) / float(shipping_price) if shipping_price > 0.0 else 0.0

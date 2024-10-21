@@ -14,9 +14,8 @@
                     <tree editable="top" create="0">
                         <field name="name" readonly="True"/>
                         <field name="db_uid" readonly="True"/>
-                        <field name="account_type" readonly="True"/>
-                        <field name="is_db_active" widget="boolean_toggle"
-                               attrs="{'invisible':[('account_type','=','production')]}"/>
+<!--                        <field name="account_type" readonly="True"/>-->
+                        <field name="is_db_active" widget="boolean_toggle"/>
                     </tree>
                 </field>
                 <footer>

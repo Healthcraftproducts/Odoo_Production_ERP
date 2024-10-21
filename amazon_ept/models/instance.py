@@ -169,30 +169,31 @@ class AmazonInstanceEpt(models.Model):
         :return:
         """
         def orders_of_current_week(record, fulfillment_by_where_clause):
-            record._cr.execute("""select id from sale_order where date(date_order)
-                                >= (select date_trunc('week', date(current_date)))
-                                and amz_instance_id= {0} and state in ('sale','done') and amz_fulfillment_by = 'FBA' {1}
-                                order by date(date_order)""" .format(record.id, fulfillment_by_where_clause))
+            query = """select id from sale_order where date(date_order) >= (select date_trunc('week', date(current_date))) 
+            and amz_instance_id= %s and state in ('sale','done') and amz_fulfillment_by = 'FBA' {fulfillment_by_where_clause} 
+            order by date(date_order)""".format(fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def orders_of_current_month(record, fulfillment_by_where_clause):
-            record._cr.execute("""select id from sale_order where date(date_order) >=
-                                (select date_trunc('month', date(current_date)))
-                                and amz_instance_id= {0} and state in ('sale','done') and amz_fulfillment_by = 'FBA' {1}
-                                order by date(date_order)""" .format(record.id, fulfillment_by_where_clause))
+            query = """select id from sale_order where date(date_order) >= (select date_trunc('month', date(current_date))) 
+            and amz_instance_id= %s and state in ('sale','done') and amz_fulfillment_by = 'FBA' {fulfillment_by_where_clause} 
+            order by date(date_order)""".format(fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def orders_of_current_year(record, fulfillment_by_where_clause):
-            record._cr.execute("""select id from sale_order where date(date_order) >=
-                                (select date_trunc('year', date(current_date)))
-                                and amz_instance_id= {0} and state in ('sale','done') and amz_fulfillment_by = 'FBA' {1}
-                                order by date(date_order)""" .format(record.id, fulfillment_by_where_clause))
+            query = """select id from sale_order where date(date_order) >= (select date_trunc('year', date(current_date))) 
+            and amz_instance_id= %s and state in ('sale','done') and amz_fulfillment_by = 'FBA' {fulfillment_by_where_clause} 
+            order by date(date_order)""".format(fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def orders_of_all_time(record, fulfillment_by_where_clause):
-            record._cr.execute(
-                """select id from sale_order where amz_instance_id = {0} and state in ('sale','done') and
-                amz_fulfillment_by = 'FBA' {1}""" .format(record.id, fulfillment_by_where_clause))
+            query = """select id from sale_order where amz_instance_id = %s and state in ('sale','done') and 
+            amz_fulfillment_by = 'FBA' {fulfillment_by_where_clause}""".format(
+                fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         order_data = {}
@@ -217,8 +218,9 @@ class AmazonInstanceEpt(models.Model):
         :return: total number of products ids and action for products
         """
         product_data = {}
-        record._cr.execute("""select count(id) as total_count from amazon_product_ept where
-                        exported_to_amazon = True and instance_id = %s""" % record.id)
+        query = """select count(id) as total_count from amazon_product_ept where 
+        exported_to_amazon = True and instance_id = %s"""
+        record._cr.execute(query, (record.id,))
         result = record._cr.dictfetchall()
         if result:
             total_count = result[0].get('total_count', 0.0)
@@ -239,21 +241,22 @@ class AmazonInstanceEpt(models.Model):
             current_total = 0.0
             previous_total = 0.0
             day_of_week = date.weekday(date.today())
-            record._cr.execute("""select sum(amount_untaxed) as current_week from sale_order
-                                where date(date_order) >= (select date_trunc('week', date(current_date))) and
-                                amz_instance_id={0} and state in
-                                 ('sale','done') {1}""" .format(record.id, fulfillment_by_where_clause))
+            current_week_query = """select sum(amount_untaxed) as current_week from sale_order 
+            where date(date_order) >= (select date_trunc('week', date(current_date))) and 
+            amz_instance_id=%s and state in ('sale','done') {fulfillment_by_where_clause}""".format(
+                fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(current_week_query, (record.id,))
             current_week_data = record._cr.dictfetchone()
             current_total = current_week_data.get('current_week', 0.0) if current_week_data and current_week_data.get(
                 'current_week', 0.0) else 0
             # Previous week data
-            record._cr.execute("""select sum(amount_untaxed) as previous_week from sale_order
+            previous_week_query = """select sum(amount_untaxed) as previous_week from sale_order
                             where date(date_order) between (select date_trunc('week', current_date) - interval '7 day') 
                             and (select date_trunc('week', (select date_trunc('week', current_date) - interval '7
-                            day')) + interval '{0} day')
-                            and amz_instance_id={1} and state in ('sale','done') {2}
-                            """ .format(day_of_week, record.id, fulfillment_by_where_clause))
-
+                            day')) + interval '{day_of_week} day') and amz_instance_id=%s and state in (
+                            'sale','done') {fulfillment_by_where_clause}""".format(
+                day_of_week=day_of_week, fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(previous_week_query, (record.id,))
             previous_week_data = record._cr.dictfetchone()
             previous_total = previous_week_data.get(
                 'previous_week', 0.0) if previous_week_data and previous_week_data.get('previous_week', 0.0) else 0
@@ -263,20 +266,22 @@ class AmazonInstanceEpt(models.Model):
             current_total = 0.0
             previous_total = 0.0
             day_of_month = date.today().day - 1
-            record._cr.execute("""select sum(amount_untaxed) as current_month from sale_order
-                                where date(date_order) >= (select date_trunc('month', date(current_date)))
-                                and amz_instance_id={0} and state in ('sale','done') {1}""".format(
-                                    record.id, fulfillment_by_where_clause))
+            current_month_query = """select sum(amount_untaxed) as current_month from sale_order 
+            where date(date_order) >= (select date_trunc('month', date(current_date))) 
+            and amz_instance_id=%s and state in ('sale','done') {fulfillment_by_where_clause}""".format(
+                fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(current_month_query, (record.id,))
             current_data = record._cr.dictfetchone()
             current_total = current_data.get('current_month', 0.0) if current_data and current_data.get(
                 'current_month', 0.0) else 0
             # Previous week data
-            record._cr.execute("""select sum(amount_untaxed) as previous_month from sale_order where date(date_order)
-                            between (select date_trunc('month', current_date) - interval '1 month') and
-                            (select date_trunc('month', (select date_trunc('month', current_date) - interval
-                            '1 month')) + interval '{0} days')
-                            and amz_instance_id={1} and state in ('sale','done') {2}
-                            """ .format(day_of_month, record.id, fulfillment_by_where_clause))
+            previous_month_query = """select sum(amount_untaxed) as previous_month from sale_order where date(date_order) 
+            between (select date_trunc('month', current_date) - interval '1 month') and 
+            (select date_trunc('month', (select date_trunc('month', current_date) - interval '1 month')) + 
+            interval '{day_of_month} days') and amz_instance_id=%s and state in (
+            'sale','done') {fulfillment_by_where_clause}""".format(
+                day_of_month=day_of_month, fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(previous_month_query, (record.id,))
             previous_data = record._cr.dictfetchone()
             previous_total = previous_data.get('previous_month', 0.0) if previous_data and previous_data.get(
                 'previous_month', 0.0) else 0
@@ -288,20 +293,21 @@ class AmazonInstanceEpt(models.Model):
             year_begin = date.today().replace(month=1, day=1)
             year_end = date.today()
             delta = (year_end - year_begin).days - 1
-            record._cr.execute("""select sum(amount_untaxed) as current_year from sale_order
-                                where date(date_order) >= (select date_trunc('year', date(current_date)))
-                                and amz_instance_id={0} and state in
-                                 ('sale','done') {1}""" .format(record.id, fulfillment_by_where_clause))
+            current_year_query = """select sum(amount_untaxed) as current_year from sale_order 
+            where date(date_order) >= (select date_trunc('year', date(current_date))) 
+            and amz_instance_id=%s and state in ('sale','done') {fulfillment_by_where_clause}""".format(
+                fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(current_year_query, (record.id,))
             current_data = record._cr.dictfetchone()
             current_total = current_data.get('current_year', 0.0) if current_data and current_data.get(
                 'current_year', 0.0) else 0
             # Previous week data
-            record._cr.execute("""select sum(amount_untaxed) as previous_year from sale_order where date(date_order)
-                            between (select date_trunc('year', date(current_date) - interval '1 year')) and 
-                            (select date_trunc('year', date(current_date) - interval '1 year') + interval '{0} days') 
-                            and amz_instance_id={1} and state in ('sale','done') {2}
-                            """ .format(delta, record.id, fulfillment_by_where_clause))
-
+            previous_year_query = """select sum(amount_untaxed) as previous_year from sale_order where date(date_order) 
+            between (select date_trunc('year', date(current_date) - interval '1 year')) and 
+            (select date_trunc('year', date(current_date) - interval '1 year') + interval '{delta} days') 
+            and amz_instance_id=%s and state in ('sale','done') {fulfillment_by_where_clause}""".format(
+                delta=delta, fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(previous_year_query, (record.id,))
             previous_data = record._cr.dictfetchone()
             previous_total = previous_data.get('previous_year', 0.0) if previous_data and previous_data.get(
                 'previous_year', 0.0) else 0
@@ -332,7 +338,7 @@ class AmazonInstanceEpt(models.Model):
         """
 
         def get_current_week_date(record, fulfillment_by_where_clause):
-            record._cr.execute("""SELECT to_char(date(d.day),'DAY'), t.amount_untaxed as sum
+            query = """SELECT to_char(date(d.day),'DAY'), t.amount_untaxed as sum
                                 FROM  (
                                    SELECT day
                                    FROM generate_series(date(date_trunc('week', (current_date)))
@@ -345,14 +351,15 @@ class AmazonInstanceEpt(models.Model):
                                    WHERE  date(date_order) >= (select date_trunc('week', date(current_date)))
                                    AND    date(date_order) <= (select date_trunc('week', date(current_date)) 
                                    + interval '6 days')
-                                   AND amz_instance_id={0} and state in ('sale','done') {1}
+                                   AND amz_instance_id=%s and state in ('sale','done') {fulfillment_by_where_clause}
                                    GROUP  BY 1
                                    ) t USING (day)
-                                ORDER  BY day""" .format(record.id, fulfillment_by_where_clause))
+                                ORDER  BY day""" .format(fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def graph_of_current_month(record, fulfillment_by_where_clause):
-            record._cr.execute("""select EXTRACT(DAY from date(date_day)) :: integer,sum(amount_untaxed) from (
+            query = """select EXTRACT(DAY from date(date_day)) :: integer,sum(amount_untaxed) from (
                         SELECT 
                           day::date as date_day,
                           0 as amount_untaxed
@@ -366,15 +373,16 @@ class AmazonInstanceEpt(models.Model):
                         WHERE  date(date_order) >= (select date_trunc('month', date(current_date)))
                         AND date(date_order)::date <= (select date_trunc('month', date(current_date)) 
                         + '1 MONTH - 1 day')
-                        and amz_instance_id = {0} and state in ('sale','done') {1}
+                        and amz_instance_id = %s and state in ('sale','done') {fulfillment_by_where_clause}
                         group by 1
                         )foo 
                         GROUP  BY 1
-                        ORDER  BY 1""" .format(record.id, fulfillment_by_where_clause))
+                        ORDER  BY 1""" .format(fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def graph_of_current_year(record, fulfillment_by_where_clause):
-            record._cr.execute("""select TRIM(TO_CHAR(DATE_TRUNC('month',month),'MONTH')),sum(amount_untaxed) from
+            query = """select TRIM(TO_CHAR(DATE_TRUNC('month',month),'MONTH')),sum(amount_untaxed) from
                                 (SELECT DATE_TRUNC('month',date(day)) as month,
                                   0 as amount_untaxed
                                 FROM generate_series(date(date_trunc('year', (current_date)))
@@ -387,20 +395,21 @@ class AmazonInstanceEpt(models.Model):
                                 WHERE  date(date_order) >= (select date_trunc('year', date(current_date))) AND 
                                 date(date_order)::date <= (select date_trunc('year', date(current_date)) 
                                 + '1 YEAR - 1 day')
-                                and amz_instance_id = {0} and state in ('sale','done') {1}
+                                and amz_instance_id = %s and state in ('sale','done') {fulfillment_by_where_clause}
                                 group by DATE_TRUNC('month',date(date_order))
                                 order by month
                                 )foo 
                                 GROUP  BY foo.month
-                                order by foo.month""" .format(record.id, fulfillment_by_where_clause))
+                                order by foo.month""" .format(fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def graph_of_all_time(record, fulfillment_by_where_clause):
-            record._cr.execute("""select TRIM(TO_CHAR(DATE_TRUNC('month',date_order),'YYYY-MM')),sum(amount_untaxed)
-                                from sale_order where amz_instance_id = {0} and state in ('sale','done') {1}
-                                group by DATE_TRUNC('month',date_order) 
-                                order by DATE_TRUNC('month',date_order)""" .format(
-                                    record.id, fulfillment_by_where_clause))
+            query = """select TRIM(TO_CHAR(DATE_TRUNC('month',date_order),'YYYY-MM')),sum(amount_untaxed) 
+            from sale_order where amz_instance_id = %s and state in ('sale','done') {fulfillment_by_where_clause} 
+            group by DATE_TRUNC('month',date_order) order by DATE_TRUNC('month',date_order)""".format(
+                fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         # Prepare values for Graph
@@ -438,33 +447,32 @@ class AmazonInstanceEpt(models.Model):
         """
 
         def orders_of_current_week(record, fulfillment_by_where_clause):
-            record._cr.execute("""select id from sale_order where date(date_order)
-                                >= (select date_trunc('week', date(current_date)))
-                                and amz_instance_id= {0} and state in ('sale','done') and amz_fulfillment_by = 'FBM' {1}
-                                order by date(date_order)
-                        """  .format(record.id, fulfillment_by_where_clause))
+            query = """select id from sale_order where date(date_order) >= (select date_trunc('week', date(current_date))) 
+            and amz_instance_id= %s and state in ('sale','done') and amz_fulfillment_by = 'FBM' {fulfillment_by_where_clause} 
+            order by date(date_order)""".format(fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def orders_of_current_month(record, fulfillment_by_where_clause):
-            record._cr.execute("""select id from sale_order where date(date_order) >=
-                                (select date_trunc('month', date(current_date)))
-                                and amz_instance_id= {0} and state in ('sale','done') and amz_fulfillment_by = 'FBM' {1}
-                                order by date(date_order)
-                        """ .format(record.id, fulfillment_by_where_clause))
+            query = """select id from sale_order where date(date_order) >= 
+            (select date_trunc('month', date(current_date))) and amz_instance_id= %s and state in (
+            'sale','done') and amz_fulfillment_by = 'FBM' {fulfillment_by_where_clause} order by date(date_order)""".format(
+                fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def orders_of_current_year(record, fulfillment_by_where_clause):
-            record._cr.execute("""select id from sale_order where date(date_order) >=
-                                (select date_trunc('year', date(current_date)))
-                                and amz_instance_id= {0} and state in ('sale','done') and amz_fulfillment_by = 'FBM' {1}
-                                order by date(date_order)"""
-                               .format(record.id, fulfillment_by_where_clause))
+            query = """select id from sale_order where date(date_order) >= (select date_trunc('year', date(current_date))) 
+            and amz_instance_id= %s and state in ('sale','done') and amz_fulfillment_by = 'FBM' {fulfillment_by_where_clause} 
+            order by date(date_order)""".format(fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         def orders_of_all_time(record, fulfillment_by_where_clause):
-            record._cr.execute(
-                """select id from sale_order where amz_instance_id = {0} and state in ('sale','done') and 
-                amz_fulfillment_by = 'FBM' {1}""" .format(record.id, fulfillment_by_where_clause))
+            query = """select id from sale_order where amz_instance_id = %s and state in ('sale','done') and 
+            amz_fulfillment_by = 'FBM' {fulfillment_by_where_clause}""".format(
+                fulfillment_by_where_clause=fulfillment_by_where_clause)
+            record._cr.execute(query, (record.id,))
             return record._cr.dictfetchall()
 
         order_data = {}
@@ -511,22 +519,22 @@ class AmazonInstanceEpt(models.Model):
         for instance in self:
             self._cr.execute(
                 "SELECT count(*) AS row_count FROM sale_order WHERE amz_fulfillment_by = 'FBA' "
-                "and state not in ('draft','sent','cancel') and amz_instance_id = %s" % (instance.id))
+                "and state not in ('draft','sent','cancel') and amz_instance_id = %s", (instance.id,))
             instance.fba_order_count = self._cr.fetchall()[0][0]
 
             self._cr.execute(
                 "SELECT count(*) AS row_count FROM sale_order WHERE amz_fulfillment_by = 'FBM' "
-                "and state not in ('draft','sent','cancel') and amz_instance_id = %s" % (instance.id))
+                "and state not in ('draft','sent','cancel') and amz_instance_id = %s", (instance.id,))
             instance.fbm_order_count = self._cr.fetchall()[0][0]
 
             self._cr.execute(
                 "SELECT count(*) AS row_count FROM account_move WHERE amz_fulfillment_by = 'FBM' "
-                "and amazon_instance_id = %s" % (instance.id))
+                "and amazon_instance_id = %s", (instance.id,))
             instance.fbm_invoice_count = self._cr.fetchall()[0][0]
 
             self._cr.execute(
                 "SELECT count(*) AS row_count FROM account_move WHERE amz_fulfillment_by = 'FBA' "
-                "and amazon_instance_id = %s" % instance.id)
+                "and amazon_instance_id = %s", (instance.id,))
             instance.fba_invoice_count = self._cr.fetchall()[0][0]
 
     def test_amazon_connection(self):

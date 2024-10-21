@@ -100,7 +100,12 @@
                            groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
                     <field name="fba_warehouse_id" domain="[('id','!=',warehouse_id)]" readonly="1"
                            groups="amazon_ept.group_amazon_fba_ept,amazon_ept.group_amazon_fba_and_fbm_ept"/>
-                    <field name="stock_update_warehouse_ids" widget="many2many_tags" readonly="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="stock_update_warehouse_ids" widget="many2many_tags"
+                           class="oe_inline" domain="[('company_id','=',company_id),('is_fba_warehouse','=',False)]"/>
+                    <div class="text-muted" colspan="2">
+                        Tooltip: Calculate total stock for FBM products to update from Odoo to Amazon.
+                    </div>
                 </group>
                 <group>
 
