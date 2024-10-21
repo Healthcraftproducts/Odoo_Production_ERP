@@ -11,4 +11,6 @@
     "version": "0.1",
     "application": True,
     "installable": True,
+    'license': 'LGPL-3'
+
 }
