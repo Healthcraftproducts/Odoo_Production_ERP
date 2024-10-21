@@ -10,6 +10,7 @@ from odoo import models, fields, api
 SETTLEMENT_REPORT_EPT = 'settlement.report.ept'
 
 
+
 class AccountBankStatement(models.Model):
     """
     Inherited AccountBankStatement class to process settlement report's statement

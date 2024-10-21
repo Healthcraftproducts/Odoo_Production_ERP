@@ -9,6 +9,7 @@ from odoo.http import request
 _logger = logging.getLogger(__name__)
 
 
+
 class ImageUrl(http.Controller):
 
     @http.route('/lf/i/<string:encodedimage>', type='http', auth='public')
