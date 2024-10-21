@@ -1,5 +1,7 @@
+import pdb
 from importlib.metadata import requires
 
+from gevent.util import print_run_info
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.exceptions import UserError, ValidationError
@@ -37,6 +39,25 @@ class StockPickingInherit(models.Model):
             'target': 'new',
             'context': context,
         }
+
+    def action_put_in_pack(self):
+        self.ensure_one()
+        if self.state not in ('done', 'cancel'):
+            move_line_ids = self._package_move_lines()
+            if move_line_ids:
+                # Pre-hook action
+                res = self._pre_put_in_pack_hook(move_line_ids)
+                if not res:
+                    res = self._put_in_pack(move_line_ids)
+
+                # Adding country logic
+                if self.partner_id and self.partner_id.country_id:
+                    move_line_ids.result_package_id.country_id = self.partner_id.country_id.id
+                else:
+                    move_line_ids.result_package_id.country_id = ""
+                return res
+            else:
+                raise UserError(_("Please add 'Done' quantities to the picking to create a new pack."))
 
 class ChooseDeliveryPackage(models.TransientModel):
     _inherit = 'choose.delivery.package'
@@ -77,6 +98,11 @@ class ChooseDeliveryPackage(models.TransientModel):
             self.delivery_package_type_id.base_weight = self.weight
         else:
             self.delivery_package_type_id.base_weight = 0
+        #     pass country of partner to packages for grouoby in packages
+        if self.picking_id.partner_id and self.picking_id.partner_id.country_id:
+            delivery_package.country_id = self.picking_id.partner_id.country_id
+        else:
+            delivery_package.country_id = ""
 
     class StockQuantPackage(models.Model):
         _inherit = 'stock.quant.package'
@@ -91,4 +117,4 @@ class ChooseDeliveryPackage(models.TransientModel):
         packaging_length = fields.Integer('Length', help="Packaging Length")
         height = fields.Integer('Height', help="Packaging Height")
         width = fields.Integer('Width', help="Packaging Width")
-
+        country_id = fields.Many2one('res.country',string='Country')

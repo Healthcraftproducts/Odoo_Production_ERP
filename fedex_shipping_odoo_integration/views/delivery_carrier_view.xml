@@ -68,6 +68,29 @@
             </xpath>
         </field>
     </record>
+    <record id="quant_package_search_view_inherit_group_by" model="ir.ui.view">
+        <field name="name">stock.quant.package.search.inherit.group_by</field>
+        <field name="model">stock.quant.package</field>
+        <field eval="10" name="priority"/>
+        <field name="inherit_id" ref="stock.quant_package_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='package_type']" position="after">
+                <filter string="Country" name="country_id" domain="[]" context="{'group_by' : 'country_id'}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_quant_package_tree_inherit">
+        <field name="name">stock.quant.package.tree.inherit</field>
+        <field name="model">stock.quant.package</field>
+        <field eval="10" name="priority"/>
+        <field name="inherit_id" ref="stock.view_quant_package_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="/tree//field[@name='location_id']" position="after">
+                <field name="country_id"/>
+            </xpath>
+        </field>
+    </record>
 
     <record id="choose_delivery_package_view_form_inherit_weight" model="ir.ui.view">
         <field name="name">choose.delivery.package.form.inherit</field>
@@ -124,6 +147,9 @@
 
                     </group>
                 </group>
+            </xpath>
+            <xpath expr="//field[@name='package_use']" position="after">
+                <field name="country_id" options="{'no_create': True}"/>
             </xpath>
         </field>
     </record>
