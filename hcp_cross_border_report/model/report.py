@@ -57,23 +57,26 @@ class SaleExcelReport(models.TransientModel):
         worksheet.set_column(1, 3, 14)
         worksheet.set_column(1, 10, 14)
 
-        worksheet2.set_column(0, 0, 18)
-        worksheet2.set_column(1, 1, 15)
-        worksheet2.set_column(2, 2, 15)
+        worksheet2.set_column(0, 0, 22)
+        worksheet2.set_column(1, 1, 30)
+        worksheet2.set_column(2, 2, 18)
         worksheet2.set_column(3, 3, 15)
         worksheet2.set_column(4, 4, 15)
-        worksheet2.set_column(5, 5, 15)
-        worksheet2.set_column(6, 6, 15)
-        worksheet2.set_column(7, 7, 15)
-        worksheet2.set_column(8, 8, 25)
-        worksheet2.set_column(9, 9, 25)
-        worksheet2.set_column(10, 10, 26)
-        worksheet2.set_column(11, 11, 25)
-        worksheet2.set_column(12, 12, 15)
+        worksheet2.set_column(5, 5, 13)
+        worksheet2.set_column(6, 6, 13)
+        worksheet2.set_column(7, 7, 13)
+        worksheet2.set_column(8, 8, 15)
+        worksheet2.set_column(9, 9, 15)
+        worksheet2.set_column(10, 10, 13)
+        worksheet2.set_column(11, 11, 13)
+        worksheet2.set_column(12, 12, 18)
         worksheet2.set_column(13, 13, 15)
         worksheet2.set_column(14, 14, 15)
         worksheet2.set_column(15, 15, 15)
         worksheet2.set_column(16, 16, 15)
+        worksheet2.set_column(17, 17, 15)
+        worksheet2.set_column(17, 17, 15)
+        worksheet2.set_column(17, 17, 15)
 
         bold_format = workbook.add_format({
             'bold': True,
@@ -100,10 +103,20 @@ class SaleExcelReport(models.TransientModel):
         normal_format_small_2 = workbook.add_format({
             'bold': False,
             'align': 'left',
-            'valign': 'top',
+            'valign': 'bottom',
             'font_size': 11,
             'border': True,
+            'text_wrap': True,
         })
+        normal_format_small_3 = workbook.add_format({
+            'bold': False,
+            'align': 'right',
+            'valign': 'bottom',
+            'font_size': 11,
+            'border': True,
+            'text_wrap': True,
+        })
+
         format_small = workbook.add_format({
             'align': 'left',
             'valign': 'top',
@@ -192,28 +205,31 @@ class SaleExcelReport(models.TransientModel):
         s_no = 1
         total_amount = 0
         shipping_amount = 0
-        total_shipping_amount = 0
+        total_except_shipping = 0
         for invoice in self.invoice_id:
             worksheet.write(row, 1, s_no, bold_format_left_align)
             worksheet.write(row, 2, invoice.name, border_format)
-            worksheet.write(row, 3, invoice.amount_total, border_format)
             shipping_charge = 0
+            product_price_subtotal = 0
             for line in invoice.invoice_line_ids:
-                if line.account_id.code == '31900':
+                if line.product_id.detailed_type in ["product", "consu"] or line.account_id.code in ['31900'] :
+                    product_price_subtotal += line.price_unit
+                if line.account_id.code in ['31900']:
                     shipping_charge = line.price_subtotal
-            total_not_inc_shipping = invoice.amount_total - shipping_charge
+            worksheet.write(row, 3, product_price_subtotal, border_format)
+            total_not_inc_shipping = product_price_subtotal - shipping_charge
             total_not_inc_shipping = abs(total_not_inc_shipping)
             worksheet.write(row, 4, shipping_charge, border_format)
             worksheet.write(row, 5, total_not_inc_shipping, border_format)
-            total_amount += invoice.amount_total
+            total_amount += product_price_subtotal
             shipping_amount += shipping_charge
-            total_shipping_amount += total_not_inc_shipping
+            total_except_shipping += total_not_inc_shipping
             row += 1
             s_no += 1
         worksheet.write(row, 2, "TOTAL", bold_align)
         worksheet.write(row, 3, total_amount, bold_align)
         worksheet.write(row, 4, shipping_amount, bold_align)
-        worksheet.write(row, 5, total_shipping_amount, bold_align)
+        worksheet.write(row, 5, total_except_shipping, bold_align)
         worksheet.write('B47', " ", bold_align)
 
         s_no -= 1
@@ -221,9 +237,9 @@ class SaleExcelReport(models.TransientModel):
         worksheet.write('F18', s_no, merge_formates)
 
         headers = [
-            "PART#", "TARIFF #", "WEIGHT", "UOM", "RELATED", "SPI",
+            "PART#", "TARIFF #", 'Nyrobi Protocol','Section 301',"WEIGHT (in lbs)", "UOM", "RELATED", "VALUE","SPI",
             "Parties Qualifier", "Entity Id Qualifier Code", "Entity Identifier",
-            "Name", "Address 1", "City", "State Province", "Postal Code", "Country", "isSold To","VALUE",
+            "Name", "Address 1", "City", "State Province", "Postal Code", "Country", "isSold To",
         ]
 
         # Write the headers on the second worksheet
@@ -233,26 +249,37 @@ class SaleExcelReport(models.TransientModel):
         row = 1
         for data in self.invoice_id:
             for data_line in data.invoice_line_ids:
+                currency_symbol = data.currency_id.symbol
+                normal_format_small_3_currency_format = workbook.add_format({
+                    'bold': False,
+                    'align': 'right',
+                    'valign': 'bottom',
+                    'font_size': 11,
+                    'border': True,
+                    'text_wrap': True,
+                    'num_format': f'"{currency_symbol}"#,##0.00'
+                })
                 if data_line.product_id.detailed_type in ["product", "consu"]:
                     spi = "S" if data_line.product_id.usmca_eligible == 'yes' else ""
                     worksheet2.write(row, 0, data_line.product_id.default_code, normal_format_small_2)
                     worksheet2.write(row, 1, data_line.product_id.cust_fld2 or "", normal_format_small_2)
-                    worksheet2.write(row, 2, data_line.product_id.weight, normal_format_small_2)
-                    worksheet2.write(row, 3, data_line.product_uom_id.name, normal_format_small_2)
-                    worksheet2.write(row, 4, "N", normal_format_small_2)
-                    worksheet2.write(row, 5, spi, normal_format_small_2)
-                    worksheet2.write(row, 6, "CN", normal_format_small_2)
-                    worksheet2.write(row, 7, "EI", normal_format_small_2)
-                    worksheet2.write(row, 8, "", normal_format_small_2)
-                    worksheet2.write(row, 9, data.partner_id.name, normal_format_small_2)
-                    worksheet2.write(row, 10, data.partner_id.street, normal_format_small_2)
-                    worksheet2.write(row, 11, data.partner_id.city, normal_format_small_2)
-                    worksheet2.write(row, 12, data.partner_id.state_id.code, normal_format_small_2)
-                    worksheet2.write(row, 13, data.partner_id.zip, normal_format_small_2)
-                    worksheet2.write(row, 14, data.partner_id.country_id.code, normal_format_small_2)
-                    worksheet2.write(row, 15, "Y", normal_format_small_2)
-                    worksheet2.write(row, 16, data_line.price_unit, normal_format_small_2)
-
+                    worksheet2.write(row, 2, data_line.product_id.nyrobi_protocal or "", normal_format_small_2)
+                    worksheet2.write(row, 3, data_line.product_id.section_301 or "", normal_format_small_2)
+                    worksheet2.write(row, 4, data_line.product_id.weight, normal_format_small_3)
+                    worksheet2.write(row, 5, data_line.product_uom_id.name, normal_format_small_2)
+                    worksheet2.write(row, 6, "N", normal_format_small_2)
+                    worksheet2.write(row, 7, data_line.price_unit, normal_format_small_3_currency_format)
+                    worksheet2.write(row, 8, spi, normal_format_small_2)
+                    worksheet2.write(row, 9, "CN", normal_format_small_2)
+                    worksheet2.write(row, 10, "EI", normal_format_small_2)
+                    worksheet2.write(row, 11, "", normal_format_small_2)
+                    worksheet2.write(row, 12, data.partner_id.name, normal_format_small_2)
+                    worksheet2.write(row, 13, data.partner_id.street, normal_format_small_2)
+                    worksheet2.write(row, 14, data.partner_id.city, normal_format_small_2)
+                    worksheet2.write(row, 15, data.partner_id.state_id.code, normal_format_small_2)
+                    worksheet2.write(row, 16, data.partner_id.zip, normal_format_small_2)
+                    worksheet2.write(row, 17, data.partner_id.country_id.code, normal_format_small_2)
+                    worksheet2.write(row, 18, "Y", normal_format_small_2)
                     row += 1
         workbook.close()
         workbook_stream.seek(0)
