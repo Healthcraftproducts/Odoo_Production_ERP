@@ -317,12 +317,14 @@
                             <field name="cust_fld2"/>
                             <field name="cust_fld3"/>
                             <field name="binding_rule"/>
+                            <field name="nyrobi_protocal"/>
                         </group>
                         <group>
                             <field name="fda_listing"/>
                             <!--                            <field name="deringer_uom_id"/>-->
                             <field name="usmca_eligible"/>
                             <field name="tarrif_number" widget="many2many_tags"/>
+                            <field name="section_301"/>
                         </group>
                     </group>
                 </page>
@@ -442,12 +444,14 @@
                             <field name="cust_fld2"/>
                             <field name="cust_fld3"/>
                             <field name="binding_rule"/>
+                            <field name="nyrobi_protocal"/>
                         </group>
                         <group>
                             <field name="fda_listing"/>
                             <!--                            <field name="deringer_uom_id"/>-->
                             <field name="usmca_eligible"/>
                             <field name="tarrif_number" widget="many2many_tags"/>
+                            <field name="section_301"/>
                         </group>
                     </group>
                 </page>
