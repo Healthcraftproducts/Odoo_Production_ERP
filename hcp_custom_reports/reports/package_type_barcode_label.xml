@@ -42,11 +42,11 @@
                             </div>
                             <hr/>
                             <div>
-                                <div>
-                                    <!--                                    margin-left:-78px-->
-                                    <div style="text-align:center;" t-esc="o.barcode"
-                                         t-options="{'widget': 'barcode', 'width': 400, 'height': 50}"/>
-                                </div>
+                                <!--                                    margin-left:-78px-->
+                                <div style="text-align:center;" t-esc="o.barcode"
+                                     t-options="{'widget': 'barcode', 'width': 400, 'height': 50}"/>
+                            </div>
+                            <div>
                                 <p style="font-size:15px;text-align:center;padding-top:0.5px;margin-bottom:0px;">
                                     <b>Name:
                                         <span t-esc="o.name"/>
