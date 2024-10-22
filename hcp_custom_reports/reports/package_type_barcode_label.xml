@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <report
+                string="Barcode Package Type"
+                id="action_report_barcode_package_type"
+                model="stock.package.type"
+                report_type="qweb-pdf"
+                name="hcp_custom_reports.report_barcode_label_package_type"
+                file="hcp_custom_reports.report_barcode_label_package_type"
+                print_report_name="'Package Type - %s' % object.name"
+        />
+
+        <record id="report_barcode_label_package_type_paperformat" model="report.paperformat">
+            <field name="name">Paper Format Barcode Package Type</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">50</field>
+            <field name="page_width">100</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">1.00</field>
+            <field name="margin_bottom">1</field>
+            <field name="margin_left">1.00</field>
+            <field name="margin_right">1.00</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">1</field>
+            <field name="dpi">90</field>
+            <field name="report_ids" eval="[(4,ref('hcp_custom_reports.action_report_barcode_package_type'))]"/>
+        </record>
+
+        <template id="report_barcode_label_package_type">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <div>
+                            <div>
+                                <p style="font-size:15px;text-align:center;padding-top:0.5px;margin-bottom:0px;">
+                                    <b>Barcode:
+                                        <span t-esc="o.barcode"/>
+                                    </b>
+                                </p>
+                            </div>
+                            <hr/>
+                            <div>
+                                <div>
+                                    <!--                                    margin-left:-78px-->
+                                    <div style="text-align:center;" t-esc="o.barcode"
+                                         t-options="{'widget': 'barcode', 'width': 400, 'height': 50}"/>
+                                </div>
+                                <p style="font-size:15px;text-align:center;padding-top:0.5px;margin-bottom:0px;">
+                                    <b>Name:
+                                        <span t-esc="o.name"/>
+                                    </b>
+                                </p>
+                                <hr/>
+                                <div style="text-align:center;" t-esc="o.name"
+                                     t-options="{'widget': 'barcode', 'width': 500, 'height': 50}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="page-break-before:always;"></div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
