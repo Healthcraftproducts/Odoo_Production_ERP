@@ -209,13 +209,13 @@ class SaleExcelReport(models.TransientModel):
         total_amount = 0
         shipping_amount = 0
         total_except_shipping = 0
-        product_price_unit_total = 0
-        price_shipping_subtotal = 0
         for invoice in self.invoice_id:
             worksheet.write(row, 1, s_no, bold_format_left_align)
             worksheet.write(row, 2, invoice.name, border_format)
             shipping_charge = 0
             product_price_subtotal = 0
+            product_price_unit_total = 0
+            price_shipping_subtotal = 0
             for line in invoice.invoice_line_ids:
                 if line.product_id.detailed_type in ["product", "consu"]:
                     product_price_unit_total += line.inv_line_amount
