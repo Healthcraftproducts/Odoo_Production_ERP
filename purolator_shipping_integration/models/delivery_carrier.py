@@ -73,12 +73,14 @@ class DeliveryCarrier(models.Model):
 
         root_body = etree.SubElement(root_element, "soapenv:Body")
         root_getquickestimateRequest = etree.SubElement(root_body, "v2:GetQuickEstimateRequest")
-        if self.purolator_payment_type == 'Sender':
-            etree.SubElement(root_getquickestimateRequest,
-                             "v2:BillingAccountNumber").text = self.company_id.purolator_account_number
-        else:
-            etree.SubElement(root_getquickestimateRequest,
-                             "v2:BillingAccountNumber").text = orders.purolator_third_party_account_number_sale_order
+        etree.SubElement(root_getquickestimateRequest,
+                         "v2:BillingAccountNumber").text = self.company_id.purolator_account_number
+        # if self.purolator_payment_type == 'Sender':
+        #     etree.SubElement(root_getquickestimateRequest,
+        #                      "v2:BillingAccountNumber").text = self.company_id.purolator_account_number
+        # else:
+        #     etree.SubElement(root_getquickestimateRequest,
+        #                      "v2:BillingAccountNumber").text = orders.purolator_third_party_account_number_sale_order
         # etree.SubElement(root_getquickestimateRequest,
         #                  "v2:BillingAccountNumber").text = self.company_id and self.company_id.purolator_account_number
         etree.SubElement(root_getquickestimateRequest, "v2:SenderPostalCode").text = sender_address.zip or ''
