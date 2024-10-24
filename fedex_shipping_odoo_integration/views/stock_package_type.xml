@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_stock_package_type_form_inherit_extra_option" model="ir.ui.view">
+        <field name="name">stock.package.type.forms.inherit.extra</field>
+        <field name="model">stock.package.type</field>
+        <field name="inherit_id" ref="stock.stock_package_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='shipper_package_code']" position="after">
+                <field name="active" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
